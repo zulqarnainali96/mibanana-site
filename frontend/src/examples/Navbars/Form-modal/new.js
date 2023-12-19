@@ -1,0 +1,597 @@
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Box from '@mui/material/Box'
+import FormControl from '@mui/material/FormControl'
+import Grid from '@mui/material/Grid'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import Select from '@mui/material/Select'
+import MDBox from 'components/MDBox';
+import MDTypography from 'components/MDTypography';
+import CloseIcon from '@mui/icons-material/Close';
+import styled from '@mui/material/styles/styled';
+import MDInput from 'components/MDInput';
+import CloseSharp from '@mui/icons-material/CloseSharp';
+import MDButton from 'components/MDButton';
+import { MoonLoader } from 'react-spinners'
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
+import { ArticleOutlined, CloseOutlined, FolderZip, FolderZipOutlined, PictureAsPdf } from '@mui/icons-material';
+import UploadFile from 'components/File upload button/FileUpload';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { openBrandModalFunc } from 'redux/actions/actions';
+import { Typography } from '@mui/material';
+import AiLogo from 'assets/mi-banana-icons/ai-logo.png'
+import fileImage from 'assets/mi-banana-icons/file-image.png'
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
+let aiLogo = "application/postscript"
+let psdfile = "image/vnd.adobe.photoshop"
+let zipfile = 'application/x-zip-compressed'
+let pdf = "application/pdf"
+
+const OtherFilesShow = ({ file, deleteOtherSingleFile }) => {
+    return (
+        <>
+            {file.type.startsWith(zipfile) ?
+                (<div style={deleteImageContainer}>
+                    <CloseIcon fontSize="medium" sx={deleteImageSvgIcon} onClick={() => deleteOtherSingleFile(file)} />
+                    <FolderZip sx={{
+                        fontSize: '6rem !important',
+                    }} />
+                </div >
+                )
+                : file.type.includes(aiLogo) ?
+                    (
+                        <div style={deleteImageContainer}>
+                            <CloseIcon fontSize="medium" sx={deleteImageSvgIcon} onClick={() => deleteOtherSingleFile(file)} />
+                            <img src={AiLogo} width={100} height={100} loading='lazy' />
+                        </div>
+                    ) : file.type.startsWith(psdfile) || file.type === "" ?
+                        (
+                            <div style={deleteImageContainer}>
+                                <CloseIcon fontSize="medium" sx={deleteImageSvgIcon} onClick={() => deleteOtherSingleFile(file)} />
+                                <img src={fileImage} width={100} height={100} loading='lazy' />
+                            </div>
+                        ) : file.type.includes(pdf) ?
+                            (
+                                <div style={deleteImageContainer}>
+                                    <CloseIcon fontSize="medium" sx={deleteImageSvgIcon} onClick={() => deleteOtherSingleFile(file)} />
+                                    <PictureAsPdf
+                                        sx={{
+                                            fontSize: '6rem !important',
+                                        }} />
+                                </div>
+                            ) : null
+            }
+        </>
+
+    )
+}
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiPaper-root': {
+        maxWidth: '70% !important'
+    },
+    '& .MuiInputBase-root': {
+        paddingBlock: '15px'
+    },
+    '& .MuiDialogContent-root': {
+        padding: theme.spacing(2),
+    },
+    '& .MuiDialogActions-root': {
+        padding: theme.spacing(1),
+        width: "100%"
+    },
+}));
+
+const category = [
+    "Graphic Design",
+    // "Copywriting",
+    // "Illustrations",
+    // "Video Editing",
+    // "Motion Graphics",
+    // "Web Development",
+    // "Voice Overs",
+    // "Social Media Lite",
+]
+const designType = [
+    "App",
+    "Banner",
+    "Book Cover",
+    "Brand Guidelines",
+    "Business Card",
+    "Business Form",
+    "eVook Cover",
+    "Editing",
+    "Email",
+    "Social Media",
+    "PDF",
+    "Ads",
+    "Icons",
+    "Infographic",
+    "Instagram",
+    "Label",
+    "Landing Page",
+    "Logo",
+    "Magazine",
+    "Marketing Material",
+    "Menu",
+    "Mock up",
+    "Postcard",
+    "Poster",
+    "Powerpoint",
+    "Simple GIF",
+    "Stationary",
+    "T-shirt Design",
+    "Brochure",
+    "Webpage",
+    "Workbook",
+]
+const sizes = [
+    { title: "1080 x 1080" },
+    { title: "1080 x 1920" },
+    { title: "1920 x 1080" }
+]
+
+const fileFormats = ["Jpg", "Png", "Pdf", "gif"]
+const SoftwareNames = [
+    "Adobe Photoshop", "Adobe InDesign", "Adobe Illustrator", "Canva", "Figma"
+]
+const unitOptions = ['px', 'inch', 'cm']
+
+const CreateProject1 = ({
+    reduxState, handleClose, open, handleChange,
+    loading, onSubmit, formValue, setSelectedOption,
+    selectedOption, onRemoveChange, add_files,
+    upload_files, uploadProgress, setFormValue,
+    brandOption, handleFileUpload, removeFiles,
+    removeSingleFile, deleteOtherSingleFile
+}) => {
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const func = () => dispatch(openBrandModalFunc(true))
+    const filter = createFilterOptions()
+    
+    function moveToBrandPage() {
+        handleClose()
+        navigate("/mi-brands")
+        func()
+    }
+    const getOptionDisabled = (option, newValue) => {
+        console.log('option ', option, newValue)
+        console.log(formValue.file_formats)
+        if (formValue.file_formats.length === 3) {
+            const disable = !fileFormats.includes(formValue.file_formats.map(item => { return item }))
+            return disable
+        } else {
+            return false
+        }
+    };
+
+    return (
+        <BootstrapDialog open={open} sx={{ width: '100% !important' }} >
+            <DialogTitle display={"flex"} position={"relative"} width={'100%'} justifyContent={"space-between"} alignItems={"center"} >
+                <MDTypography sx={({ palette: { light } }) => (
+                    {
+                        backgroundColor: light.cream,
+                        border: `1px solid ${light.cream}`
+                    }
+                )}>
+                    Create Project
+                </MDTypography>
+                <MDButton
+                    onClick={handleClose}
+                    sx={{ position: "absolute", right: 4, padding: '1.4rem !important' }}
+                >
+                    <CloseOutlined sx={
+                        {
+                            fill: '#444'
+                        }} />
+                </MDButton>
+            </DialogTitle>
+            <DialogContent>
+                <Box component="form" onSubmit={onSubmit} sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                    <Grid width={"100%"} container spacing={2} justifyContent={"space-between"} alignItems={"center"}>
+                        <Grid item xxl={6} xl={6}>
+                            <FormControl sx={{ m: 1, width: '100%', }}>
+                                {/* <InputLabel htmlFor='project_category_label' >Select Project Category *</InputLabel> */}
+                                {/* <Select
+                                    labelId="project_category_label"
+                                    name="project_category"
+                                    required
+                                    // value={formValue.project_category}
+                                    variant='filled'
+                                    onChange={handleChange}
+                                    // IconComponent={() => <CloseSharp onClick={() => onRemoveChange('project_category')} fontSize='small' sx={{ marginRight: 1, cursor: "pointer" }} />}
+                                    input={<OutlinedInput
+                                        label="Select Project Category" />}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {category.map((name) => (
+                                        <MenuItem
+                                            key={name}
+                                            value={name}
+                                            disabled={name !== 'Graphic Design'}
+                                        >
+                                            {name}
+                                        </MenuItem>
+                                    ))}
+                                </Select> */}
+                                <Autocomplete
+                                    value={formValue.project_category}
+                                    onChange={(event, newValue) => {
+                                        setFormValue({
+                                            ...formValue,
+                                            project_category: newValue
+                                        })
+                                    }}
+                                    options={category}
+                                    sx={{ width: '100%' }}
+                                    renderInput={(params) => <TextField disabled={category.some(item => item !== 'Graphic Design')} required {...params} label="Select Project Category" />}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xxl={6} xl={6}>
+                            <FormControl sx={{ width: '100%', }}>
+                                {/* <InputLabel htmlFor="design_type_label">Select Design Type *</InputLabel> */}
+                                {/* <Select
+                                    labelId="design_type_label"
+                                    // value={formValue.design_type}
+                                    name='design_type'
+                                    required
+                                    MenuProps={MenuProps}
+                                    onChange={handleChange}
+                                    input={<OutlinedInput label="Select Design Type" />}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {designType.map((name) => (
+                                        <MenuItem
+                                            key={name}
+                                            value={name}
+                                        >
+                                            {name}
+                                        </MenuItem>
+                                    ))}
+                                </Select> */}
+                                <Autocomplete
+                                    value={formValue.design_type}
+                                    onChange={(event, newValue) => {
+                                        setFormValue({
+                                            ...formValue,
+                                            design_type: newValue
+                                        })
+                                    }}
+                                    id="select-design-demo"
+                                    options={designType}
+                                    sx={{ width: '100%' }}
+                                    renderInput={(params) => <TextField required {...params} label="Select Design Type" />}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xxl={6} xl={6}>
+                            <FormControl sx={{ m: 1, width: '100%', position: 'relative' }}>
+                                {brandOption.length === 0 ? (
+                                    <> <InputLabel htmlFor="brand_label">Select Brand *</InputLabel>
+                                        <Select
+                                            labelId='brand_label'
+                                            name="brand"
+                                            required
+                                            IconComponent={() => <CloseSharp onClick={() => onRemoveChange('brand')} fontSize='small' sx={{ marginRight: 1, cursor: "pointer" }} />}
+                                            onChange={handleChange}
+                                            input={<OutlinedInput label="Select Brand" />}
+                                        >
+                                            {reduxState?.customerBrand?.length ? reduxState?.customerBrand?.map((item, i) => (
+                                                <MenuItem
+                                                    key={i}
+                                                    value={item?.brand_name}
+                                                >
+                                                    {item?.brand_name}
+                                                </MenuItem>
+                                            )) : <MenuItem value={''} onClick={moveToBrandPage}><button
+                                                style={{
+                                                    paddingBlock: '7px',
+                                                    borderRadius: '5px',
+                                                    background: '#ccc',
+                                                }}>Create Brand</button></MenuItem>}
+                                        </Select>
+                                    </>) : (
+                                    <Autocomplete
+                                        value={formValue.brand}
+                                        onChange={(event, newValue) => {
+                                            setFormValue({
+                                                ...formValue,
+                                                brand: newValue
+                                            })
+                                        }}
+                                        onClick={moveToBrandPage}
+                                        id="select-brand-demo"
+                                        options={brandOption}
+                                        sx={{ width: '100%' }}
+                                        renderInput={(params) => <TextField required {...params} label="Select Brand" />}
+
+                                    />
+                                )}
+                            </FormControl>
+                            <MDTypography
+                                variant="a"
+                                size="medium"
+                                sx={{ position: 'absolute', left: '30px', color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
+                                onClick={moveToBrandPage}>
+                                Create brand
+                            </MDTypography>
+                        </Grid>
+                        <Grid item xxl={6} xl={6}>
+                            <FormControl sx={{ m: 1, width: '100%', }}>
+                                <MDInput type="text"
+                                    name="project_title"
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Project Title *" variant="outlined" fullWidth
+                                    sx={{
+                                        "& > *": {
+                                            padding: '6px 8px !important'
+                                        }
+                                    }}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xxl={12} xl={12} mt={2}>
+                            <MDBox mb={2} sx={{
+                                display: "flex", flexDirection: "column",
+                                "& > textarea:focus": {
+                                    outline: 0,
+                                }
+                            }}>
+                                <label htmlFor='company_address'>Project Description *</label>
+                                <textarea
+                                    style={textareaStyles}
+                                    type="text"
+                                    rows={9}
+                                    required
+                                    // value={formValue.project_description}
+                                    cols={100}
+                                    name="project_description"
+                                    onChange={handleChange}
+                                    placeholder="Project Description" variant="outlined" />
+                            </MDBox>
+                        </Grid>
+                        <Grid item xxl={6} xl={6}>
+                            <Typography variant="h4" size="medium">Custom width*</Typography>
+                            <FormControl sx={{ m: 1, width: '30%', }}>
+                                <MDInput
+                                    type="number"
+                                    name="width"
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Width *" variant="outlined" fullWidth
+                                    sx={{
+                                        "& > *": {
+                                            padding: '6px 8px !important'
+                                        }
+                                    }}
+                                />
+                            </FormControl>
+                            <FormControl sx={{ m: 1, width: '30%', }}>
+                                <MDInput
+                                    type="number"
+                                    name="height"
+                                    onChange={handleChange}
+                                    placeholder="Height *" variant="outlined" fullWidth
+                                    required
+                                    sx={{
+                                        "& > *": {
+                                            padding: '6px 8px !important'
+                                        }
+                                    }}
+                                />
+                            </FormControl>
+                            <FormControl sx={{ m: 1, width: '30%', }}>
+                                <Autocomplete
+                                    onChange={(event, newValue) => {
+                                        setFormValue({
+                                            ...formValue,
+                                            unit: newValue
+                                        })
+                                    }}
+                                    aria-required
+                                    id="select-units"
+                                    options={unitOptions}
+                                    sx={{ width: '100%' }}
+                                    renderInput={(params) => <TextField required {...params} label="Select Units" />}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xxl={6} xl={6}>
+                            <MDBox display="flex" gap="5px" sx={{ m: 1, marginTop: '28px', width: '100%' }}>
+                                <FormControl sx={{ m: 1, width: '100%', }}>
+                                    <Autocomplete
+                                        value={formValue.file_formats}
+                                        onChange={(event, newValue) => {
+                                            setFormValue({
+                                                ...formValue,
+                                                file_formats: newValue
+                                            })
+                                        }}
+                                        getOptionDisabled={getOptionDisabled}
+                                        id="select-file-formats"
+                                        aria-required
+                                        options={fileFormats}
+                                        sx={{ width: '100%' }}
+                                        renderInput={(params) => <TextField {...params} label="Select File Formats" />}
+                                        multiple
+                                    />
+                                </FormControl>
+                                <FormControl sx={{ m: 1, width: '100%', }}>
+                                    <Autocomplete
+                                        value={formValue.specific_software_names}
+                                        onChange={(event, newValue) => {
+                                            setFormValue({
+                                                ...formValue,
+                                                specific_software_names: newValue
+                                            })
+                                        }}
+                                        id="select-specific-software-demo"
+                                        options={SoftwareNames}
+                                        sx={{
+                                            width: '100%',
+                                            "& > .MuiChip-filled": {
+                                                backgroundColor: "#ddd !important"
+                                            }
+                                        }}
+                                        renderInput={(params) => <TextField required {...params} label="Select Specific Software" />}
+                                    />
+                                </FormControl>
+                            </MDBox>
+                        </Grid>
+                        <Grid item xxl={3} xl={3}>
+                            <MDBox>
+                                <UploadFile
+                                    id="customer-upload-image"
+                                    add_files={add_files}
+                                    upload_files={upload_files}
+                                    handleFileUpload={handleFileUpload}
+                                    removeFiles={removeFiles}
+                                    isCloseIcon={true}
+                                />
+                            </MDBox>
+                            <MDTypography component="span" sx={{ color: 'red', fontWeight: '300', fontSize: '14px' }} >Note : Only .png, .pdf, <br />.jpg, .jpeg, .ai, .zip, .psd, .eps <br />formats are allowed <br /> Max Select 7</MDTypography>
+
+                        </Grid>
+                        <Grid item xxl={9} xl={9} ml={-10} alignSelf={"flex-start"} sx={{
+                            height: '124px',
+                            overflowY: 'auto'
+                        }} >
+                            {add_files.length ? add_files.map((img, i) => (
+                                <div style={deleteImageContainer} key={i}>
+                                    <CloseIcon fontSize='medium' onClick={() => removeSingleFile(img)} sx={deleteImageSvgIcon} />
+                                    <img
+                                        src={img?.url}
+                                        alt={"image"}
+                                        width={100}
+                                        loading={"lazy"}
+                                        height={100}
+                                        style={uploadImageStyles}
+                                    />
+                                </div>
+
+                            )) : null}
+                            <>
+                                {
+                                    upload_files.length > 0 ? upload_files.map((file, index) => (
+                                        <>
+                                            {file.type.startsWith(aiLogo) || file.type.startsWith(psdfile) || file.type === "" || file.type.startsWith(zipfile) || file.type.startsWith(pdf) ? <OtherFilesShow key={index} file={file} deleteOtherSingleFile={deleteOtherSingleFile} /> : <></>}
+                                        </>
+                                    )) : null
+                                }
+                            </>
+                        </Grid>
+                    </Grid>
+                    <DialogActions>
+                        <MDBox marginRight="100px">
+                            {uploadProgress > 0 && (
+                                <>
+                                    <p>Upload Progress: {uploadProgress}%</p>
+                                    <progress value={uploadProgress} max="100"></progress>
+                                </>
+                            )}
+                        </MDBox>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <SubmitButton sx={{ color: 'white !important' }} disabled={loading} variant='contained' type='submit'
+                            endIcon={<MoonLoader loading={loading} size={18} color='#fff' />}
+                        >
+                            Submit &nbsp;&nbsp;
+                        </SubmitButton>
+                    </DialogActions>
+                </Box>
+            </DialogContent>
+
+        </BootstrapDialog >
+    )
+
+
+}
+
+export default CreateProject1
+
+const SubmitButton = styled(Button)(({ theme: { palette } }) => ({
+    color: 'white',
+    "&.MuiButtonBase-root:disabled": {
+        backgroundColor: '#007bff'
+    }
+}))
+
+export const otherFileStyle = {
+    width: '300px',
+    height: '120px',
+    // display : 'flex',
+    // backgroundColor: 'red', 
+    // position: 'absolute',
+    marginRight: '8px',
+    cursor: 'pointer'
+}
+
+const textareaStyles = {
+    padding: '10px',
+    borderRadius: '8px',
+    border: '1px solid #ccc',
+    fontFamily: 'sans-serif',
+    fontSize: '17px',
+    backgroundColor: 'transparent',
+    fontWeight: '400',
+
+}
+const Styles = {
+    fontWeight: "bold",
+    fontSize: "15px",
+    marginLeft: 4
+}
+const uploadImageStyles = {
+    // border: '1px dashed blue',
+    padding: 3,
+    marginRight: '8px',
+    cursor: 'pointer'
+}
+const closeIconStyles = {
+    verticalAlign: 'middle', marginLeft: '8px',
+    borderRadius: '10px', backgroundColor: 'Highlight',
+    width: '20px',
+    height: '20px',
+    fill: '#fff',
+    cursor: 'pointer',
+    right: '20px'
+}
+
+const deleteImageContainer = {
+    position: 'relative',
+    display: 'inline-block'
+    // width: '125px',
+}
+
+const deleteImageSvgIcon = {
+    borderRadius: '20px',
+    padding: '4px',
+    position: 'absolute',
+    right: '1px',
+    top: '-13px',
+    backgroundColor: '#ccccccba',
+    cursor: 'pointer',
+}

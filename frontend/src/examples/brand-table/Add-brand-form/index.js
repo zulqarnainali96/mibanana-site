@@ -1,0 +1,600 @@
+import DialogContent from '@mui/material/DialogContent'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import React, { useEffect, useRef, useState } from 'react'
+import MDButton from 'components/MDButton'
+import Grid from '@mui/material/Grid'
+import { CheckBox, Close, CloseOutlined, Remove } from '@mui/icons-material'
+import { styled } from '@mui/material/styles'
+import MDInput from 'components/MDInput'
+import PropTypes from 'prop-types'
+import MDTypography from 'components/MDTypography'
+import MDBox from 'components/MDBox'
+import { DialogActions, Divider, FormControlLabel } from '@mui/material'
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import MoonLoader from 'react-spinners/MoonLoader'
+
+const BrandModal = styled(Dialog)(({ theme }) => ({
+    // '& .MuiInputBase-root': {
+    //     paddingBlock: '15px'
+    // },
+    '& .MuiPaper-root': {
+        maxWidth: '45% !important'
+    },
+    '& .MuiDialogContent-root': {
+        padding: theme.spacing(2),
+        width: "100% !important"
+    },
+    '& .MuiDialogActions-root': {
+        padding: theme.spacing(1),
+        width: "100%"
+    },
+    '& .css-bec2k4-MuiButtonBase-root-MuiButton-root svg': {
+        fontSize: '1.4rem !important'
+    },
+}))
+
+const AlignGrid = styled(Grid)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    "& > .MuiSvgIcon-root": {
+        fill: '#adff2f',
+    },
+    cursor: 'pointer'
+}))
+
+// const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
+const BrandForm = ({
+    state,
+    open,
+    onChange,
+    onClose,
+    handleFileUpload,
+    image,
+    other,
+    addMoreField,
+    setAddMore,
+    addMore,
+    loading,
+    onSubmit,
+    setImage,
+    setFilesArray,
+    filesArray,
+    logoCheckbox,
+    handleCheckbox,
+
+}) => {
+    const logoref = useRef(null)
+    const checking = () => {
+        // console.log(logoref)
+    }
+    const removeImage = (name) => {
+        setImage({ ...image, [name]: [] })
+        setFilesArray(filesArray.filter(item => item.name !== name))
+    }
+    const removeAddField = (item) => {
+        const index = addMoreField.indexOf(item)
+        // console.log(index)
+        setAddMore(addMoreField.filter(more => addMoreField.indexOf(more) !== index))
+        setFilesArray(filesArray.filter(list => list.name !== item.name))
+    }
+    useEffect(() => {
+    }, [image])
+
+    return (
+        <BrandModal open={open} sx={{ width: '100% !important' }} >
+            <DialogTitle display={"flex"} position={"relative"} width={'100%'} justifyContent={"space-between"} alignItems={"center"}>
+                <MDTypography color="dark" fontWeight="bold">Add New Brand Details</MDTypography>
+                <MDButton
+                    onClick={onClose}
+                    sx={{ position: "absolute", right: 4, padding: '1.4rem !important' }}
+                >
+                    <CloseOutlined sx={
+                        {
+                            fill: '#444'
+                        }} />
+                </MDButton>
+                <Divider light={false} />
+            </DialogTitle>
+            <DialogContent>
+                <Grid container component={"form"} spacing={2} justifyContent={"center"}>
+                    <Grid item xxl={12} lg={12} xs={12} md={12}>
+                        <MDBox>
+                            <label style={Styles} htmlFor='Name'>Brand Name</label>
+                            <MDInput type="text" name="brand_name" placeholder="Brand Name" variant="outlined" fullWidth onChange={onChange} />
+                        </MDBox>
+                    </Grid>
+                    <Grid item xxl={12} lg={12} xs={12} md={12}>
+                        <MDBox
+                            sx={{
+                                display: "flex", flexDirection: "column",
+                                "& > textarea:focus": {
+                                    outline: 0,
+                                }
+                            }}>
+                            <label style={Styles} htmlFor='brand_description'>Brand Description</label>
+                            <textarea style={textareaStyles}
+                                type="text" rows={5} cols={100} name="brand_description" onChange={onChange} placeholder="Brand Description and links" variant="outlined" />
+                        </MDBox>
+                    </Grid>
+                    <Grid item xxl={6} lg={6} xs={12} md={12}>
+                        <MDBox>
+                            <label style={Styles} htmlFor='website'>Website</label>
+                            <MDInput type="text" name="web_url" placeholder="Website url" variant="outlined" fullWidth onChange={onChange} />
+                        </MDBox>
+                    </Grid>
+                    <Grid item xxl={6} lg={6} xs={12} md={12}>
+                        <MDBox>
+                            <label style={Styles} htmlFor='facebook'>Facebook</label>
+                            <MDInput type="text" name="facebook_url" placeholder="Facebook profile url" variant="outlined" fullWidth onChange={onChange} />
+                        </MDBox>
+                    </Grid>
+                    <Grid item xxl={6} lg={6} xs={12} md={12}>
+                        <MDBox>
+                            <label style={Styles} htmlFor='instagram'>Instagram</label>
+                            <MDInput type="text" name="instagram_url" placeholder="Instagram url" variant="outlined" fullWidth onChange={onChange} />
+                        </MDBox>
+                    </Grid>
+                    <Grid item xxl={6} lg={6} xs={12} md={12}>
+                        <MDBox>
+                            <label style={Styles} htmlFor='twitter'>Twitter</label>
+                            <MDInput type="text" name="twitter_url" placeholder="Twitter profile url" variant="outlined" fullWidth onChange={onChange} />
+                        </MDBox>
+                    </Grid>
+                    <Grid item xxl={6} lg={6} xs={12} md={12}>
+                        <MDBox>
+                            <label style={Styles} htmlFor='linkedin'>Linkedin</label>
+                            <MDInput type="text" name="linkedin_url" placeholder="Linkedin url" variant="outlined" fullWidth onChange={onChange} />
+                        </MDBox>
+                        <MDTypography variant="span" fontSize="small">This will help us to know your brand more</MDTypography>
+                    </Grid>
+                    <Grid item xxl={6} lg={6} xs={12} md={12}>
+                        <MDBox>
+                            <label style={Styles} htmlFor='tiktok'>TikTok</label>
+                            <MDInput type="text" name="tiktok_url" placeholder="Tiktok profile url" variant="outlined" fullWidth onChange={onChange} />
+                        </MDBox>
+                    </Grid>
+                    <Grid item xxl={12} xl={12} lg={12} xs={12} md={12}>
+                        <MDTypography variant="h2" px={2} py={0} fontSize="large" fontWeight="bold">Upload Brand Materials</MDTypography>
+                        <MDTypography variant="h6" px={2} py={0} fontSize="small" sx={{ color: "red" }} fontWeight="bold">Max 7 files allowed</MDTypography>
+                        <MDTypography variant="p" px={2} py={0} fontSize="small" sx={{ color: "red" }}>allowed formats ai .eps .psd .jpg .png .pdf .svg</MDTypography>
+                        <Grid container margin={1} justifyContent={"space-between"}
+                            sx={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '8px', overflowY: 'scroll', height: '260px' }}
+                        >
+                            <Grid item xxl={3} xl={3}>
+                                <AlignGrid item xxl={4} xl={4} mb={1.5}>
+                                    <FormControlLabel control={<CheckBox />} />
+                                    <label style={Styles} htmlFor='logo' aria-label='logo'>Logo</label>
+                                </AlignGrid>
+                                <AlignGrid item xxl={4} xl={4} mb={1.5}>
+                                    <CheckBox sx={{ width: 30, height: 30 }} />
+                                    <label style={Styles} htmlFor='logo' aria-label='moodboard'>Moodboard</label>
+                                </AlignGrid>
+                                <AlignGrid item xxl={4} xl={4} mb={1.5}>
+                                    <CheckBox sx={{ width: 30, height: 30 }} />
+                                    <label style={Styles} htmlFor='logo' aria-label='guidelines'>Brand Guidelines</label>
+                                </AlignGrid>
+                                <AlignGrid item xxl={4} xl={4} mb={1.5}>
+                                    <CheckBox sx={{ width: 30, height: 30 }} />
+                                    <label style={Styles} htmlFor='logo' aria-label='others'>Others</label>
+                                </AlignGrid>
+                            </Grid>
+                            <Grid item xxl={9} xl={9} lg={9} mb={1.5}>
+                                <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
+                                    {image.upload_logo?.length ? <Close fontSize='medium'
+                                        sx={{
+                                            position: 'absolute', cursor: 'pointer',
+                                            left: '-29px',
+                                            fill: '#000 !important',
+                                            background: '#adff2f',
+                                            borderRadius: '20px',
+                                            padding: '2px',
+                                        }}
+                                        onClick={() => removeImage('upload_logo')} /> : null}
+                                    <MDBox display="flex" flexDirection="column">
+                                        <MDInput
+                                            type="text"
+                                            sx={inputStyles}
+                                            value={image.upload_logo?.length ? image.upload_logo[0]?.name : ''}
+                                            disabled
+                                        />
+                                        {/* <span style={{ fontSize: '12px' }}>allowed file png, jpg, jpeg, svg</span> */}
+                                    </MDBox>
+                                    &nbsp; &nbsp;
+                                    <label htmlFor='upload-logo' style={{ position: 'relative' }}>
+                                        <MDButton
+                                            py={1}
+                                            height="10px"
+                                            color="warning"
+                                            type="button"
+                                            sx={buttonStyles}
+                                            onClick={checking}
+                                        >
+                                            Upload Logo
+                                        </MDButton>
+                                        <MDInput
+                                            type="file"
+                                            ref={logoref}
+                                            hidden
+                                            name="upload_logo"
+                                            sx={uploadImage}
+                                            accept=".ai, .eps, .psd, .jpg, .png, .pdf, .svg"
+                                            id="upload-logo"
+                                            onChange={handleFileUpload}
+                                        />
+                                    </label>
+
+                                </AlignGrid>
+                                <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
+                                    {image.upload_moodboard[0]?.name ? <Close fontSize='medium'
+                                        sx={{
+                                            position: 'absolute', cursor: 'pointer',
+                                            left: '-29px',
+                                            fill: '#000 !important',
+                                            background: '#adff2f',
+                                            borderRadius: '20px',
+                                            padding: '2px',
+                                        }}
+                                        onClick={() => removeImage('upload_moodboard')} /> : null}
+                                    <MDBox display="flex" flexDirection="column">
+                                        <MDInput
+                                            sx={inputStyles}
+                                            value={image.upload_moodboard.length ? image.upload_moodboard[0]?.name : ''}
+                                            disabled
+
+                                        />
+                                        {/* <span style={{ fontSize: '12px' }}>allowed file png, jpg, jpeg</span> */}
+                                    </MDBox>
+                                    &nbsp; &nbsp;
+                                    <label htmlFor='upload-moodboard' style={{ position: 'relative' }}>
+                                        <MDButton
+                                            py={1}
+                                            height="10px"
+                                            color="warning"
+                                            type="button"
+                                            sx={buttonStyles}
+                                        >
+                                            Upload Moodboard
+                                        </MDButton>
+                                        <MDInput
+                                            type="file"
+                                            ref={logoref}
+                                            hidden
+                                            sx={uploadImage}
+                                            accept=".ai, .eps, .psd, .jpg, .png, .pdf, .svg"
+                                            // accept="image/.png,.jpg,.jpeg"
+                                            name="upload_moodboard"
+                                            id="upload-moodboard"
+                                            onChange={handleFileUpload}
+                                        />
+                                    </label>
+                                </AlignGrid>
+                                <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
+                                    {image.replace_brand_guidelines[0]?.name ? <Close fontSize='medium'
+                                        sx={{
+                                            position: 'absolute', cursor: 'pointer',
+                                            left: '-29px',
+                                            fill: '#000 !important',
+                                            background: '#adff2f',
+                                            borderRadius: '20px',
+                                            padding: '2px',
+                                        }}
+                                        onClick={() => removeImage('replace_brand_guidelines')} /> : null}
+                                    <MDBox display="flex" flexDirection="column">
+                                        <MDInput sx={inputStyles}
+                                            value={image.replace_brand_guidelines.length ? image.replace_brand_guidelines[0]?.name : ''}
+                                            disabled
+
+                                        />
+                                        {/* <span style={{ fontSize: '12px' }}>allowed file docx, pdf</span> */}
+                                    </MDBox>
+                                    &nbsp; &nbsp;
+                                    <label htmlFor='replace-brand-guide-lines' style={{ position: 'relative' }}>
+                                        <MDButton
+                                            py={1}
+                                            height="10px"
+                                            color="warning"
+                                            type="button"
+                                            sx={buttonStyles}
+                                            onClick={checking}
+                                        >
+                                            Replace Brand Guidelines
+                                        </MDButton>
+                                        <MDInput
+                                            type="file"
+                                            hidden
+                                            sx={uploadImage}
+                                            accept=".ai, .eps, .psd, .jpg, .png, .pdf, .svg"
+                                            name="replace_brand_guidelines"
+                                            id="upload-guide-lines"
+                                            onChange={handleFileUpload}
+                                        />
+                                    </label>
+                                </AlignGrid>
+                                <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
+                                    {image.upload_more[0]?.name ? <Close fontSize='medium'
+                                        sx={{
+                                            position: 'absolute', cursor: 'pointer',
+                                            left: '-29px',
+                                            fill: '#000 !important',
+                                            background: '#adff2f',
+                                            borderRadius: '20px',
+                                            padding: '2px',
+                                        }}
+                                        onClick={() => removeImage('upload_more')} /> : null}
+
+                                    <MDBox display="flex" flexDirection="column">
+                                        <MDInput sx={inputStyles}
+                                            value={image.upload_more.length ? image.upload_more[0]?.name : ''}
+                                            disabled
+                                        />
+                                        {/* <span style={{ fontSize: '12px' }}>allowed any image formats</span> */}
+                                    </MDBox>
+                                    &nbsp; &nbsp;
+                                    <label htmlFor='upload-more' style={{ position: 'relative' }}>
+                                        <MDButton
+                                            py={1}
+                                            height="10px"
+                                            color="warning"
+                                            type="button"
+                                            sx={buttonStyles}
+                                            onClick={checking}
+                                        >
+                                            Upload More..
+                                        </MDButton>
+                                        <MDInput
+                                            type="file"
+                                            hidden
+                                            multiple
+                                            sx={uploadImage}
+                                            accept=".ai, .eps, .psd, .jpg, .jpeg, .png, .pdf, .svg"
+                                            name="upload_more"
+                                            id="upload-more"
+                                            onChange={handleFileUpload}
+                                        />
+                                    </label>
+                                </AlignGrid>
+                            </Grid>
+
+                            {addMoreField.length ? addMoreField.map((item, i) => {
+                                let value = image[item.name]?.length ? image[item.name][0].name : ''
+                                return (
+                                    <React.Fragment key={i}>
+                                        <Grid item xxl={3} xl={3}>
+                                            <AlignGrid item xxl={4} xl={4} mb={1.5}>
+                                                <CheckBox sx={{ width: 30, height: 30 }} defaultChecked />
+                                                <label style={Styles} htmlFor={`logo${item.name}`} aria-label='logo'>{item.name}</label>
+                                            </AlignGrid>
+                                        </Grid>
+                                        <Grid item xxl={9} xl={9} lg={9} mb={1.5}>
+                                            <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
+
+                                                <Remove
+                                                    fontSize='medium'
+                                                    sx={{
+                                                        position: 'absolute', cursor: 'pointer',
+                                                        left: '-29px',
+                                                        fill: '#000 !important',
+                                                        background: '#adff2f',
+                                                        borderRadius: '20px',
+                                                        padding: '2px',
+                                                        // top : '0px'
+                                                    }}
+                                                    onClick={() => removeAddField(item)} />
+                                                {/* <MDBox display="flex" flexDirection="column"> */}
+                                                <MDInput
+                                                    sx={inputStyles}
+                                                    type="text"
+                                                    value={value}
+                                                    disabled
+                                                />
+                                                &nbsp; &nbsp;
+                                                <label htmlFor='upload-others' style={{ position: 'relative' }}>
+                                                    <MDButton
+                                                        py={1}
+                                                        height="10px"
+                                                        color="warning"
+                                                        type="button"
+                                                        sx={buttonStyles}
+                                                    >
+                                                        {item?.name}
+                                                    </MDButton>
+                                                    <MDInput
+                                                        type="file"
+                                                        ref={logoref}
+                                                        hidden
+                                                        name={item?.name}
+                                                        onChange={handleFileUpload}
+                                                        sx={uploadImage}
+                                                        accept=".ai, .eps, .psd, .jpg, .png, .pdf, .svg"
+                                                        id="upload-logo"
+                                                    />
+                                                </label>
+                                            </AlignGrid>
+                                        </Grid>
+                                    </React.Fragment>
+                                )
+                            }) : null}
+
+                            <Grid item xxl={12} xl={12}>
+                                <MDButton
+                                    py={1}
+                                    height="20px"
+                                    color="dark"
+                                    onClick={addMore}
+                                    type="button"
+                                    sx={{ ...buttonStyles, color: "#fff", width: 'auto' }}
+                                >
+                                    Add More
+                                </MDButton>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <DialogActions>
+                    <MDButton
+                        type="button"
+                        disabled={loading}
+                        endIcon={<div
+                            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <ArrowForward fontSize='medium' />&nbsp; &nbsp;
+                            <MoonLoader loading={loading} size={20} color='#121212' />
+                        </div>}
+                        onClick={onSubmit}
+                        size="large"
+                        color="warning"
+                        sx={{
+                            ...buttonStyles,
+                            ...submitButton
+                        }}>
+                        Submit
+                    </MDButton>
+                </DialogActions>
+            </DialogContent>
+        </BrandModal >
+    )
+}
+
+BrandForm.prototype = {
+    state: PropTypes.object.isRequired,
+    open: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+
+}
+
+const uploadImage = {
+    position: 'absolute',
+    left: 0,
+    bottom: '-7px',
+    // height: '44px',
+    top: 0,
+    height: '27px',
+    opacity: 0,
+    cursor: 'pointer',
+}
+
+const submitButton = {
+    width: '150px',
+    paddingBlock: '20px',
+    borderRadius: '30px',
+    fontSize: '16px',
+    textTransform: 'capitalize',
+    boxShadow: "none !important",
+    "&:hover": {
+        boxShadow: "3px 4px 2px 10px #ccc",
+    }
+}
+
+const inputStyles = {
+    // paddingBlock: '.8rem',
+    borderRadius: '0px !important',
+    "& > .MuiInputBase-root": {
+        width: '300px',
+        height: '24px',
+    }
+}
+const buttonStyles = {
+    width: '244px',
+    fontSize: '12px',
+    height: '0px',
+    color: 'gray',
+    minHeight: '25px',
+    // "& label > .MuiButtonBase-root": {
+    //     borderTopleftRadius: '0px !important',
+    //     borderBottomleftRadius: '0px !important',
+    // }
+}
+const Styles = {
+    fontWeight: "bold",
+    fontSize: "15px",
+    marginLeft: 4,
+    verticalAlign: 'middle'
+}
+const textareaStyles = {
+    padding: '10px',
+    borderRadius: '8px',
+    border: '1px solid #ccc',
+    fontFamily: 'sans-serif',
+    fontSize: '17px',
+    backgroundColor: 'transparent',
+    fontWeight: '400',
+
+}
+export default BrandForm
+
+
+{/* <Grid item xxl={3} xl={4} lg={5} md={6} xs={10} sx={{ background: 'white', boxShadow: "4px 3px 7px -2px #cccccc0d" }}>
+<MDBox pt={4} pb={3} px={3} >
+    <MDBox component="form" role="form" >
+        <Grid container spacing={2}>
+            <Grid item lg={6} xs={12} md={12}>
+                <MDBox mb={2}>
+                    <label style={Styles} htmlFor='Name'>Name</label>
+                    <MDInput type="text" placeholder="Full Name" variant="outlined" fullWidth />
+                </MDBox>
+            </Grid>
+            <Grid item lg={6} xs={12} md={12}>
+                <MDBox mb={2}>
+                    <label style={Styles} htmlFor='Email'>Email</label>
+                    <MDInput type="email" placeholder="Email address" variant="outlined" fullWidth />
+                </MDBox>
+            </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+            <Grid item xxl={12} lg={12} xs={12} md={12}>
+                <MDBox mb={2} sx={{ position: "relative" }}>
+                    <label style={Styles} htmlFor='Password'>Password</label>
+                    <MDInput type="text" placeholder="Password" variant="outlined" fullWidth />
+                    <IconButton
+                        // onClick={handleClickShowPassword}
+                        sx={{
+                            position: "absolute",
+                            right: 0,
+                        }}
+                    >
+                        {/* {showPassword ? <Visibility /> : <VisibilityOff />} */}
+//             </IconButton>
+//         </MDBox>
+//     </Grid>
+// </Grid>
+// <Grid container>
+//     <Grid item xl={12} xs={12} lg={12} md={12}>
+//         <MDBox mb={2} sx={{ position: "relative" }}>
+//             <label style={Styles} htmlFor='ConfirmPassword'>Confirm Password</label>
+//             <MDInput type={"text"} placeholder="Confirm Password" variant="outlined" fullWidth />
+//             <IconButton
+//                 // onClick={handleClickConfirmPassword}
+//                 sx={{
+//                     position: "absolute",
+//                     right: 0,
+//                 }}
+// >
+{/* {showConfirmPassword ? <Visibility /> : <VisibilityOff />} */ }
+// </IconButton>
+// </MDBox>
+// </Grid>
+// </Grid>
+{/* <MDBox display="flex" alignItems="center" ml={-1}>
+            <Checkbox />
+        </MDBox>
+        <MDBox mt={4} mb={1} pt={3}>
+            <MDButton type="submit" color="warning" fullWidth
+                circular={true}
+                sx={{
+                    color: '#000 !important',
+                    fontSize: 14,
+                    textTransform: "capitalize"
+                }}
+            >
+                Submit &nbsp; <ArrowForward fontSize='large' />
+
+            </MDButton>
+        </MDBox> */}
+
+//     </MDBox>
+// </MDBox>
+// </Grid>

@@ -1,0 +1,37 @@
+.mi-table {
+  width: 100%;
+}
+.mi-table li {
+    font-size: 1rem;
+}
+.mi-table .border {
+  width: 100%;
+  height: auto;
+  padding-block: 4px;
+  background-color: #ffe135;
+  box-shadow: 0px 9px 13px -10px black;
+}
+.mi-table .border ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  
+  align-items: center;
+}
+.mi-table .border ul li {
+  display: inline-block;
+  font-weight: 600;
+  padding-inline-start: 8px;
+
+}
+.mi-table .category-list {
+  list-style: none;
+  padding-top: 12px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.mi-table .category-list li{
+    padding-inline-start: 8px;
+}
+  
