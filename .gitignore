@@ -4,14 +4,14 @@
 # misc
 
 # Frontend
-frontend/.env
+# frontend/.env
 frontend/node_modules
 
 
 
 backend/node_modules
 # testing
-backend/.env
+# backend/.env
 backend/logs
 
 backend/npm-debug.log*
