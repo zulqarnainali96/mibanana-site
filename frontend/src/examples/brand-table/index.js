@@ -232,7 +232,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
     }, [reduxState.customerBrand])
     return (
         <DashboardLayout>
-            <DashboardNavbar />
+            {/* <DashboardNavbar /> */}
             <BrandForm
                 state={formValue}
                 logoCheckbox={logoCheckbox}

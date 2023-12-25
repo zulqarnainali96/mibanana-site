@@ -1,0 +1,4 @@
+export const notificationsIcon = (
+    <svg xmlns="http://www.w3.org/2000/svg" width="37" height="37" fill="none"><path stroke="#F6F6E8" stroke-linecap="round" stroke-miterlimit="10" stroke-width="1.5" d="M20.035 4.85c-5.517 0-10 4.483-10 10v4.817c0 1.016-.433 2.566-.95 3.433l-1.917 3.183c-1.183 1.967-.366 4.15 1.8 4.884a34.868 34.868 0 0 0 22.117 0c2.017-.667 2.9-3.05 1.8-4.884L30.968 23.1c-.5-.867-.933-2.417-.933-3.433V14.85c0-5.5-4.5-10-10-10Z" /><path stroke="#F6F6E8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M23.114 5.333a10.09 10.09 0 0 0-1.6-.333c-1.6-.2-3.133-.083-4.567.333a3.309 3.309 0 0 1 3.084-2.1c1.4 0 2.6.867 3.083 2.1Z" /><path stroke="#F6F6E8" stroke-miterlimit="10" stroke-width="1.5" d="M25.037 31.767c0 2.75-2.25 5-5 5a5.017 5.017 0 0 1-3.533-1.467 5.018 5.018 0 0 1-1.467-3.533" />
+    </svg>
+)

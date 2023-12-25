@@ -116,7 +116,7 @@ const ChangePassword = () => {
     }
     return (
         <DashboardLayout>
-            <DashboardNavbar />
+            {/* <DashboardNavbar /> */}
             <MDBox pt={6} pb={3}>
                 <Grid container >
                     <Grid item xxl={10} xl={10} lg={10} md={12} xs={12} sx={{ background: 'white', boxShadow: "4px 3px 7px -2px #cccccc0d", marginLeft: '8px' }}>

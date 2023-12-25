@@ -9,13 +9,21 @@ import MDTypography from "components/MDTypography";
 import { Action } from 'layouts/ProjectsTable/data/authorsTableData'
 import MDBadge from "components/MDBadge";
 import ProjectDataTable from "examples/projectsTable";
-import { Card } from "@mui/material";
+import { Card, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
 import MDSnackbar from "components/MDSnackbar";
 import RightSideDrawer from "components/RightSideDrawer";
 import useRightSideList from 'layouts/Right-side-drawer-list/useRightSideList'
 import apiClient from "api/apiClient";
 import { socketIO } from "layouts/sockets";
+import NewNavbar from 'examples/Navbars/NewDesign/NewNavbar'
+import { useStyles } from "./dashboardStyle";
+import { checkIcon } from "assets/new-images/dashboard/fi_check-circle (1)";
+import { bananaIcon } from "assets/new-images/dashboard/Vector";
+import { clockIcon } from "assets/new-images/dashboard/Group42";
+import StatusBox from "./status-box";
+import NewProjectsTable from "examples/new-table";
+import { mibananaColor } from "assets/new-images/colors";
 
 function Dashboard({ reduxActions, reduxState }) {
   const project_list = reduxState.project_list?.CustomerProjects
@@ -24,6 +32,9 @@ function Dashboard({ reduxActions, reduxState }) {
   const [successSB, setSuccessSB] = useState(false);
   const isDesigner = reduxState.userDetails.roles?.includes("Graphic-Designer") ? true : false
   const { list } = useRightSideList()
+  const styles = useStyles()
+  const is400 = useMediaQuery("(max-width:500px)")
+
 
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
@@ -35,6 +46,18 @@ function Dashboard({ reduxActions, reduxState }) {
   const projectQueue = project_list?.filter(item => {
     return item.status === 'Approval'
   })
+  const sumbitAndOngoing = () => {
+    const Ongoing = project_list?.filter(item => item.status === 'Ongoing')
+    const isSubmitted = project_list?.filter(item => item.status === 'Submitted')
+    console.log('isSubmitted ', isSubmitted)
+    console.log('Ongoing ', Ongoing)
+    if (Ongoing?.length > 0 && isSubmitted?.length === 0) return Ongoing?.length
+    else if (isSubmitted?.length > 0 && Ongoing?.length === 0) return isSubmitted?.length
+    else if (isSubmitted?.length > 0 && Ongoing?.length > 0) return isSubmitted?.length + Ongoing?.length
+    else { return 0 }
+  }
+  console.log(sumbitAndOngoing())
+  const projectCompleted = project_list?.filter(item => item.status === 'Completed')
 
   const activeProject = project_list?.filter(item => {
     return item.status === 'Ongoing'
@@ -110,61 +133,61 @@ function Dashboard({ reduxActions, reduxState }) {
     }
   }
 
-function projectStatus(status) {
+  function projectStatus(status) {
     switch (status) {
-        case 'Approval':
-            return "Approval"
-        case 'Completed':
-            return "Completed"
-        case 'Ongoing':
-            return "Ongoing"
-        case 'HeadsUp':
-            return "HeadsUp"
-        case 'Attend':
-            return "Attend"
-        case 'Submitted':
-            return "Submitted"
-        default:
-            return "End"
+      case 'Approval':
+        return "Approval"
+      case 'Completed':
+        return "Completed"
+      case 'Ongoing':
+        return "Ongoing"
+      case 'HeadsUp':
+        return "HeadsUp"
+      case 'Attend':
+        return "Attend"
+      case 'Submitted':
+        return "Submitted"
+      default:
+        return "End"
     }
-}
-function getStatusStyle(status) {
+  }
+  function getStatusStyle(status) {
     switch (status) {
-        case 'Approval':
-            return "#c5495d"
-        case 'Completed':
-            return "#E7F7EF"
-        // return "#0FAF62"
-        case 'Ongoing':
-            return "#FFE135"
-        case 'HeadsUp':
-            return "#FFE135"
-        case 'Attend':
-            return "#0b7b0da1"
-        case 'Submitted':
-            return "#242924a1"
-        default:
-            return "#c5495d"
+      case 'Approval':
+        return "#c5495d"
+      case 'Completed':
+        return "#E7F7EF"
+      // return "#0FAF62"
+      case 'Ongoing':
+        return "#FFE135"
+      case 'HeadsUp':
+        return "#FFE135"
+      case 'Attend':
+        return "#0b7b0da1"
+      case 'Submitted':
+        return "#242924a1"
+      default:
+        return "#c5495d"
     }
-}
-function getStatusColor(status) {
+  }
+  function getStatusColor(status) {
     switch (status) {
-        case 'Approval':
-            return "white"
-        case 'Completed':
-            return "#0FAF62"
-        case 'Ongoing':
-            return "#191B1C"
-        case 'HeadsUp':
-            return "#FFE135"
-        case 'Attend':
-            return "white"
-        case 'Submitted':
-            return "white"
-        default:
-            return "#c5495d"
+      case 'Approval':
+        return "white"
+      case 'Completed':
+        return "#0FAF62"
+      case 'Ongoing':
+        return "#191B1C"
+      case 'HeadsUp':
+        return "#FFE135"
+      case 'Attend':
+        return "white"
+      case 'Submitted':
+        return "white"
+      default:
+        return "#c5495d"
     }
-}
+  }
   const renderErrorSB = (
     <MDSnackbar
       color="error"
@@ -230,7 +253,7 @@ function getStatusColor(status) {
     return {
       name: (
         <MDBox lineHeight={1}>
-          <MDTypography display={"block"} sx={{ textDecoration: 'underline !important',fontWeight:"300" }} variant="button" fontWeight="medium">
+          <MDTypography display={"block"} sx={{ textDecoration: 'underline !important', fontWeight: "300" }} variant="button" fontWeight="medium">
             <MDBox sx={{ "&:hover": { color: "blue" } }} onClick={() => projectActiveorNot(projectid)}>
               {item?.name}
             </MDBox>
@@ -238,28 +261,27 @@ function getStatusColor(status) {
         </MDBox>),
 
       team_members: <MDTypography display="flex" flexDirection="column" gap="10px">
-        {item.team_members?.length > 0 ? item.team_members.map(item => <MDTypography color="#333" variant="h6" sx={{fontWeight:'300'}}>{item.name}</MDTypography>) :
-          <MDTypography color="#333" fontSize="small" variant="h6" sx={{fontWeight:'300'}}>Currently not Assigned to <br /> any Team members</MDTypography>}
+        {item.team_members?.length > 0 ? item.team_members.map(item => <MDTypography color="#333" variant="h6" sx={{ fontWeight: '300' }}>{item.name}</MDTypography>) :
+          <MDTypography color="#333" fontSize="small" variant="h6" sx={{ fontWeight: '300' }}>Currently not Assigned to <br /> any Team members</MDTypography>}
       </MDTypography>,
       status: <MDBox ml={-1}>
         <MDBadge badgeContent={projectStatus(item?.status)}
           sx={{
             "& .MuiBadge-badge":
-              { background: getStatusStyle(item?.status), color: getStatusColor(item?.status), textTransform: 'capitalize', fontSize: ".8rem" }
+              { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: ".9rem",borderRadius:'0px' }
           }} circular="true" size="lg" />
       </MDBox>,
-      project_category: <MDTypography variant="h6" color="text" fontWeight="medium" sx={{fontWeight:'300'}}>
+      project_category: <MDTypography variant="h6" color="text" fontWeight="medium" sx={{ fontWeight: '300' }}>
         {item.project_category}
       </MDTypography>,
-      active: <MDTypography color="dark" variant="p" sx={{fontWeight:'300'}}>{!item.is_active ? "Not Active" : item.updatedAt}</MDTypography>,
-      createdAt: <MDTypography color="dark" variant="p" sx={{fontWeight:'300'}}>{readableTimestamp}</MDTypography>,
+      active: <MDTypography color="dark" variant="p" sx={{ fontWeight: '300' }}>{!item.is_active ? "Not Active" : item.updatedAt}</MDTypography>,
+      createdAt: <MDTypography color="dark" variant="p" sx={{ fontWeight: '300' }}>{readableTimestamp}</MDTypography>,
       action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
         <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} />
       </MDTypography>
 
     }
   }) : []
-
   const columns = [
     { Header: "author", accessor: "name", align: "left", },
     { Header: "Team Member", accessor: "team_members", align: "left" },
@@ -270,76 +292,56 @@ function getStatusColor(status) {
     { Header: "Action", accessor: "action", align: "center" },
   ]
 
+
   return (
     <DashboardLayout>
-      <DashboardNavbar />
       <MDBox p={"24px 12px"} mt={'15px'}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={4}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Good Evening"
-                message={reduxState.userDetails?.name ? `Hi, ${reduxState.userDetails?.name.toUpperCase()} ${getUserRole()}` : ""}
-              // count={281}
-              // percentage={{
-              //   color: "success",
-              //   amount: "+55%",
-              //   label: "than lask week",
-              // }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Ready for review"
-                message={activeProject?.length ? activeProject?.length + " Active Project" : "0 Active Project "}
-              // count="2,300"
-              // percentage={{
-              //   color: "success",
-              //   amount: "+3%",
-              //   label: "than last month",
-              // }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="success"
-                icon="store"
-                title="In Queue"
-                message={`${projectQueue?.length ? projectQueue?.length + " Project in Queue" : "0 Projects in Queue"}`}
-              // percentage={{
-              //   color: "success",
-              //   amount: "+1%",
-              //   label: "than yesterday",
-              // }}
-              />
-            </MDBox>
-          </Grid>
+        <Grid container justifyContent={"center"} sx={{ gap: '10px' }}>
+          <StatusBox is400={is400}>
+            <Grid container alignItems={"center"} sx={{ gap: is400 ? "12px" : "0px" }}>
+              <Grid item xxl={8} xl={8} lg={8} >
+                <MDTypography className={styles.headingStyle} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{projectCompleted?.length > 0 ? projectCompleted?.length : 0}</MDTypography>
+              </Grid>
+              <Grid xxl={4} xl={4} lg={4}>
+                {checkIcon}
+                <MDTypography className={styles.headingStyle2}>Completed Projects</MDTypography>
+              </Grid>
+            </Grid>
+          </StatusBox>
+          <StatusBox is400={is400}>
+            <Grid container alignItems={"center"} sx={{ gap: is400 ? "12px" : "0px" }}>
+              <Grid item xxl={8} xl={8} lg={8} >
+                <MDTypography className={styles.headingStyle} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{sumbitAndOngoing()}</MDTypography>
+              </Grid>
+              <Grid xxl={3} xl={3} lg={3}>
+                {bananaIcon}
+                <MDTypography className={styles.headingStyle2}>Active Projects</MDTypography>
+              </Grid>
+            </Grid>
+          </StatusBox>
+          <StatusBox is400={is400}>
+            <Grid container alignItems={"center"} sx={{ gap: is400 ? "12px" : "0px" }}>
+              <Grid item xxl={8} xl={8} lg={8} >
+                <MDTypography className={styles.headingStyle} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{projectQueue?.length > 0 ? projectQueue?.length : 0}</MDTypography>
+              </Grid>
+              <Grid xxl={3} xl={3} lg={3}>
+                {clockIcon}
+                <MDTypography className={styles.headingStyle2}>Queue Projects</MDTypography>
+              </Grid>
+            </Grid>
+          </StatusBox>
           <Grid item xxl={12} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-            <Card>
-              <MDBox
-                // mx={2}
-                mt={3}
-                sx={({ palette: { light, grey } }) => ({
-                  // backgroundColor : light.cream,
-                })}>
-                <MDBox pt={3}>
-                  <ProjectDataTable
-                    table={{ columns, rows }}
-                    isSorted={false}
-                    entriesPerPage={false}
-                    showTotalEntries={false}
-                    isfunc={true}
-                    noEndBorder
-                  />
-                  {!rows.length ? <MDTypography textAlign="center" p={1} component="h4">No Projects Found</MDTypography> : null}
-                </MDBox>
+            <Card sx={{borderRadius:'0px',padding:'8px',backgroundColor:mibananaColor.headerColor}}>
+              <MDBox>
+                <NewProjectsTable
+                  table={{ columns, rows }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  isfunc={true}
+                  noEndBorder
+                />
+                {!rows.length ? <MDTypography textAlign="center" p={1} component="h4">No Projects Found</MDTypography> : null}
               </MDBox>
             </Card>
             {renderSuccessSB}

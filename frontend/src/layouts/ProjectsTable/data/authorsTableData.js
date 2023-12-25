@@ -1,24 +1,6 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-// Images
 import { useState } from "react";
 import { Menu } from "@mui/material";
 import apiClient from "api/apiClient";
@@ -28,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { getCustomerProject } from "redux/actions/actions";
 import { getProjectData } from "redux/global/global-functions";
 import MenuItemDropdown from "./MenuItem";
+import { actionIcon } from "assets/new-images/projects-table/Group43";
 
 export const Author = ({ name, }) => (
   <MDBox lineHeight={1}>
@@ -297,13 +280,10 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
 
   return (
     <MDBox>
-      <MDBox bgColor={anchorEl ? "dark" : "warning"}
-        sx={{
-          width: "57px",
-          borderRadius: "50px"
-        }}
-      >
-        <MoreVertIcon onClick={handleMenuOpen} sx={{ height: "2em", fontSize: '27px !important', fill: anchorEl ? "white" : "black" }} />
+      <MDBox onClick={handleMenuOpen}>
+        {/* <MoreVertIcon onClick={handleMenuOpen} sx={{ height: "2em", fontSize: '27px !important', fill: anchorEl ? "white" : "black" }} /> */}
+        <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="none"><path stroke="#C6C3B6" stroke-linecap="round" stroke-linejoin="round" d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
+        </svg>
       </MDBox>
       {children ? children :
         <Menu
@@ -316,7 +296,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
             horizontal: "center"
           }}
         >
-          {role?.customer ? <MenuItemDropdown loading={loading1} onClick={deleteProject} title={"Cancel"} /> : null }
+          {role?.customer ? <MenuItemDropdown loading={loading1} onClick={deleteProject} title={"Cancel"} /> : null}
           {role?.customer ? <MenuItemDropdown loading={loading2} onClick={duplicateProject} title={"Duplicate"} /> : (
             <MenuItemDropdown loading={loading5} onClick={projectAttend} title={"Attend"} />
           )}

@@ -46,14 +46,13 @@ import ChangePassword from "layouts/settings/change-password";
 import Chating from "layouts/chats";
 import Navbar from "examples/Navbars/MyNavbar/Navbar";
 
-const user = JSON.parse(localStorage.getItem('user_details'))
 const routes = [
   {
     type: "collapse",
-    name: "Dashboard",
-    key: "dashboard",
+    name: "Boards",
+    key: "board",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
+    route: "/board",
     component: <Dashboard />,
   },
   {
