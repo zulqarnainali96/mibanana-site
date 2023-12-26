@@ -15,11 +15,10 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import routes from "routes";
 import authRoutes from "authRoutes";
-import AdminRoutes from 'adminRoutes'
+import AdminRoutes from "adminRoutes";
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
-import MibananLogo from 'assets/mi-banana-icons/mibanana-logo-1-color 1.png'
+import MibananLogo from "assets/mi-banana-icons/mibanana-logo-1-color 1.png";
 import NewNavbar from "examples/Navbars/NewDesign/NewNavbar";
-
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -58,8 +57,8 @@ export default function App() {
   // Checking User Auth State
 
   // const user = useSelector(state => state.userDetails)
-  const user = JSON.parse(localStorage.getItem('user_details'))
-  const isAdmin = user?.roles.includes("Admin")
+  const user = JSON.parse(localStorage.getItem("user_details"));
+  const isAdmin = user?.roles.includes("Admin");
   // Close sidenav when mouse leave mini sidenav
   const handleOnMouseLeave = () => {
     if (onMouseEnter) {
@@ -82,14 +81,14 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  const currentPath = pathname.slice(1, pathname.length - 1)
+  const currentPath = pathname.slice(1, pathname.length - 1);
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
       if (route.route) {
-        return <Route exact path={route.route} element={route.component} key={route.key} />
+        return <Route exact path={route.route} element={route.component} key={route.key} />;
       }
       return null;
     });
@@ -108,7 +107,7 @@ export default function App() {
       right="2rem"
       bottom="2rem"
       zIndex={99}
-      color="dark"  
+      color="dark"
       sx={{ cursor: "pointer" }}
       onClick={handleConfiguratorOpen}
     >
@@ -156,20 +155,22 @@ export default function App() {
     // </ThemeProvider>
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      {layout === 'dashboard' && (
+      {layout === "dashboard" && (
         <>
           {user !== null ? (
             <>
               <Sidenav
                 color={sidenavColor}
-                brand={(transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo}
+                brand={
+                  (transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo
+                }
                 brandName="MiBanana"
                 routes={isAdmin ? AdminRoutes : routes}
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
               />
               {/* <Configurator /> */}
-             {/* {configsButton}  */}
+              {/* {configsButton}  */}
             </>
           ) : null}
         </>
@@ -177,7 +178,11 @@ export default function App() {
       <MDBox>
         <NewNavbar />
         <Routes>
-          {user !== null && user?.verified ? (isAdmin ? getRoutes(AdminRoutes) : getRoutes(routes)) : getRoutes(authRoutes)}
+          {user !== null && user?.verified
+            ? isAdmin
+              ? getRoutes(AdminRoutes)
+              : getRoutes(routes)
+            : getRoutes(authRoutes)}
           <Route
             path="*"
             element={
@@ -191,5 +196,5 @@ export default function App() {
         </Routes>
       </MDBox>
     </ThemeProvider>
-  )
+  );
 }
