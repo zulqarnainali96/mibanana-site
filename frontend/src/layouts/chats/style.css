@@ -27,6 +27,7 @@
 .message-content {
   word-wrap: break-word;
   font-family: Arial, Helvetica, sans-serif;
+  background: white;
 }
 .ff {
   font-family: Arial, Helvetica, sans-serif;
@@ -35,13 +36,13 @@
 /* Style left-aligned messages */
 .message.left {
   align-self: flex-start;
-  background-color: #e1ffc7;
+  /* background-color: #e1ffc7; */
 }
 
 /* Style right-aligned messages */
 .message.right {
   align-self: flex-end;
-  background-color: #c7e0ff;
+  /* background-color: #c7e0ff; */
 }
 
 /* Style the input field and send button (add these elements in the component) */
