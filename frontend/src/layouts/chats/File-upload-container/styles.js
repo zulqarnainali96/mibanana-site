@@ -113,6 +113,10 @@ export const useStyles = makeStyles({
     width: "87%",
     background: "white !important",
   },
+  driveDiv: {
+    paddingBottom: "5px",
+    marginTop: "12px",
+  },
   iconBtn: {
     backgroundColor: "#ccc !important",
     borderTopRightRadius: "5px !important",
@@ -120,5 +124,74 @@ export const useStyles = makeStyles({
     borderTopLeftRadius: "0px !important",
     borderBottomLeftRadius: "0px !important",
     padding: "5px 7px",
+  },
+  uploadbtndiv: {
+    display: "flex",
+  },
+  uploadbtn: {
+    border: "1px solid gray",
+    background: "transparent",
+    color: "black",
+    margin: "5px",
+  },
+  "uploadbtn:hover": {
+    background: "#FDD700",
+  },
+  uploadfilebtn: {
+    background: "black",
+    color: "#FDD700",
+    width: "95%",
+    marginLeft: "12px",
+  },
+  dropfileDiv: {
+    width: "90%",
+    margin: "5px auto",
+    padding: "10px",
+    border: "1px solid gray",
+    borderStyle: "dotted",
+    textAlign: "center",
+  },
+  uploadedfileMainDiv: {
+    border: "5px solid #F6F6E8",
+    margin: "5px",
+    // padding: "5px 10px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  UserDiv: {
+    width: "100%",
+    background: "#F6F6E8",
+  },
+  fileDiv2: {
+    margin: "10px 10px",
+  },
+  fileDiv2p: {
+    textAlign: "center",
+  },
+  adminDiv1: {
+    display: "flex",
+    flexDirection: "column",
+    margin: "5px",
+    padding: "5px",
+  },
+  adminDivGrid: {
+    background: "#F6F6E8",
+    justifyContent: "space-between",
+  },
+  catdiv1: {
+    width: "30%",
+  },
+  catdivmain: {
+    display: "flex",
+    margin: "0px",
+    padding: "5px",
+    background: "#F6F6E8",
+    flexWrap: "wrap",
+  },
+  adminDiv1h2: {
+    color: "#C6C3B6",
+    fontSize: "17px",
   },
 });

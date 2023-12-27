@@ -574,13 +574,13 @@ const Chating = ({ reduxState, reduxActions }) => {
                                                     /> */}
                           <textarea
                             rows={2}
-                            color="10"
+                            color="15"
                             className="textareaStyle"
                             value={message}
-                            placeholder="type your message here"
+                            placeholder="Type your message here"
                             onChange={(e) => sendMessage(e.target.value)}
                           />
-                          &nbsp;
+                          {/* &nbsp;
                           <MDButton
                             type="button"
                             sx={sendButton}
@@ -591,8 +591,13 @@ const Chating = ({ reduxState, reduxActions }) => {
                           >
                             Refresh Chat
                           </MDButton>
-                          &nbsp;
-                          <MDButton
+                          &nbsp; */}
+                          <SendOutlined
+                            fontSize="medium"
+                            onClick={onSendMessage}
+                            className="sendIcon1"
+                          />
+                          {/* <MDButton
                             endIcon={<SendOutlined fontSize="medium" />}
                             type="button"
                             onClick={onSendMessage}
@@ -600,7 +605,7 @@ const Chating = ({ reduxState, reduxActions }) => {
                             color="dark"
                           >
                             Send
-                          </MDButton>
+                          </MDButton> */}
                         </MDBox>
                       </Grid>
                     </Grid>

@@ -310,27 +310,96 @@ const FileUploadContainer = ({
   return (
     <MDBox className={classes.Container}>
       <Grid>
-        <p>DRIVE</p>
+        <div className={classes.driveDiv}>
+          <p>DRIVE</p>
+        </div>
       </Grid>
       <hr />
-      <Grid container className={classes.uploadBox}>
-        <Grid item xxl={8} xl={8} lg={8} md={8} xs={8}>
-          {/* <MDBox className={classes.fileNameContainer}>
-            <MDInput
-              type="text"
-              sx={inputSxStyles}
-              value={currentImage.name}
-              className={classes.fileNameInput}
-            />
-            <IconButton className={classes.iconBtn} onClick={DownloadFile} TouchRippleProps={false}>
+      <Grid>
+        <div className={classes.uploadbtndiv}>
+          <button className={classes.uploadbtn}>Files</button>
+          <button className={classes.uploadbtn}>Folders</button>
+          <button className={classes.uploadbtn}>Type</button>
+          <button className={classes.uploadbtn}>People</button>
+          <button className={classes.uploadbtn}>Date</button>
+        </div>
+      </Grid>
+      <Grid container>
+        <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
+          <div className={classes.uploadedfileMainDiv}>
+            <div className={classes.fileDiv2}>
+              <IconButton
+                className={classes.iconBtn}
+                TouchRippleProps={false}
+                style={{ margin: "30px", padding: "0px" }}
+              >
+                {UploadIcon}
+              </IconButton>
+
+              <p className={classes.fileDiv2p}>File Name</p>
+            </div>
+            <div className={classes.UserDiv}>
+              <h6>Designer</h6>
+              <p>date</p>
+            </div>
+          </div>
+        </Grid>
+        <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
+          <div className={classes.uploadedfileMainDiv}>
+            <div className={classes.fileDiv2}>
+              <IconButton
+                className={classes.iconBtn}
+                TouchRippleProps={false}
+                style={{ margin: "30px", padding: "0px" }}
+              >
+                {UploadIcon}
+              </IconButton>
+
+              <p className={classes.fileDiv2p}>File Name</p>
+            </div>
+            <div className={classes.UserDiv}>
+              <h6>Designer</h6>
+              <p>date</p>
+            </div>
+          </div>
+        </Grid>
+        <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
+          <div className={classes.uploadedfileMainDiv}>
+            <div className={classes.fileDiv2}>
+              <IconButton
+                className={classes.iconBtn}
+                TouchRippleProps={false}
+                style={{ margin: "30px", padding: "0px" }}
+              >
+                {UploadIcon}
+              </IconButton>
+
+              <p className={classes.fileDiv2p}>File Name</p>
+            </div>
+            <div className={classes.UserDiv}>
+              <h6>Designer</h6>
+              <p>date</p>
+            </div>
+          </div>
+        </Grid>
+      </Grid>
+
+      <Grid container>
+        <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>
+          <div className={classes.dropfileDiv}>
+            <IconButton className={classes.iconBtn} TouchRippleProps={false}>
               {UploadIcon}
             </IconButton>
-          </MDBox> */}
-        </Grid>
-        <Grid item xxl={3} xl={3} lg={3} md={3} xs={3}>
-          {/* <MDButton variant="mibanana" sx={uploadBtn} onClick={openFileSelect}>
+            <p>Upload or drop file right here.</p>
+          </div>
+          <button
+            variant="mibanana"
+            sx={uploadBtn}
+            onClick={openFileSelect}
+            className={classes.uploadfilebtn}
+          >
             Upload Files
-          </MDButton>
+          </button>
           <input
             id="new-file-upload"
             type="file"
@@ -339,12 +408,68 @@ const FileUploadContainer = ({
             hidden={true}
             onChange={handleFileUpload}
             multiple
-          /> */}
-          {/* <IconButton className={classes.iconBtn} TouchRippleProps={false} >
-                        {UploadIcon}
-                    </IconButton> */}
+          />
         </Grid>
+        <Grid item xxl={3} xl={3} lg={3} md={3} xs={3}></Grid>
       </Grid>
+      <Grid container className={classes.adminDivGrid}>
+        <div className={classes.adminDiv1}>
+          <h2 className={classes.adminDiv1h2}>Author</h2>
+          <div className={classes.adminDiv2}>
+            {/* <p>img</p> */}
+            <div>
+              <h3 className={classes.adminDiv2h3}>Admin</h3>
+
+              <p className={classes.adminDiv2p}>(super admin)</p>
+            </div>
+          </div>
+        </div>
+        <div className={classes.adminDiv1}>
+          <h2 className={classes.adminDiv1h2}>Author</h2>
+          <div className={classes.adminDiv2}>
+            {/* <p>img</p> */}
+            <div>
+              <h3 className={classes.adminDiv2h3}>Admin</h3>
+
+              <p className={classes.adminDiv2p}>(super admin)</p>
+            </div>
+          </div>
+        </div>
+        <div className={classes.adminDiv1}>
+          <h2 className={classes.adminDiv1h2}>Author</h2>
+          <div className={classes.adminDiv2}>
+            {/* <p>img</p> */}
+            <div>
+              <h3 className={classes.adminDiv2h3}>Admin</h3>
+
+              <p className={classes.adminDiv2p}>(super admin)</p>
+            </div>
+          </div>
+        </div>
+      </Grid>
+      <hr />
+      <div className={classes.catdivmain}>
+        <div className={classes.catdiv1}>
+          <h2 className={classes.adminDiv1h2}>Category</h2>
+          <p>Graphic Design</p>
+        </div>
+        <div className={classes.catdiv1}>
+          <h2 className={classes.adminDiv1h2}>Type</h2>
+          <p>Book Cover</p>
+        </div>
+        <div className={classes.catdiv1}>
+          <h2 className={classes.adminDiv1h2}>Description</h2>
+          <p>Lorem ipsum dolor sit amet,</p>
+        </div>
+        <div className={classes.catdiv1}>
+          <h2 className={classes.adminDiv1h2}>Size</h2>
+          <p>1024 X 1440px</p>
+        </div>
+        <div className={classes.catdiv1}>
+          <h2 className={classes.adminDiv1h2}>Details</h2>
+          <p>Active</p>
+        </div>
+      </div>
       {/* <MDBox className={classes.mainImageContainer}>
         {files.length > 0 || filesType.length > 0 ? (
           <FileUpload
