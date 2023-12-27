@@ -11,6 +11,7 @@ import { getCustomerProject } from "redux/actions/actions";
 import { getProjectData } from "redux/global/global-functions";
 import MenuItemDropdown from "./MenuItem";
 import { actionIcon } from "assets/new-images/projects-table/Group43";
+import "./../../../examples/new-table/table-style.css"
 
 export const Author = ({ name, }) => (
   <MDBox lineHeight={1}>
@@ -282,7 +283,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     <MDBox>
       <MDBox onClick={handleMenuOpen}>
         {/* <MoreVertIcon onClick={handleMenuOpen} sx={{ height: "2em", fontSize: '27px !important', fill: anchorEl ? "white" : "black" }} /> */}
-        <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="none"><path stroke="#C6C3B6" stroke-linecap="round" stroke-linejoin="round" d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
+        <svg xmlns="http://www.w3.org/2000/svg" className="active-svg" width="27" height="27" fill="none"><path stroke="inherit" stroke-linecap="round" stroke-linejoin="round" d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
         </svg>
       </MDBox>
       {children ? children :

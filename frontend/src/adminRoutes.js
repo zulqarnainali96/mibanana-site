@@ -15,10 +15,10 @@ import SignUp from "layouts/settings/sign-up/sign-up";
 const AdminRoutes = [
     {
         type: "collapse",
-        name: "Dashboard",
-        key: "dashboard",
+        name: "Boards",
+        key: "board",
         icon: <Icon fontSize="small">dashboard</Icon>,
-        route: "/dashboard",
+        route: "/board",
         component: <Dashboard />,
     },
     {

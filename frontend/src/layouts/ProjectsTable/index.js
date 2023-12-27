@@ -21,6 +21,9 @@ import { useDispatch } from 'react-redux'
 import { socketIO } from 'layouts/sockets'
 import apiClient from 'api/apiClient'
 import { currentUserRole } from 'redux/global/global-functions'
+import NewProjectsTable from 'examples/new-table'
+import { mibananaColor } from 'assets/new-images/colors'
+import { fontsFamily } from 'assets/font-family'
 
 
 const ProjectTable = ({ reduxState, reduxActions }) => {
@@ -28,7 +31,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     const navigate = useNavigate()
     const { project_list } = reduxState
     const [respMessage, setRespMessage] = useState("")
-    const role  = currentUserRole(reduxState)
+    const role = currentUserRole(reduxState)
     const [errorSB, setErrorSB] = useState(false);
     const [successSB, setSuccessSB] = useState(false);
     const projectList = useSelector(state => state.project_list.CustomerProjects)
@@ -191,31 +194,33 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
         return {
             name: (
                 <MDBox lineHeight={1}>
-                    <MDTypography display="block" sx={{ textDecoration: 'underline ' + '!important', fontWeight : '300' }} variant="button" fontWeight="medium">
-                        <MDBox sx={{ "&:hover": { color: "blue" } }} onClick={() => projectActiveorNot(projectid)}>
+                    <MDTypography display={"block"} sx={{ textDecoration: 'underline !important' }} variant="button" fontWeight="medium">
+                        <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }} onClick={() => projectActiveorNot(projectid)}>
                             {item?.name}
                         </MDBox>
                     </MDTypography>
                 </MDBox>),
 
-            team_members: <MDTypography display="flex" flexDirection="column" gap="10px" >
-                {item.team_members?.length > 0 ? item.team_members.map(item => <MDTypography color="#333" variant="h6" sx={{fontWeight:'300'}}>{item.name}</MDTypography>) :
-                    <MDTypography color="#333" fontSize="small" sx={{fontWeight:'300'}} variant="h6">Currently not Assigned to <br /> any Team members</MDTypography>}
+            team_members: <MDTypography display="flex" flexDirection="column" gap="10px"
+                sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}
+            >
+                {item.team_members?.length > 0 ? item.team_members.map(item => <MDTypography color="#333" variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }}>{item.name}</MDTypography>) :
+                    <MDTypography color="#333" fontSize="small" variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }}>Currently not Assigned to <br /> any Team members</MDTypography>}
             </MDTypography>,
-
             status: <MDBox ml={-1}>
                 <MDBadge badgeContent={projectStatus(item?.status)}
                     sx={{
                         "& .MuiBadge-badge":
-                            { background: getStatusStyle(item?.status), color: getStatusColor(item?.status), textTransform: 'capitalize', fontSize: ".8rem" }
+                            { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: ".9rem", borderRadius: '0px', fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }
                     }} circular="true" size="lg" />
             </MDBox>,
-
-            project_category: <MDTypography variant="h6" color="text" fontWeight="medium" sx={{fontWeight:'300'}}>
+            project_category: <MDTypography variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>
                 {item.project_category}
             </MDTypography>,
-            active: <MDTypography color="dark" variant="p" sx={{fontWeight:'300'}}>{!item.is_active ? "Not Active" : item.updatedAt}</MDTypography>,
-            createdAt: <MDTypography color="dark" variant="p" sx={{fontWeight:'300'}}>{readableTimestamp}</MDTypography>,
+            active: <MDTypography variant="p" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>
+                {!item.is_active ? "Not Active" : item.updatedAt}
+            </MDTypography>,
+            createdAt: <MDTypography variant="p" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>{readableTimestamp}</MDTypography>,
             action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
                 <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} />
             </MDTypography>
@@ -317,12 +322,13 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
         setPersonName("")
         reduxActions.getCustomerProject(copyProjectList)
     }
+    
     return (
         <DashboardLayout>
-            {/* <DashboardNavbar /> */}
             <MDBox p={"24px 12px"} mt={'15px'}>
                 <Grid container spacing={6}>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} pt={0}>
+                        <MDTypography pl={"15px"} sx={titleStyles} >miProjects</MDTypography>
                         <Grid container justifyContent={"space-between"} alignItems={"center"} width={"100%"}>
                             <Grid item xxl={8} display={'flex'}>
                                 <Grid item xl={3} lg={3} md={3}>
@@ -339,27 +345,16 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                             </Grid>
                         </Grid>
 
-                        <Card>
-                            <MDBox
-                                mx={2}
-                                mt={3}
-                                sx={({ palette: { light, grey } }) => ({
-                                    // backgroundColor : light.cream,
-                                })}
-                            >
-                                <MDTypography variant="h6" color="dark">
-                                    MiProjects
-                                </MDTypography>
-                            </MDBox>
-                            <MDBox pt={3}>
-                                <ProjectDataTable
+                        <Card sx={cardStyles}>
+                            <MDBox>
+                                <NewProjectsTable
                                     table={{ columns, rows }}
+                                    entriesPerPage={{ defaultValue: 5 }}
+                                    showTotalEntries={true}
+                                    pagination={{ variant: 'contained', color: "warning" }}
+                                    noEndBorder={false}
+                                    canSearch={false}
                                     isSorted={false}
-                                    entriesPerPage={false}
-                                    showTotalEntries={false}
-                                    pagination={{ variant: 'contained', color: 'success' }}
-                                    // isfunc={true}
-                                    noEndBorder
                                 />
                                 {!rows.length ? <MDTypography textAlign="center" p={1} component="h4">No Projects Found</MDTypography> : null}
                             </MDBox>
@@ -373,4 +368,22 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     )
 }
 
+
 export default reduxContainer(ProjectTable)
+
+
+const cardStyles = {
+    borderRadius: '0px',
+    padding: '8px',
+    width: '98%',
+    marginLeft: '16px',
+    backgroundColor: mibananaColor.headerColor,
+    mt: '20px'
+}
+const titleStyles = {
+    fontSize: '3rem',
+    color: mibananaColor.yellowColor,
+    fontFamily: fontsFamily.poppins,
+    fontWeight: 'bold !important',
+    userSelect: 'none'
+}

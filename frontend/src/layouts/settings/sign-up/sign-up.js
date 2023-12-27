@@ -1,6 +1,5 @@
 import MDBox from 'components/MDBox'
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
-import DashboardNavbar from 'examples/Navbars/DashboardNavbar'
 import React from 'react'
 import NewCustomerForm from './form/new-customer-form'
 import { useState } from 'react'
@@ -112,7 +111,6 @@ const SignUp = ({ reduxState }) => {
 
     return (
         <DashboardLayout>
-            <DashboardNavbar />
             <SuccessModal
                 msg={respMessage}
                 open={open}

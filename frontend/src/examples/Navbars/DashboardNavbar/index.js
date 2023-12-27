@@ -224,7 +224,6 @@ function DashboardNavbar({ absolute, light, isMini, reduxActions, reduxState, ch
     })
   }
 
-
   function inComingMessage() {
     if (reduxState?.userDetails?.roles?.includes("Admin")) return
     const arr = userNewChatMessage?.filter(item => item.view === true)
@@ -556,7 +555,6 @@ function DashboardNavbar({ absolute, light, isMini, reduxActions, reduxState, ch
             <MDBox>
               <img src={miBananaLogo} loading="lazy" width={"35%"} />
             </MDBox>
-
           </MDBox>
           {isMini ? null : (
             <>

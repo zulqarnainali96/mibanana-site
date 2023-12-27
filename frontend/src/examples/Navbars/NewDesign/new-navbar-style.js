@@ -16,7 +16,17 @@ export const useStyles = makeStyles({
 
     },
     userRole: {
-        color : '#000 !important',
-        fontWeight : '400 !important'
+        color: '#000 !important',
+        fontWeight: '400 !important'
+    },
+    btnContainer: {
+        backgroundColor: mibananaColor.yellowTextColor,
+        padding: '4px',
+        width: '51px',
+        height: '53px',
+        cursor: 'pointer',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 })
