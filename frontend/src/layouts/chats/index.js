@@ -289,7 +289,7 @@ const Chating = ({ reduxState, reduxActions }) => {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      {/* <DashboardNavbar /> */}
       <FileModal title="Files" open={modalState} setOpen={setModalState} />
       <SuccessModal open={open} msg={respMessage} onClose={handleClose} width="30%" />
       <MDBox width="100%" className="controll-fontSize" mt="25px">
