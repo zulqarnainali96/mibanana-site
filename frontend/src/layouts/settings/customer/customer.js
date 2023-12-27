@@ -1,5 +1,4 @@
 import MDBox from "components/MDBox";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import useCustomerTable from "./customer-table";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { Card } from "@mui/material";
@@ -36,7 +35,6 @@ const CreateCustomer = ({ reduxState, reduxActions }) => {
 
     return (
         <DashboardLayout>
-            <DashboardNavbar />
             <MDBox px={4} py={6}>
                 <Card>
                     <MDBox

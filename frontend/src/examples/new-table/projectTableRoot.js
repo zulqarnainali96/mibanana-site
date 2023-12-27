@@ -3,6 +3,7 @@ import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import { useMaterialUIController } from "context";
 import { mibananaColor } from "assets/new-images/colors";
+import { fontsFamily } from "assets/font-family";
 
 export function DataTableHeadCell({ width, children, sorted, align, ...rest }) {
   const [controller] = useMaterialUIController();
@@ -22,12 +23,14 @@ export function DataTableHeadCell({ width, children, sorted, align, ...rest }) {
         {...rest}
         position="relative"
         textAlign={align}
-        color={darkMode ? "white" : "secondary"}
+        // color={darkMode ? "white" : "secondary"}
         opacity={0.7}
-        sx={({ typography: { size, fontWeightBold }, palette : { light } }) => ({
-          fontSize: size.xs,
-          backgroundColor : mibananaColor.headerColor,
-          fontWeight: fontWeightBold,
+        sx={({ typography: { size, fontWeightBold }, palette: { light } }) => ({
+          fontSize: '.9rem',
+          color: mibananaColor.tableHeaderColor,
+          backgroundColor: mibananaColor.headerColor,
+          fontFamily: fontsFamily.poppins,
+          fontWeight: 'bold',
           textTransform: "uppercase",
           cursor: sorted && "pointer",
           userSelect: sorted && "none",
@@ -88,12 +91,12 @@ export function DataTableBodyCell({ noBorder, align, children }) {
     <MDBox
       component="td"
       textAlign={align}
-      py={1.5}
+      py={2.7}
       px={3}
       sx={({ palette: { light }, typography: { size }, borders: { borderWidth } }) => ({
         fontSize: size.sm,
         borderBottom: noBorder ? "none" : `${borderWidth[1]} solid ${light.main}`,
-        cursor : "pointer",
+        cursor: "pointer",
       })}
     >
       <MDBox

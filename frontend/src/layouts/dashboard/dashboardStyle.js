@@ -1,11 +1,14 @@
+import { fontsFamily } from "assets/font-family";
+import { mibananaColor } from "assets/new-images/colors";
+
 const { makeStyles } = require("@mui/styles");
 
 export const useStyles = makeStyles({
     itemStyles: {
         border: '2px solid #C6C3B6',
         width: '100%',
-        padding: '45px',
-        paddingInline: '4rem',
+        padding: '5px',
+        paddingInline: '4.5rem',
         cursor: 'pointer',
         "&:hover, * > :hover": {
             backgroundColor: '#FDD700 !important',
@@ -28,6 +31,9 @@ export const useStyles = makeStyles({
         color: '#C6C3B6 !important',
     },
     headingStyle2: {
-        fontSize: '1.38rem !important'
+        fontSize: '1.38rem !important',
+        color : mibananaColor.yellowTextColor,
+        fontFamily : fontsFamily.poppins + ' !important',
+        fontWeight : '400 !important'
     }
 })

@@ -9,6 +9,7 @@ import { useTheme } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { CloseSharp } from '@mui/icons-material';
 import reduxContainer from 'redux/containers/containers';
+import { mibananaColor } from 'assets/new-images/colors';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -45,17 +46,18 @@ const ProjectStatus = ({ data, status, handleChange, personName, clearValue }) =
         <FormControl sx={{ m: 2, width: 200, background: 'white', marginBottom: 1.7 }}>
             <InputLabel id="demo-multiple-name-label" sx={{ lineHeight: '0.9 !important', color: '#ccc !important' }} disableAnimation={true} size="small" classes={`.Mui-focused`} >{status}</InputLabel>
             <Select
-                // autoWidth
                 labelId="demo-multiple-name-label"
                 id="demo-multiple-name"
                 value={personName}
                 onChange={handleChange}
                 MenuProps={MenuProps}
-                IconComponent={() => personName ? <CloseSharp fontSize='small' sx={{ marginRight: 1, cursor: "pointer" }} onClick={clearValue} /> : <KeyboardArrowDownIcon fontSize='medium' sx={{ marginRight: 1, cursor: "pointer" }} />}
+                label={false}
+                IconComponent={() => personName ? <CloseSharp fontSize='small' sx={{ marginRight: 1, cursor: "pointer" }} onClick={clearValue} /> : <KeyboardArrowDownIcon fontSize='medium' sx={{ marginRight: 1, cursor: "pointer", fill: "#C6C3B6",width:"1.3em", height : "1.3em" }} />}
 
                 sx={{
                     paddingBlock: "5px",
-                    border: "1px solid #0000000a",
+                    border: `1px solid ${mibananaColor.borderColor}`,
+                    borderRadius : '0px',
                     "&:hover": {
                         borderColor: 'transparent',
                     },
@@ -66,10 +68,6 @@ const ProjectStatus = ({ data, status, handleChange, personName, clearValue }) =
                             borderWidth: 0,
                             borderColor: `transparent` + " !important",
                         }
-                    },
-                    "& .MuiMenu-paper": {
-                        backgroundColor: "red !important",
-
                     },
                 }}
             >

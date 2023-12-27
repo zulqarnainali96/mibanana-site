@@ -24,6 +24,7 @@ import { clockIcon } from "assets/new-images/dashboard/Group42";
 import StatusBox from "./status-box";
 import NewProjectsTable from "examples/new-table";
 import { mibananaColor } from "assets/new-images/colors";
+import { fontsFamily } from "assets/font-family";
 
 function Dashboard({ reduxActions, reduxState }) {
   const project_list = reduxState.project_list?.CustomerProjects
@@ -253,29 +254,31 @@ function Dashboard({ reduxActions, reduxState }) {
     return {
       name: (
         <MDBox lineHeight={1}>
-          <MDTypography display={"block"} sx={{ textDecoration: 'underline !important', fontWeight: "300" }} variant="button" fontWeight="medium">
-            <MDBox sx={{ "&:hover": { color: "blue" } }} onClick={() => projectActiveorNot(projectid)}>
+          <MDTypography display={"block"} sx={{ textDecoration: 'underline !important' }} variant="button" fontWeight="medium">
+            <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }} onClick={() => projectActiveorNot(projectid)}>
               {item?.name}
             </MDBox>
           </MDTypography>
         </MDBox>),
 
-      team_members: <MDTypography display="flex" flexDirection="column" gap="10px">
-        {item.team_members?.length > 0 ? item.team_members.map(item => <MDTypography color="#333" variant="h6" sx={{ fontWeight: '300' }}>{item.name}</MDTypography>) :
-          <MDTypography color="#333" fontSize="small" variant="h6" sx={{ fontWeight: '300' }}>Currently not Assigned to <br /> any Team members</MDTypography>}
+      team_members: <MDTypography display="flex" flexDirection="column" gap="10px" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>
+        {item.team_members?.length > 0 ? item.team_members.map(item => <MDTypography color="#333" variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }}>{item.name}</MDTypography>) :
+          <MDTypography color="#333" fontSize="small" variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }}>Currently not Assigned to <br /> any Team members</MDTypography>}
       </MDTypography>,
       status: <MDBox ml={-1}>
         <MDBadge badgeContent={projectStatus(item?.status)}
           sx={{
             "& .MuiBadge-badge":
-              { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: ".9rem",borderRadius:'0px' }
+              { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: ".9rem", borderRadius: '0px', fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }
           }} circular="true" size="lg" />
       </MDBox>,
-      project_category: <MDTypography variant="h6" color="text" fontWeight="medium" sx={{ fontWeight: '300' }}>
+      project_category: <MDTypography variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>
         {item.project_category}
       </MDTypography>,
-      active: <MDTypography color="dark" variant="p" sx={{ fontWeight: '300' }}>{!item.is_active ? "Not Active" : item.updatedAt}</MDTypography>,
-      createdAt: <MDTypography color="dark" variant="p" sx={{ fontWeight: '300' }}>{readableTimestamp}</MDTypography>,
+      active: <MDTypography variant="p" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>
+        {!item.is_active ? "Not Active" : item.updatedAt}
+      </MDTypography>,
+      createdAt: <MDTypography variant="p" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>{readableTimestamp}</MDTypography>,
       action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
         <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} />
       </MDTypography>
@@ -291,11 +294,9 @@ function Dashboard({ reduxActions, reduxState }) {
     { Header: "Submitted on", accessor: "createdAt", align: "center" },
     { Header: "Action", accessor: "action", align: "center" },
   ]
-
-
   return (
     <DashboardLayout>
-      <MDBox p={"24px 12px"} mt={'15px'}>
+      <MDBox p={"0px 12px"} mt={'15px'}>
         <Grid container justifyContent={"center"} sx={{ gap: '10px' }}>
           <StatusBox is400={is400}>
             <Grid container alignItems={"center"} sx={{ gap: is400 ? "12px" : "0px" }}>
@@ -330,16 +331,17 @@ function Dashboard({ reduxActions, reduxState }) {
               </Grid>
             </Grid>
           </StatusBox>
-          <Grid item xxl={12} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-            <Card sx={{borderRadius:'0px',padding:'8px',backgroundColor:mibananaColor.headerColor}}>
+          <Grid item xxl={11} xl={8} lg={8} md={8} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+            <Card sx={cardStyles}>
               <MDBox>
                 <NewProjectsTable
                   table={{ columns, rows }}
+                  entriesPerPage={{ defaultValue: 5 }}
+                  showTotalEntries={true}
+                  pagination={{ variant: 'contained', color: "warning" }}
+                  noEndBorder={false}
+                  canSearch={false}
                   isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  isfunc={true}
-                  noEndBorder
                 />
                 {!rows.length ? <MDTypography textAlign="center" p={1} component="h4">No Projects Found</MDTypography> : null}
               </MDBox>
@@ -353,6 +355,12 @@ function Dashboard({ reduxActions, reduxState }) {
   );
 }
 
+const cardStyles = {
+  width: '100%',
+  borderRadius: '0px',
+  padding: '8px',
+  backgroundColor: mibananaColor.headerColor
+}
 export default reduxContainer(Dashboard);
 
 

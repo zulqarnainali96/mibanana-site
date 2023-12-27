@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { setAlert } from "redux/actions/actions";
 import { mibananaColor } from "assets/new-images/colors";
 import { useRef } from "react";
+import "./table-style.css"
 
 function NewProjectsTable({
     entriesPerPage,
@@ -142,18 +143,11 @@ function NewProjectsTable({
     } else {
         entriesEnd = pageSize * (pageIndex + 1);
     }
-    const handleFocus = () => {
-        if(reff.current){
-            reff.current.focus()
-            alert("zain")
-        }
-    }
-
     return (
         <TableContainer sx={{ boxShadow: "none", borderRadius: '0px' }}>
-            {entriesPerPage || canSearch ? (
-                <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-                    {entriesPerPage && (
+            {/* {entriesPerPage || canSearch ? ( */}
+                {/* // <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}> */}
+                    {/* {entriesPerPage && (
                         <MDBox display="flex" alignItems="center">
                             <Autocomplete
                                 disableClearable
@@ -170,7 +164,7 @@ function NewProjectsTable({
                                 &nbsp;&nbsp;entries per page
                             </MDTypography>
                         </MDBox>
-                    )}
+                    )} */}
                     {/* {canSearch && (
             <MDBox width="12rem" ml="auto">
               <MDInput
@@ -185,8 +179,8 @@ function NewProjectsTable({
               />
             </MDBox>
           )} */}
-                </MDBox>
-            ) : null}
+                {/* </MDBox> */}
+            {/* ) : null} */}
 
             {/* <StatusModal open={isAlert} onClose={handleClose}
         project_id={projectList[getid]?._id}  />
@@ -215,14 +209,7 @@ function NewProjectsTable({
                         return (
                             <TableRow key={key} {...row.getRowProps()}
                                 ref={reff}
-                                onFocus={handleFocus}
-                                sx={{
-                                    marginBottom: '5px',
-                                    backgroundColor: "#FFF",
-                                    "&:hover, &:active, &:focus": {
-                                        backgroundColor: "#C6C3B6",
-                                    }
-                                }} >
+                                className="row-style">
                                 {row.cells.map((cell, idx) => (
                                     <DataTableBodyCell
                                         key={idx}

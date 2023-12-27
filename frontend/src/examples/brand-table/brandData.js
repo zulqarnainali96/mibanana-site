@@ -15,6 +15,10 @@ import { openEditBrandModal } from "redux/actions/actions"
 import { getCurrentBrandID } from "redux/actions/actions"
 import fileImage from 'assets/mi-banana-icons/file-image.png'
 import { MoonLoader } from "react-spinners"
+import "../../examples/new-table/table-style.css"
+import { fontsFamily } from "assets/font-family"
+import { mibananaColor } from "assets/new-images/colors"
+import { ArrowDownward } from "@mui/icons-material"
 
 export const Action = ({ item }) => {
     const [anchorEl, setAnchorEl] = useState(null)
@@ -124,14 +128,11 @@ export const Action = ({ item }) => {
     };
     return (
         <MDBox>
-            <MDBox bgColor={anchorEl ? "dark" : "warning"}
-                sx={{
-                    width: "57px",
-                    borderRadius: "50px"
-                }}
+            <MDBox onClick={handleMenuOpen}
             >
-
-                <MoreVertIcon onClick={handleMenuOpen} sx={{ height: "2em", fontSize: '27px !important', fill: anchorEl ? "white" : "black" }} />
+                <svg xmlns="http://www.w3.org/2000/svg" className="active-svg" width="27" height="27" fill="none"><path stroke="inherit" stroke-linecap="round" stroke-linejoin="round" d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
+                </svg>
+                {/* <MoreVertIcon onClick={handleMenuOpen} sx={{ height: "2em", fontSize: '27px !important', fill: anchorEl ? "white" : "black" }} /> */}
             </MDBox>
             <Menu
                 id="dropdown-menu"
@@ -159,6 +160,23 @@ export const Action = ({ item }) => {
     )
 }
 
+const ShowFiles = ({ item }) => {
+    const [showfiles, setShowFiles] = useState(false)
+    return (
+        <MDBox>
+            <ArrowDownward
+                onClick={() => setShowFiles(prev => !prev)}
+                sx={{
+                    fill: mibananaColor.yellowColor,
+                    width: '2.6em', height: '3.6em '
+                }} />
+            {showfiles && <MDTypography display="flex" flexDirection="column" variant="p" fontSize="small">
+                {item.files?.map(file => <MDTypography sx={{ color: '#000', fontWeight: 'bold' }} key={file.id} variant="p" fontSize="small">{file.name}</MDTypography>)}
+            </MDTypography>}
+        </MDBox>
+    )
+}
+
 const BrandData = () => {
     const userID = useSelector(state => state.userDetails.id)
     const new_brand = useSelector(state => state.new_brand)
@@ -170,6 +188,11 @@ const BrandData = () => {
         getBrandData(userID, func)
     }, [new_brand])
 
+    const textStyles = {
+        fontFamily: fontsFamily.poppins,
+        fontWeight: '400 !important',
+        color: mibananaColor.yellowTextColor
+    }
     const rows = customerBrand?.map((item) => {
         const arr = { url: '' }
         function getBrandLogo() {
@@ -180,13 +203,20 @@ const BrandData = () => {
         }
         getBrandLogo()
         return {
-            logo: <>{arr.url ? <img src={arr.url} width={100} height={90} /> : null}</>,
-            brand_name: <MDTypography variant="h4" fontSize="medium">{item.brand_name}</MDTypography>,
-            brand_description: <MDTypography variant="p" fontSize="small">{item.brand_description}</MDTypography>,
-            files: <MDTypography display="flex" flexDirection="column" variant="p" fontSize="small">
-                {item.files?.map(file => <MDTypography sx={{ color: '#000', fontWeight: 'bold' }} key={file.id} variant="p" fontSize="small">{file.name}</MDTypography>)}
+            logo: <>{arr.url ? <img src={arr.url} width={50} height={50} /> : null}</>,
 
+            brand_name: <MDTypography variant="h4" sx={textStyles}>
+                {item.brand_name}
             </MDTypography>,
+
+            brand_description: <MDTypography variant="p" sx={{ ...textStyles, fontSize: '14px !important' }}>
+                {item.brand_description}
+            </MDTypography>,
+
+            // files: <MDTypography display="flex" flexDirection="column" variant="p" fontSize="small">
+            //     {item.files?.map(file => <MDTypography sx={{ color: '#000', fontWeight: 'bold' }} key={file.id} variant="p" fontSize="small">{file.name}</MDTypography>)}
+            // </MDTypography>,
+            files: <ShowFiles item={item} />,
             action: <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
                 <Action item={item} />
             </MDTypography>

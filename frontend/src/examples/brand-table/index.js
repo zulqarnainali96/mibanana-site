@@ -21,6 +21,9 @@ import reduxContainer from 'redux/containers/containers'
 import EditBrand from './Edit-Brand/EditBrand'
 import { openEditBrandModal } from 'redux/actions/actions'
 import SuccessModal from 'components/SuccessBox/SuccessModal'
+import NewProjectsTable from 'examples/new-table'
+import { mibananaColor } from 'assets/new-images/colors'
+import { fontsFamily } from 'assets/font-family'
 
 const MIBrandTable = ({ reduxState, reduxActions }) => {
     const open = reduxState.openBrandModel
@@ -68,7 +71,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         reduxActions.openBrandModalFunc(true)
     }
     const handleCheckbox = () => {
-        setLogoCheckbox(prev=>setLogoCheckbox(!prev))
+        setLogoCheckbox(prev => setLogoCheckbox(!prev))
     }
     const handleClose = () => {
         // setOpen(false)
@@ -228,7 +231,6 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         }
     }, [])
     useEffect(() => {
-
     }, [reduxState.customerBrand])
     return (
         <DashboardLayout>
@@ -250,8 +252,8 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                 openErrorSB={openErrorSB}
                 openSuccessSB={openSuccessSB}
                 setRespMessage={setRespMessage}
-                editAddMoreImages={editAddMoreImages} 
-                editMoreImage={editMoreImage} 
+                editAddMoreImages={editAddMoreImages}
+                editMoreImage={editMoreImage}
                 handleFileUploadEdit={handleFileUploadEdit}
                 fileRef={fileRef}
                 removeEditFiles={removeEditFiles}
@@ -263,27 +265,84 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                 onClose={() => setShowSuccessModal(false)}
                 width="30%"
             />
-            <MDBox ml={4} pt={6} pb={3}>
-                <Grid container justifyContent={"flex-end"} alignItems={"center"} spacing={2}>
-                    <Grid item xxl={12} xl={12} lg={12} md={12} xs={12} alignSelf={"flex-end"}>
+            <MDBox ml={4} pt={2} pb={3}>
+                <Grid container pt={isDesignerAndManagerAdmin && "0px"} justifyContent={"flex-end"} alignItems={"center"} spacing={2}>
+                    {/* <Grid item xxl={12} xl={12} lg={12} md={12} xs={12} alignSelf={"flex-end"}>
                         {isDesignerAndManagerAdmin ? null : (
                             <MDBox width={"100%"} sx={{ textAlign: "right" }}>
-                                <Button variant="contained" disableFocusRipple type="button" onClick={handleOpen} sx={{ backgroundColor: "#adff2f", borderRadius: 30, "&:hover": { background: "#98e225" }, "&:focus ": { background: "#adff2f " + "!important" } }} disableElevation >
-                                    <Add cursor={"pointer"} fontSize='large' sx={{ fontSize: '1.3rem !important' }} />
+                                <Button
+                                    variant="contained"
+                                    disableFocusRipple
+                                    type="button"
+                                    onClick={handleOpen}
+                                    startIcon={<Add cursor={"pointer"} fontSize='large'
+                                        sx={{
+                                            fontSize: '1.3rem !important'
+                                        }} />}
+                                    sx={{
+                                        backgroundColor: "#adff2f",
+                                        borderRadius: 30,
+                                        "&:hover": { background: "#98e225" }, "&:focus ": {
+                                            background: "#adff2f " + "!important"
+                                        }
+                                    }}
+                                    disableElevation
+                                >
+                                    
                                     &nbsp;{" "}
                                     Add Brand
                                 </Button>
                             </MDBox>)}
+                    </Grid> */}
+                    <Grid item xxl={12} xl={12} md={12} xs={12}>
+                        <Grid container alignItems={"center"} justifyContent={"space-around"}>
+                            <Grid item xxl={isDesignerAndManagerAdmin ? 12 : 6} xl={isDesignerAndManagerAdmin ? 12 : 6}>
+                                <MDTypography sx={titleStyles}>miBrands</MDTypography>
+                            </Grid>
+                            {isDesignerAndManagerAdmin ? null :
+                                (<Grid item xxl={6} xl={6}>
+                                    <MDBox width={"100%"} sx={{ textAlign: "right", paddingInline: '32px' }}>
+                                        <Button
+                                            variant="contained"
+                                            disableFocusRipple
+                                            type="button"
+                                            onClick={handleOpen}
+                                            startIcon={<Add cursor={"pointer"} fontSize='large'
+                                                sx={{
+                                                    fontSize: '1.3rem !important',
+                                                    display: 'inline-flex'
+                                                }} />}
+                                            sx={{
+                                                backgroundColor: mibananaColor.yellowColor,
+                                                fontFamily: fontsFamily.poppins,
+                                                fontWeight: 'bold',
+                                                borderRadius: 30,
+                                                "&:hover": { background: mibananaColor.yellowColor }, "&:focus ": {
+                                                    background: `${mibananaColor.yellowColor} !important`
+                                                }
+                                            }}
+                                            disableElevation
+                                        >
+
+                                            &nbsp;{" "}
+                                            Add Brand
+                                        </Button>
+                                    </MDBox>
+
+                                </Grid>
+                                )}
+                        </Grid>
                     </Grid>
                     <Grid item xxl={12}>
-                        <Card sx={{ width: "100%" }}>
-                            <ProjectDataTable
-                                table={{ rows, columns }}
+                        <Card sx={{ width: "98%" }}>
+                            <NewProjectsTable
+                                table={{ columns, rows }}
+                                entriesPerPage={{ defaultValue: 5 }}
+                                showTotalEntries={true}
+                                pagination={{ variant: 'contained', color: "warning" }}
+                                noEndBorder={false}
+                                canSearch={false}
                                 isSorted={false}
-                                entriesPerPage={false}
-                                showTotalEntries={false}
-                                isfunc={false}
-                                noEndBorder
                             />
                             {!rows?.length ? <MDTypography textAlign="center" p={1} component="h4">No Brands Found</MDTypography> : null}
                         </Card>
@@ -299,3 +358,12 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
 }
 
 export default reduxContainer(MIBrandTable)
+
+const titleStyles = {
+    fontSize: '3rem',
+    width: '100%',
+    color: mibananaColor.yellowColor,
+    fontFamily: fontsFamily.poppins,
+    fontWeight: 'bold !important',
+    userSelect: 'none'
+}

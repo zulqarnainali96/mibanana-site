@@ -36,6 +36,7 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  console.log('path ', pathname)
 
   // Cache for the rtl
   useMemo(() => {
@@ -175,7 +176,7 @@ export default function App() {
         </>
       )}
       <MDBox>
-        <NewNavbar />
+        {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar />}
         <Routes>
           {user !== null && user?.verified ? (isAdmin ? getRoutes(AdminRoutes) : getRoutes(routes)) : getRoutes(authRoutes)}
           <Route
