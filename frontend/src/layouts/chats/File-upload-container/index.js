@@ -7,6 +7,11 @@ import MDTypography from "components/MDTypography";
 import React from "react";
 import { useStyles } from "./styles";
 import ShowFiles from "./show-files/ShowFiles";
+import adminImg from "assets/images/admin.svg";
+import designerImg from "assets/images/d1.svg";
+import UserImg from "assets/images/u1.svg";
+import pdfImg from "assets/images/pdf1.svg";
+import tickImg from "assets/images/t1.svg";
 import { useState } from "react";
 import ImageContainer from "./image-container/ImageContainer";
 import { useEffect } from "react";
@@ -328,57 +333,58 @@ const FileUploadContainer = ({
         <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
           <div className={classes.uploadedfileMainDiv}>
             <div className={classes.fileDiv2}>
-              <IconButton
+              {/* <IconButton
                 className={classes.iconBtn}
                 TouchRippleProps={false}
                 style={{ margin: "30px", padding: "0px" }}
               >
                 {UploadIcon}
-              </IconButton>
-
+              </IconButton> */}
+              <img src={pdfImg} />
               <p className={classes.fileDiv2p}>File Name</p>
             </div>
             <div className={classes.UserDiv}>
-              <h6>Designer</h6>
-              <p>date</p>
+              <img src={designerImg} className="adminImg1" />
+              <div>
+                <h6>Designer</h6>
+                <p>19-Dec</p>
+              </div>
+              <img src={tickImg} className="TickImg1" />
             </div>
           </div>
         </Grid>
         <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
           <div className={classes.uploadedfileMainDiv}>
             <div className={classes.fileDiv2}>
-              <IconButton
-                className={classes.iconBtn}
-                TouchRippleProps={false}
-                style={{ margin: "30px", padding: "0px" }}
-              >
-                {UploadIcon}
-              </IconButton>
+              <img src={pdfImg} />
 
               <p className={classes.fileDiv2p}>File Name</p>
             </div>
+
             <div className={classes.UserDiv}>
-              <h6>Designer</h6>
-              <p>date</p>
+              <img src={designerImg} className="adminImg1" />
+              <div>
+                <h6>Designer</h6>
+                <p>19-Dec</p>
+              </div>
+              <img src={tickImg} className="TickImg1" />
             </div>
           </div>
         </Grid>
         <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
           <div className={classes.uploadedfileMainDiv}>
             <div className={classes.fileDiv2}>
-              <IconButton
-                className={classes.iconBtn}
-                TouchRippleProps={false}
-                style={{ margin: "30px", padding: "0px" }}
-              >
-                {UploadIcon}
-              </IconButton>
+              <img src={pdfImg} />
 
               <p className={classes.fileDiv2p}>File Name</p>
             </div>
             <div className={classes.UserDiv}>
-              <h6>Designer</h6>
-              <p>date</p>
+              <img src={designerImg} className="adminImg1" />
+              <div>
+                <h6>Designer</h6>
+                <p>19-Dec</p>
+              </div>
+              <img src={tickImg} className="TickImg1" />
             </div>
           </div>
         </Grid>
@@ -396,7 +402,7 @@ const FileUploadContainer = ({
             variant="mibanana"
             sx={uploadBtn}
             onClick={openFileSelect}
-            className={classes.uploadfilebtn}
+            className={"uploadfilebtn"}
           >
             Upload Files
           </button>
@@ -415,8 +421,8 @@ const FileUploadContainer = ({
       <Grid container className={classes.adminDivGrid}>
         <div className={classes.adminDiv1}>
           <h2 className={classes.adminDiv1h2}>Author</h2>
-          <div className={classes.adminDiv2}>
-            {/* <p>img</p> */}
+          <div className="adminDiv2">
+            <img src={adminImg} className="adminImg1" />
             <div>
               <h3 className={classes.adminDiv2h3}>Admin</h3>
 
@@ -425,24 +431,24 @@ const FileUploadContainer = ({
           </div>
         </div>
         <div className={classes.adminDiv1}>
-          <h2 className={classes.adminDiv1h2}>Author</h2>
-          <div className={classes.adminDiv2}>
-            {/* <p>img</p> */}
+          <h2 className={classes.adminDiv1h2}>Team Member</h2>
+          <div className="adminDiv2">
+            <img src={designerImg} className="adminImg1" />
             <div>
-              <h3 className={classes.adminDiv2h3}>Admin</h3>
+              <h3 className={classes.adminDiv2h3}>Designer b.</h3>
 
-              <p className={classes.adminDiv2p}>(super admin)</p>
+              <p className={classes.adminDiv2p}>(you)</p>
             </div>
           </div>
         </div>
         <div className={classes.adminDiv1}>
-          <h2 className={classes.adminDiv1h2}>Author</h2>
-          <div className={classes.adminDiv2}>
-            {/* <p>img</p> */}
+          <h2 className={classes.adminDiv1h2}>Brand</h2>
+          <div className="adminDiv2">
+            <img src={UserImg} className="adminImg1" />
             <div>
-              <h3 className={classes.adminDiv2h3}>Admin</h3>
+              <h3 className={classes.adminDiv2h3}>Desihgn M</h3>
 
-              <p className={classes.adminDiv2p}>(super admin)</p>
+              {/* <p className={classes.adminDiv2p}>(super admin)</p> */}
             </div>
           </div>
         </div>

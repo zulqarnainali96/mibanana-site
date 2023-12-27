@@ -116,6 +116,7 @@ export const useStyles = makeStyles({
   driveDiv: {
     paddingBottom: "5px",
     marginTop: "12px",
+    fontWeight: "600",
   },
   iconBtn: {
     backgroundColor: "#ccc !important",
@@ -143,6 +144,9 @@ export const useStyles = makeStyles({
     width: "95%",
     marginLeft: "12px",
   },
+  "uploadfilebtn:hover": {
+    background: "black",
+  },
   dropfileDiv: {
     width: "90%",
     margin: "5px auto",
@@ -150,6 +154,8 @@ export const useStyles = makeStyles({
     border: "1px solid gray",
     borderStyle: "dotted",
     textAlign: "center",
+    color: "gray",
+    background: "#C6C3B6",
   },
   uploadedfileMainDiv: {
     border: "5px solid #F6F6E8",
@@ -163,6 +169,7 @@ export const useStyles = makeStyles({
   UserDiv: {
     width: "100%",
     background: "#F6F6E8",
+    display: "flex",
   },
   fileDiv2: {
     margin: "10px 10px",
@@ -175,6 +182,7 @@ export const useStyles = makeStyles({
     flexDirection: "column",
     margin: "5px",
     padding: "5px",
+    width: "30%",
   },
   adminDivGrid: {
     background: "#F6F6E8",
@@ -182,6 +190,12 @@ export const useStyles = makeStyles({
   },
   catdiv1: {
     width: "30%",
+  },
+  adminDiv2h3: {
+    fontSize: "13px",
+  },
+  adminDiv2p: {
+    fontSize: "11px",
   },
   catdivmain: {
     display: "flex",
