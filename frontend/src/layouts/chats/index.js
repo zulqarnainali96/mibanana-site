@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useRef, useState } from "react";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -27,6 +28,7 @@ import SuccessModal from "components/SuccessBox/SuccessModal";
 import { socketIO } from "layouts/sockets";
 import FileUploadContainer from "./File-upload-container";
 import { currentUserRole } from "redux/global/global-functions";
+import { Box } from "@mui/material";
 // https://socket-dot-mi-banana-401205.uc.r.appspot.com
 // http://34.125.239.154
 
@@ -294,8 +296,20 @@ const Chating = ({ reduxState, reduxActions }) => {
       <SuccessModal open={open} msg={respMessage} onClose={handleClose} width="30%" />
       <MDBox width="100%" className="controll-fontSize" mt="25px">
         <Grid container spacing={2} height={"90vh"} paddingInline={"25px"}>
-          <Grid item xxl={6} xl={6} lg={6} md={12} xs={12}>
-            <MDBox {...styleProps} sx={{ overflowY: "scroll" }}>
+          <Grid
+            item
+            xxl={6}
+            xl={6}
+            lg={6}
+            md={12}
+            xs={12}
+            sx={{
+              bgcolor: "#F6F6E8",
+            }}
+          >
+            <MDBox
+            // {...styleProps}
+            >
               <MDTypography
                 sx={({ palette: { primary } }) => ({
                   //   backgroundColor: primary.main,
@@ -395,7 +409,7 @@ const Chating = ({ reduxState, reduxActions }) => {
                           })}
                         />
                       }
-                      label={`${!personProject()?.is_active ? "Make Project Active" : "Active"}`}
+                      label={${!personProject()?.is_active ? "Make Project Active" : "Active"}}
                     />
                   ) : null}
                 </Grid> */}
@@ -481,12 +495,12 @@ const Chating = ({ reduxState, reduxActions }) => {
                     >
                       <Grid item xxl={12} xl={12} lg={12} width={"100%"} sx={{ overflowY: "auto" }}>
                         <MDBox
-                          {...stylesProps2.sx2}
-                          sx={stylesProps2.sx}
-                          p={1}
+                          // {...stylesProps2.sx2}
+                          // sx={stylesProps2.sx}
+                          p={0}
                           ref={chatContainerRef}
                         >
-                          <div className="chat">
+                          <Box className="chat">
                             {msgArray?.length
                               ? msgArray.map((item, index, messages) => {
                                   return (
@@ -497,14 +511,7 @@ const Chating = ({ reduxState, reduxActions }) => {
                                       }`}
                                       style={{ position: "relative" }}
                                     >
-                                      <div
-                                        className="user-name"
-                                        style={{
-                                          display: "flex",
-                                          gap: "8px",
-                                          alignItems: "center",
-                                        }}
-                                      >
+                                      <Box sx={{ display: "flex" }}>
                                         <img
                                           src={item.avatar}
                                           width={40}
@@ -513,20 +520,33 @@ const Chating = ({ reduxState, reduxActions }) => {
                                           style={{
                                             borderRadius: 30,
                                             display: "inline-block",
-                                            width: "25px",
-                                            height: "25px",
-                                            top: "-32px",
+                                            // width: "25px",
+                                            // height: "25px",
+                                            // top: "-32px",
                                             left: item.user === user ? "70px" : "-9px",
                                           }}
                                         />
-                                        <p className="ff" style={{ fontSize: "11px" }}>
-                                          {item.name}
-                                          <span style={{ fontSize: "11px" }}>
-                                            {" (" + item?.role + ")"}
-                                          </span>
-                                        </p>
-                                      </div>
-                                      <div className="message-content">{item.message}</div>
+                                        <Box width="100%" ml={4}>
+                                          <Box
+                                            className="user-name"
+                                            style={{
+                                              display: "flex",
+                                              gap: "8px",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <p className="ff" style={{ fontSize: "11px" }}>
+                                              {item.name}
+                                              <span style={{ fontSize: "11px" }}>
+                                                {" (" + item?.role + ")"}
+                                              </span>
+                                            </p>
+                                          </Box>
+                                          <Box sx={{ p: 2 }} className="message-content">
+                                            {item.message}
+                                          </Box>
+                                        </Box>
+                                      </Box>
                                       <span
                                         className="ff"
                                         style={{
@@ -541,7 +561,7 @@ const Chating = ({ reduxState, reduxActions }) => {
                                   );
                                 })
                               : null}
-                          </div>
+                          </Box>
                         </MDBox>
                       </Grid>
                       <Grid item xxl={12} xl={12} lg={12} md={12} width={"100%"}>
