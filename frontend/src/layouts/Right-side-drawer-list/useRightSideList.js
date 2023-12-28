@@ -12,6 +12,8 @@ import { reRenderChatComponent } from 'redux/actions/actions';
 import { East } from '@mui/icons-material';
 import { setRightSideBar } from 'redux/actions/actions';
 import { toggleDrawer } from 'redux/global/global-functions';
+import { fontsFamily } from 'assets/font-family';
+import { mibananaColor } from 'assets/new-images/colors';
 
 const ProjectList = ({ item, index, currentIndex, showProjects }) => {
     const [msg, setMsgArr] = useState([])
@@ -43,8 +45,8 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
         >
             <MDBox display="flex" gap="12px" alignItems="center" onClick={() => showProjects(item?._id)}>
                 <span style={{ borderRadius: '30px', width: '15px', height: '15px', backgroundColor: item?.status === 'Ongoing' ? '#FFE135' : 'red' }}></span>
-                <MDTypography fontSize="small">{item.project_title}</MDTypography>
-            </MDBox>
+                <MDTypography fontSize="small" sx={{ fontsFamily: fontsFamily.poppins, fontWeight:'400',color:mibananaColor.yellowTextColor}}>{item.project_title}</MDTypography>
+        </MDBox>
             {/* <Grid container height={"auto"} spacing={2}>
                 <Grid item xxl={4} xl={4} md={4} xs={4}>
                     <p style={{ fontSize: '14px', fontWeight: '500' }}>last message : &nbsp;</p>
@@ -56,7 +58,7 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
             <MDBox>
                 <p style={{ fontSize: '14px', fontWeight: '500' }}>From : <span style={{ fontSize: '14px', fontWeight: '400' }}>{msg[msg?.length - 1]?.role}</span></p>
             </MDBox> */}
-            {/* <Button onClick={() => showProjects(item?._id)}>View project</Button> */}
+    {/* <Button onClick={() => showProjects(item?._id)}>View project</Button> */ }
         </MDBox >
     )
 }
@@ -87,9 +89,9 @@ export default () => {
         // onClick={toggleDrawer(anchor, false)}
         // onKeyDown={toggleDrawer(anchor, false)}
         >
-            <East fontSize='medium' sx={{ position: 'absolute', top: 10, left: 10, cursor : 'pointer' }} onClick={toggleDrawer("right",false,setState,rightSideDrawer)} />
+            <East fontSize='medium' sx={{ position: 'absolute', top: 10, left: 10, cursor: 'pointer', }} onClick={toggleDrawer("right", false, setState, rightSideDrawer)} />
             <List>
-                <MDTypography variant="h5" pt={3} pb={1} textAlign="left">&nbsp;&nbsp;Projects</MDTypography>
+                <MDTypography variant="h5" pt={3} pb={1} textAlign="left" sx={{ fontFamily: fontsFamily.poppins, fontWeight: 'bold', color: mibananaColor.yellowTextColor }}>&nbsp;&nbsp;Projects</MDTypography>
                 {projects?.map((item, index) => {
                     return (
                         <ProjectList
@@ -102,7 +104,7 @@ export default () => {
                     )
                 }
                 )}
-                {projects?.length === 0 && <MDTypography variant="h6" textAlign="center">No Projects Found</MDTypography>}
+                {projects?.length === 0 && <MDTypography variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: 'bold' }} textAlign="center">No Projects Found</MDTypography>}
             </List>
         </Box>
     );
