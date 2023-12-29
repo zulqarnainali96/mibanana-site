@@ -24,6 +24,7 @@ import SuccessModal from 'components/SuccessBox/SuccessModal'
 import NewProjectsTable from 'examples/new-table'
 import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
+import { styled } from '@mui/material'
 
 const MIBrandTable = ({ reduxState, reduxActions }) => {
     const open = reduxState.openBrandModel
@@ -232,9 +233,25 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
     }, [])
     useEffect(() => {
     }, [reduxState.customerBrand])
+
+    const BrandButton = styled(Button)(({ theme: { palette } }) => {
+        const { primary } = palette
+        return {
+            backgroundColor: primary.main,
+            fontFamily: fontsFamily.poppins,
+            fontWeight: '400',
+            borderRadius: 0,
+            height: '100%',
+            "&:hover": {
+                backgroundColor: "#d9ba08",
+            },
+            "&:focus": {
+                backgroundColor: "#d9ba08 !important",
+            }
+        }
+    })
     return (
         <DashboardLayout>
-            {/* <DashboardNavbar /> */}
             <BrandForm
                 state={formValue}
                 logoCheckbox={logoCheckbox}
@@ -267,33 +284,6 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
             />
             <MDBox ml={4} pt={2} pb={3}>
                 <Grid container pt={isDesignerAndManagerAdmin && "0px"} justifyContent={"flex-end"} alignItems={"center"} spacing={2}>
-                    {/* <Grid item xxl={12} xl={12} lg={12} md={12} xs={12} alignSelf={"flex-end"}>
-                        {isDesignerAndManagerAdmin ? null : (
-                            <MDBox width={"100%"} sx={{ textAlign: "right" }}>
-                                <Button
-                                    variant="contained"
-                                    disableFocusRipple
-                                    type="button"
-                                    onClick={handleOpen}
-                                    startIcon={<Add cursor={"pointer"} fontSize='large'
-                                        sx={{
-                                            fontSize: '1.3rem !important'
-                                        }} />}
-                                    sx={{
-                                        backgroundColor: "#adff2f",
-                                        borderRadius: 30,
-                                        "&:hover": { background: "#98e225" }, "&:focus ": {
-                                            background: "#adff2f " + "!important"
-                                        }
-                                    }}
-                                    disableElevation
-                                >
-                                    
-                                    &nbsp;{" "}
-                                    Add Brand
-                                </Button>
-                            </MDBox>)}
-                    </Grid> */}
                     <Grid item xxl={12} xl={12} md={12} xs={12}>
                         <Grid container alignItems={"center"} justifyContent={"space-around"}>
                             <Grid item xxl={isDesignerAndManagerAdmin ? 12 : 6} xl={isDesignerAndManagerAdmin ? 12 : 6}>
@@ -302,31 +292,20 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                             {isDesignerAndManagerAdmin ? null :
                                 (<Grid item xxl={6} xl={6}>
                                     <MDBox width={"100%"} sx={{ textAlign: "right", paddingInline: '32px' }}>
-                                        <Button
+                                        <BrandButton
                                             variant="contained"
+                                            size='medium'
                                             disableFocusRipple
                                             type="button"
-                                            onClick={handleOpen}
                                             startIcon={<Add cursor={"pointer"} fontSize='large'
                                                 sx={{
                                                     fontSize: '1.3rem !important',
                                                     display: 'inline-flex'
                                                 }} />}
-                                            sx={{
-                                                backgroundColor: mibananaColor.yellowColor,
-                                                fontFamily: fontsFamily.poppins,
-                                                fontWeight: 'bold',
-                                                borderRadius: 30,
-                                                "&:hover": { background: mibananaColor.yellowColor }, "&:focus ": {
-                                                    background: `${mibananaColor.yellowColor} !important`
-                                                }
-                                            }}
-                                            disableElevation
+                                            onClick={handleOpen}
                                         >
-
-                                            &nbsp;{" "}
-                                            Add Brand
-                                        </Button>
+                                            ADD Brand
+                                        </BrandButton>
                                     </MDBox>
 
                                 </Grid>

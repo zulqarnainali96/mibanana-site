@@ -6,6 +6,7 @@ import styled from '@mui/material/styles/styled'
 import { ArrowBack, Chat } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { setRightSideBar } from 'redux/actions/actions';
+import { chatIcon } from 'assets/new-images/navbars/chats-icon';
 
 const RightSideDrawer = ({ list }) => {
     const rightSideDrawer = useSelector(state => state.rightSideDrawer)
@@ -24,16 +25,15 @@ const RightSideDrawer = ({ list }) => {
         <div style={styles}>
             {['right'].map((anchor) => (
                 <React.Fragment key={anchor}>
-                    <Button size='small' sx={{ border: '1px solid #444', padding: '10px 14px' }} onClick={toggleDrawer(anchor, true, setState, rightSideDrawer)}>
-                        Chat &nbsp;
-                        <ArrowBack sx={{ color: '#7b809a' }} fontSize='large' />
-                    </Button>
+                    <span onClick={toggleDrawer(anchor, true, setState, rightSideDrawer)}>
+                        {chatIcon}
+                    </span>
                     <Drawer
                         sx={sx}
                         anchor={anchor}
                         open={rightSideDrawer[anchor]}
                         onClose={toggleDrawer(anchor, false, setState, rightSideDrawer)}
-                        
+
                     >
                         {list(anchor)}
                     </Drawer>

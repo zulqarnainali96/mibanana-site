@@ -25,6 +25,7 @@ import StatusBox from "./status-box";
 import NewProjectsTable from "examples/new-table";
 import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
+import "./status-box/status-style.css"
 
 function Dashboard({ reduxActions, reduxState }) {
   const project_list = reduxState.project_list?.CustomerProjects
@@ -301,7 +302,7 @@ function Dashboard({ reduxActions, reduxState }) {
           <StatusBox is400={is400}>
             <Grid container alignItems={"center"} sx={{ gap: is400 ? "12px" : "0px" }}>
               <Grid item xxl={8} xl={8} lg={8} >
-                <MDTypography className={styles.headingStyle} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{projectCompleted?.length > 0 ? projectCompleted?.length : 0}</MDTypography>
+                <MDTypography className={`${styles.headingStyle} heading-style`} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{projectCompleted?.length > 0 ? projectCompleted?.length : 0}</MDTypography>
               </Grid>
               <Grid xxl={4} xl={4} lg={4}>
                 {checkIcon}
