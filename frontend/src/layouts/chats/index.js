@@ -516,22 +516,21 @@ const Chating = ({ reduxState, reduxActions }) => {
                                             // width: "25px",
                                             // height: "25px",
                                             // top: "-32px",
-                                            left: item.user === user ? "70px" : "-9px",
+
+                                            // left: item.user === user ? "70px" : "-9px",
                                           }}
                                         />
-                                        <Box width="100%" ml={4}>
+                                        <Box width="100%" mx={2} mb={2}>
                                           <Box
-                                            className="user-name"
                                             style={{
                                               display: "flex",
-                                              gap: "8px",
                                               justifyContent: "space-between",
                                               alignItems: "center",
                                             }}
                                           >
-                                            <Typography variant="caption" fontWeight={500} >
+                                            <Typography variant="caption" fontWeight={500}>
                                               {item.name}
-                                              <span style={{ fontSize: "11px",fontWeight:'400' }}>
+                                              <span style={{ fontSize: "11px", fontWeight: "400" }}>
                                                 {" (" + item?.role + ")"}
                                               </span>
                                             </Typography>
@@ -539,7 +538,10 @@ const Chating = ({ reduxState, reduxActions }) => {
                                               {item.time_data ? item.time_data : null}
                                             </Typography>
                                           </Box>
-                                          <Box sx={{ p: 2 }} className="message-content">
+                                          <Box
+                                            sx={{ p: 1, borderRadius: 1 }}
+                                            className="message-content"
+                                          >
                                             {item.message}
                                           </Box>
                                         </Box>
@@ -561,7 +563,6 @@ const Chating = ({ reduxState, reduxActions }) => {
                       </Grid>
                       <Grid item xxl={12} xl={12} lg={12} md={12} width={"100%"}>
                         <MDBox
-                          height={"6vh"}
                           width="100%"
                           p={1}
                           sx={{
@@ -570,7 +571,6 @@ const Chating = ({ reduxState, reduxActions }) => {
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
-                            marginTop: "10px",
                             // backgroundColor : "#f1f2f2"
                           }}
                         >
