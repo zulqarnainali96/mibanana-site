@@ -291,360 +291,171 @@ const Chating = ({ reduxState, reduxActions }) => {
 
   return (
     <DashboardLayout>
-      {/* <DashboardNavbar /> */}
       <FileModal title="Files" open={modalState} setOpen={setModalState} />
       <SuccessModal open={open} msg={respMessage} onClose={handleClose} width="30%" />
-      <MDBox width="100%" className="controll-fontSize" mt="25px">
-        <Grid container spacing={2} height={"90vh"} paddingInline={"25px"}>
-          <Grid
-            item
-            xxl={6}
-            xl={6}
-            lg={6}
-            md={12}
-            xs={12}
-            sx={{
-              bgcolor: "#F6F6E8",
-            }}
+      <Grid container spacing={2} height="100%" paddingInline={"25px"}>
+        <Grid
+          item
+          xxl={6}
+          xl={6}
+          lg={6}
+          md={12}
+          xs={12}
+          sx={{
+            bgcolor: "#F6F6E8",
+            // height: '90vh'
+          }}
+        >
+          <MDTypography
+            sx={({ palette: { primary } }) => ({
+              padding: "10px",
+              borderTopLeftRadius: "4px",
+              borderTopRightRadius: "6px",
+              color: "gray",
+            })}
+            variant="h4"
+            pb={1}
           >
-            <MDBox
-            // {...styleProps}
-            >
-              <MDTypography
-                sx={({ palette: { primary } }) => ({
-                  //   backgroundColor: primary.main,
-                  padding: "10px",
-                  borderTopLeftRadius: "4px",
-                  borderTopRightRadius: "6px",
-                  color: "gray",
-                })}
-                variant="h4"
-                pb={1}
-              >
-                Activity
-                {/* {personProject()?.project_title ? personProject().project_title : ""} */}
-              </MDTypography>
-              <hr />
+            Activity
+          </MDTypography>
+          <hr />
+          <Grid
+            container
+            justifyContent={"space-between"}
+            spacing={4}
+            alignItems={"center"}>
+            {isManager ? (
+              <Grid item xxl={12} alignSelf={"flex-end"} textAlign={"right"}>
+                <MDButton
+                  disabled={loading}
+                  endIcon={<MoonLoader loading={loading} size={18} color="#fff" />}
+                  color="dark"
+                  bgColor="success"
+                  type="button"
+                  onClick={SubmitProject}
+                >
+                  Submit
+                </MDButton>
+              </Grid>
+            ) : null}
+            <Grid item xxl={12} lg={12} md={12} xs={12} position={"relative"}>
               <Grid
                 container
                 justifyContent={"space-between"}
-                spacing={4}
-                padding={2}
-                alignItems={"center"}
+                alignItems={"flex-start"}
+                flexDirection={"column"}
               >
-                {/* <Grid
-                  item
-                  xxl={6}
-                  height={
-                    personProject()?.team_members?.length > 0 && isManager ? "187px" : undefined
-                  }
-                >
-                  <MDTypography variant="h4" fontSize="medium">
-                    Team Members1
-                  </MDTypography>
-                  {!personProject()?.team_members?.length ? (
-                    <MDTypography variant="p" pl={1} pb={2} fontSize="small">
-                      Not Assigned any members
-                    </MDTypography>
-                  ) : null}
-                  <br />
-                  {personProject().team_members?.length > 0
-                    ? personProject().team_members?.map((item, i) => (
-                        <TeamMembers
-                          key={i}
-                          team_member={item}
-                          isManager={isManager}
-                          setIsMember={setIsMember}
-                          openSuccessSB={openSuccessSB}
-                          openErrorSB={openErrorSB}
-                          setRespMessage={setRespMessage}
-                        />
-                      ))
-                    : null}
-                  {isManager ? (
-                    <SelectMembers
-                      manager={isManager}
-                      memberName={memberName}
-                      handleChange={handleChange}
-                      setMemberName={setMemberName}
-                      setDesignerObj={setDesignerObj}
-                      existTeamList={personProject().team_members}
-                      is_member={is_member}
-                    />
-                  ) : null}
-                </Grid> */}
-                {/* <Grid
-                  item
-                  xxl={6}
-                  sx={
-                    role?.customer
-                      ? { alignSelf: "end", paddingTop: "1px", paddingBottom: "14px" }
-                      : role?.admin
-                      ? { paddingBottom: "16px", alignSelf: "self-end" }
-                      : {}
-                  }
-                >
-                  <MDTypography variant="h4">Active</MDTypography>
-                  <MDTypography
-                    variant="h6"
-                    fontSize="small"
-                    sx={{ color: "#4a4747", fontWeight: 300 }}
+                <Grid item xxl={12} xl={12} lg={12} width={"100%"}>
+                  <MDBox height="722px"
+                    p={0}
+                    ref={chatContainerRef}
                   >
-                    {!personProject()?.is_active
-                      ? "This Project is not active"
-                      : "Project is Active"}
-                  </MDTypography>
-                  {isManager ? (
-                    <FormControlLabel
-                      required
-                      control={
-                        <Checkbox
-                          checked={isActive}
-                          onChange={handleCheckbox}
-                          sx={({ palette: { warning } }) => ({
-                            color: warning.dark,
-                            "&.Mui-checked": {
-                              color: warning.light,
-                            },
-                          })}
-                        />
-                      }
-                      label={${!personProject()?.is_active ? "Make Project Active" : "Active"}}
-                    />
-                  ) : null}
-                </Grid> */}
-                {/* <Grid item xxl={2} alignSelf={personProject().team_members?.length > 0 ? "center" : "baseline"}>
-                                    <MDTypography variant="h4">Author</MDTypography>
-                                    <MDTypography variant="h6">{personProject()?.name ? personProject().name : ''}</MDTypography>
-                                </Grid> */}
-                {/* <Grid item xxl={2} alignSelf={personProject().team_members?.length > 0 ? "center" : "baseline"} >
-                                    <MDTypography variant="h4">File Formats</MDTypography>
-                                    <Grid container spacing={1} >
-                                        {
-                                            personProject()?.file_formats?.length > 0 ? personProject()?.file_formats.map(item =>
-                                                <Grid item >{item + ','}</Grid>
-                                            ) : ''
-                                        }
-                                    </Grid>
-                                </Grid> */}
-                {/* <Grid
-                  item
-                  xxl={3}
-                  alignSelf={personProject().team_members?.length > 0 ? "center" : "baseline"}
-                >
-                  <MDTypography variant="h4">Project Category</MDTypography>
-                  <MDTypography variant="h6" sx={{ color: "#4a4747", fontWeight: 300 }}>
-                    {personProject()?.project_category ? personProject().project_category : ""}
-                  </MDTypography>
-                </Grid> */}
-                {/* <Grid item xxl={3}>
-                  <MDTypography variant="h4">Design Type</MDTypography>
-                  <MDTypography variant="h6" sx={{ color: "#4a4747", fontWeight: 300 }}>
-                    {personProject()?.design_type ? personProject()?.design_type : ""}
-                  </MDTypography>
-                </Grid> */}
-                {/* <Grid item xxl={3}>
-                  <MDTypography variant="h4">Brand</MDTypography>
-                  <MDTypography variant="h6" sx={{ color: "#4a4747", fontWeight: 300 }}>
-                    {personProject()?.brand ? personProject().brand : ""}
-                  </MDTypography>
-                </Grid>
-                <Grid item xxl={3}>
-                  <MDTypography variant="h4">Sizes</MDTypography>
-                  <MDTypography variant="h6" sx={{ color: "#4a4747", fontWeight: 300 }}>
-                    {personProject()?.sizes ? personProject().sizes : "Not Provied"}
-                  </MDTypography>
-                </Grid>
-                <Grid item xxl={12}>
-                  <MDTypography variant="h4">Project Description1</MDTypography>
-                  <MDTypography variant="h6" sx={{ color: "#4a4747", fontWeight: 300 }}>
-                    {personProject()?.project_description
-                      ? personProject().project_description
-                      : "No description"}
-                  </MDTypography>
-                </Grid> */}
-
-                {/* <Grid item xxl={3}>
-                                    <MDTypography variant="h4">Specific Software Name</MDTypography>
-                                    <MDTypography variant="h6">{personProject()?.specific_software_names ? personProject().specific_software_names : 'Not provided'}</MDTypography>
-                                </Grid> */}
-
-                {isManager ? (
-                  <Grid item xxl={12} alignSelf={"flex-end"} textAlign={"right"}>
-                    <MDButton
-                      disabled={loading}
-                      endIcon={<MoonLoader loading={loading} size={18} color="#fff" />}
-                      color="dark"
-                      bgColor="success"
-                      type="button"
-                      onClick={SubmitProject}
-                    >
-                      Submit
-                    </MDButton>
-                  </Grid>
-                ) : null}
-                <Grid item xxl={12} lg={12} md={12} xs={12} position={"relative"}>
-                  <MDBox>
-                    <Grid
-                      container
-                      // component={"form"}
-                      // onSubmit={onSendMessage}
-                      justifyContent={"space-between"}
-                      alignItems={"flex-start"}
-                      flexDirection={"column"}
-                    >
-                      <Grid item xxl={12} xl={12} lg={12} width={"100%"} sx={{ overflowY: "auto" }}>
-                        <MDBox
-                          // {...stylesProps2.sx2}
-                          // sx={stylesProps2.sx}
-                          p={0}
-                          ref={chatContainerRef}
-                        >
-                          <Box className="chat">
-                            {msgArray?.length
-                              ? msgArray.map((item, index, messages) => {
-                                  return (
-                                    <pre
-                                      key={index}
-                                      className={`message ${
-                                        item.user === reduxState.userDetails?.id ? "right" : "left"
-                                      }`}
-                                      style={{ position: "relative" }}
-                                    >
-                                      <Box sx={{ display: "flex" }}>
-                                        <img
-                                          src={item.avatar}
-                                          width={40}
-                                          height={40}
-                                          loading="lazy"
-                                          style={{
-                                            borderRadius: 30,
-                                            display: "inline-block",
-                                            // width: "25px",
-                                            // height: "25px",
-                                            // top: "-32px",
-                                            left: item.user === user ? "70px" : "-9px",
-                                          }}
-                                        />
-                                        <Box width="100%" ml={4}>
-                                          <Box
-                                            className="user-name"
-                                            style={{
-                                              display: "flex",
-                                              gap: "8px",
-                                              alignItems: "center",
-                                            }}
-                                          >
-                                            <p className="ff" style={{ fontSize: "11px" }}>
-                                              {item.name}
-                                              <span style={{ fontSize: "11px" }}>
-                                                {" (" + item?.role + ")"}
-                                              </span>
-                                            </p>
-                                          </Box>
-                                          <Box sx={{ p: 2 }} className="message-content">
-                                            {item.message}
-                                          </Box>
-                                        </Box>
-                                      </Box>
-                                      <span
-                                        className="ff"
-                                        style={{
-                                          fontSize: "9px",
-                                          fontWeight: "400",
-                                          color: "#444",
-                                        }}
-                                      >
-                                        {item.time_data ? item.time_data : null}
+                    <Box className="chat">
+                      {msgArray?.length
+                        ? msgArray.map((item, index, messages) => {
+                          return (
+                            <pre
+                              key={index}
+                              className={`message ${item.user === reduxState.userDetails?.id ? "right" : "left"
+                                }`}
+                              style={{ position: "relative" }}
+                            >
+                              <Box sx={{ display: "flex" }}>
+                                <img
+                                  src={item.avatar}
+                                  width={40}
+                                  height={40}
+                                  loading="lazy"
+                                  style={{
+                                    borderRadius: 30,
+                                    display: "inline-block",
+                                    // width: "25px",
+                                    // height: "25px",
+                                    // top: "-32px",
+                                    left: item.user === user ? "70px" : "-9px",
+                                  }}
+                                />
+                                <Box width="100%" ml={4}>
+                                  <Box
+                                    className="user-name"
+                                    style={{
+                                      display: "flex",
+                                      gap: "8px",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <p className="ff" style={{ fontSize: "11px" }}>
+                                      {item.name}
+                                      <span style={{ fontSize: "11px" }}>
+                                        {" (" + item?.role + ")"}
                                       </span>
-                                    </pre>
-                                  );
-                                })
-                              : null}
-                          </Box>
-                        </MDBox>
-                      </Grid>
-                      <Grid item xxl={12} xl={12} lg={12} md={12} width={"100%"}>
-                        <MDBox
-                          height={"6vh"}
-                          width="100%"
-                          p={1}
-                          sx={{
-                            borderBottomLeftRadius: "12px",
-                            borderBottomRightRadius: "12px",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            marginTop: "10px",
-                            // backgroundColor : "#f1f2f2"
-                          }}
-                        >
-                          {/* <MDInput
-                                                        placeholder="type your message here"
-                                                        value={message}
-                                                        // onKeyPress={handleKeyPress} 
-                                                        onChange={(e) => sendMessage(e.target.value)}
-                                                        sx={{
-                                                            width: "65%",
-                                                            color: "#444",
-                                                            fontFamily: "arial",
-                                                            fontSize: "1.2rem !important",
-                                                        }}
-                                                        
-                                                    /> */}
-                          <textarea
-                            rows={2}
-                            color="15"
-                            className="textareaStyle"
-                            value={message}
-                            placeholder="Type your message here"
-                            onChange={(e) => sendMessage(e.target.value)}
-                          />
-                          {/* &nbsp;
-                          <MDButton
-                            type="button"
-                            sx={sendButton}
-                            size="small"
-                            color="dark"
-                            fontSize="small"
-                            onClick={getChatMessage}
-                          >
-                            Refresh Chat
-                          </MDButton>
-                          &nbsp; */}
-                          <SendOutlined
-                            fontSize="medium"
-                            onClick={onSendMessage}
-                            className="sendIcon1"
-                          />
-                          {/* <MDButton
-                            endIcon={<SendOutlined fontSize="medium" />}
-                            type="button"
-                            onClick={onSendMessage}
-                            sx={sendButton}
-                            color="dark"
-                          >
-                            Send
-                          </MDButton> */}
-                        </MDBox>
-                      </Grid>
-                    </Grid>
+                                    </p>
+                                  </Box>
+                                  <Box sx={{ p: 2 }} className="message-content">
+                                    {item.message}
+                                  </Box>
+                                </Box>
+                              </Box>
+                              <span
+                                className="ff"
+                                style={{
+                                  fontSize: "9px",
+                                  fontWeight: "400",
+                                  color: "#444",
+                                }}
+                              >
+                                {item.time_data ? item.time_data : null}
+                              </span>
+                            </pre>
+                          );
+                        })
+                        : null}
+                    </Box>
+                  </MDBox>
+                </Grid>
+                <Grid item xxl={12} xl={12} lg={12} md={12} width={"100%"}>
+                  <MDBox
+                    height={"6vh"}
+                    width="100%"
+                    p={1}
+                    sx={{
+                      borderBottomLeftRadius: "12px",
+                      borderBottomRightRadius: "12px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginTop: "10px",
+                      // backgroundColor : "#f1f2f2"
+                    }}
+                  >
+                    <textarea
+                      rows={2}
+                      color="15"
+                      className="textareaStyle"
+                      value={message}
+                      placeholder="Type your message here"
+                      onChange={(e) => sendMessage(e.target.value)}
+                    />
+                    <SendOutlined
+                      fontSize="medium"
+                      onClick={onSendMessage}
+                      className="sendIcon1"
+                    />
                   </MDBox>
                 </Grid>
               </Grid>
-            </MDBox>
+            </Grid>
           </Grid>
-          <Grid item xxl={6} xl={6} lg={6} md={12} xs={12}>
-            {/* <CustomerFiles setRespMessage={setRespMessage} openSuccessSB={openSuccessSB} openErrorSB={openErrorSB} /> */}
-            <FileUploadContainer
+        </Grid>
+        <Grid item xxl={6} xl={6} lg={6} md={12} xs={12}>
+          <FileUploadContainer
               setRespMessage={setRespMessage}
               openSuccessSB={openSuccessSB}
               openErrorSB={openErrorSB}
             />
-          </Grid>
-          {renderSuccessSB}
         </Grid>
-      </MDBox>
+        {renderSuccessSB}
+      </Grid>
     </DashboardLayout>
   );
 };

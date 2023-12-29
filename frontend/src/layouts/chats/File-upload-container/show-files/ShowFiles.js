@@ -15,13 +15,13 @@ const closeBtnStyle = {
 
 const ImageBox = ({ item }) => {
     if (item?.type?.startsWith(Jpg) || item?.type.startsWith(Jpeg) || item?.type.startsWith(Png) || item?.type.startsWith(Svg)) {
-        return <img src={item.url} width={'95%'} loading='lazy' alt={item.name} onClick={() => { }} />
+        return <img src={item.url} width={'20%'} loading='lazy' alt={item.name} onClick={() => { }} />
     } else if (item?.type.startsWith(PDF)) {
         return <PictureAsPdf sx={{ fontSize: '10rem !important' }} />
     } else if (item?.type?.startsWith(Ailogo)) {
-        return <img src={AiImage} loading='lazy' width={'95%'} alt={item.name} />
+        return <img src={AiImage} loading='lazy' width={'20%'} alt={item.name} />
     } else if (item?.type?.startsWith(PsdFile)) {
-        return <img src={fileImage} loading='lazy' width={'95%'} alt={item.name} />
+        return <img src={fileImage} loading='lazy' width={'20%'} alt={item.name} />
     }
 }
 

@@ -119,41 +119,6 @@ export default function App() {
   );
 
   return (
-    // <ThemeProvider theme={darkMode ? themeDark : theme}>
-    //   <CssBaseline />
-    //   {/* {layout === 'dashboard' && (
-    //     <>
-    //       {user !== null ? (
-    //         <>
-    //           <Sidenav
-    //             color={sidenavColor}
-    //             brand={(transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo}
-    //             brandName="MiBanana"
-    //             routes={isAdmin ? AdminRoutes : routes}
-    //             onMouseEnter={handleOnMouseEnter}
-    //             onMouseLeave={handleOnMouseLeave}
-    //           />
-    //           <Configurator />
-    //           {/* {configsButton}
-    //         </>
-    //       ) : null}
-    //     </>
-    //   )} */}
-    //   {/* {layout === 'vr' && <Configurator />} */}
-    //   <Routes>
-    //     {user !== null && user?.verified ? (isAdmin ? getRoutes(AdminRoutes) : getRoutes(routes)) : getRoutes(authRoutes)}
-    //     <Route
-    //       path="*"
-    //       element={
-    //         user !== null && user?.verified ? (
-    //           <Navigate to="/dashboard" />
-    //         ) : (
-    //           <Navigate to="authentication/mi-sign-in" />
-    //         )
-    //       }
-    //     />
-    //   </Routes>
-    // </ThemeProvider>
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
       {layout === "dashboard" && (
@@ -176,7 +141,7 @@ export default function App() {
           ) : null}
         </>
       )}
-      <MDBox>
+      <MDBox className="zainasdasd">
         {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar />}
         <Routes>
           {user !== null && user?.verified

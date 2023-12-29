@@ -25,7 +25,7 @@ export default styled(Drawer)(({ theme, ownerState }) => {
     background: 'white',
     borderRadius : 0,
     margin : 0,
-    height : '88vh',
+    height : '88.5%',
     transform: "translateX(0)",
     transition: transitions.create("transform", {
       easing: transitions.easing.sharp,
@@ -71,7 +71,7 @@ export default styled(Drawer)(({ theme, ownerState }) => {
   return {
     "& .MuiDrawer-paper": {
       boxShadow: xxl,
-      marginTop : "116px !important",
+      marginTop : "5.6% !important",
       position : 'absolute !important',
       border: "none",
       ...(miniSidenav ? drawerCloseStyles() : drawerOpenStyles()),

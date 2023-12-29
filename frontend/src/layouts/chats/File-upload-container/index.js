@@ -117,27 +117,34 @@ const FileUploadContainer = ({
         setFileLoading(false);
       });
   }
-  const handleFileUpload = (event) => {
-    const files = event.target.files;
-    const newFiles = [];
+  // const handleFileUpload = (event) => {
+  //   const files = event.target.files;
+  //   const newFiles = [];
+  //   for (let i = 0; i < files.length; i++) {
+  //     const file = files[i];
+  //     setFilesType((prev) => [...prev, file]);
+  //     if (
+  //       file.type.startsWith(Jpg) ||
+  //       file.type.startsWith(Jpeg) ||
+  //       file.type.startsWith(Png) ||
+  //       file.type.startsWith(Svg)
+  //     ) {
+  //       const reader = new FileReader();
+  //       reader.onload = function () {
+  //         newFiles.push(reader.result);
+  //         setFiles(newFiles);
+  //       };
+  //       reader.readAsDataURL(file);
+  //     }
+  //   }
+  // };
+  const handleFileUpload = async (event) => {
+    const files = event.target.files
     for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      setFilesType((prev) => [...prev, file]);
-      if (
-        file.type.startsWith(Jpg) ||
-        file.type.startsWith(Jpeg) ||
-        file.type.startsWith(Png) ||
-        file.type.startsWith(Svg)
-      ) {
-        const reader = new FileReader();
-        reader.onload = function () {
-          newFiles.push(reader.result);
-          setFiles(newFiles);
-        };
-        reader.readAsDataURL(file);
-      }
+      setFilesType(files[i])
+      await handleSubmit()
     }
-  };
+  }
   const deleteDesignerFiles = async (filename) => {
     setFileLoading(true);
     await apiClient
@@ -216,8 +223,7 @@ const FileUploadContainer = ({
     for (let i = 0; i < filesType.length; i++) {
       formdata.append("files", filesType[i]);
     }
-    await apiClient
-      .post("/api/designer-uploads/" + id, formdata)
+    await apiClient.post("/api/designer-uploads/" + id, formdata)
       .then(({ data }) => {
         setLoading(false);
         setFiles([]);
@@ -333,13 +339,6 @@ const FileUploadContainer = ({
         <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
           <div className={classes.uploadedfileMainDiv}>
             <div className={classes.fileDiv2}>
-              {/* <IconButton
-                className={classes.iconBtn}
-                TouchRippleProps={false}
-                style={{ margin: "30px", padding: "0px" }}
-              >
-                {UploadIcon}
-              </IconButton> */}
               <img src={pdfImg} />
               <p className={classes.fileDiv2p}>File Name</p>
             </div>
@@ -406,6 +405,13 @@ const FileUploadContainer = ({
           >
             Upload Files
           </button>
+          {/* <FileUpload
+            files={files}
+            filesType={filesType}
+            handleSubmit={handleSubmit}
+            loading={loading}
+            removeFiles={removeFiles}
+          /> */}
           <input
             id="new-file-upload"
             type="file"
@@ -436,7 +442,6 @@ const FileUploadContainer = ({
             <img src={designerImg} className="adminImg1" />
             <div>
               <h3 className={classes.adminDiv2h3}>Designer b.</h3>
-
               <p className={classes.adminDiv2p}>(you)</p>
             </div>
           </div>
