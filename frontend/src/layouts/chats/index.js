@@ -481,7 +481,7 @@ const stylesProps2 = {
   },
 };
 
-const sendButton = {
+const sendButton = {  
   borderRadius: "4px !important",
   minHeight: "42px",
   border: "1px solid #444",

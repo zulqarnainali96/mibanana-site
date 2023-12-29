@@ -4,15 +4,16 @@ import DialogTitle from '@mui/material/DialogTitle'
 import React, { useEffect, useRef, useState } from 'react'
 import MDButton from 'components/MDButton'
 import Grid from '@mui/material/Grid'
-import { CheckBox, Close, CloseOutlined, Remove } from '@mui/icons-material'
+import { Close, CloseOutlined, Remove } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
 import MDInput from 'components/MDInput'
 import PropTypes from 'prop-types'
 import MDTypography from 'components/MDTypography'
 import MDBox from 'components/MDBox'
-import { DialogActions, Divider, FormControlLabel } from '@mui/material'
+import { Checkbox, DialogActions, Divider, FormControlLabel } from '@mui/material'
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import MoonLoader from 'react-spinners/MoonLoader'
+import { makeStyles } from '@mui/styles'
 
 const BrandModal = styled(Dialog)(({ theme }) => ({
     // '& .MuiInputBase-root': {
@@ -61,14 +62,15 @@ const BrandForm = ({
     setImage,
     setFilesArray,
     filesArray,
-    logoCheckbox,
-    handleCheckbox,
+    checkboxState,
+    setCheckState,
 
 }) => {
-    const logoref = useRef(null)
-    const checking = () => {
-        // console.log(logoref)
-    }
+    const logoRef = useRef(null)
+    const moodboard = useRef(null)
+    const brandGuide = useRef(null)
+    const isOthers = useRef(null)
+
     const removeImage = (name) => {
         setImage({ ...image, [name]: [] })
         setFilesArray(filesArray.filter(item => item.name !== name))
@@ -79,6 +81,30 @@ const BrandForm = ({
         setAddMore(addMoreField.filter(more => addMoreField.indexOf(more) !== index))
         setFilesArray(filesArray.filter(list => list.name !== item.name))
     }
+
+    const handleCheckboxes = (name) => {
+        console.log(name)
+        setCheckState({
+            ...checkboxState,
+            [name]: !checkboxState[name]
+        })
+    }
+    console.log(checkboxState)
+    const useStyles = makeStyles({
+        checkedCheckbox: {
+            '&.Mui-checked': {
+                '&.MuiSvgIcon-root': {
+                    backgroundImage: 'linear-gradient(red, green)',
+                },
+            }
+        },
+    });
+    const classes = useStyles();
+
+    const openLogo = (ref) => {
+        ref.current.click()
+    }
+
     useEffect(() => {
     }, [image])
 
@@ -164,20 +190,40 @@ const BrandForm = ({
                         >
                             <Grid item xxl={3} xl={3}>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel control={<CheckBox />} />
+                                    <FormControlLabel control={<Checkbox
+                                        // classes={{ checked: classes.checkedCheckbox }}
+                                        checked={checkboxState.isLogochk}
+                                        sx={{
+                                            width: 30,
+                                            height: 30,
+                                            marginRight: '0px',
+                                            marginTop: '5px',
+
+                                        }}
+                                        inputProps={{ 'aria-label': 'controlled' }}
+                                        onChange={() => handleCheckboxes('isLogochk')} />}
+                                    />
                                     <label style={Styles} htmlFor='logo' aria-label='logo'>Logo</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <CheckBox sx={{ width: 30, height: 30 }} />
-                                    <label style={Styles} htmlFor='logo' aria-label='moodboard'>Moodboard</label>
+                                    <FormControlLabel control={<Checkbox checked={checkboxState.isMoodBoardchk} sx={{ width: 30, height: 30 }}
+                                        onChange={() => handleCheckboxes('isMoodBoardchk')}
+                                    />}
+                                    />
+                                    <label style={Styles} htmlFor='moodboard' aria-label='moodboard'>Moodboard</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <CheckBox sx={{ width: 30, height: 30 }} />
-                                    <label style={Styles} htmlFor='logo' aria-label='guidelines'>Brand Guidelines</label>
+                                    <FormControlLabel control={<Checkbox checked={checkboxState.isBrandGuidechk} sx={{ width: 30, height: 30 }}
+                                        onChange={() => handleCheckboxes('isBrandGuidechk')}
+                                    />}
+                                    />
+                                    <label style={Styles} htmlFor='brand-guidelines' aria-label='guidelines'>Brand Guidelines</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <CheckBox sx={{ width: 30, height: 30 }} />
-                                    <label style={Styles} htmlFor='logo' aria-label='others'>Others</label>
+                                    <FormControlLabel control={<Checkbox checked={checkboxState.isothers} sx={{ width: 30, height: 30 }}
+                                        onChange={() => handleCheckboxes('isothers')} />}
+                                    />
+                                    <label style={Styles} htmlFor='Others' aria-label='others'>Others</label>
                                 </AlignGrid>
                             </Grid>
                             <Grid item xxl={9} xl={9} lg={9} mb={1.5}>
@@ -195,11 +241,16 @@ const BrandForm = ({
                                     <MDBox display="flex" flexDirection="column">
                                         <MDInput
                                             type="text"
-                                            sx={inputStyles}
+                                            sx={{
+                                                ...inputStyles,
+                                                "& fieldset": {
+                                                    opacity: checkboxState.isLogochk ? 1 : '0.2',
+                                                    backgroundColor: '#cccccca1'
+                                                },
+                                            }}
                                             value={image.upload_logo?.length ? image.upload_logo[0]?.name : ''}
                                             disabled
                                         />
-                                        {/* <span style={{ fontSize: '12px' }}>allowed file png, jpg, jpeg, svg</span> */}
                                     </MDBox>
                                     &nbsp; &nbsp;
                                     <label htmlFor='upload-logo' style={{ position: 'relative' }}>
@@ -209,19 +260,21 @@ const BrandForm = ({
                                             color="warning"
                                             type="button"
                                             sx={buttonStyles}
-                                            onClick={checking}
+                                            onClick={() => openLogo(logoRef)}
+                                            disabled={!checkboxState.isLogochk}
                                         >
                                             Upload Logo
                                         </MDButton>
-                                        <MDInput
+                                        <input
                                             type="file"
-                                            ref={logoref}
-                                            hidden
+                                            ref={logoRef}
+                                            hidden={true}
                                             name="upload_logo"
-                                            sx={uploadImage}
+                                            style={uploadImage}
                                             accept=".ai, .eps, .psd, .jpg, .png, .pdf, .svg"
                                             id="upload-logo"
                                             onChange={handleFileUpload}
+                                            disabled={!checkboxState.isLogochk}
                                         />
                                     </label>
 
@@ -239,9 +292,15 @@ const BrandForm = ({
                                         onClick={() => removeImage('upload_moodboard')} /> : null}
                                     <MDBox display="flex" flexDirection="column">
                                         <MDInput
-                                            sx={inputStyles}
+                                            sx={{
+                                                ...inputStyles,
+                                                "& fieldset": {
+                                                    opacity: checkboxState.isMoodBoardchk ? 1 : '0.2',
+                                                    backgroundColor: '#cccccca1'
+                                                },
+                                            }}
                                             value={image.upload_moodboard.length ? image.upload_moodboard[0]?.name : ''}
-                                            disabled
+                                            disabled={!checkboxState.isMoodBoardchk}
 
                                         />
                                         {/* <span style={{ fontSize: '12px' }}>allowed file png, jpg, jpeg</span> */}
@@ -254,19 +313,22 @@ const BrandForm = ({
                                             color="warning"
                                             type="button"
                                             sx={buttonStyles}
+                                            onClick={() => openLogo(moodboard)}
+                                            disabled={!checkboxState.isMoodBoardchk}
                                         >
                                             Upload Moodboard
                                         </MDButton>
-                                        <MDInput
+                                        <input
                                             type="file"
-                                            ref={logoref}
+                                            ref={moodboard}
                                             hidden
-                                            sx={uploadImage}
+                                            style={uploadImage}
                                             accept=".ai, .eps, .psd, .jpg, .png, .pdf, .svg"
                                             // accept="image/.png,.jpg,.jpeg"
                                             name="upload_moodboard"
                                             id="upload-moodboard"
                                             onChange={handleFileUpload}
+                                            disabled={!checkboxState.moodboard}
                                         />
                                     </label>
                                 </AlignGrid>
@@ -282,7 +344,14 @@ const BrandForm = ({
                                         }}
                                         onClick={() => removeImage('replace_brand_guidelines')} /> : null}
                                     <MDBox display="flex" flexDirection="column">
-                                        <MDInput sx={inputStyles}
+                                        <MDInput
+                                            sx={{
+                                                ...inputStyles,
+                                                "& fieldset": {
+                                                    opacity: checkboxState.isBrandGuidechk ? 1 : '0.2',
+                                                    backgroundColor: '#cccccca1'
+                                                },
+                                            }}
                                             value={image.replace_brand_guidelines.length ? image.replace_brand_guidelines[0]?.name : ''}
                                             disabled
 
@@ -297,18 +366,21 @@ const BrandForm = ({
                                             color="warning"
                                             type="button"
                                             sx={buttonStyles}
-                                            onClick={checking}
+                                            onClick={() => openLogo(brandGuide)}
+                                            disabled={!checkboxState.isBrandGuidechk}
                                         >
                                             Replace Brand Guidelines
                                         </MDButton>
-                                        <MDInput
+                                        <input
                                             type="file"
+                                            ref={brandGuide}
                                             hidden
-                                            sx={uploadImage}
+                                            style={uploadImage}
                                             accept=".ai, .eps, .psd, .jpg, .png, .pdf, .svg"
                                             name="replace_brand_guidelines"
                                             id="upload-guide-lines"
                                             onChange={handleFileUpload}
+                                            disabled={!checkboxState.isBrandGuidechk}
                                         />
                                     </label>
                                 </AlignGrid>
@@ -323,9 +395,15 @@ const BrandForm = ({
                                             padding: '2px',
                                         }}
                                         onClick={() => removeImage('upload_more')} /> : null}
-
                                     <MDBox display="flex" flexDirection="column">
-                                        <MDInput sx={inputStyles}
+                                        <MDInput
+                                            sx={{
+                                                ...inputStyles,
+                                                "& fieldset": {
+                                                    opacity: checkboxState.isothers ? 1 : '0.2',
+                                                    backgroundColor: '#cccccca1'
+                                                },
+                                            }}
                                             value={image.upload_more.length ? image.upload_more[0]?.name : ''}
                                             disabled
                                         />
@@ -339,19 +417,22 @@ const BrandForm = ({
                                             color="warning"
                                             type="button"
                                             sx={buttonStyles}
-                                            onClick={checking}
+                                            onClick={() => openLogo(isOthers)}
+                                            disabled={!checkboxState.isothers}
                                         >
                                             Upload More..
                                         </MDButton>
-                                        <MDInput
+                                        <input
                                             type="file"
+                                            ref={isOthers}
                                             hidden
                                             multiple
-                                            sx={uploadImage}
+                                            style={uploadImage}
                                             accept=".ai, .eps, .psd, .jpg, .jpeg, .png, .pdf, .svg"
                                             name="upload_more"
                                             id="upload-more"
                                             onChange={handleFileUpload}
+                                            disabled={!checkboxState.isothers}
                                         />
                                     </label>
                                 </AlignGrid>
@@ -363,13 +444,12 @@ const BrandForm = ({
                                     <React.Fragment key={i}>
                                         <Grid item xxl={3} xl={3}>
                                             <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                                <CheckBox sx={{ width: 30, height: 30 }} defaultChecked />
+                                                <Checkbox sx={{ width: 30, height: 30 }} defaultChecked />
                                                 <label style={Styles} htmlFor={`logo${item.name}`} aria-label='logo'>{item.name}</label>
                                             </AlignGrid>
                                         </Grid>
                                         <Grid item xxl={9} xl={9} lg={9} mb={1.5}>
                                             <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
-
                                                 <Remove
                                                     fontSize='medium'
                                                     sx={{
@@ -382,7 +462,6 @@ const BrandForm = ({
                                                         // top : '0px'
                                                     }}
                                                     onClick={() => removeAddField(item)} />
-                                                {/* <MDBox display="flex" flexDirection="column"> */}
                                                 <MDInput
                                                     sx={inputStyles}
                                                     type="text"
@@ -402,7 +481,6 @@ const BrandForm = ({
                                                     </MDButton>
                                                     <MDInput
                                                         type="file"
-                                                        ref={logoref}
                                                         hidden
                                                         name={item?.name}
                                                         onChange={handleFileUpload}
@@ -492,6 +570,7 @@ const submitButton = {
 const inputStyles = {
     // paddingBlock: '.8rem',
     borderRadius: '0px !important',
+
     "& > .MuiInputBase-root": {
         width: '300px',
         height: '24px',
