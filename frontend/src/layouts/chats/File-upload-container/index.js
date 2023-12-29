@@ -1,4 +1,4 @@
-import { Grid, IconButton } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import { UploadIcon } from "assets/mi-banana-icons/upload-icon";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
@@ -313,13 +313,28 @@ const FileUploadContainer = ({
   // }, [re_render_chat])
 
   return (
-    <MDBox className={classes.Container}>
-      <Grid>
-        <div className={classes.driveDiv}>
-          <p>DRIVE</p>
-        </div>
-      </Grid>
+    <MDBox
+      sx={{
+        bgcolor: "#F6F6E8",
+        px:1
+      }}
+    >
+      <MDTypography
+        sx={({ palette: { primary } }) => ({
+          //   backgroundColor: primary.main,
+          padding: "10px",
+          borderTopLeftRadius: "4px",
+          borderTopRightRadius: "6px",
+          color: "gray",
+        })}
+        variant="h4"
+        pb={1}
+      >
+        DRIVE
+        {/* {personProject()?.project_title ? personProject().project_title : ""} */}
+      </MDTypography>
       <hr />
+      <Box sx={{background:"#fff",mt:1, pt:1}}>
       <Grid>
         <div className={classes.uploadbtndiv}>
           <button className={classes.uploadbtn}>Files</button>
@@ -389,11 +404,11 @@ const FileUploadContainer = ({
           </div>
         </Grid>
       </Grid>
-
       <Grid container>
         <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>
-          <div className={classes.dropfileDiv}>
-            <IconButton className={classes.iconBtn} TouchRippleProps={false}>
+          <label htmlFor="new-file-upload">
+          <div className={classes.dropfileDiv} >
+            <IconButton className={classes.iconBtn} TouchRippleProps={false} >
               {UploadIcon}
             </IconButton>
             <p>Upload or drop file right here.</p>
@@ -415,12 +430,15 @@ const FileUploadContainer = ({
             onChange={handleFileUpload}
             multiple
           />
+          </label>
         </Grid>
         <Grid item xxl={3} xl={3} lg={3} md={3} xs={3}></Grid>
       </Grid>
+      </Box>
+      
       <Grid container className={classes.adminDivGrid}>
         <div className={classes.adminDiv1}>
-          <h2 className={classes.adminDiv1h2}>Author</h2>
+          <h4 className={classes.adminDiv1h2}>Author</h4>
           <div className="adminDiv2">
             <img src={adminImg} className="adminImg1" />
             <div>
@@ -431,7 +449,7 @@ const FileUploadContainer = ({
           </div>
         </div>
         <div className={classes.adminDiv1}>
-          <h2 className={classes.adminDiv1h2}>Team Member</h2>
+          <h4 className={classes.adminDiv1h2}>Team Member</h4>
           <div className="adminDiv2">
             <img src={designerImg} className="adminImg1" />
             <div>
@@ -442,7 +460,7 @@ const FileUploadContainer = ({
           </div>
         </div>
         <div className={classes.adminDiv1}>
-          <h2 className={classes.adminDiv1h2}>Brand</h2>
+          <h4 className={classes.adminDiv1h2}>Brand</h4>
           <div className="adminDiv2">
             <img src={UserImg} className="adminImg1" />
             <div>
@@ -454,28 +472,28 @@ const FileUploadContainer = ({
         </div>
       </Grid>
       <hr />
-      <div className={classes.catdivmain}>
+      <Box p={2} className={classes.catdivmain}>
         <div className={classes.catdiv1}>
-          <h2 className={classes.adminDiv1h2}>Category</h2>
-          <p>Graphic Design</p>
+          <h4 className={classes.adminDiv1h2}>Category</h4>
+          <Typography variant="subtitle1" fontWeight={500}>Graphic Design</Typography>
         </div>
         <div className={classes.catdiv1}>
-          <h2 className={classes.adminDiv1h2}>Type</h2>
-          <p>Book Cover</p>
+          <h4 className={classes.adminDiv1h2}>Type</h4>
+          <Typography variant="subtitle1" fontWeight={500}>Book Cover</Typography>
         </div>
         <div className={classes.catdiv1}>
-          <h2 className={classes.adminDiv1h2}>Description</h2>
-          <p>Lorem ipsum dolor sit amet,</p>
+          <h4 className={classes.adminDiv1h2}>Description</h4>
+          <Typography variant="subtitle1" fontWeight={500}>Lorem ipsum dolor sit amet,</Typography>
         </div>
         <div className={classes.catdiv1}>
-          <h2 className={classes.adminDiv1h2}>Size</h2>
-          <p>1024 X 1440px</p>
+          <h4 className={classes.adminDiv1h2}>Size</h4>
+          <Typography variant="subtitle1" fontWeight={500}>1024 X 1440px</Typography>
         </div>
         <div className={classes.catdiv1}>
-          <h2 className={classes.adminDiv1h2}>Details</h2>
-          <p>Active</p>
+          <h4 className={classes.adminDiv1h2}>Details</h4>
+          <Typography variant="subtitle1" fontWeight={500}>Active</Typography>
         </div>
-      </div>
+      </Box>
       {/* <MDBox className={classes.mainImageContainer}>
         {files.length > 0 || filesType.length > 0 ? (
           <FileUpload

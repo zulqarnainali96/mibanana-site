@@ -28,7 +28,7 @@ import SuccessModal from "components/SuccessBox/SuccessModal";
 import { socketIO } from "layouts/sockets";
 import FileUploadContainer from "./File-upload-container";
 import { currentUserRole } from "redux/global/global-functions";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 // https://socket-dot-mi-banana-401205.uc.r.appspot.com
 // http://34.125.239.154
 
@@ -294,21 +294,14 @@ const Chating = ({ reduxState, reduxActions }) => {
       {/* <DashboardNavbar /> */}
       <FileModal title="Files" open={modalState} setOpen={setModalState} />
       <SuccessModal open={open} msg={respMessage} onClose={handleClose} width="30%" />
-      <MDBox width="100%" className="controll-fontSize" mt="25px">
-        <Grid container spacing={2} height={"90vh"} paddingInline={"25px"}>
-          <Grid
-            item
-            xxl={6}
-            xl={6}
-            lg={6}
-            md={12}
-            xs={12}
-            sx={{
-              bgcolor: "#F6F6E8",
-            }}
-          >
+      <MDBox width="100%" className="controll-fontSize">
+        <Grid container spacing={0} paddingInline={"25px"} my={5} justifyContent="space-between">
+          <Grid item xxl={6} xl={5.8} lg={5.9} md={12} xs={12}>
             <MDBox
-            // {...styleProps}
+              // {...styleProps}
+              sx={{
+                bgcolor: "#F6F6E8",
+              }}
             >
               <MDTypography
                 sx={({ palette: { primary } }) => ({
@@ -532,15 +525,19 @@ const Chating = ({ reduxState, reduxActions }) => {
                                             style={{
                                               display: "flex",
                                               gap: "8px",
+                                              justifyContent: "space-between",
                                               alignItems: "center",
                                             }}
                                           >
-                                            <p className="ff" style={{ fontSize: "11px" }}>
+                                            <Typography variant="caption" fontWeight={500} >
                                               {item.name}
-                                              <span style={{ fontSize: "11px" }}>
+                                              <span style={{ fontSize: "11px",fontWeight:'400' }}>
                                                 {" (" + item?.role + ")"}
                                               </span>
-                                            </p>
+                                            </Typography>
+                                            <Typography variant="button">
+                                              {item.time_data ? item.time_data : null}
+                                            </Typography>
                                           </Box>
                                           <Box sx={{ p: 2 }} className="message-content">
                                             {item.message}
@@ -554,9 +551,7 @@ const Chating = ({ reduxState, reduxActions }) => {
                                           fontWeight: "400",
                                           color: "#444",
                                         }}
-                                      >
-                                        {item.time_data ? item.time_data : null}
-                                      </span>
+                                      ></span>
                                     </pre>
                                   );
                                 })
@@ -634,7 +629,7 @@ const Chating = ({ reduxState, reduxActions }) => {
               </Grid>
             </MDBox>
           </Grid>
-          <Grid item xxl={6} xl={6} lg={6} md={12} xs={12}>
+          <Grid item xxl={6} xl={5.8} lg={5.9} md={12} xs={12}>
             {/* <CustomerFiles setRespMessage={setRespMessage} openSuccessSB={openSuccessSB} openErrorSB={openErrorSB} /> */}
             <FileUploadContainer
               setRespMessage={setRespMessage}
