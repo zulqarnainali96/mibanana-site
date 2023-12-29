@@ -392,7 +392,7 @@ const FileUploadContainer = ({
 
       <Grid container>
         <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>
-          <div className={classes.dropfileDiv}>
+          <div className={classes.dropfileDiv} onClick={openFileSelect}>
             <IconButton className={classes.iconBtn} TouchRippleProps={false}>
               {UploadIcon}
             </IconButton>
