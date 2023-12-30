@@ -37,6 +37,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const [loading3, setLoading3] = useState(false)
   const [loading4, setLoading4] = useState(false)
   const [loading5, setLoading5] = useState(false)
+  const [loading6, setLoading6] = useState(false)
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -48,14 +49,11 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const [errorSB, setErrorSB] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
   const [respMessage, setRespMessage] = useState("")
-
-
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
 
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
-
   const func = (value) => dispatch(getCustomerProject(value))
 
   const deleteProject = async () => {
@@ -172,6 +170,45 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
         }, 900)
       })
   }
+  const projectOngoing = async () => {
+    setLoading6(true)
+    if (!item._id) {
+      setRespMessage('ID not provided')
+      setLoading6(false)
+      setTimeout(() => {
+        openErrorSB()
+      }, 1000)
+      return
+    }
+    const id = item._id
+    const data = {
+      user: item.user
+    }
+    await apiClient.get('/api/ongoing-project/' + id, data)
+      .then(({ data }) => {
+        if (data.message) resonseMessage(data.message)
+        setLoading6(false)
+        setTimeout(() => {
+          getProjectData(userid, func)
+          successSBNot()
+        }, 900)
+      })
+      .catch((err) => {
+        if (err.response) {
+          setLoading6(false)
+          const { message } = err.response.data
+          resonseMessage(message)
+          setTimeout(() => {
+            errorSBNot()
+          }, 900)
+        }
+        setLoading6(false)
+        resonseMessage(err.message)
+        setTimeout(() => {
+          errorSBNot()
+        }, 900)
+      })
+  }
   const projectSubmitted = async () => {
     setLoading4(true)
     if (!item._id) {
@@ -279,11 +316,15 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     setAnchorEl(null);
   };
 
+  const ActionItem = () => {
+
+  }
+
   return (
     <MDBox>
       <MDBox onClick={handleMenuOpen}>
         {/* <MoreVertIcon onClick={handleMenuOpen} sx={{ height: "2em", fontSize: '27px !important', fill: anchorEl ? "white" : "black" }} /> */}
-        <svg xmlns="http://www.w3.org/2000/svg" className="active-svg" width="27" height="27" fill="none"><path stroke="inherit" stroke-linecap="round" stroke-linejoin="round" d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
+        <svg xmlns="http://www.w3.org/2000/svg" className="active-svg" width="27" height="27" fill="none"><path stroke="inherit" stroke-linecap="round" stroke-linejoin="round" d="M21 11a5 6 0 1 0 0-10 6 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
         </svg>
       </MDBox>
       {children ? children :
@@ -301,6 +342,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
           {role?.customer ? <MenuItemDropdown loading={loading2} onClick={duplicateProject} title={"Duplicate"} /> : (
             <MenuItemDropdown loading={loading5} onClick={projectAttend} title={"Attend"} />
           )}
+          {!role?.customer && <MenuItemDropdown loading={loading6} onClick={projectOngoing} title={"Ongoing"} />}
           {role?.customer ? <MenuItemDropdown loading={loading3} onClick={projectCompleted} title={"Completed"} /> : (
             <MenuItemDropdown loading={loading4} onClick={projectSubmitted} title={"Submitted"} />
           )}

@@ -63,8 +63,7 @@ function DashboardNavbar({ absolute, light, isMini, reduxActions, reduxState, ch
   const { list } = useRightSideList()
 
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;``
-
+  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);

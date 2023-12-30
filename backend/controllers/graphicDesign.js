@@ -361,6 +361,31 @@ const projectAttend = async (req, res) => {
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
+const projectOngoing = async (req, res) => {
+    const id = req.params.id
+    if (!id) {
+        return res.status(400).send({ message: 'ID not found' })
+    }
+    try {
+        const findproject = await graphicDesignModel.findById(id)
+        if (findproject) {
+            const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'Ongoing' })
+            if (updatingStatus) {
+                return res.status(201).send({ message: 'Project Attended' })
+            }
+            else {
+                return res.status(400).send({ message: 'Found error while Updating Project' })
+
+            }
+        } else {
+            return res.status(404).send({ messsage: 'Project Not Found' })
+        }
+
+    } catch (err) {
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+}
+
 const projectSubmitted = async (req, res) => {
     const id = req.params.id
     if (!id) {
@@ -386,7 +411,7 @@ const projectSubmitted = async (req, res) => {
     }
 }
 
-module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectSubmitted, deleteCustomerFiles }
+module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectSubmitted, deleteCustomerFiles, projectOngoing }
 
 
 // [

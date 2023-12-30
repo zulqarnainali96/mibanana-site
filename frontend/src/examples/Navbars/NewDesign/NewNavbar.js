@@ -356,9 +356,19 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       }}
       open={Boolean(openMenu)}
       onClose={handleCloseMenu}
-      sx={{ mt: 2, height: 400, borderRadius: '10px', padding: '10px', }}
+      sx={{
+        mt: 2,
+        height: 400,
+        borderRadius: '0px',
+        padding: '10px',
+
+      }}
     >
-      {userNewChatMessage?.length > 0 && <MDButton variant="filled" color="info" p={1} sx={{ width: '100%' }} onClick={clearAllNotfications}>clear all message</MDButton>}
+      {userNewChatMessage?.length > 0 && (
+        <MDButton variant="filled" color="info" p={1} sx={{ width: '100%', fontsFamily: fontsFamily.poppins }} onClick={clearAllNotfications}>
+          clear all message
+        </MDButton>
+      )}
       {userNewChatMessage?.length > 0 ? userNewChatMessage.map((newMsg, i) => (
         <MDBox
           display="flex"
@@ -367,17 +377,16 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
           p={.8}
           mb={.2}
           width="230px"
-          borderRadius="0px "
           gap="5px"
-          sx={{ backgroundColor: newMsg?.view ? "#ccc" : "white", ":hover": { backgroundColor: '#ddd', cursor: 'pointer' } }}
+          sx={{ backgroundColor: newMsg?.view ? "#ccc" : "white", ":hover": { backgroundColor: '#ddd', cursor: 'pointer', borderRadius: '0px !important' } }}
           onClick={() => clearIncomingMsg(newMsg, i)}
         >
-          <MDTypography fontSize="medium">{newMsg?.project_title}</MDTypography>
+          <MDTypography fontSize="medium" fontWeight="bold" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.yellowTextColor }}>{newMsg?.project_title}</MDTypography>
           <MDBox display="flex" gap="8px" width="100%">
             {newMsg?.avatar ? <img src={newMsg?.avatar} loading="lazy" width={40} height={40} style={{ borderRadius: '20px' }} /> : <img src={DefaultAvatar} loading="lazy" width={40} height={40} style={{ borderRadius: '20px' }} />}
             <MDBox display="flex" flexDirection="column" gap="5px" width="100%">
-              <MDTypography fontSize="small">{newMsg?.message}</MDTypography>
-              <MDTypography fontSize="small">{"New Message from "}<b style={{ display: 'block' }}>{newMsg?.role}</b></MDTypography>
+              <MDTypography fontSize="small" fontWeight="300" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.yellowTextColor }}>{newMsg?.message}</MDTypography>
+              <MDTypography fontSize="small" fontWeight="300" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.yellowTextColor }}>{"New Message from "}<b style={{ display: 'block' }}>{newMsg?.role}</b></MDTypography>
             </MDBox>
           </MDBox>
         </MDBox>
@@ -529,11 +538,13 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
                   </Icon>
                 </MDBox>
               </Grid> */}
-              <Grid item xxl={6} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: {
-                paddingTop:'5px', 
-                paddingBottom: '14px', 
-                textAlign: 'center' 
-                } })}>
+              <Grid item xxl={6} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({
+                [breakpoints.only('xs')]: {
+                  paddingTop: '5px',
+                  paddingBottom: '14px',
+                  textAlign: 'center'
+                }
+              })}>
                 <ProjectButton
                   variant="contained"
                   size='medium'

@@ -26,9 +26,11 @@ import NewProjectsTable from "examples/new-table";
 import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
 import "./status-box/status-style.css"
+import { currentUserRole } from "redux/global/global-functions";
 
 function Dashboard({ reduxActions, reduxState }) {
   const project_list = reduxState.project_list?.CustomerProjects
+  const role = currentUserRole(reduxState)
   const user = reduxState?.userDetails
   const [errorSB, setErrorSB] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
@@ -281,7 +283,7 @@ function Dashboard({ reduxActions, reduxState }) {
       </MDTypography>,
       createdAt: <MDTypography variant="p" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>{readableTimestamp}</MDTypography>,
       action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} />
+        <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} />
       </MDTypography>
 
     }
@@ -297,10 +299,10 @@ function Dashboard({ reduxActions, reduxState }) {
   ]
   return (
     <DashboardLayout>
-      <MDBox p={"10px 12px"} mt={'0px'} sx={{backgroundColor:'white !important'}}>
+      <MDBox p={"10px 12px"} mt={'0px'} sx={{ backgroundColor: 'white !important' }}>
         <Grid container justifyContent={"center"} sx={{ gap: '10px' }}>
           <StatusBox is400={is400}>
-            <Grid container alignItems={"center"} sx={{  }}>
+            <Grid container alignItems={"center"} sx={{}}>
               <Grid item xxl={8} xl={8} lg={7} md={7} xs={7} >
                 <MDTypography className={`${styles.headingStyle} heading-style`} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{projectCompleted?.length > 0 ? projectCompleted?.length : 0}</MDTypography>
               </Grid>
@@ -311,7 +313,7 @@ function Dashboard({ reduxActions, reduxState }) {
             </Grid>
           </StatusBox>
           <StatusBox is400={is400}>
-            <Grid container alignItems={"center"} sx={{  }}>
+            <Grid container alignItems={"center"} sx={{}}>
               <Grid item xxl={8} xl={8} lg={7} md={7} xs={7} >
                 <MDTypography className={styles.headingStyle} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{sumbitAndOngoing()}</MDTypography>
               </Grid>
@@ -322,7 +324,7 @@ function Dashboard({ reduxActions, reduxState }) {
             </Grid>
           </StatusBox>
           <StatusBox is400={is400}>
-            <Grid container alignItems={"center"} sx={{  }}>
+            <Grid container alignItems={"center"} sx={{}}>
               <Grid item xxl={8} xl={8} lg={7} md={7} xs={7} >
                 <MDTypography className={styles.headingStyle} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{projectQueue?.length > 0 ? projectQueue?.length : 0}</MDTypography>
               </Grid>
@@ -332,7 +334,7 @@ function Dashboard({ reduxActions, reduxState }) {
               </Grid>
             </Grid>
           </StatusBox>
-          <Grid item xxl={11} xl={11} lg={11} md={11} xs={12} display={"flex"} justifyContent={"center"} alignItems={"center"} sx={({breakpoints : {}})=>{
+          <Grid item xxl={11} xl={11} lg={11} md={11} xs={12} display={"flex"} justifyContent={"center"} alignItems={"center"} sx={({ breakpoints: { } }) => {
           }}>
             <Card sx={cardStyles}>
               <MDBox>

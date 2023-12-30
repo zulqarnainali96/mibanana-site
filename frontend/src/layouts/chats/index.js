@@ -292,7 +292,7 @@ const Chating = ({ reduxState, reduxActions }) => {
   return (
     <DashboardLayout>
       <FileModal title="Files" open={modalState} setOpen={setModalState} />
-      <SuccessModal open={open} msg={respMessage} onClose={handleClose} width="30%" />
+      <SuccessModal open={open} msg={respMessage} onClose={handleClose} width="30%" title="SUCCESS" sideRadius={false} />
       <Grid container spacing={2} height="100%" paddingInline={"25px"}>
         <Grid
           item
@@ -324,7 +324,7 @@ const Chating = ({ reduxState, reduxActions }) => {
             justifyContent={"space-between"}
             spacing={4}
             alignItems={"center"}>
-            {isManager ? (
+            {/* {isManager ? (
               <Grid item xxl={12} alignSelf={"flex-end"} textAlign={"right"}>
                 <MDButton
                   disabled={loading}
@@ -337,7 +337,7 @@ const Chating = ({ reduxState, reduxActions }) => {
                   Submit
                 </MDButton>
               </Grid>
-            ) : null}
+            ) : null} */}
             <Grid item xxl={12} lg={12} md={12} xs={12} position={"relative"}>
               <Grid
                 container
