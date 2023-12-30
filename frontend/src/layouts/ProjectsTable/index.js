@@ -322,23 +322,25 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
         setPersonName("")
         reduxActions.getCustomerProject(copyProjectList)
     }
-    
+
     return (
         <DashboardLayout>
-            <MDBox p={"24px 12px"} mt={'15px'}>
+            <MDBox p={'24px 12px'} sx={({breakpoints})=>({[breakpoints.only('xs')]: {padding : '24px 24px'}})} mt={'0px'}>
                 <Grid container spacing={6}>
                     <Grid item xs={12} pt={0}>
                         <MDTypography pl={"15px"} sx={titleStyles} >miProjects</MDTypography>
                         <Grid container justifyContent={"space-between"} alignItems={"center"} width={"100%"}>
-                            <Grid item xxl={8} display={'flex'}>
-                                <Grid item xl={3} lg={3} md={3}>
-                                    <ProjectStatus data={statuses} personName={personName} handleChange={handleStatusChange} status={"STATUS"} clearValue={clearValue} />
-                                </Grid>
-                                <Grid item xl={3} lg={3} md={3}>
-                                    <ProjectStatus data={reduxState.category} personName={personName} handleChange={handleCategoryChange} clearValue={clearValue} status={"CATEGORY"} />
-                                </Grid>
-                                <Grid item xl={3} lg={3} md={3}>
-                                    <ProjectStatus data={filterBrand} personName={personName} handleChange={handleBrandChange} status={"BRAND"} clearValue={clearValue} />
+                            <Grid item xxl={8} xl={12} lg={12} md={12} xs={12} display={'flex'}>
+                                <Grid container rowSpacing={2}>
+                                    <Grid item xl={3} lg={3} md={3} xs={12}>
+                                        <ProjectStatus data={statuses} personName={personName} handleChange={handleStatusChange} status={"STATUS"} clearValue={clearValue} />
+                                    </Grid>
+                                    <Grid item xl={3} lg={3} md={3} xs={12}>
+                                        <ProjectStatus data={reduxState.category} personName={personName} handleChange={handleCategoryChange} clearValue={clearValue} status={"CATEGORY"} />
+                                    </Grid>
+                                    <Grid item xl={3} lg={3} md={3} xs={12}>
+                                        <ProjectStatus data={filterBrand} personName={personName} handleChange={handleBrandChange} status={"BRAND"} clearValue={clearValue} />
+                                    </Grid>
                                 </Grid>
                             </Grid>
                             <Grid item xxl={4} xl={4} textAlign={"right"}>
