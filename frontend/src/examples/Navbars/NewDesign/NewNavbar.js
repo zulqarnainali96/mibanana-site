@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import MDBox from 'components/MDBox'
-import { Badge, Button, Grid, Icon, Menu, useMediaQuery } from '@mui/material'
+import { Badge, Button, Grid, Icon, IconButton, Menu, useMediaQuery } from '@mui/material'
 import MibananaIcon from 'assets/new-images/navbars/mibanana-logo.png'
 import { useStyles } from './new-navbar-style'
 // import personImage from 'assets/new-images/navbars/Rectangle.png'
@@ -30,6 +30,15 @@ import SuccessModal from 'components/SuccessBox/SuccessModal'
 import CreateProject1 from '../Form-modal/new'
 import useRightSideList from 'layouts/Right-side-drawer-list/useRightSideList'
 import RightSideDrawer from 'components/RightSideDrawer'
+import { useMaterialUIController } from 'context'
+import {
+  navbar,
+  navbarContainer,
+  navbarRow,
+  navbarIconButton,
+  navbarMobileMenu,
+} from "examples/Navbars/DashboardNavbar/styles";
+import { setMiniSidenav } from 'context'
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions }) => {
@@ -79,6 +88,10 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
     file_formats: [],
     specific_software_names: '',
   })
+  const [controller, dispatch] = useMaterialUIController();
+  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
+
+  const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -291,6 +304,23 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       })
 
   }
+  const getAllNotificationsMsg = () => {
+    const id = reduxState?.userDetails?.id
+    apiClient.get("/api/get-notifications/" + id).then(({ data }) => {
+      console.log(data)
+      localStorage.setItem('user_details', JSON.stringify({
+        ...reduxState?.userDetails,
+        ...data.userDetails,
+      }))
+      reduxActions.getUserDetails({
+        ...reduxState?.userDetails,
+        ...data.userDetails,
+      })
+      reduxActions.getUserNewChatMessage(data.userDetails?.notifications)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
 
   // Accunts Dropdown
   const renderUserMenu = () => (
@@ -337,7 +367,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
           p={.8}
           mb={.2}
           width="230px"
-          borderRadius="5px"
+          borderRadius="0px "
           gap="5px"
           sx={{ backgroundColor: newMsg?.view ? "#ccc" : "white", ":hover": { backgroundColor: '#ddd', cursor: 'pointer' } }}
           onClick={() => clearIncomingMsg(newMsg, i)}
@@ -393,6 +423,9 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       padding: '12px'
     }
   })
+  useEffect(() => {
+    getAllNotificationsMsg()
+  }, [])
 
   return (
     <Grid container className={navbarStyles.gridContainer}>
@@ -434,9 +467,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
         <img src={MibananaIcon} loading='lazy' width={"250px"} height={"54px"} />
       </Grid >
       <Grid item xxl={5} xl={8} lg={8} md={8} xs={12}>
-        <Grid container alignItems="center" sx={({ breakpoints, spacing, }) => ({
-
-        })}>
+        <Grid container alignItems="center">
           <Grid item xxl={2} xl={4} lg={2} pl={"20px"} md={4} xs={4} alignSelf={"flex-end"} sx={gridItemResponsive}>
             <img src={personImage} style={{ display: "block" }} width={"61px"} height={"61px"} />
           </Grid>
@@ -445,51 +476,77 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
             <MDTypography fontSize="medium" className={`${navbarStyles.poppins} ${navbarStyles.userRole}`}>{showPersonRoles()}</MDTypography>
           </Grid>
           <Grid item xxl={6} xl={6} lg={8} md={10} xs={12} >
-            <Grid container sx={({ breakpoints }) => ({ [breakpoints.only('xs')] : { gap: '10px' }})}>
-            <Grid item xxl={2} lg={2} md={2} xs={1.5}>
-              <Badge badgeContent={inComingMessage()} sx={({ palette: { primary } }) => ({
+            <Grid container >
+              <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
+                <Badge badgeContent={inComingMessage()} sx={({ palette: { primary } }) => ({
 
-                "& .MuiBadge-badge": { fontSize: '1rem', backgroundColor: inComingMessage() === "" ? "transparent" : primary.main, color: primary.contrastText }
-              })}>
+                  "& .MuiBadge-badge": { fontSize: '1rem', backgroundColor: inComingMessage() === "" ? "transparent" : primary.main, color: primary.contrastText }
+                })}>
+                  <div
+                    className={navbarStyles.btnContainer}
+                    onClick={handleOpenMenu}
+                  >
+                    {notificationsIcon}
+                  </div>
+                </Badge>
+              </Grid>
+              {renderMenu()}
+              <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
+                <div className={navbarStyles.btnContainer}>
+                  <RightSideDrawer list={list} />
+                </div>
+              </Grid>
+              <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
                 <div
                   className={navbarStyles.btnContainer}
-                  onClick={handleOpenMenu}
+                  onClick={handleUserProfileMenu}
                 >
-                  {notificationsIcon}
+                  <AccountCircle
+                    fontSize='large'
+                    sx={{ fill: "#F6F6E8" }} />
                 </div>
-              </Badge>
-            </Grid>
-            {renderMenu()}
-            <Grid item xxl={2} lg={2} md={2} xs={1.5}>
-              <div className={navbarStyles.btnContainer}>
-                <RightSideDrawer list={list} />
-              </div>
-            </Grid>
-            <Grid item xxl={2} lg={2} md={2} xs={1.5}>
-              <div
-                className={navbarStyles.btnContainer}
-                onClick={handleUserProfileMenu}
-              >
-                <AccountCircle
-                  fontSize='large'
-                  sx={{ fill: "#F6F6E8" }} />
-              </div>
-              {renderUserMenu()}
-            </Grid>
-            <Grid item xxl={6} lg={6} md={6} xs={6}>
-              <ProjectButton
-                variant="contained"
-                size='medium'
-                startIcon={projectIcon}
-                onClick={handleClickOpen}
-              >
-                Create Project
-              </ProjectButton>
+                {renderUserMenu()}
+              </Grid>
+              {/* <Grid item xl={2}>
+                <IconButton
+                  size="small"
+                  disableRipple
+                  color="inherit"
+                  sx={navbarMobileMenu}
+                  onClick={handleMiniSidenav}
+                >
+                  <Icon fontSize="medium">
+                    {miniSidenav ? "menu_open" : "menu"}
+                  </Icon>
+                </IconButton>
+                <MDBox
+                  className={navbarStyles.btnContainer}
+                  onClick={handleMiniSidenav}
+                  sx={navbarMobileMenu}
+                >
+                  <Icon fontSize="medium">
+                    {miniSidenav ? "menu_open" : "menu"}
+                  </Icon>
+                </MDBox>
+              </Grid> */}
+              <Grid item xxl={6} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: {
+                paddingTop:'5px', 
+                paddingBottom: '14px', 
+                textAlign: 'center' 
+                } })}>
+                <ProjectButton
+                  variant="contained"
+                  size='medium'
+                  startIcon={projectIcon}
+                  onClick={handleClickOpen}
+                >
+                  Create Project
+                </ProjectButton>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    </Grid >
+      </Grid >
     </Grid >
   )
 }

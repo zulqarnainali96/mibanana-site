@@ -63,7 +63,7 @@ function DashboardNavbar({ absolute, light, isMini, reduxActions, reduxState, ch
   const { list } = useRightSideList()
 
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
+  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;``
 
   const [openMenu, setOpenMenu] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
@@ -188,13 +188,6 @@ function DashboardNavbar({ absolute, light, isMini, reduxActions, reduxState, ch
   // Render the notifications menu
 
   function clearIncomingMsg(item, index) {
-    // let arr = []
-    // arr = []
-    // arr = [...userNewChatMessage]
-    // const newIndex = arr.findIndex((l, i) => i === index)
-    // console.log(newIndex)
-    // let obj = { ...item, view: false }
-    // arr.splice(newIndex, 1, obj)
     const userId = index
     const _id = reduxState?.userDetails?.id
     apiClient.get(`/api/udpate-notifications/${userId}/${_id}`)
@@ -457,7 +450,6 @@ function DashboardNavbar({ absolute, light, isMini, reduxActions, reduxState, ch
       })
 
   }
-
   const closeSuccessSB = () => setSuccessSB(false);
   const closeErrorSB = () => setErrorSB(false);
 
@@ -474,7 +466,6 @@ function DashboardNavbar({ absolute, light, isMini, reduxActions, reduxState, ch
       bgWhite
     />
   );
-
   const renderSuccessSB = (
     <MDSnackbar
       color="success"
@@ -488,7 +479,6 @@ function DashboardNavbar({ absolute, light, isMini, reduxActions, reduxState, ch
       bgWhite
     />
   );
-
   useEffect(() => {
     setInComingMsg(true)
   }, [userNewChatMessage])

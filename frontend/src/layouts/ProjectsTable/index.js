@@ -325,6 +325,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
 
     return (
         <DashboardLayout>
+            {/* <DashboardNavbar /> */}
             <MDBox p={'24px 12px'} sx={({breakpoints})=>({[breakpoints.only('xs')]: {padding : '24px 24px'}})} mt={'0px'}>
                 <Grid container spacing={6}>
                     <Grid item xs={12} pt={0}>
