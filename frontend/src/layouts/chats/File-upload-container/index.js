@@ -406,8 +406,10 @@ const FileUploadContainer = ({
                 <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
                   <div className={classes.uploadedfileMainDiv}>
                     <div className={classes.fileDiv2}>
-                      <img src={pdfImg} />
-                      <p className={classes.fileDiv2p}>{ver.name}</p>
+                      <div>
+                        <img src={ver.url} className="fileImg1" />
+                      </div>
+                      <p className={classes.fileDiv2p}>{ver.name.substring(0, 20)}</p>
                     </div>
                     <div className={classes.UserDiv}>
                       <img src={designerImg} className="adminImg1" />
