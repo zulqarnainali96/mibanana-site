@@ -69,6 +69,7 @@ const FileUploadContainer = ({
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const [selectedFileType, setSelectedFileType] = useState("");
+  const [selectedFilePeople, setSelectedFilePeople] = useState("");
 
   const [currentFolder, setCurrentFolder] = useState("Customer Uploads");
   const [filesType, setFilesType] = useState([]);
@@ -94,8 +95,10 @@ const FileUploadContainer = ({
   const handleFileTypeChange = (event) => {
     setSelectedFileType(event.target.value); // Update selected file type on change
   };
+  const handleFilePeopleChange = (event) => {
+    setSelectedFilePeople(event.target.value); // Update selected file type on change
+  };
 
-  console.log("version", version);
   async function clientFiles() {
     setVersion([]);
     setFileMsg("");
@@ -158,11 +161,9 @@ const FileUploadContainer = ({
     const files = event.target.files;
     let filType = [];
     for (let i = 0; i < files.length; i++) {
-      console.log("files[0]", files[0]);
       setFilesType(files[i]);
       filType.push(files[i]);
     }
-    console.log("filType12", filType);
     await handleSubmit(filType);
   };
   const deleteDesignerFiles = async (filename) => {
@@ -256,8 +257,6 @@ const FileUploadContainer = ({
       });
   };
   const customerUploadFiles = async (filType) => {
-    console.log("filTypcustomere,filType 1", filType.length);
-    console.log("filTypcustomere,filType 2", filesType.length);
     setLoading(true);
     if (filType.length === 0) return;
     const formdata = new FormData();
@@ -304,7 +303,6 @@ const FileUploadContainer = ({
   };
 
   const handleSubmit = async (filType) => {
-    console.log("role", role);
     if (role?.designer || role?.projectManager || role?.admin) {
       managerUploadFiles(filType);
     } else {
@@ -334,9 +332,12 @@ const FileUploadContainer = ({
   };
 
   useEffect(() => {
-    clientFiles();
-    // designerFiles()
+    // clientFiles();
+    designerFiles();
   }, []);
+  useEffect(() => {
+    selectedFilePeople == "designer" ? designerFiles() : clientFiles();
+  }, [selectedFilePeople]);
   // useEffect(() => {
   //     clientFiles()
   //     // designerFiles()
@@ -349,6 +350,20 @@ const FileUploadContainer = ({
 
     const formattedDate = `${day}-${month}`;
     return formattedDate;
+  };
+  const filterFunction = (files) => {
+    console.log("selectedFileType", selectedFileType, files);
+    if (selectedFileType) {
+      const filterFiles = files.filter((file) => {
+        const fileExtension = file?.name.split(".").pop();
+        console.log("fileExtension", fileExtension);
+        return fileExtension === selectedFileType;
+      });
+
+      return filterFiles;
+    } else {
+      return files;
+    }
   };
 
   return (
@@ -368,9 +383,14 @@ const FileUploadContainer = ({
             <option value="">Type</option>
             <option value="svg">SVG</option>
             <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
             <option value="pdf">PDF</option>
           </select>
-          <select value={selectedFileType} onChange={handleFileTypeChange} className="selectType1">
+          <select
+            value={selectedFilePeople}
+            onChange={handleFilePeopleChange}
+            className="selectType1"
+          >
             <option value="">People</option>
             <option value="customer">Customer</option>
             <option value="designer">Designer</option>
@@ -381,7 +401,7 @@ const FileUploadContainer = ({
       <Grid container>
         {version?.length > 0 ? (
           <>
-            {version?.map((ver) => (
+            {filterFunction(version)?.map((ver) => (
               <>
                 <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
                   <div className={classes.uploadedfileMainDiv}>

@@ -144,7 +144,7 @@ export const useStyles = makeStyles({
     border: "1px solid gray",
     background: "transparent",
     color: "black",
-    margin: "5px",
+    margin: "6px",
   },
   "uploadbtn:hover": {
     background: "#FDD700",
