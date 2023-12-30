@@ -10,7 +10,7 @@ const StatusBox = ({ children, is400 }) => {
     const [styleSetup1, setStyleSetup1] = useState(false)
     const selectBox = () => setStyleSetup1(prev => !prev)
     return (
-        <Grid item className="status-box" onClick={selectBox} xs={12} xxl={3.6} xl={3.6} md={4} lg={3} pl={0} pt={0}>
+        <Grid item className="status-box" onClick={selectBox} xs={12} xxl={3.6} xl={3.6} md={5.6} lg={3.6} pl={0} pt={0}>
             <MDBox className={`${styles.itemStyles} status-box`} sx={{ height: is400 ? "175px" : "218px" }}>
                 {children}
             </MDBox>

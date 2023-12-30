@@ -37,11 +37,11 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
     const [successSB, setSuccessSB] = useState(false);
 
     // State for Checkbox
-    const [checkState,setCheckState] = useState({
-        isLogochk : true,
-        isMoodBoardchk : true,
-        isBrandGuidechk : true,
-        isothers : true,
+    const [checkState, setCheckState] = useState({
+        isLogochk: true,
+        isMoodBoardchk: true,
+        isBrandGuidechk: true,
+        isothers: true,
     })
     const isDesignerAndManagerAdmin = reduxState.userDetails?.roles?.includes("Graphic-Designer") || reduxState.userDetails?.roles?.includes("Project-Manager") || reduxState.userDetails?.roles?.includes("Admin") ? true : false
     const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -76,7 +76,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         // setOpen(true)
         reduxActions.openBrandModalFunc(true)
     }
-    
+
     const handleClose = () => {
         // setOpen(false)
         reduxActions.openBrandModalFunc(false)
@@ -159,7 +159,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         formData.append('name', reduxState.userDetails?.name)
 
         for (let i = 0; i < filesArray.length; i++) {
-                
+
             formData.append('files', filesArray[i].files[0])
         }
         await apiClient.post("/api/brand", formData)
@@ -317,8 +317,8 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                                 )}
                         </Grid>
                     </Grid>
-                    <Grid item xxl={12}>
-                        <Card sx={{ width: "98%" }}>
+                    <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>
+                        <Card sx={{ width: "98%", mt: '20px' }}>
                             <NewProjectsTable
                                 table={{ columns, rows }}
                                 entriesPerPage={{ defaultValue: 5 }}

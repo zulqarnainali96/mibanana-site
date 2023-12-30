@@ -34,7 +34,7 @@ let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions }) => {
   const navbarStyles = useStyles()
-  const isLarge = useMediaQuery("(max-width:600px)")
+  const isLarge = useMediaQuery("(min-width:800px)")
   const [userMenu, setUserMenu] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [inComingMsg, setInComingMsg] = useState(false)
@@ -388,6 +388,11 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       }
     }
   })
+  const gridItemResponsive = ({ breakpoints }) => ({
+    [breakpoints.up('xs')]: {
+      padding: '12px'
+    }
+  })
 
   return (
     <Grid container className={navbarStyles.gridContainer}>
@@ -417,69 +422,74 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
         deleteOtherSingleFile={deleteOtherSingleFile}
       />
       <SuccessModal
-        msg={respMessage}
+        msg={"This is for testing purpose"}
         open={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
         width="30%"
+        color="#288e28"
+        title="SUCCESS"
+        sideRadius={false}
       />
-      <Grid item xxl={7} xl={7} lg={7} md={12} xs={12} textAlign={isLarge && "center"}>
-        <img src={MibananaIcon} loading='lazy' width={isLarge ? "60%" : "26%"} />
+      <Grid item xxl={7} xl={4} lg={4} md={4} xs={12} textAlign={!isLarge && "center"}>
+        <img src={MibananaIcon} loading='lazy' width={"250px"} height={"54px"} />
       </Grid >
-      <Grid item xxl={5} xl={5} lg={5} md={12} xs={12}>
-        <Grid container alignItems="center">
-          <Grid item xxl={2} xl={2} lg={2} pl={"20px"} md={2} xs={2} alignSelf={"flex-end"}>
+      <Grid item xxl={5} xl={8} lg={8} md={8} xs={12}>
+        <Grid container alignItems="center" sx={({ breakpoints, spacing, }) => ({
+
+        })}>
+          <Grid item xxl={2} xl={4} lg={2} pl={"20px"} md={4} xs={4} alignSelf={"flex-end"} sx={gridItemResponsive}>
             <img src={personImage} style={{ display: "block" }} width={"61px"} height={"61px"} />
           </Grid>
-          <Grid item xxl={4} xl={4} lg={4} md={12} xs={6}>
+          <Grid item xxl={4} xl={8} lg={10} md={8} xs={8} sx={gridItemResponsive}>
             <MDTypography className={navbarStyles.insideText}>Hello {showRoles()}!</MDTypography>
             <MDTypography fontSize="medium" className={`${navbarStyles.poppins} ${navbarStyles.userRole}`}>{showPersonRoles()}</MDTypography>
           </Grid>
-          <Grid item xxl={6} xl={6} xs={6}>
-            <Grid container spacing={0}>
-              <Grid item xxl={2} lg={2}>
-                <Badge badgeContent={inComingMessage()} sx={({ palette: { primary } }) => ({
+          <Grid item xxl={6} xl={6} lg={8} md={10} xs={12} >
+            <Grid container sx={({ breakpoints }) => ({ [breakpoints.only('xs')] : { gap: '10px' }})}>
+            <Grid item xxl={2} lg={2} md={2} xs={1.5}>
+              <Badge badgeContent={inComingMessage()} sx={({ palette: { primary } }) => ({
 
-                  "& .MuiBadge-badge": { fontSize: '1rem', backgroundColor: inComingMessage() === "" ? "transparent" : primary.main, color: primary.contrastText }
-                })}>
-                  <div
-                    className={navbarStyles.btnContainer}
-                    onClick={handleOpenMenu}
-                  >
-                    {notificationsIcon}
-                  </div>
-                </Badge>
-              </Grid>
-              {renderMenu()}
-              <Grid item xxl={2} lg={2}>
-                <div className={navbarStyles.btnContainer}>
-                  <RightSideDrawer list={list} />
-                </div>
-              </Grid>
-              <Grid item xxl={2} lg={2}>
+                "& .MuiBadge-badge": { fontSize: '1rem', backgroundColor: inComingMessage() === "" ? "transparent" : primary.main, color: primary.contrastText }
+              })}>
                 <div
                   className={navbarStyles.btnContainer}
-                  onClick={handleUserProfileMenu}
+                  onClick={handleOpenMenu}
                 >
-                  <AccountCircle
-                    fontSize='large'
-                    sx={{ fill: "#F6F6E8" }} />
+                  {notificationsIcon}
                 </div>
-                {renderUserMenu()}
-              </Grid>
-              <Grid item xxl={6} lg={6}>
-                <ProjectButton
-                  variant="contained"
-                  size='medium'
-                  startIcon={projectIcon}
-                  onClick={handleClickOpen}
-                >
-                  Create Project
-                </ProjectButton>
-              </Grid>
+              </Badge>
+            </Grid>
+            {renderMenu()}
+            <Grid item xxl={2} lg={2} md={2} xs={1.5}>
+              <div className={navbarStyles.btnContainer}>
+                <RightSideDrawer list={list} />
+              </div>
+            </Grid>
+            <Grid item xxl={2} lg={2} md={2} xs={1.5}>
+              <div
+                className={navbarStyles.btnContainer}
+                onClick={handleUserProfileMenu}
+              >
+                <AccountCircle
+                  fontSize='large'
+                  sx={{ fill: "#F6F6E8" }} />
+              </div>
+              {renderUserMenu()}
+            </Grid>
+            <Grid item xxl={6} lg={6} md={6} xs={6}>
+              <ProjectButton
+                variant="contained"
+                size='medium'
+                startIcon={projectIcon}
+                onClick={handleClickOpen}
+              >
+                Create Project
+              </ProjectButton>
             </Grid>
           </Grid>
         </Grid>
-      </Grid >
+      </Grid>
+    </Grid >
     </Grid >
   )
 }

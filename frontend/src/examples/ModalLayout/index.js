@@ -40,13 +40,14 @@ const Modal = ({
     submitFiles,
     loading,
     isBorder,
+    sideRadius,
     align,
     color,
 }) => {
     const { id } = useParams()
     return (
         <ModalLayout open={open} sx={{
-            "& .MuiDialog-paper": { maxHeight: height, maxWidth: width, width: width },
+            "& .MuiDialog-paper": { maxHeight: height, maxWidth: width, width: width, borderRadius: !sideRadius && "0px"  },
         }}>
             <DialogTitle
                 display={"flex"}

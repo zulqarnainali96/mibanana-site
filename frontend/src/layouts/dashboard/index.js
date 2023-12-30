@@ -297,42 +297,43 @@ function Dashboard({ reduxActions, reduxState }) {
   ]
   return (
     <DashboardLayout>
-      <MDBox p={"0px 12px"} mt={'15px'}>
+      <MDBox p={"10px 12px"} mt={'0px'} sx={{backgroundColor:'white !important'}}>
         <Grid container justifyContent={"center"} sx={{ gap: '10px' }}>
           <StatusBox is400={is400}>
-            <Grid container alignItems={"center"} sx={{ gap: is400 ? "12px" : "0px" }}>
-              <Grid item xxl={8} xl={8} lg={8} >
+            <Grid container alignItems={"center"} sx={{  }}>
+              <Grid item xxl={8} xl={8} lg={7} md={7} xs={7} >
                 <MDTypography className={`${styles.headingStyle} heading-style`} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{projectCompleted?.length > 0 ? projectCompleted?.length : 0}</MDTypography>
               </Grid>
-              <Grid xxl={4} xl={4} lg={4}>
+              <Grid xxl={3} xl={3} lg={5} md={5} xs={5}>
                 {checkIcon}
                 <MDTypography className={styles.headingStyle2}>Completed Projects</MDTypography>
               </Grid>
             </Grid>
           </StatusBox>
           <StatusBox is400={is400}>
-            <Grid container alignItems={"center"} sx={{ gap: is400 ? "12px" : "0px" }}>
-              <Grid item xxl={8} xl={8} lg={8} >
+            <Grid container alignItems={"center"} sx={{  }}>
+              <Grid item xxl={8} xl={8} lg={7} md={7} xs={7} >
                 <MDTypography className={styles.headingStyle} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{sumbitAndOngoing()}</MDTypography>
               </Grid>
-              <Grid xxl={3} xl={3} lg={3}>
+              <Grid xxl={3} xl={3} lg={5} md={5} xs={5}>
                 {bananaIcon}
                 <MDTypography className={styles.headingStyle2}>Active Projects</MDTypography>
               </Grid>
             </Grid>
           </StatusBox>
           <StatusBox is400={is400}>
-            <Grid container alignItems={"center"} sx={{ gap: is400 ? "12px" : "0px" }}>
-              <Grid item xxl={8} xl={8} lg={8} >
+            <Grid container alignItems={"center"} sx={{  }}>
+              <Grid item xxl={8} xl={8} lg={7} md={7} xs={7} >
                 <MDTypography className={styles.headingStyle} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{projectQueue?.length > 0 ? projectQueue?.length : 0}</MDTypography>
               </Grid>
-              <Grid xxl={3} xl={3} lg={3}>
+              <Grid xxl={3} xl={3} lg={5} md={5} xs={5}>
                 {clockIcon}
                 <MDTypography className={styles.headingStyle2}>Queue Projects</MDTypography>
               </Grid>
             </Grid>
           </StatusBox>
-          <Grid item xxl={11} xl={8} lg={8} md={8} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+          <Grid item xxl={11} xl={11} lg={11} md={11} xs={12} display={"flex"} justifyContent={"center"} alignItems={"center"} sx={({breakpoints : {}})=>{
+          }}>
             <Card sx={cardStyles}>
               <MDBox>
                 <NewProjectsTable

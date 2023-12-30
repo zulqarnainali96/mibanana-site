@@ -80,10 +80,10 @@ const routes = [
   {
     type: "collapse",
     name: "MiBanana Team",
-    key: "rtl",
+    key: "mibanana-team",
     icon: <Icon fontSize="small">handshake_outlined</Icon>,
-    route: "/rtl",
-    component: <Navbar />
+    route: "/mibanana-team",
+    // component: <Navbar />
   },
   {
     type: "collapse-dropdown",

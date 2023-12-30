@@ -43,7 +43,11 @@ function getStyles(name, personName, theme) {
 const ProjectStatus = ({ data, status, handleChange, personName, clearValue }) => {
     const theme = useTheme()
     return (
-        <FormControl sx={{ m: 2, width: 200, background: 'white', marginBottom: 1.7 }}>
+        <FormControl sx={({ breakpoints }) => ({
+            m: 2, background: 'white', marginBottom: 1.7, width: 200, [breakpoints.only('xs')] : {
+                width : '97%'
+}
+        })}>
             <InputLabel id="demo-multiple-name-label" sx={{ lineHeight: '0.9 !important', color: '#ccc !important' }} disableAnimation={true} size="small" classes={`.Mui-focused`} >{status}</InputLabel>
             <Select
                 labelId="demo-multiple-name-label"
@@ -52,12 +56,12 @@ const ProjectStatus = ({ data, status, handleChange, personName, clearValue }) =
                 onChange={handleChange}
                 MenuProps={MenuProps}
                 label={false}
-                IconComponent={() => personName ? <CloseSharp fontSize='small' sx={{ marginRight: 1, cursor: "pointer" }} onClick={clearValue} /> : <KeyboardArrowDownIcon fontSize='medium' sx={{ marginRight: 1, cursor: "pointer", fill: "#C6C3B6",width:"1.3em", height : "1.3em" }} />}
+                IconComponent={() => personName ? <CloseSharp fontSize='small' sx={{ marginRight: 1, cursor: "pointer" }} onClick={clearValue} /> : <KeyboardArrowDownIcon fontSize='medium' sx={{ marginRight: 1, cursor: "pointer", fill: "#C6C3B6", width: "1.3em", height: "1.3em" }} />}
 
                 sx={{
                     paddingBlock: "5px",
                     border: `1px solid ${mibananaColor.borderColor}`,
-                    borderRadius : '0px',
+                    borderRadius: '0px',
                     "&:hover": {
                         borderColor: 'transparent',
                     },
@@ -81,7 +85,7 @@ const ProjectStatus = ({ data, status, handleChange, personName, clearValue }) =
                     </MenuItem>
                 ))}
             </Select>
-        </FormControl>
+        </FormControl >
     )
 }
 
