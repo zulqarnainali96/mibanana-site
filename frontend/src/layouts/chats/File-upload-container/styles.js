@@ -1,6 +1,17 @@
 import { makeStyles } from "@mui/styles";
 
 export const useStyles = makeStyles({
+  dropdown: {
+    minWidth: "120px",
+    backgroundColor: "white",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    padding: "8px 12px",
+    cursor: "pointer",
+    "&:hover": {
+      backgroundColor: "#f3f3f3",
+    },
+  },
   Container: {
     position: "relative",
     width: "100%",
@@ -133,7 +144,7 @@ export const useStyles = makeStyles({
     border: "1px solid gray",
     background: "transparent",
     color: "black",
-    margin: "5px",
+    margin: "6px",
   },
   "uploadbtn:hover": {
     background: "#FDD700",
@@ -176,6 +187,7 @@ export const useStyles = makeStyles({
   },
   fileDiv2p: {
     textAlign: "center",
+    fontSize: "11px",
   },
   adminDiv1: {
     display: "flex",
@@ -206,6 +218,6 @@ export const useStyles = makeStyles({
   },
   adminDiv1h2: {
     color: "#C6C3B6",
-    fontSize: "17px",
+    fontSize: "13px",
   },
 });
