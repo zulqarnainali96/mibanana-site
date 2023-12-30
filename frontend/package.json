@@ -24,6 +24,7 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-chartjs-2": "5.2.0",
     "react-dom": "18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-github-btn": "1.4.0",
     "react-phone-input-2": "^2.15.1",
     "react-redux": "^8.1.2",
@@ -66,7 +67,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "*",
-    "eslint": "8.39.0",
+    "eslint": "^8.56.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-jsx-a11y": "6.7.1",

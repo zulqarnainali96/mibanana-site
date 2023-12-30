@@ -1,18 +1,20 @@
-import { Grid, IconButton } from "@mui/material";
+import { Grid, IconButton, MenuItem, Select, Button, InputLabel, FormControl } from "@mui/material";
 import { UploadIcon } from "assets/mi-banana-icons/upload-icon";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { useDropzone } from "react-dropzone";
 import React from "react";
 import { useStyles } from "./styles";
+
 import ShowFiles from "./show-files/ShowFiles";
 import adminImg from "assets/images/admin.svg";
 import designerImg from "assets/images/d1.svg";
 import UserImg from "assets/images/u1.svg";
 import pdfImg from "assets/images/pdf1.svg";
 import tickImg from "assets/images/t1.svg";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import ImageContainer from "./image-container/ImageContainer";
 import { useEffect } from "react";
 import UploadFile from "components/File upload button/FileUpload";
@@ -59,6 +61,14 @@ const FileUploadContainer = ({
     type: "",
   });
   const classes = useStyles();
+  const onDrop = useCallback((acceptedFiles) => {
+    // Do something with dropped files
+    console.log("Dropped files:", acceptedFiles);
+    // You can handle the dropped files here or trigger your existing file upload logic
+    // For example, you can upload the dropped files by iterating through acceptedFiles and processing them
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const [selectedFileType, setSelectedFileType] = useState("");
 
   const [currentFolder, setCurrentFolder] = useState("Customer Uploads");
   const [filesType, setFilesType] = useState([]);
@@ -81,6 +91,11 @@ const FileUploadContainer = ({
   const openFileSelect = () => {
     fileRef.current.click();
   };
+  const handleFileTypeChange = (event) => {
+    setSelectedFileType(event.target.value); // Update selected file type on change
+  };
+
+  console.log("version", version);
   async function clientFiles() {
     setVersion([]);
     setFileMsg("");
@@ -138,13 +153,18 @@ const FileUploadContainer = ({
   //     }
   //   }
   // };
+
   const handleFileUpload = async (event) => {
-    const files = event.target.files
+    const files = event.target.files;
+    let filType = [];
     for (let i = 0; i < files.length; i++) {
-      setFilesType(files[i])
-      await handleSubmit()
+      console.log("files[0]", files[0]);
+      setFilesType(files[i]);
+      filType.push(files[i]);
     }
-  }
+    console.log("filType12", filType);
+    await handleSubmit(filType);
+  };
   const deleteDesignerFiles = async (filename) => {
     setFileLoading(true);
     await apiClient
@@ -217,13 +237,14 @@ const FileUploadContainer = ({
       deleteCustomerFiles(filename);
     }
   };
-  const managerUploadFiles = async () => {
+  const managerUploadFiles = async (filType) => {
     setLoading(true);
     const formdata = new FormData();
-    for (let i = 0; i < filesType.length; i++) {
-      formdata.append("files", filesType[i]);
+    for (let i = 0; i < filType.length; i++) {
+      formdata.append("files", filType[i]);
     }
-    await apiClient.post("/api/designer-uploads/" + id, formdata)
+    await apiClient
+      .post("/api/designer-uploads/" + id, formdata)
       .then(({ data }) => {
         setLoading(false);
         setFiles([]);
@@ -234,12 +255,14 @@ const FileUploadContainer = ({
         console.error(err.message);
       });
   };
-  const customerUploadFiles = async () => {
+  const customerUploadFiles = async (filType) => {
+    console.log("filTypcustomere,filType 1", filType.length);
+    console.log("filTypcustomere,filType 2", filesType.length);
     setLoading(true);
-    if (filesType.length === 0) return;
+    if (filType.length === 0) return;
     const formdata = new FormData();
-    for (let i = 0; i < filesType.length; i++) {
-      formdata.append("files", filesType[i]);
+    for (let i = 0; i < filType.length; i++) {
+      formdata.append("files", filType[i]);
     }
     formdata.append("user_id", reduxState?.userDetails.id);
     formdata.append("name", reduxState?.userDetails.name);
@@ -280,11 +303,12 @@ const FileUploadContainer = ({
       });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (filType) => {
+    console.log("role", role);
     if (role?.designer || role?.projectManager || role?.admin) {
-      managerUploadFiles();
+      managerUploadFiles(filType);
     } else {
-      customerUploadFiles();
+      customerUploadFiles(filType);
     }
   };
   const showImageOnContainer = (item) => {
@@ -317,6 +341,15 @@ const FileUploadContainer = ({
   //     clientFiles()
   //     // designerFiles()
   // }, [re_render_chat])
+  const dateFun = (timestamp) => {
+    const date = new Date(timestamp);
+
+    const day = date.getDate();
+    const month = date.toLocaleString("default", { month: "short" });
+
+    const formattedDate = `${day}-${month}`;
+    return formattedDate;
+  };
 
   return (
     <MDBox className={classes.Container}>
@@ -330,72 +363,64 @@ const FileUploadContainer = ({
         <div className={classes.uploadbtndiv}>
           <button className={classes.uploadbtn}>Files</button>
           <button className={classes.uploadbtn}>Folders</button>
-          <button className={classes.uploadbtn}>Type</button>
-          <button className={classes.uploadbtn}>People</button>
+
+          <select value={selectedFileType} onChange={handleFileTypeChange} className="selectType1">
+            <option value="">Type</option>
+            <option value="svg">SVG</option>
+            <option value="png">PNG</option>
+            <option value="pdf">PDF</option>
+          </select>
+          <select value={selectedFileType} onChange={handleFileTypeChange} className="selectType1">
+            <option value="">People</option>
+            <option value="customer">Customer</option>
+            <option value="designer">Designer</option>
+          </select>
           <button className={classes.uploadbtn}>Date</button>
         </div>
       </Grid>
       <Grid container>
-        <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
-          <div className={classes.uploadedfileMainDiv}>
-            <div className={classes.fileDiv2}>
-              <img src={pdfImg} />
-              <p className={classes.fileDiv2p}>File Name</p>
-            </div>
-            <div className={classes.UserDiv}>
-              <img src={designerImg} className="adminImg1" />
-              <div>
-                <h6>Designer</h6>
-                <p>19-Dec</p>
-              </div>
-              <img src={tickImg} className="TickImg1" />
-            </div>
-          </div>
-        </Grid>
-        <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
-          <div className={classes.uploadedfileMainDiv}>
-            <div className={classes.fileDiv2}>
-              <img src={pdfImg} />
-
-              <p className={classes.fileDiv2p}>File Name</p>
-            </div>
-
-            <div className={classes.UserDiv}>
-              <img src={designerImg} className="adminImg1" />
-              <div>
-                <h6>Designer</h6>
-                <p>19-Dec</p>
-              </div>
-              <img src={tickImg} className="TickImg1" />
-            </div>
-          </div>
-        </Grid>
-        <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
-          <div className={classes.uploadedfileMainDiv}>
-            <div className={classes.fileDiv2}>
-              <img src={pdfImg} />
-
-              <p className={classes.fileDiv2p}>File Name</p>
-            </div>
-            <div className={classes.UserDiv}>
-              <img src={designerImg} className="adminImg1" />
-              <div>
-                <h6>Designer</h6>
-                <p>19-Dec</p>
-              </div>
-              <img src={tickImg} className="TickImg1" />
-            </div>
-          </div>
-        </Grid>
+        {version?.length > 0 ? (
+          <>
+            {version?.map((ver) => (
+              <>
+                <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
+                  <div className={classes.uploadedfileMainDiv}>
+                    <div className={classes.fileDiv2}>
+                      <img src={pdfImg} />
+                      <p className={classes.fileDiv2p}>{ver.name}</p>
+                    </div>
+                    <div className={classes.UserDiv}>
+                      <img src={designerImg} className="adminImg1" />
+                      <div>
+                        <h6 className="userName1">Designer</h6>
+                        <p className="date1">{dateFun(ver?.time)}</p>
+                      </div>
+                      <img src={tickImg} className="TickImg1" />
+                    </div>
+                  </div>
+                </Grid>
+              </>
+            ))}
+          </>
+        ) : (
+          <></>
+        )}
       </Grid>
 
       <Grid container>
         <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>
-          <div className={classes.dropfileDiv} onClick={openFileSelect}>
-            <IconButton className={classes.iconBtn} TouchRippleProps={false}>
-              {UploadIcon}
-            </IconButton>
-            <p>Upload or drop file right here.</p>
+          <div {...getRootProps()} className={classes.dropfileDiv} onClick={openFileSelect}>
+            <input
+              {...getInputProps()}
+              id="new-file-upload"
+              type="file"
+              ref={fileRef}
+              accept=".ai, .eps, .psd, .zip, .jpg, .png, .pdf, .jpeg, .svg"
+              hidden={true}
+              onChange={handleFileUpload}
+              multiple
+            />
+            {isDragActive ? <p>Drop the files here...</p> : <p>Upload or drop file right here.</p>}
           </div>
           <button
             variant="mibanana"
@@ -405,13 +430,6 @@ const FileUploadContainer = ({
           >
             Upload Files
           </button>
-          {/* <FileUpload
-            files={files}
-            filesType={filesType}
-            handleSubmit={handleSubmit}
-            loading={loading}
-            removeFiles={removeFiles}
-          /> */}
           <input
             id="new-file-upload"
             type="file"
@@ -462,23 +480,23 @@ const FileUploadContainer = ({
       <div className={classes.catdivmain}>
         <div className={classes.catdiv1}>
           <h2 className={classes.adminDiv1h2}>Category</h2>
-          <p>Graphic Design</p>
+          <p className="desc1">Graphic Design</p>
         </div>
         <div className={classes.catdiv1}>
           <h2 className={classes.adminDiv1h2}>Type</h2>
-          <p>Book Cover</p>
+          <p className="desc1">Book Cover</p>
         </div>
         <div className={classes.catdiv1}>
           <h2 className={classes.adminDiv1h2}>Description</h2>
-          <p>Lorem ipsum dolor sit amet,</p>
+          <p className="desc1">Lorem ipsum dolor sit amet,</p>
         </div>
         <div className={classes.catdiv1}>
           <h2 className={classes.adminDiv1h2}>Size</h2>
-          <p>1024 X 1440px</p>
+          <p className="desc1">1024 X 1440px</p>
         </div>
         <div className={classes.catdiv1}>
           <h2 className={classes.adminDiv1h2}>Details</h2>
-          <p>Active</p>
+          <p className="desc1">Active</p>
         </div>
       </div>
       {/* <MDBox className={classes.mainImageContainer}>
