@@ -156,13 +156,13 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
   function showPersonRoles() {
     if (role?.projectManager) return "(Project Manager)"
     if (role?.admin) return "(Admin)"
-    if (role?.graphicDesigner) return "(Graphic-Designer)"
+    if (role?.designer) return "(Graphic-Designer)"
     if (role?.customer) return "(Customer)"
   }
   function showRoles() {
     if (role?.projectManager) return "Manager"
     if (role?.admin) return "Admin"
-    if (role?.graphicDesigner) return "Designer)"
+    if (role?.designer) return "Designer"
     if (role?.customer) return "Customer"
   }
   const removeSingleFile = (img) => {
