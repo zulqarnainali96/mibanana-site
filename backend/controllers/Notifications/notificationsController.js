@@ -168,7 +168,8 @@ const getUserNotifications = async (req, res) => {
         const user = await User.findById(_id)
         if (user) {
             const { name, email, _id, is_active, created_at, roles, verified, phone_no, avatar, company_profile, notifications } = user
-            return res.status(200).json({ userDetails: { name, email, id: _id, is_active, created_at, roles, verified, phone_no, avatar, company_profile, notifications: notifications?.length > 0 ? notifications : [] }, message: "get user notifcations successfully" });
+            const allNotifications = notifications?.length > 0 ? notifications : []
+            return res.status(200).json({ userDetails: { name, email, id: _id, is_active, created_at, roles, verified, phone_no, avatar, company_profile, notifications: allNotifications }, message: "get user notifcations successfully" });
         } else {
             return res.status(404).send({ message: 'No user found' })
         }

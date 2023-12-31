@@ -116,7 +116,6 @@ const CurrentCustomerDetails = ({ reduxState }) => {
             if (id) {
                 try {
                     const { data } = await apiClient.get("/api/get-company-details/" + id)
-                    console.log('company ', data.company_data)
                     setFormValue({
                         ...currentNonActiveCustomer,
                         primary_email: data.company_data?.primary_email,
@@ -124,7 +123,7 @@ const CurrentCustomerDetails = ({ reduxState }) => {
                         contact_person: data.company_data?.contact_person,
                     })
                 } catch (error) {
-                    console.log(error)
+                    console.error(error)
                 }
 
             }
@@ -255,7 +254,11 @@ const CurrentCustomerDetails = ({ reduxState }) => {
                                         type="submit"
                                         color="warning"
                                         fullWidth
-                                        endIcon={<MoonLoader loading={loading} size={18} color='#121212' />}
+                                        endIcon={
+                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                                <ArrowForward fontSize='large' />&nbsp;
+                                                <MoonLoader loading={loading} size={18} color='#121212' />
+                                            </div>}
                                         disabled={loading}
                                         circular={true}
                                         sx={{
@@ -264,7 +267,7 @@ const CurrentCustomerDetails = ({ reduxState }) => {
                                             textTransform: "capitalize",
                                         }}
                                     >
-                                        Update Customer &nbsp; <ArrowForward fontSize='large' />&nbsp;
+                                        Update Customer &nbsp; 
                                     </MDButton>
                                 </MDBox>
                                 {renderErrorSB}

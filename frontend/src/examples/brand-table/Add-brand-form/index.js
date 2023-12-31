@@ -77,19 +77,16 @@ const BrandForm = ({
     }
     const removeAddField = (item) => {
         const index = addMoreField.indexOf(item)
-        // console.log(index)
         setAddMore(addMoreField.filter(more => addMoreField.indexOf(more) !== index))
         setFilesArray(filesArray.filter(list => list.name !== item.name))
     }
 
     const handleCheckboxes = (name) => {
-        console.log(name)
         setCheckState({
             ...checkboxState,
             [name]: !checkboxState[name]
         })
     }
-    console.log(checkboxState)
     const useStyles = makeStyles({
         checkedCheckbox: {
             '&.Mui-checked': {
@@ -516,7 +513,7 @@ const BrandForm = ({
                         disabled={loading}
                         endIcon={<div
                             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <ArrowForward fontSize='medium' />&nbsp; &nbsp;
+                            <ArrowForward fontSize='medium' />&nbsp;
                             <MoonLoader loading={loading} size={20} color='#121212' />
                         </div>}
                         onClick={onSubmit}

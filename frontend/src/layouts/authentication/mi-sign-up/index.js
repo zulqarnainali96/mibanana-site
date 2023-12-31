@@ -298,7 +298,10 @@ const MiSignup = () => {
                                 </MDBox>
                                 <MDBox mb={1} pt={2}>
                                     <MDButton type="submit" color="warning" fullWidth
-                                        endIcon={<MoonLoader loading={loading} size={23} color='#121212' />}
+                                        endIcon={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            <ArrowForward fontSize='large' />&nbsp;
+                                            <MoonLoader loading={loading} size={23} color='#121212' />
+                                        </div>}
                                         circular={true}
                                         sx={{
                                             color: '#000 !important',
@@ -306,7 +309,7 @@ const MiSignup = () => {
                                             textTransform: "capitalize"
                                         }}
                                     >
-                                        Submit &nbsp; <ArrowForward fontSize='large' />&nbsp;
+                                        Submit &nbsp;
                                     </MDButton>
                                 </MDBox>
                             </MDBox>}
@@ -337,7 +340,7 @@ const MiSignup = () => {
 }
 
 const colorRed = {
-    color : 'red'
+    color: 'red'
 }
 const noti_msg = {
     width: '100%',

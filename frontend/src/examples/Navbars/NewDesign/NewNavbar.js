@@ -147,7 +147,6 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
     apiClient.get(`/api/udpate-notifications/${userId}/${_id}`)
       .then(({ data }) => {
         reduxActions.getUserNewChatMessage(data?.msgArray)
-        console.log(data)
       }).catch((err) => {
         console.error(err.message)
       })
@@ -307,7 +306,6 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
   const getAllNotificationsMsg = () => {
     const id = reduxState?.userDetails?.id
     apiClient.get("/api/get-notifications/" + id).then(({ data }) => {
-      console.log(data)
       localStorage.setItem('user_details', JSON.stringify({
         ...reduxState?.userDetails,
         ...data.userDetails,
@@ -321,7 +319,6 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       console.log(err)
     })
   }
-
   // Accunts Dropdown
   const renderUserMenu = () => (
     <Menu
@@ -400,7 +397,6 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
     </Menu>
   );
 
-
   useEffect(() => {
     setInComingMsg(true)
   }, [userNewChatMessage])
@@ -464,7 +460,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
         deleteOtherSingleFile={deleteOtherSingleFile}
       />
       <SuccessModal
-        msg={"This is for testing purpose"}
+        msg={respMessage}
         open={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
         width="30%"

@@ -75,7 +75,7 @@ const CreateAccounts = () => {
                 return
             }
             setLoading(false)
-            console.log(error)
+            console.error(error)
             setRespMessage(error.message)
             setTimeout(() => {
                 openErrorSB()
@@ -122,10 +122,10 @@ const CreateAccounts = () => {
             {/* <DashboardNavbar /> */}
             <MDBox pt={6} pb={3} sx={({ breakpoints }) => ({
                 [breakpoints.down('md')]: {
-                    width : '98%',
+                    width: '98%',
                 },
                 [breakpoints.up('md')]: {
-                    width : '80%',
+                    width: '80%',
                 }
             })}>
                 <Card sx={{ marginLeft: '10px' }}>
@@ -205,7 +205,10 @@ const CreateAccounts = () => {
                                             type="submit"
                                             color="warning"
                                             fullWidth
-                                            endIcon={<MoonLoader loading={loading} size={18} color='#121212' />}
+                                            endIcon={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                                <ArrowForward fontSize='large' />&nbsp;
+                                                <MoonLoader loading={loading} size={18} color='#121212' />
+                                            </div>}
                                             disabled={loading}
                                             circular={true}
                                             sx={{
@@ -214,7 +217,7 @@ const CreateAccounts = () => {
                                                 textTransform: "capitalize",
                                             }}
                                         >
-                                            Save &nbsp; <ArrowForward fontSize='large' />&nbsp;
+                                            Save &nbsp;
                                         </MDButton>
                                     </MDBox>
                                     {renderErrorSB}

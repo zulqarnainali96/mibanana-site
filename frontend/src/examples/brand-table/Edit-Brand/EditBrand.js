@@ -357,7 +357,7 @@ const EditBrand = ({
                         disabled={loading}
                         endIcon={<div
                             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <ArrowForward fontSize='medium' />&nbsp; &nbsp;
+                            <ArrowForward fontSize='medium' />&nbsp;
                             <MoonLoader loading={loading} size={20} color='#121212' />
                         </div>}
                         onClick={handleUpateFiles}

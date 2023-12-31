@@ -368,14 +368,18 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
                       fullWidth
                       disabled={loading}
                       circular={true}
-                      endIcon={<MoonLoader loading={loading} size={23} color="#121212" />}
+                      endIcon={
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          <ArrowForward fontSize="large" />&nbsp;
+                          <MoonLoader loading={loading} size={23} color="#121212" />
+                        </div>}
                       sx={{
                         color: "#000 !important",
                         fontSize: 14,
                         textTransform: "capitalize",
                       }}
                     >
-                      Login &nbsp; <ArrowForward fontSize="large" />
+                      Login &nbsp;
                       &nbsp;
                     </MDButton>
                   </MDBox>

@@ -345,14 +345,18 @@ const EditProfile = ({ reduxState, reduxActions }) => {
                                 <MDBox mt={4} mb={1} pt={3} sx={{ display: 'inline-block', float: 'right', bottom: '10px', position: 'relative' }}>
                                     <MDButton type="submit" color="warning" fullWidth
                                         circular={true}
-                                        endIcon={<MoonLoader loading={loading} size={20} color='#121212' />}
+                                        endIcon={
+                                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            <ArrowForward fontSize='large' />&nbsp;
+                                            <MoonLoader loading={loading} size={20} color='#121212' />
+                                        </div>}
                                         sx={{
                                             color: '#000 !important',
                                             fontSize: 14,
                                             textTransform: "capitalize",
                                         }}
                                     >
-                                        {profileData?.fullName ? "Update" : "Submit"} &nbsp; <ArrowForward fontSize='large' />
+                                        {profileData?.fullName ? "Update" : "Submit"} &nbsp; 
                                     </MDButton>
                                 </MDBox>
                             </MDBox>

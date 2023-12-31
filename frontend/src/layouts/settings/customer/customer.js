@@ -30,7 +30,7 @@ const CreateCustomer = ({ reduxState, reduxActions }) => {
                     reduxActions.getNonActiveCustomerData(data?.user)
                 }
             } catch (error) {
-                console.log(error.message)
+                console.error(error.message)
             }
         }
         getCustomerAccounts()

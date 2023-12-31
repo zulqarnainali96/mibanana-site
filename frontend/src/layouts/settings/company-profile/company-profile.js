@@ -48,7 +48,6 @@ const CompanyProfile = () => {
         apiClient.post("/settings/company-profile", data)
             .then(resp => {
                 if (resp.status === 200 || resp.status === 201) {
-                    // console.log('post profile => ', resp.data)
                     setRespMessage(resp.data?.message)
                     setLoading(false)
                     setTimeout(() => {
@@ -63,7 +62,6 @@ const CompanyProfile = () => {
                 }
             })
             .catch(e => {
-                // console.log('error post profile => ', e?.response)
                 setLoading(false)
                 setRespMessage(e.response?.data?.message)
                 setTimeout(() => {
@@ -77,10 +75,8 @@ const CompanyProfile = () => {
         await apiClient.get("/settings/company-profile/" + id)
             .then(resp => {
                 setCompanyData({ ...resp?.data?.company_data })
-                // console.log('fetch profile => ', resp.data)
             })
             .catch(e => {
-                // console.log('fetch profile => ', e?.response)
             })
     }
 

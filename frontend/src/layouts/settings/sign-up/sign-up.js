@@ -115,7 +115,7 @@ const SignUp = ({ reduxState }) => {
     return (
         <DashboardLayout>
             <SuccessModal
-                msg={"Your account is Approved now you can use our services"}
+                msg={respMessage}
                 open={open}
                 onClose={() => setOpen(false)}
                 width="40%"

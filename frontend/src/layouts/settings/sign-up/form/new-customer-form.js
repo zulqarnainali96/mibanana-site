@@ -24,8 +24,8 @@ const useStyles = makeStyles({
 // phone, setPhone, phone2, setPhone2
 const NewCustomerForm = ({ onChange, handleSubmit, loading, setFormValue, formValue }) => {
     const classes = useStyles()
-    const [currentPassword,setCurrentPassword] = useState(false)
-    const [confirmPassword,setConfirmPassword] = useState(false)
+    const [currentPassword, setCurrentPassword] = useState(false)
+    const [confirmPassword, setConfirmPassword] = useState(false)
 
     const handlePhoneChange1 = (phone) => {
         setFormValue({
@@ -171,11 +171,17 @@ const NewCustomerForm = ({ onChange, handleSubmit, loading, setFormValue, formVa
                         fontSize: 14,
                         textTransform: "capitalize"
                     }}
-                    endIcon={<MoonLoader loading={loading} size={23} color='#121212' />} >
-                    Submit &nbsp; <ArrowForward fontSize='large' />&nbsp;
+                    endIcon={
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <ArrowForward fontSize='large' />&nbsp;
+                            <MoonLoader loading={loading} size={23} color='#121212' />
+                        </div>}
+                >
+
+                    Submit &nbsp;
                 </MDButton>
             </MDBox>
-        </MDBox>
+        </MDBox >
     )
 }
 

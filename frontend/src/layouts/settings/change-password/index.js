@@ -191,7 +191,10 @@ const ChangePassword = () => {
                                         type="submit"
                                         color="warning"
                                         fullWidth
-                                        endIcon={<MoonLoader loading={loading} size={18} color='#121212' />}
+                                        endIcon={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            <ArrowForward fontSize='large' />&nbsp;
+                                            <MoonLoader loading={loading} size={18} color='#121212' />
+                                        </div>}
                                         disabled={loading}
                                         circular={true}
                                         sx={{
@@ -200,7 +203,7 @@ const ChangePassword = () => {
                                             textTransform: "capitalize",
                                         }}
                                     >
-                                        Save &nbsp; <ArrowForward fontSize='large' />&nbsp;
+                                        Save &nbsp;
                                     </MDButton>
                                 </MDBox>
                                 {renderErrorSB}

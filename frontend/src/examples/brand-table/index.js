@@ -288,6 +288,9 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                 open={showSuccessModal}
                 onClose={() => setShowSuccessModal(false)}
                 width="30%"
+                color="#288e28"
+                title="SUCCESS"
+                sideRadius={false}
             />
             <MDBox ml={4} pt={2} pb={3}>
                 <Grid container pt={isDesignerAndManagerAdmin && "0px"} justifyContent={"flex-end"} alignItems={"center"} spacing={2}>

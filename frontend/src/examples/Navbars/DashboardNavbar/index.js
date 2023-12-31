@@ -536,6 +536,9 @@ function DashboardNavbar({ absolute, light, isMini, reduxActions, reduxState, ch
           open={showSuccessModal}
           onClose={() => setShowSuccessModal(false)}
           width="30%"
+          color="#288e28"
+          title="SUCCESS"
+          sideRadius={false}
         />
 
         <Toolbar sx={(theme) => navbarContainer(theme)}>
