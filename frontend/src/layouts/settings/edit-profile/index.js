@@ -14,6 +14,8 @@ import { useEffect } from 'react'
 import reduxContainer from 'redux/containers/containers'
 import { MoonLoader } from 'react-spinners'
 import MDSnackbar from 'components/MDSnackbar'
+import { mibananaColor } from 'assets/new-images/colors'
+import { fontsFamily } from 'assets/font-family'
 
 const EditProfile = ({ reduxState, reduxActions }) => {
     const [imageUrl, setImageUrl] = useState(defaultImage);
@@ -159,6 +161,7 @@ const EditProfile = ({ reduxState, reduxActions }) => {
                     setTimeout(() => {
                         openErrorSB()
                     }, 800)
+                    return
                 }
                 setRespMessage(err.message)
                 setLoading(false)
@@ -206,6 +209,7 @@ const EditProfile = ({ reduxState, reduxActions }) => {
                     setTimeout(() => {
                         openErrorSB()
                     }, 800)
+                    return
                 }
                 setRespMessage(err.message)
                 setLoading(false)
@@ -279,11 +283,14 @@ const EditProfile = ({ reduxState, reduxActions }) => {
                         <MDBox pt={4} pb={3} px={3} >
                             <MDBox component="form" role="form" onSubmit={UpdateProfile} >
                                 <MDTypography pb={2}
-                                    verticalAlign="middle"
-                                    fontWeight="medium"
-                                    sx={({ palette: { mibanana }, typography: { size } }) => ({
-                                        color: mibanana.text,
-                                        size: size.lg
+                                    sx={({ breakpoints }) => ({
+                                        [breakpoints.down('md')]: {
+                                            ...titleStyles,
+                                            fontSize: '1.6rem !important',
+                                        },
+                                        [breakpoints.up('md')]: {
+                                            ...titleStyles
+                                        }
                                     })}
                                 >My Profile</MDTypography>
                                 <Grid container spacing={2} sx={{
@@ -324,15 +331,6 @@ const EditProfile = ({ reduxState, reduxActions }) => {
                                                     onChange={handleFileUpload}
                                                 />
                                             </label>
-                                            {/* <MDTypography pb={2}
-                                                verticalAlign="middle"
-                                                fontWeight="medium"
-                                                sx={({ palette: { mibanana }, typography: { size } }) => ({
-                                                    color: mibanana.text,
-                                                    size: size.lg
-
-                                                })}
-                                            >Upload Profile Picture</MDTypography> */}
                                         </MDBox>
                                     </Grid>
                                 </Grid>
@@ -370,3 +368,12 @@ const EditProfile = ({ reduxState, reduxActions }) => {
 }
 
 export default reduxContainer(EditProfile)
+
+const titleStyles = {
+    fontSize: '2.5rem',
+    width: '100%',
+    color: mibananaColor.yellowColor,
+    fontFamily: fontsFamily.poppins,
+    fontWeight: 'bold !important',
+    userSelect: 'none'
+}

@@ -189,6 +189,7 @@ const FileUploadContainer = ({
           setTimeout(() => {
             openErrorSB();
           }, 1000);
+          return
         } else {
           setFileLoading(false);
           setRespMessage(err.message);

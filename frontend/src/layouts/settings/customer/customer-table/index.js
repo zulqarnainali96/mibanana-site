@@ -40,8 +40,11 @@ const Action = ({ openCurrentCustomerDetails, id }) => {
       if (err.response) {
         const { message } = err.response?.data
         setRespMessage(message)
-        openErrorSB()
         setLoading(false)
+        setTimeout(() => {
+          openErrorSB()
+        }, 400)
+        return
       }
       setRespMessage(err.message)
       setLoading(false)

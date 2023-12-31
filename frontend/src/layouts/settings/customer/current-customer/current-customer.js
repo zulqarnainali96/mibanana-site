@@ -69,8 +69,11 @@ const CurrentCustomerDetails = ({ reduxState }) => {
             if (err.response) {
                 const { message } = err.response?.data
                 setRespMessage(message)
-                openErrorSB()
                 setLoading(false)
+                setTimeout( () => {
+                    openErrorSB()
+                }, 400)
+                return
             }
             setRespMessage(err.message)
             setLoading(false)
@@ -152,26 +155,26 @@ const CurrentCustomerDetails = ({ reduxState }) => {
                                     <Grid item xxl={6} xl={6} lg={6} xs={12} md={12}>
                                         <MDBox mb={2} >
                                             <label style={Styles} name="name" htmlFor='username'>Name *</label>
-                                            <MDInput type={"text"} value={formValue.name} name="name" onChange={handleChange} placeholder="User name" variant="outlined" fullWidth />
+                                            <MDInput type={"text"} value={formValue.name} name="name" onChange={handleChange} placeholder="User name" variant="outlined" fullWidth disabled />
                                         </MDBox>
                                     </Grid>
                                     <Grid item xxl={6} xl={6} lg={6} xs={12} md={12}>
                                         <MDBox mb={2}>
                                             <label style={Styles} name="email" htmlFor='email'>Email *</label>
-                                            <MDInput type={"text"} value={formValue.email} name="email" onChange={handleChange} placeholder="User Email" variant="outlined" fullWidth />
+                                            <MDInput type={"text"} value={formValue.email} name="email" onChange={handleChange} placeholder="User Email" variant="outlined" fullWidth disabled />
                                         </MDBox>
                                     </Grid>
                                     <Grid item xxl={6} xl={6} lg={6} xs={12} md={12}>
                                         <MDBox mb={2}>
                                             <label style={Styles} name="phone_no" htmlFor='phone_no'>Phone *</label>
-                                            <MDInput type={"text"} value={formValue.phone_no} name="phone_no" onChange={handleChange} placeholder="Phone no" variant="outlined" fullWidth />
+                                            <MDInput type={"text"} value={formValue.phone_no} name="phone_no" onChange={handleChange} placeholder="Phone no" variant="outlined" fullWidth disabled />
                                         </MDBox>
                                     </Grid>
 
                                     <Grid item xxl={6} xl={6} lg={6} xs={12} md={12}>
                                         <MDBox mb={2} sx={{ position: "relative" }}>
                                             <label style={Styles} name="password" htmlFor='password'>Password *</label>
-                                            <MDInput type={currentPassword ? "text" : "password"} value={formValue.password} name="password" onChange={handleChange} placeholder="Password" variant="outlined" fullWidth />
+                                            <MDInput type={currentPassword ? "text" : "password"} value={formValue.password} name="password" onChange={handleChange} placeholder="Password" variant="outlined" fullWidth disabled />
                                             <IconButton
                                                 onClick={() => isShowPassword(setCurrentPassword)}
                                                 sx={{
@@ -186,7 +189,7 @@ const CurrentCustomerDetails = ({ reduxState }) => {
                                     <Grid item xxl={6} xl={6} lg={6} xs={12} md={12}>
                                         <MDBox mb={2}>
                                             <label style={Styles} name="company_profile" htmlFor='company_profile'>Company Name *</label>
-                                            <MDInput type={"text"} value={formValue.company_profile} name="company_profile" onChange={handleChange} placeholder="Phone no" variant="outlined" fullWidth />
+                                            <MDInput type={"text"} value={formValue.company_profile} name="company_profile" onChange={handleChange} placeholder="Phone no" variant="outlined" fullWidth disabled />
                                         </MDBox>
                                     </Grid>
                                     <Grid item pt={0} xxl={6} xl={6} lg={6} xs={12} md={12}>
@@ -194,6 +197,7 @@ const CurrentCustomerDetails = ({ reduxState }) => {
                                             <label style={Styles} name="role" htmlFor='role'>Role *</label>
                                             <Autocomplete
                                                 value={formValue.roles}
+                                                disabled
                                                 onChange={(event, newValue) => {
                                                     setFormValue({
                                                         ...formValue,
@@ -216,22 +220,22 @@ const CurrentCustomerDetails = ({ reduxState }) => {
                                     <Grid item xxl={6} xl={6} lg={6} xs={12} md={12}>
                                         <MDBox mb={2}>
                                             <label style={Styles} name="primary_email" htmlFor='primary_email'>Primary Email *</label>
-                                            <MDInput type={"text"} value={formValue.primary_email} name="primary_email" onChange={handleChange} placeholder="Primary email" variant="outlined" fullWidth />
+                                            <MDInput type={"text"} value={formValue.primary_email} name="primary_email" onChange={handleChange} placeholder="Primary email" variant="outlined" fullWidth disabled />
                                         </MDBox>
                                     </Grid>
                                     <Grid item xxl={6} xl={6} lg={6} xs={12} md={12}>
                                         <MDBox mb={2}>
                                             <label style={Styles} name="primary_phone" htmlFor='primary_phone'>Primary phone *</label>
-                                            <MDInput type={"text"} value={formValue.primary_phone} name="primary_phone" onChange={handleChange} placeholder="Primary phone" variant="outlined" fullWidth />
+                                            <MDInput type={"text"} value={formValue.primary_phone} name="primary_phone" onChange={handleChange} placeholder="Primary phone" variant="outlined" fullWidth disabled />
                                         </MDBox>
                                     </Grid>
                                     <Grid item xxl={6} xl={6} lg={6} xs={12} md={12}>
                                         <MDBox mb={2}>
                                             <label style={Styles} name="contact_person" htmlFor='contact_person'>Main Contact Person *</label>
-                                            <MDInput type={"text"} value={formValue.contact_person} name="contact_person" onChange={handleChange} placeholder="Contact person" variant="outlined" fullWidth />
+                                            <MDInput type={"text"} value={formValue.contact_person} name="contact_person" onChange={handleChange} placeholder="Contact person" variant="outlined" fullWidth disabled />
                                         </MDBox>
                                     </Grid>
-                                    <Grid item xxl={6} xl={6} lg={6} xs={12} md={12}>
+                                    {/* <Grid item xxl={6} xl={6} lg={6} xs={12} md={12}>
                                         <MDBox mb={2}>
                                             <label style={Styles} name="is_active" htmlFor='is_active'>Account Status *</label>
                                             <MDBox display="flex" pl={"1rem"} justifyContent="flex-start" alignItems="center">
@@ -244,7 +248,7 @@ const CurrentCustomerDetails = ({ reduxState }) => {
                                                 <label>{isactive ? "Make Customer Active" : "Not active"}</label>
                                             </MDBox>
                                         </MDBox>
-                                    </Grid>
+                                    </Grid> */}
                                 </Grid>
                                 <MDBox mt={4} mb={1} pt={3} sx={{ display: 'inline-block', float: 'right', bottom: '10px', position: 'relative' }}>
                                     <MDButton

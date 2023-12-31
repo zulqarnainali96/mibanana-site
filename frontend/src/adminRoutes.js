@@ -11,6 +11,7 @@ import CreateAccounts from "layouts/settings/create-accounts";
 import CreateCustomer from "layouts/settings/customer/customer";
 import CurrentCustomerDetails from "layouts/settings/customer/current-customer/current-customer";
 import SignUp from "layouts/settings/sign-up/sign-up";
+import MibananTeam from "layouts/mibanana-team";
 
 const AdminRoutes = [
     {
@@ -42,14 +43,13 @@ const AdminRoutes = [
         route: "/chat/:id",
         component: <Chating />
     },
-
     {
         type: "collapse",
         name: "MiBanana Team",
-        key: "rtl",
+        key: "mibanana-team",
         icon: <Icon fontSize="small">handshake_outlined</Icon>,
-        route: "/rtl",
-        component: <Navbar />
+        route: "/mibanana-team",
+        component : <MibananTeam />
     },
     {
         type: "collapse-dropdown",
@@ -62,12 +62,6 @@ const AdminRoutes = [
                 key: "profile",
                 route: "/settings/profile",
                 component: <EditProfile />, // Replace with your actual component for Profile settings
-            },
-            {
-                name: "Company Profile",
-                key: "company-profile",
-                route: "/settings/company-profile",
-                component: <CompanyProfile />, // Replace with your actual component for General settings
             },
             {
                 name: "Change Password",

@@ -133,6 +133,7 @@ const EditBrand = ({
                     setTimeout(() => {
                         openErrorSB()
                     }, 800)
+                    return
                 }
                 setRespMessage(err.message)
                 setLoading(false)

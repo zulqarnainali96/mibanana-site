@@ -83,6 +83,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
           setTimeout(() => {
             errorSBNot()
           }, 900)
+          return
         }
         setLoading1(false)
         resonseMessage(err.message)
@@ -123,6 +124,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
           setTimeout(() => {
             errorSBNot()
           }, 900)
+          return
         }
         setLoading2(false)
         resonseMessage(err.message)
@@ -162,6 +164,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
           setTimeout(() => {
             errorSBNot()
           }, 900)
+          return
         }
         setLoading5(false)
         resonseMessage(err.message)
@@ -201,6 +204,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
           setTimeout(() => {
             errorSBNot()
           }, 900)
+          return
         }
         setLoading6(false)
         resonseMessage(err.message)
@@ -240,6 +244,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
           setTimeout(() => {
             errorSBNot()
           }, 900)
+          return
         }
         setLoading4(false)
         resonseMessage(err.message)
@@ -276,6 +281,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
           setTimeout(() => {
             errorSBNot()
           }, 900)
+          return
         }
         setLoading3(false)
         resonseMessage(err.message)

@@ -1,5 +1,5 @@
 import { ArrowForward } from '@mui/icons-material'
-import { Autocomplete, Grid, IconButton, TextField } from '@mui/material'
+import { Autocomplete, Card, Grid, IconButton, TextField } from '@mui/material'
 import MDBox from 'components/MDBox'
 import MDButton from 'components/MDButton'
 import MDInput from 'components/MDInput'
@@ -13,6 +13,8 @@ import { MoonLoader } from 'react-spinners'
 import apiClient from 'api/apiClient'
 import { useSelector } from 'react-redux'
 import MDSnackbar from 'components/MDSnackbar'
+import { mibananaColor } from 'assets/new-images/colors'
+import { fontsFamily } from 'assets/font-family'
 
 const CreateAccounts = () => {
     const [loading, setLoading] = useState(false)
@@ -118,90 +120,110 @@ const CreateAccounts = () => {
     return (
         <DashboardLayout>
             {/* <DashboardNavbar /> */}
-            <MDBox pt={6} pb={3}>
-                <Grid container >
-                    <Grid item xxl={10} xl={10} lg={10} md={12} xs={12} sx={{ background: 'white', boxShadow: "4px 3px 7px -2px #cccccc0d", marginLeft: '8px' }}>
-                        <MDBox pt={4} pb={3} px={3} >
-                            <MDBox component="form" role="form" onSubmit={handleSignUp} >
-                                <MDTypography pb={2}
-                                    verticalAlign="middle"
-                                    fontWeight="medium"
-                                    sx={({ palette: { mibanana }, typography: { size } }) => ({
-                                        color: mibanana.text,
-                                        size: size.lg
-                                    })}
-                                >Create Accounts
-                                </MDTypography>
-                                <Grid container spacing={2}>
-                                    <Grid item xxl={12} xl={12} lg={12} xs={12} md={12}>
-                                        <MDBox mb={2} >
-                                            <label style={Styles} name="username" htmlFor='username'>Name *</label>
-                                            <MDInput type={"text"} name="username" onChange={handleChange} placeholder="User name" required variant="outlined" fullWidth />
-                                        </MDBox>
-                                    </Grid>
-                                    <Grid item xxl={12} xl={12} lg={12} xs={12} md={12}>
-                                        <MDBox mb={2}>
-                                            <label style={Styles} name="email" htmlFor='email'>Email *</label>
-                                            <MDInput type={"text"} name="email" onChange={handleChange} placeholder="User Email" required variant="outlined" fullWidth />
-                                        </MDBox>
-                                    </Grid>
-                                    <Grid item xxl={12} xl={12} lg={12} xs={12} md={12}>
-                                        <MDBox mb={2}>
-                                            <Autocomplete
-                                                onChange={(event, newValue) => {
-                                                    setFormValue({
-                                                        ...formValue,
-                                                        roles: newValue
-                                                    })
-                                                }}
-                                                // onClick={moveToBrandPage}
-                                                id="select-role-demo"
-                                                options={["Project-Manager", "Graphic-Designer"]}
-                                                sx={{ width: '100%' }}
-                                                renderInput={(params) => <TextField required placeholder='Select Role' {...params} />}
+            <MDBox pt={6} pb={3} sx={({ breakpoints }) => ({
+                [breakpoints.down('md')]: {
+                    width : '98%',
+                },
+                [breakpoints.up('md')]: {
+                    width : '80%',
+                }
+            })}>
+                <Card sx={{ marginLeft: '10px' }}>
+                    <Grid container >
+                        <Grid item xxl={10} xl={10} lg={10} md={12} xs={12}>
+                            <MDBox pt={4} px={3} >
+                                <MDBox component="form" role="form" onSubmit={handleSignUp} >
+                                    <MDTypography
+                                        sx={({ breakpoints }) => ({
+                                            [breakpoints.down('md')]: {
+                                                ...titleStyles,
+                                                fontSize: '1.6rem !important',
+                                            },
+                                            [breakpoints.up('md')]: {
+                                                ...titleStyles
+                                            }
+                                        })}
 
-                                            />
-                                        </MDBox>
+                                        pb={2}
+                                    // verticalAlign="middle"
+                                    // fontWeight="medium"
+                                    // sx={({ palette: { mibanana }, typography: { size } }) => ({
+                                    //     color: mibanana.text,
+                                    //     size: size.lg
+                                    // })}
+                                    >Create Accounts
+                                    </MDTypography>
+                                    <Grid container spacing={2}>
+                                        <Grid item xxl={12} xl={12} lg={12} xs={12} md={12}>
+                                            <MDBox mb={2} >
+                                                <label style={Styles} name="username" htmlFor='username'>Name *</label>
+                                                <MDInput type={"text"} name="username" onChange={handleChange} placeholder="User name" required variant="outlined" fullWidth />
+                                            </MDBox>
+                                        </Grid>
+                                        <Grid item xxl={12} xl={12} lg={12} xs={12} md={12}>
+                                            <MDBox mb={2}>
+                                                <label style={Styles} name="email" htmlFor='email'>Email *</label>
+                                                <MDInput type={"text"} name="email" onChange={handleChange} placeholder="User Email" required variant="outlined" fullWidth />
+                                            </MDBox>
+                                        </Grid>
+                                        <Grid item xxl={12} xl={12} lg={12} xs={12} md={12}>
+                                            <MDBox mb={2}>
+                                                <Autocomplete
+                                                    onChange={(event, newValue) => {
+                                                        setFormValue({
+                                                            ...formValue,
+                                                            roles: newValue
+                                                        })
+                                                    }}
+                                                    // onClick={moveToBrandPage}
+                                                    id="select-role-demo"
+                                                    options={["Project-Manager", "Graphic-Designer"]}
+                                                    sx={{ width: '100%' }}
+                                                    renderInput={(params) => <TextField required placeholder='Select Role' {...params} />}
+
+                                                />
+                                            </MDBox>
+                                        </Grid>
+                                        <Grid item xxl={12} xl={12} lg={12} xs={12} md={12}>
+                                            <MDBox mb={2} sx={{ position: "relative" }}>
+                                                <label style={Styles} name="password" htmlFor='password'>Password *</label>
+                                                <MDInput type={currentPassword ? "text" : "password"} name="password" onChange={handleChange} placeholder="Password" required variant="outlined" fullWidth />
+                                                <IconButton
+                                                    onClick={() => isShowPassword(setCurrentPassword)}
+                                                    sx={{
+                                                        position: "absolute",
+                                                        right: 0,
+                                                    }}
+                                                >
+                                                    {currentPassword ? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </MDBox>
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xxl={12} xl={12} lg={12} xs={12} md={12}>
-                                        <MDBox mb={2} sx={{ position: "relative" }}>
-                                            <label style={Styles} name="password" htmlFor='password'>Password *</label>
-                                            <MDInput type={currentPassword ? "text" : "password"} name="password" onChange={handleChange} placeholder="Password" required variant="outlined" fullWidth />
-                                            <IconButton
-                                                onClick={() => isShowPassword(setCurrentPassword)}
-                                                sx={{
-                                                    position: "absolute",
-                                                    right: 0,
-                                                }}
-                                            >
-                                                {currentPassword ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </MDBox>
-                                    </Grid>
-                                </Grid>
-                                <MDBox mt={4} mb={1} pt={3} sx={{ display: 'inline-block', float: 'right', bottom: '10px', position: 'relative' }}>
-                                    <MDButton
-                                        type="submit"
-                                        color="warning"
-                                        fullWidth
-                                        endIcon={<MoonLoader loading={loading} size={18} color='#121212' />}
-                                        disabled={loading}
-                                        circular={true}
-                                        sx={{
-                                            color: '#000 !important',
-                                            fontSize: 14,
-                                            textTransform: "capitalize",
-                                        }}
-                                    >
-                                        Save &nbsp; <ArrowForward fontSize='large' />&nbsp;
-                                    </MDButton>
+                                    <MDBox mt={4} mb={1} pt={3} sx={{ display: 'inline-block', float: 'right', bottom: '10px', position: 'relative' }}>
+                                        <MDButton
+                                            type="submit"
+                                            color="warning"
+                                            fullWidth
+                                            endIcon={<MoonLoader loading={loading} size={18} color='#121212' />}
+                                            disabled={loading}
+                                            circular={true}
+                                            sx={{
+                                                color: '#000 !important',
+                                                fontSize: 14,
+                                                textTransform: "capitalize",
+                                            }}
+                                        >
+                                            Save &nbsp; <ArrowForward fontSize='large' />&nbsp;
+                                        </MDButton>
+                                    </MDBox>
+                                    {renderErrorSB}
+                                    {renderSuccessSB}
                                 </MDBox>
-                                {renderErrorSB}
-                                {renderSuccessSB}
                             </MDBox>
-                        </MDBox>
+                        </Grid>
                     </Grid>
-                </Grid>
+                </Card>
             </MDBox>
 
         </DashboardLayout>
@@ -209,3 +231,12 @@ const CreateAccounts = () => {
 }
 
 export default CreateAccounts
+
+const titleStyles = {
+    fontSize: '2.5rem',
+    width: '100%',
+    color: mibananaColor.yellowColor,
+    fontFamily: fontsFamily.poppins,
+    fontWeight: 'bold !important',
+    userSelect: 'none'
+}

@@ -246,6 +246,7 @@ const CustomerFiles = ({ openErrorSB, openSuccessSB, setRespMessage, reduxState,
                 setTimeout(() => {
                     openErrorSB()
                 }, 1000)
+                return
             } else {
                 setFileLoading(false)
                 setImageView([])

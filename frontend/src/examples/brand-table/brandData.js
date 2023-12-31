@@ -69,6 +69,7 @@ export const Action = ({ item }) => {
                     setTimeout(() => {
                         openErrorSB()
                     }, 1200)
+                    return
                 }
                 setLoading(false)
                 setRespMessage(err.message)

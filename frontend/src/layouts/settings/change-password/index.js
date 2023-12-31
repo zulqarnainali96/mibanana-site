@@ -13,6 +13,8 @@ import { MoonLoader } from 'react-spinners'
 import apiClient from 'api/apiClient'
 import { useSelector } from 'react-redux'
 import MDSnackbar from 'components/MDSnackbar'
+import { mibananaColor } from 'assets/new-images/colors'
+import { fontsFamily } from 'assets/font-family'
 
 const ChangePassword = () => {
     const [loading, setLoading] = useState(false)
@@ -71,12 +73,13 @@ const ChangePassword = () => {
                     setRespMessage(message)
                     openErrorSB()
                     setLoading(false)
+                    return
                 }
                 setRespMessage(error.message)
                 setLoading(false)
-                setTimeout( ()=> {
+                setTimeout(() => {
                     openErrorSB()
-                },400)
+                }, 400)
             })
 
     }
@@ -123,11 +126,14 @@ const ChangePassword = () => {
                         <MDBox pt={4} pb={3} px={3} >
                             <MDBox component="form" role="form" onSubmit={handleSignUp} >
                                 <MDTypography pb={2}
-                                    verticalAlign="middle"
-                                    fontWeight="medium"
-                                    sx={({ palette: { mibanana }, typography: { size } }) => ({
-                                        color: mibanana.text,
-                                        size: size.lg
+                                    sx={({ breakpoints }) => ({
+                                        [breakpoints.down('md')]: {
+                                            ...titleStyles,
+                                            fontSize: '1.6rem !important',
+                                        },
+                                        [breakpoints.up('md')]: {
+                                            ...titleStyles
+                                        }
                                     })}
                                 >Change Password
                                 </MDTypography>
@@ -185,7 +191,7 @@ const ChangePassword = () => {
                                         type="submit"
                                         color="warning"
                                         fullWidth
-                                        endIcon={ <MoonLoader loading={loading} size={18} color='#121212' />}
+                                        endIcon={<MoonLoader loading={loading} size={18} color='#121212' />}
                                         disabled={loading}
                                         circular={true}
                                         sx={{
@@ -207,6 +213,15 @@ const ChangePassword = () => {
 
         </DashboardLayout>
     )
+}
+
+const titleStyles = {
+    fontSize: '2.5rem',
+    width: '100%',
+    color: mibananaColor.yellowColor,
+    fontFamily: fontsFamily.poppins,
+    fontWeight: 'bold !important',
+    userSelect: 'none'
 }
 
 export default ChangePassword

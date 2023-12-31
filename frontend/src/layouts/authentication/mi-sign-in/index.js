@@ -127,6 +127,7 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           setTimeout(() => {
             openErrorSB();
           }, 1200);
+          return
         }
         setLoading(false);
         setRespMessage(err.message);
@@ -200,6 +201,7 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           setTimeout(() => {
             openErrorSB();
           }, 800);
+          return
         }
         setLoading(false);
         setRespMessage(err.message);

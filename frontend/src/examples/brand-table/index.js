@@ -184,13 +184,15 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                 }, 700)
 
             })
-            .catch((e) => {
-                if (e?.response) {
+            .catch((error) => {
+                if (error?.response) {
                     // dispatch(getNew_Brand(!new_brand))
-                    setRespMessage(e.response?.data?.message)
+                    setRespMessage(error.response?.data?.message)
                     setLoading(false)
-                    openErrorSB()
-                    // console.log(e?.response)
+                    setTimeout(() => {
+                        openErrorSB()
+                    }, 500)
+                    return
                 }
                 setLoading(false)
             })

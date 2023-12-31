@@ -59,8 +59,10 @@ const SignUp = ({ reduxState }) => {
             console.log('data => ', data)
             setRespMessage(data?.message)
             setLoading(false)
-            setFormValue({name: '', email: '', primary_email: '', primary_phone: '',
-             phone: '',password: '', company_name: '', confirm_password: '', contact_person: ''})
+            setFormValue({
+                name: '', email: '', primary_email: '', primary_phone: '',
+                phone: '', password: '', company_name: '', confirm_password: '', contact_person: ''
+            })
             setTimeout(() => {
                 handleOpen(true)
             }, 400)
@@ -72,6 +74,7 @@ const SignUp = ({ reduxState }) => {
                 setTimeout(() => {
                     openErrorSB()
                 }, 400)
+                return
             }
             setRespMessage(err.message)
             setOpen(false)
@@ -112,12 +115,15 @@ const SignUp = ({ reduxState }) => {
     return (
         <DashboardLayout>
             <SuccessModal
-                msg={respMessage}
+                msg={"Your account is Approved now you can use our services"}
                 open={open}
                 onClose={() => setOpen(false)}
                 width="40%"
+                color="#288e28"
+                title="SUCCESS"
+                sideRadius={false}
             />
-            <MDBox px={4} py={6}>
+            <MDBox px={4} py={6} width="75%">
                 <Card sx={{ padding: '22px' }}>
                     <NewCustomerForm
                         loading={loading}

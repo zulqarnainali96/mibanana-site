@@ -44,6 +44,7 @@ const TeamMembers = ({ team_member, setIsMember, setRespMessage, openErrorSB, op
                     setTimeout(() => {
                         openErrorSB()
                     }, 800)
+                    return
                 }
                 setRespMessage(error.message)
                 setTimeout(() => {

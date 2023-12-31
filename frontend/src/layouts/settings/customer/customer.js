@@ -9,6 +9,9 @@ import { useSelector } from "react-redux";
 import { currentUserRole } from "redux/global/global-functions";
 import apiClient from "api/apiClient";
 import reduxContainer from "redux/containers/containers";
+import NewProjectsTable from "examples/new-table";
+import { mibananaColor } from "assets/new-images/colors";
+import { fontsFamily } from "assets/font-family";
 
 const CreateCustomer = ({ reduxState, reduxActions }) => {
     const nonActiveCustomer = reduxState.non_active_customer_data
@@ -36,27 +39,19 @@ const CreateCustomer = ({ reduxState, reduxActions }) => {
     return (
         <DashboardLayout>
             <MDBox px={4} py={6}>
+                <MDTypography sx={titleStyles}>
+                    All Accounts
+                </MDTypography>
                 <Card>
-                    <MDBox
-                        mx={2}
-                        mt={3}
-                        sx={({ palette: { light, grey } }) => ({
-                            // backgroundColor : light.cream,
-                        })}
-                    >
-                        <MDTypography variant="h4" color="dark">
-                            New Customer Accounts
-                        </MDTypography>
-                    </MDBox>
                     <MDBox pt={3}>
-                        <ProjectDataTable
+                        <NewProjectsTable
                             table={{ columns, rows }}
+                            entriesPerPage={{ defaultValue: 6 }}
+                            showTotalEntries={true}
+                            pagination={{ variant: 'contained', color: "warning" }}
+                            noEndBorder={false}
+                            canSearch={false}
                             isSorted={false}
-                            entriesPerPage={false}
-                            showTotalEntries={false}
-                            pagination={{ variant: 'contained', color: 'success' }}
-                            // isfunc={true}
-                            noEndBorder
                         />
                         {!rows.length ? <MDTypography textAlign="center" p={1} component="h4">No Customers Found</MDTypography> : null}
                     </MDBox>
@@ -66,3 +61,12 @@ const CreateCustomer = ({ reduxState, reduxActions }) => {
     )
 }
 export default reduxContainer(CreateCustomer)
+
+const titleStyles = {
+    fontSize: '3rem',
+    width: '100%',
+    color: mibananaColor.yellowColor,
+    fontFamily: fontsFamily.poppins,
+    fontWeight: 'bold !important',
+    userSelect: 'none'
+}
