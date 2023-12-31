@@ -5,4 +5,5 @@ export const mibananaColor = {
     yellowTextColor : '#333333',
     tableHeaderColor : '#C6C3B6',
     greenShade1 : '#98e225',
+    white : 'white',
 }

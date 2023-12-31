@@ -433,7 +433,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
   }, [])
 
   return (
-    <Grid container className={navbarStyles.gridContainer}>
+    <div>
       <CreateProject1
         formValue={formValue}
         setFormValue={setFormValue}
@@ -468,51 +468,70 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
         title="SUCCESS"
         sideRadius={false}
       />
-      <Grid item xxl={7} xl={4} lg={4} md={4} xs={12} textAlign={!isLarge && "center"}>
-        <img src={MibananaIcon} loading='lazy' width={"250px"} height={"54px"} />
-      </Grid >
-      <Grid item xxl={5} xl={8} lg={8} md={8} xs={12}>
-        <Grid container alignItems="center">
-          <Grid item xxl={2} xl={4} lg={2} pl={"20px"} md={4} xs={4} alignSelf={"flex-end"} sx={gridItemResponsive}>
-            <img src={personImage} style={{ display: "block" }} width={"61px"} height={"61px"} />
-          </Grid>
-          <Grid item xxl={4} xl={8} lg={10} md={8} xs={8} sx={gridItemResponsive}>
-            <MDTypography className={navbarStyles.insideText}>Hello {showRoles()}!</MDTypography>
-            <MDTypography fontSize="medium" className={`${navbarStyles.poppins} ${navbarStyles.userRole}`}>{showPersonRoles()}</MDTypography>
-          </Grid>
-          <Grid item xxl={6} xl={6} lg={8} md={10} xs={12} >
-            <Grid container >
-              <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
-                <Badge badgeContent={inComingMessage()} sx={({ palette: { primary } }) => ({
+      <Grid container className={navbarStyles.gridContainer}>
+        <Grid item xxl={7} xl={4} lg={4} md={4} xs={12} textAlign={!isLarge && "center"}
+        //  sx={({breakpoints}) => ({
+        //   [breakpoints.only('xxl')] : {
+        //     backgroundColor : 'red'
+        //   },
+        //   [breakpoints.only('xl')] : {
+        //     backgroundColor : 'green'
+        //   },
+        //   [breakpoints.only('lg')] : {
+        //     backgroundColor : 'blue'
+        //   },
+        //   [breakpoints.only('md')] : {
+        //     backgroundColor : 'brown'
+        //   },
+        //   [breakpoints.only('xs')] : {
+        //     backgroundColor : 'purple'
+        //   },
+        //  })} 
+        >
+          <img src={MibananaIcon} loading='lazy' width={"250px"} height={"54px"} />
+        </Grid >
+        <Grid item xxl={5} xl={8} lg={8} md={8} xs={12}>
+          <Grid container alignItems="center">
+            <Grid item xxl={2} xl={2} lg={2} pl={"20px"} md={4} xs={4} alignSelf={"flex-end"} sx={gridItemResponsive}>
+              <img src={personImage} style={{ display: "block" }} width={"61px"} height={"61px"} />
+            </Grid>
+            <Grid item xxl={4} xl={4} lg={4} md={8} xs={8} sx={gridItemResponsive}>
+              <MDTypography className={navbarStyles.insideText}>Hello {showRoles()}!</MDTypography>
+              <MDTypography fontSize="medium" className={`${navbarStyles.poppins} ${navbarStyles.userRole}`}>{showPersonRoles()}</MDTypography>
+            </Grid>
+            <Grid item xxl={6} xl={6} lg={6} md={10} xs={12} >
+              <Grid container >
+                <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
+                  <Badge badgeContent={inComingMessage()} sx={({ palette: { primary } }) => ({
 
-                  "& .MuiBadge-badge": { fontSize: '1rem', backgroundColor: inComingMessage() === "" ? "transparent" : primary.main, color: primary.contrastText }
-                })}>
+                    "& .MuiBadge-badge": { fontSize: '1rem', backgroundColor: inComingMessage() === "" ? "transparent" : primary.main, color: primary.contrastText }
+                  })}>
+                    <div
+                      className={navbarStyles.btnContainer}
+                      onClick={handleOpenMenu}
+                    >
+                      {notificationsIcon}
+                    </div>
+                  </Badge>
+                </Grid>
+                {renderMenu()}
+                <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
+                  <div className={navbarStyles.btnContainer}>
+                    <RightSideDrawer list={list} />
+                  </div>
+                </Grid>
+                <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
                   <div
                     className={navbarStyles.btnContainer}
-                    onClick={handleOpenMenu}
+                    onClick={handleUserProfileMenu}
                   >
-                    {notificationsIcon}
+                    <AccountCircle
+                      fontSize='large'
+                      sx={{ fill: "#F6F6E8" }} />
                   </div>
-                </Badge>
-              </Grid>
-              {renderMenu()}
-              <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
-                <div className={navbarStyles.btnContainer}>
-                  <RightSideDrawer list={list} />
-                </div>
-              </Grid>
-              <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
-                <div
-                  className={navbarStyles.btnContainer}
-                  onClick={handleUserProfileMenu}
-                >
-                  <AccountCircle
-                    fontSize='large'
-                    sx={{ fill: "#F6F6E8" }} />
-                </div>
-                {renderUserMenu()}
-              </Grid>
-              {/* <Grid item xl={2}>
+                  {renderUserMenu()}
+                </Grid>
+                {/* <Grid item xl={2}>
                 <IconButton
                   size="small"
                   disableRipple
@@ -534,27 +553,28 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
                   </Icon>
                 </MDBox>
               </Grid> */}
-              <Grid item xxl={6} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({
-                [breakpoints.only('xs')]: {
-                  paddingTop: '5px',
-                  paddingBottom: '14px',
-                  textAlign: 'center'
-                }
-              })}>
-                <ProjectButton
-                  variant="contained"
-                  size='medium'
-                  startIcon={projectIcon}
-                  onClick={handleClickOpen}
-                >
-                  Create Project
-                </ProjectButton>
+                <Grid item xxl={6} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({
+                  [breakpoints.only('xs')]: {
+                    paddingTop: '5px',
+                    paddingBottom: '14px',
+                    textAlign: 'center'
+                  }
+                })}>
+                  <ProjectButton
+                    variant="contained"
+                    size='medium'
+                    startIcon={projectIcon}
+                    onClick={handleClickOpen}
+                  >
+                    Create Project
+                  </ProjectButton>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </Grid >
       </Grid >
-    </Grid >
+    </div>
   )
 }
 

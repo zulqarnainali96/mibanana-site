@@ -7,6 +7,7 @@ export const useStyles = makeStyles({
         backgroundColor: mibananaColor.headerColor,
         paddingBlock: '20px',
         paddingInline: '5rem',
+        justifyContent : 'space-between'
     },
     poppins: fontsFamily.poppins + " !important",
     insideText: {
