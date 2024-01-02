@@ -19,8 +19,7 @@ function DashboardLayout({ children }) {
         // p: 3,
         position: "relative",
         backgroundColor : "#FFF !important",
-        height : "86.6vh",
-        // overflowY : 'hidden', 
+        height : "100%",
         [breakpoints.up("xl")]: {
           marginLeft: miniSidenav ? pxToRem(120) : pxToRem(254),
           transition: transitions.create(["margin-left", "margin-right"], {

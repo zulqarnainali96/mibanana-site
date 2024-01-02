@@ -295,21 +295,51 @@ const Chating = ({ reduxState, reduxActions }) => {
   return (
     <DashboardLayout>
       <FileModal title="Files" open={modalState} setOpen={setModalState} />
-      <SuccessModal open={open} msg={respMessage} onClose={handleClose} width="30%" title="SUCCESS" sideRadius={false} />
-      <Grid container spacing={2} height="100%" mt={0} paddingInline={"60px"} paddingBlock={"30px"}>
-        <Grid item xxl={6} xl={6} lg={6} md={12} xs={12} sx={{
-          bgcolor: "#F6F6E8",
-          padding: 0
+      <SuccessModal
+        open={open}
+        msg={respMessage}
+        onClose={handleClose}
+        width="30%"
+        title="SUCCESS"
+        sideRadius={false}
+      />
+      <Grid
+        container
+        spacing={2}
+        mt={0}
+        py={3}
+        paddingInline={"60px"}
+        // paddingBlock={"30px"}
+        sx={{
+          height: "87vh",
         }}
+        >
+        <Grid
+          item
+          lg={6}
+          xs={12}
+          sx={{
+            pb:"10% !important",
+            position:"relative",
+            bgcolor: "#F6F6E8",
+            padding: 0,
+            height: "100%",
+            overflow: "scroll",
+            "::-webkit-scrollbar": {
+              width: "0",
+              height: "0",
+            },
+           
+          }}
         >
           <MDTypography
             sx={({ palette: { primary } }) => ({
               fontFamily: fontsFamily.poppins,
               color: mibananaColor.tableHeaderColor,
-              fontWeight: 'bold',
-              fontSize: '16px',
-              paddingBottom: '5px',
-              borderBottom: `2px solid ${mibananaColor.tableHeaderColor}`
+              fontWeight: "bold",
+              fontSize: "16px",
+              paddingBottom: "5px",
+              borderBottom: `2px solid ${mibananaColor.tableHeaderColor}`,
             })}
             variant="h4"
             pb={1}
@@ -321,116 +351,140 @@ const Chating = ({ reduxState, reduxActions }) => {
             justifyContent={"space-between"}
             alignItems={"flex-start"}
             flexDirection={"column"}
+            sx={{
+              height:"100%",
+              overflow: "scroll",
+              "::-webkit-scrollbar": {
+                width: "10px",
+                height: "0",
+              },
+              "::-webkit-scrollbar-thumb": {
+                backgroundColor: "#888",
+                borderRadius:2
+              },
+            }}
           >
             <Grid item xxl={12} xl={12} lg={12} width={"100%"}>
-              <MDBox
-                p={0}
-                ref={chatContainerRef}
-              >
+              <MDBox p={0} ref={chatContainerRef}>
                 <Box className="chat">
                   {msgArray?.length
                     ? msgArray.map((item, index, messages) => {
-                      return (
-                        <pre
-                          key={index}
-                          className={`message ${item.user === reduxState.userDetails?.id ? "right" : "left"
+                        return (
+                          <pre
+                            key={index}
+                            className={`message ${
+                              item.user === reduxState.userDetails?.id ? "right" : "left"
                             }`}
-                          style={{ position: "relative" }}
-                        >
-                          <Box sx={{ display: "flex" }}>
-                            <img
-                              src={item.avatar}
-                              width={50}
-                              height={50}
-                              loading="lazy"
-                              style={{
-                                borderRadius: 0,
-                                marginTop: -7,
-                                display: "inline-block",
-                                left: item.user === user ? "70px" : "-9px",
-                              }}
-                            />
-                            <Box width="100%" ml={4}>
-                              <Box
-                                className="user-name"
+                            style={{ position: "relative" }}
+                          >
+                            <Box sx={{ display: "flex" }}>
+                              <img
+                                src={item.avatar}
+                                width={50}
+                                height={50}
+                                loading="lazy"
                                 style={{
-                                  display: "flex",
-                                  gap: "8px",
-                                  alignItems: "center",
+                                  borderRadius: 0,
+                                  marginTop: -7,
+                                  display: "inline-block",
+                                  left: item.user === user ? "70px" : "-9px",
                                 }}
-                              >
-                                <p style={{ ...nameStyle, position: 'relative', width: '100%' }}>
-                                  {item.name}
-                                  <span style={{ ...nameStyle, fontWeight: '300', fontSize: '12px' }}>
-                                    {" (" + item?.role + ")"}
-                                  </span>
-                                  <span
-                                    style={{
-                                      fontSize: "10px",
-                                      fontWeight: "300",
-                                      position: 'absolute',
-                                      right: '10px',
-                                      color: mibananaColor.tableHeaderColor,
-                                    }}
-                                  >
-                                    {item.time_data ? item.time_data : null}
-                                  </span>
-                                </p>
-                              </Box>
-                              <Box sx={{ p: 2, ...nameStyle, fontWeight: '300', fontSize: '12px' }} className="message-content">
-                                {item.message}
+                              />
+                              <Box width="100%" ml={4}>
+                                <Box
+                                  className="user-name"
+                                  style={{
+                                    display: "flex",
+                                    gap: "8px",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <p style={{ ...nameStyle, position: "relative", width: "100%" }}>
+                                    {item.name}
+                                    <span
+                                      style={{ ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                                    >
+                                      {" (" + item?.role + ")"}
+                                    </span>
+                                    <span
+                                      style={{
+                                        fontSize: "10px",
+                                        fontWeight: "300",
+                                        position: "absolute",
+                                        right: "10px",
+                                        color: mibananaColor.tableHeaderColor,
+                                      }}
+                                    >
+                                      {item.time_data ? item.time_data : null}
+                                    </span>
+                                  </p>
+                                </Box>
+                                <Box
+                                  sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                                  className="message-content"
+                                >
+                                  {item.message}
+                                </Box>
                               </Box>
                             </Box>
-                          </Box>
-
-                        </pre>
-                      );
-                    })
+                          </pre>
+                        );
+                      })
                     : null}
                 </Box>
               </MDBox>
             </Grid>
-            <Grid item xxl={12} xl={12} lg={12} md={12} width={"100%"}>
-              <MDBox
-                height={"6vh"}
-                width="97%"
+          </Grid>
+              <Box
+                width="100%"
+                m='auto'
                 mt={0}
                 p={1}
                 sx={{
                   display: "flex",
-                  justifyContent: "space-between",
+                  justifyContent:"center",
                   alignItems: "center",
-                  marginTop: "5px",
-                  backgroundColor: mibananaColor.white,
-                  position: 'relative',
+                  position: "absolute",
+                  left:"0",
+                  bottom:"-30px"
                 }}
               >
-                <div style={{marginLeft:'17px'}}>
-                  <img src={avatar ? avatar : ImageAvatar} width={50} height={50} alt="person-image" />
-                </div>
+                <Box mr={2}>
+                  <img
+                    src={avatar ? avatar : ImageAvatar}
+                    width={50}
+                    height={50}
+                    alt="person-image"
+                  />
+                </Box>
                 <textarea
                   rows={2}
                   className="textareaStyle"
                   value={message}
                   placeholder="Type your message here"
                   onChange={(e) => sendMessage(e.target.value)}
-                  style={{ fontFamily: fontsFamily.poppins, }}
+                  style={{ fontFamily: fontsFamily.poppins }}
                 />
                 <SendOutlined
                   fontSize="large"
-                  sx={{ position: 'absolute', right: 20, fill: mibananaColor.tableHeaderColor,cursor:'pointer' }}
+                  sx={{
+                    position: "absolute",
+                    right: 50,
+                    fill: mibananaColor.tableHeaderColor,
+                    cursor: "pointer",
+                  }}
                   onClick={onSendMessage}
                 />
-              </MDBox>
-            </Grid>
-          </Grid>
+              </Box>
         </Grid>
-        <Grid item xxl={6} xl={6} lg={6} md={12} xs={12}>
-          {/* <FileUploadContainer
-            setRespMessage={setRespMessage}
-            openSuccessSB={openSuccessSB}
-            openErrorSB={openErrorSB}
-          /> */}
+        <Grid item lg={6} md={12} xs={12} pt="0 !important" height="100%">
+          <Box className="chat">
+            <FileUploadContainer
+              setRespMessage={setRespMessage}
+              openSuccessSB={openSuccessSB}
+              openErrorSB={openErrorSB}
+            />
+          </Box>
         </Grid>
         {renderSuccessSB}
       </Grid>
@@ -440,57 +494,9 @@ const Chating = ({ reduxState, reduxActions }) => {
 
 const nameStyle = {
   fontFamily: fontsFamily.poppins,
-  fontWeight: '600',
-  fontSize: '16px',
+  fontWeight: "600",
+  fontSize: "16px",
   color: mibananaColor.yellowTextColor,
-}
-const Styles = {
-  fontWeight: "bold",
-  fontSize: "15px",
-  marginLeft: 4,
-};
-
-const stylesProps2 = {
-  sx: {
-    borderTopLeftRadius: "12px",
-    borderTopRightRadius: "12px",
-    overflowY: "auto",
-  },
-  sx2: {
-    height: "486px",
-    width: "100%",
-    border: "3px solid #ccc",
-    bgColor: "#f0f0f0",
-    // background-color: #f0f0f0;
-  },
-};
-
-const sendButton = {
-  borderRadius: "4px !important",
-  minHeight: "42px",
-  border: "1px solid #444",
-};
-
-const inComingMsg = {
-  padding: "15px",
-  variant: "h5",
-  color: "light",
-  mt: 1,
-};
-const inComingMsg2 = {
-  // backgroundColor: "green",
-  borderBottomLeftRadius: "18px",
-  borderTopRightRadius: "18px",
-  display: "inline-block",
-};
-
-const styleProps = {
-  // mt: 2,
-  border: "5px solid #33333321",
-  borderRadius: "10px",
-  // bgColor: "primary",
-  height: "87vh",
-  overflowy: "auto",
 };
 
 export default reduxContainer(Chating);

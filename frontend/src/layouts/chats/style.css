@@ -1,32 +1,17 @@
 /* Chat.css */
 
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  padding: 20px;
-  background-color: #f0f0f0;
-}
-
 .chat {
-  /* flex-grow: 1; */
   display: flex;
   flex-direction: column;
-  /* overflow-y: auto;
-  padding: 10px; */
-  height: 68vh;
+  height:100%;
   padding-block:5px;
-  padding-inline:5px;
+  padding: 0;
   overflow: scroll;
 }
 
 .chat::-webkit-scrollbar {
-  width: 10px;
+  width: 0px;
   height: 0;
-}
-
-.chat::-webkit-scrollbar-thumb {
-  background-color: #888;
 }
 
 .message {
@@ -96,7 +81,8 @@ h6,
 }
 
 .textareaStyle {
-  width: 100%;
+  width: 80%;
+  height: 100%;
   color: #444;
   font-family: arial;
   font-size: 1rem !important;
@@ -105,9 +91,9 @@ h6,
   background-color: white;
   border-color: transparent;
   border-radius: 0px;
-  padding: 5px;
-  margin-left: 27px;
+  padding: 10px;
   resize: initial;
+  border-radius: 10px;
 }
 .textareaStyle::placeholder {
   padding-top: 5px;
@@ -119,8 +105,7 @@ h6,
 .uploadfilebtn {
   background: black;
   color: #FDD700;
-  width: 95%;
-  margin-left: 12px
+  width: 100%;
 }
 
 .uploadfilebtn:hover {
@@ -152,6 +137,7 @@ h6,
 .TickImg1 {
   margin-top: 10px;
   padding: 5px;
+  margin-left: auto;
 }
 
 .desc1 {
@@ -165,7 +151,7 @@ h6,
 
 .fileImg1 {
   width: 100%;
-  height: 100px;
+  height: 60px;
 }
 
 .imageContainer {
