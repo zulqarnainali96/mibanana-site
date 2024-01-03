@@ -365,7 +365,8 @@ const FileUploadContainer = ({
     }
   };
   const getAllfiles = () => {
-    role?.projectManager || role?.designer || role?.admin ? designerFiles() : clientFiles();
+    designerFiles();
+    // clientFiles();
   };
   // useEffect(() => {
   //     clientFiles()
