@@ -426,11 +426,11 @@ const Chating = ({ reduxState, reduxActions }) => {
           </Grid>
         </Grid>
         <Grid item xxl={6} xl={6} lg={6} md={12} xs={12}>
-          {/* <FileUploadContainer
+          <FileUploadContainer
             setRespMessage={setRespMessage}
             openSuccessSB={openSuccessSB}
             openErrorSB={openErrorSB}
-          /> */}
+          />
         </Grid>
         {renderSuccessSB}
       </Grid>

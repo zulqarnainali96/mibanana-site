@@ -373,17 +373,17 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
           flexDirection="column"
           p={.8}
           mb={.2}
-          width="230px"
+          width="240px"
           gap="5px"
-          sx={{ backgroundColor: newMsg?.view ? "#ccc" : "white", ":hover": { backgroundColor: '#ddd', cursor: 'pointer', borderRadius: '0px !important' } }}
+          sx={{ backgroundColor: newMsg?.view ? "#4b45458c" : "white", ":hover": { backgroundColor: '#ddd', cursor: 'pointer', borderRadius: '0px !important' } }}
           onClick={() => clearIncomingMsg(newMsg, i)}
         >
-          <MDTypography fontSize="medium" fontWeight="bold" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.yellowTextColor }}>{newMsg?.project_title}</MDTypography>
+          <MDTypography fontSize="medium" fontWeight="bold" sx={notificationStyles}>{newMsg?.project_title}</MDTypography>
           <MDBox display="flex" gap="8px" width="100%">
             {newMsg?.avatar ? <img src={newMsg?.avatar} loading="lazy" width={40} height={40} style={{ borderRadius: '20px' }} /> : <img src={DefaultAvatar} loading="lazy" width={40} height={40} style={{ borderRadius: '20px' }} />}
             <MDBox display="flex" flexDirection="column" gap="5px" width="100%">
-              <MDTypography fontSize="small" fontWeight="300" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.yellowTextColor }}>{newMsg?.message}</MDTypography>
-              <MDTypography fontSize="small" fontWeight="300" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.yellowTextColor }}>{"New Message from "}<b style={{ display: 'block' }}>{newMsg?.role}</b></MDTypography>
+              <MDTypography fontSize="small" fontWeight="300" sx={notificationStyles}>{newMsg?.message}</MDTypography>
+              <MDTypography fontSize="small" fontWeight="300" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.tableHeaderColor, fontStyle: 'italic' }}>{"received message from "}<b style={{ display: 'block' }}>{newMsg?.role}</b></MDTypography>
             </MDBox>
           </MDBox>
         </MDBox>
@@ -501,7 +501,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
             </Grid>
             <Grid item xxl={6} xl={6} lg={6} md={10} xs={12} >
               <Grid container >
-                <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
+                {/* <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
                   <Badge badgeContent={inComingMessage()} sx={({ palette: { primary } }) => ({
 
                     "& .MuiBadge-badge": { fontSize: '1rem', backgroundColor: inComingMessage() === "" ? "transparent" : primary.main, color: primary.contrastText }
@@ -513,7 +513,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
                       {notificationsIcon}
                     </div>
                   </Badge>
-                </Grid>
+                </Grid> */}
                 {renderMenu()}
                 <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
                   <div className={navbarStyles.btnContainer}>
@@ -576,6 +576,12 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       </Grid >
     </div>
   )
+}
+
+const notificationStyles = {
+  fontFamily: fontsFamily.poppins,
+  color: mibananaColor.yellowTextColor,
+  wordBreak : 'break-word',
 }
 
 export default reduxContainer(NewNavbar)

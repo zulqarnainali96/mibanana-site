@@ -16,9 +16,13 @@ import createCache from "@emotion/cache";
 import routes from "routes";
 import authRoutes from "authRoutes";
 import AdminRoutes from "adminRoutes";
+import projectManager from "manRoutes";
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 import MibananLogo from "assets/mi-banana-icons/mibanana-logo-1-color 1.png";
 import NewNavbar from "examples/Navbars/NewDesign/NewNavbar";
+import { currentUserRole } from "redux/global/global-functions";
+import { useSelector } from "react-redux";
+import ViewBrand from "examples/brand-table/view-brand/view-brand";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -33,6 +37,7 @@ export default function App() {
     darkMode,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
+  const state = useSelector(state => state)
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
   console.log('path ', pathname)
@@ -59,7 +64,7 @@ export default function App() {
 
   // const user = useSelector(state => state.userDetails)
   const user = JSON.parse(localStorage.getItem("user_details"));
-  const isAdmin = user?.roles.includes("Admin");
+  const role = currentUserRole(state);
   // Close sidenav when mouse leave mini sidenav
   const handleOnMouseLeave = () => {
     if (onMouseEnter) {
@@ -67,7 +72,6 @@ export default function App() {
       setOnMouseEnter(false);
     }
   };
-
   // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
@@ -94,6 +98,11 @@ export default function App() {
       return null;
     });
 
+  const manager_router = {
+    key: "current-brand",
+    route: "/brand/:id",
+    component: <ViewBrand />,
+  }
   const configsButton = (
     <MDBox
       display="flex"
@@ -131,7 +140,7 @@ export default function App() {
                   (transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo
                 }
                 brandName="MiBanana"
-                routes={isAdmin ? AdminRoutes : routes}
+                routes={role?.admin ? AdminRoutes : [...routes, (role?.projectManager || role?.designer && manager_router)]}
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
               />
@@ -142,11 +151,12 @@ export default function App() {
       <MDBox className="zainasdasd">
         {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar />}
         <Routes>
-          {user !== null && user?.verified
-            ? isAdmin
-              ? getRoutes(AdminRoutes)
-              : getRoutes(routes)
-            : getRoutes(authRoutes)}
+          {user !== null ? (
+            role?.admin ? getRoutes(AdminRoutes) :
+              role?.projectManager ? getRoutes(projectManager) :
+                getRoutes(routes)) :
+            getRoutes(authRoutes)
+          }
           <Route
             path="*"
             element={
