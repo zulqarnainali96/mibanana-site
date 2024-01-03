@@ -246,6 +246,10 @@ const FileUploadContainer = ({
       });
   };
   const deleteFile = async (filename) => {
+    if (selectedFilePeople == "customer") {
+      deleteCustomerFiles(filename);
+      return;
+    }
     if (role?.projectManager || role?.designer || role?.admin) deleteDesignerFiles(filename);
     else {
       deleteCustomerFiles(filename);
@@ -349,8 +353,20 @@ const FileUploadContainer = ({
     designerFiles();
   }, []);
   useEffect(() => {
-    selectedFilePeople == "designer" ? designerFiles() : clientFiles();
+    getfiles();
   }, [selectedFilePeople]);
+  const getfiles = () => {
+    if (selectedFilePeople == "designer") {
+      designerFiles();
+    } else if (selectedFilePeople == "customer") {
+      clientFiles();
+    } else {
+      role?.projectManager || role?.designer || role?.admin ? designerFiles() : clientFiles();
+    }
+  };
+  const getAllfiles = () => {
+    role?.projectManager || role?.designer || role?.admin ? designerFiles() : clientFiles();
+  };
   // useEffect(() => {
   //     clientFiles()
   //     // designerFiles()
@@ -365,16 +381,16 @@ const FileUploadContainer = ({
     return formattedDate;
   };
   const filterFunction = (files) => {
-    console.log("selectedFileType", selectedFileType, files);
     if (selectedFileType) {
       const filterFiles = files.filter((file) => {
         const fileExtension = file?.name.split(".").pop();
-        console.log("fileExtension", fileExtension);
         return fileExtension === selectedFileType;
       });
-
+      // sort on the base of latest
+      filterFiles.sort((a, b) => new Date(b.time) - new Date(a.time));
       return filterFiles;
     } else {
+      files.sort((a, b) => new Date(b.time) - new Date(a.time));
       return files;
     }
   };
@@ -405,7 +421,9 @@ const FileUploadContainer = ({
       <Box sx={{ background: "#fff", mt: 1, pt: 1 }}>
         <Grid>
           <Box className={classes.uploadbtndiv}>
-            <button className={classes.uploadbtn}>Files</button>
+            <button className={classes.uploadbtn} onClick={getAllfiles}>
+              Files
+            </button>
             <select
               value={selectedFilePeople}
               onChange={handleFilePeopleChange}
@@ -432,31 +450,47 @@ const FileUploadContainer = ({
         <Grid container>
           {version?.length > 0 ? (
             <>
-              {filterFunction(version)?.map((ver) => (
-                <>
-                  <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
-                    <div className={classes.uploadedfileMainDiv}>
-                      <div className={classes.fileDiv2}>
-                        <div>
-                          <img src={ver.url} className="fileImg1" />
+              {filterFunction(version).length > 0 ? (
+                filterFunction(version)?.map((ver) => (
+                  <>
+                    <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
+                      <div className={classes.uploadedfileMainDiv}>
+                        {(role?.projectManager || role?.designer || role?.admin) && (
+                          <div onClick={() => deleteFile(ver?.name)} className="deleteIcon">
+                            x
+                          </div>
+                        )}
+                        {console.log("var", ver)}
+                        <div className={classes.fileDiv2}>
+                          <div>
+                            <img src={ver.url} className="fileImg1" />
+                          </div>
+                          <p className={classes.fileDiv2p}>{ver.name.substring(0, 15)}</p>
                         </div>
-                        <p className={classes.fileDiv2p}>{ver.name.substring(0, 20)}</p>
-                      </div>
-                      <div className={classes.UserDiv}>
+                        {/* <div className={classes.UserDiv}>
                         <img src={designerImg} className="adminImg1" />
                         <div>
                           <h6 className="userName1">Designer</h6>
                           <p className="date1">{dateFun(ver?.time)}</p>
                         </div>
                         <img src={tickImg} className="TickImg1" />
+                      </div> */}
                       </div>
-                    </div>
-                  </Grid>
-                </>
-              ))}
+                    </Grid>
+                  </>
+                ))
+              ) : (
+                <div className="nofilefoundDiv">
+                  {" "}
+                  <h1>No file found</h1>
+                </div>
+              )}
             </>
           ) : (
-            <></>
+            <div className="nofilefoundDiv">
+              {" "}
+              <h1>No data found</h1>
+            </div>
           )}
         </Grid>
 

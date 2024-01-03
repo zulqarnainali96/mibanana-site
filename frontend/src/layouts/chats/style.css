@@ -3,8 +3,8 @@
 .chat {
   display: flex;
   flex-direction: column;
-  height:100%;
-  padding-block:5px;
+  height: 100%;
+  padding-block: 5px;
   padding: 0;
   overflow: scroll;
 }
@@ -95,11 +95,12 @@ h6,
   resize: initial;
   border-radius: 10px;
 }
+
 .textareaStyle::placeholder {
   padding-top: 5px;
   font-style: italic;
   font-size: 13px;
-  color:  #C6C3B6;
+  color: #C6C3B6;
 }
 
 .uploadfilebtn {
@@ -158,4 +159,25 @@ h6,
   width: 200px;
   height: 200px;
   overflow: hidden;
+}
+
+.deleteIcon {
+  color: red;
+  position: relative;
+  left: -50px;
+  cursor: pointer;
+}
+
+.deleteIcon:hover {
+
+  background-color: #dddfe2;
+  border-radius: 30px;
+  padding: 0 5px;
+}
+
+.nofilefoundDiv {
+  color: #a4a4a5;
+  text-align: center;
+  width: 100%;
+  padding: 25px;
 }
