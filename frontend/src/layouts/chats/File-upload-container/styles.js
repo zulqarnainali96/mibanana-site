@@ -124,11 +124,6 @@ export const useStyles = makeStyles({
     width: "87%",
     background: "white !important",
   },
-  driveDiv: {
-    paddingBottom: "5px",
-    marginTop: "12px",
-    fontWeight: "600",
-  },
   iconBtn: {
     backgroundColor: "#ccc !important",
     borderTopRightRadius: "5px !important",
@@ -159,7 +154,7 @@ export const useStyles = makeStyles({
     background: "black",
   },
   dropfileDiv: {
-    width: "90%",
+    width: "97.5%",
     margin: "5px auto",
     padding: "10px",
     border: "1px solid gray",
@@ -180,10 +175,12 @@ export const useStyles = makeStyles({
   UserDiv: {
     width: "100%",
     background: "#F6F6E8",
-    display: "flex",
+    display:"flex",
+    alignItems:"center"
   },
   fileDiv2: {
     margin: "10px 10px",
+    
   },
   fileDiv2p: {
     textAlign: "center",

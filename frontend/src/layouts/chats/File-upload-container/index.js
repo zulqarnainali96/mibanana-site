@@ -1,4 +1,14 @@
-import { Grid, IconButton, MenuItem, Select, Button, InputLabel, FormControl } from "@mui/material";
+import {
+  Grid,
+  Box,
+  IconButton,
+  MenuItem,
+  Select,
+  Button,
+  InputLabel,
+  FormControl,
+  Typography,
+} from "@mui/material";
 import { UploadIcon } from "assets/mi-banana-icons/upload-icon";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
@@ -28,6 +38,8 @@ import { Jpeg, Jpg, Png, Svg } from "redux/global/file-formats";
 import FileUpload from "./file-upload-container/File-upload";
 import { MoonLoader } from "react-spinners";
 import { getProjectData } from "redux/global/global-functions";
+import { mibananaColor } from "assets/new-images/colors";
+import { fontsFamily } from "assets/font-family";
 
 const inputSxStyles = {
   "& .MuiInputBase-root > input": {
@@ -189,7 +201,7 @@ const FileUploadContainer = ({
           setTimeout(() => {
             openErrorSB();
           }, 1000);
-          return
+          return;
         } else {
           setFileLoading(false);
           setRespMessage(err.message);
@@ -368,73 +380,114 @@ const FileUploadContainer = ({
   };
 
   return (
-    <MDBox className={classes.Container}>
+    <MDBox
+      sx={{
+        bgcolor: "#F6F6E8",
+        px: 1,
+      }}
+    >
       <Grid>
-        <div className={classes.driveDiv}>
-          <p>DRIVE</p>
-        </div>
+        <MDTypography
+          sx={({ palette: { primary } }) => ({
+            fontFamily: fontsFamily.poppins,
+            color: mibananaColor.tableHeaderColor,
+            fontWeight: "bold",
+            fontSize: "16px",
+            padding: "10px 0",
+            borderBottom: `2px solid ${mibananaColor.tableHeaderColor}`,
+          })}
+          variant="h4"
+          pb={1}
+        >
+          DRIVE
+        </MDTypography>
       </Grid>
-      <hr />
-      <Grid>
-        <div className={classes.uploadbtndiv}>
-          <button className={classes.uploadbtn}>Files</button>
-          <button className={classes.uploadbtn}>Folders</button>
+      <Box sx={{ background: "#fff", mt: 1, pt: 1 }}>
+        <Grid>
+          <Box className={classes.uploadbtndiv}>
+            <button className={classes.uploadbtn}>Files</button>
+            <select
+              value={selectedFilePeople}
+              onChange={handleFilePeopleChange}
+              className="selectType1"
+            >
+              <option value="">Folders</option>
+              <option value="customer">Customer</option>
+              <option value="designer">Designer</option>
+            </select>
 
-          <select value={selectedFileType} onChange={handleFileTypeChange} className="selectType1">
-            <option value="">Type</option>
-            <option value="svg">SVG</option>
-            <option value="png">PNG</option>
-            <option value="jpg">JPG</option>
-            <option value="pdf">PDF</option>
-          </select>
-          <select
-            value={selectedFilePeople}
-            onChange={handleFilePeopleChange}
-            className="selectType1"
-          >
-            <option value="">People</option>
-            <option value="customer">Customer</option>
-            <option value="designer">Designer</option>
-          </select>
-          <button className={classes.uploadbtn}>Date</button>
-        </div>
-      </Grid>
-      <Grid container>
-        {version?.length > 0 ? (
-          <>
-            {filterFunction(version)?.map((ver) => (
-              <>
-                <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
-                  <div className={classes.uploadedfileMainDiv}>
-                    <div className={classes.fileDiv2}>
-                      <div>
-                        <img src={ver.url} className="fileImg1" />
+            <select
+              value={selectedFileType}
+              onChange={handleFileTypeChange}
+              className="selectType1"
+            >
+              <option value="">Type</option>
+              <option value="svg">SVG</option>
+              <option value="png">PNG</option>
+              <option value="jpg">JPG</option>
+              <option value="pdf">PDF</option>
+            </select>
+          </Box>
+        </Grid>
+        <Grid container>
+          {version?.length > 0 ? (
+            <>
+              {filterFunction(version)?.map((ver) => (
+                <>
+                  <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
+                    <div className={classes.uploadedfileMainDiv}>
+                      <div className={classes.fileDiv2}>
+                        <div>
+                          <img src={ver.url} className="fileImg1" />
+                        </div>
+                        <p className={classes.fileDiv2p}>{ver.name.substring(0, 20)}</p>
                       </div>
-                      <p className={classes.fileDiv2p}>{ver.name.substring(0, 20)}</p>
-                    </div>
-                    <div className={classes.UserDiv}>
-                      <img src={designerImg} className="adminImg1" />
-                      <div>
-                        <h6 className="userName1">Designer</h6>
-                        <p className="date1">{dateFun(ver?.time)}</p>
+                      <div className={classes.UserDiv}>
+                        <img src={designerImg} className="adminImg1" />
+                        <div>
+                          <h6 className="userName1">Designer</h6>
+                          <p className="date1">{dateFun(ver?.time)}</p>
+                        </div>
+                        <img src={tickImg} className="TickImg1" />
                       </div>
-                      <img src={tickImg} className="TickImg1" />
                     </div>
-                  </div>
-                </Grid>
-              </>
-            ))}
-          </>
-        ) : (
-          <></>
-        )}
-      </Grid>
+                  </Grid>
+                </>
+              ))}
+            </>
+          ) : (
+            <></>
+          )}
+        </Grid>
 
-      <Grid container>
-        <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>
-          <div {...getRootProps()} className={classes.dropfileDiv} onClick={openFileSelect}>
+        <Grid container>
+          <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>
+            <div {...getRootProps()} className={classes.dropfileDiv} onClick={openFileSelect}>
+              <input
+                {...getInputProps()}
+                id="new-file-upload"
+                type="file"
+                ref={fileRef}
+                accept=".ai, .eps, .psd, .zip, .jpg, .png, .pdf, .jpeg, .svg"
+                hidden={true}
+                onChange={handleFileUpload}
+                multiple
+              />
+              {isDragActive ? (
+                <p>Drop the files here...</p>
+              ) : (
+                <p>Upload or drop file right here.</p>
+              )}
+            </div>
+            <button
+              variant="mibanana"
+              sx={uploadBtn}
+              onClick={openFileSelect}
+              className={"uploadfilebtn"}
+            >
+              Upload Files
+            </button>
             <input
-              {...getInputProps()}
               id="new-file-upload"
               type="file"
               ref={fileRef}
@@ -443,85 +496,75 @@ const FileUploadContainer = ({
               onChange={handleFileUpload}
               multiple
             />
-            {isDragActive ? <p>Drop the files here...</p> : <p>Upload or drop file right here.</p>}
-          </div>
-          <button
-            variant="mibanana"
-            sx={uploadBtn}
-            onClick={openFileSelect}
-            className={"uploadfilebtn"}
-          >
-            Upload Files
-          </button>
-          <input
-            id="new-file-upload"
-            type="file"
-            ref={fileRef}
-            accept=".ai, .eps, .psd, .zip, .jpg, .png, .pdf, .jpeg, .svg"
-            hidden={true}
-            onChange={handleFileUpload}
-            multiple
-          />
+          </Grid>
+          <Grid item xxl={3} xl={3} lg={3} md={3} xs={3}></Grid>
         </Grid>
-        <Grid item xxl={3} xl={3} lg={3} md={3} xs={3}></Grid>
-      </Grid>
-      <Grid container className={classes.adminDivGrid}>
-        <div className={classes.adminDiv1}>
-          <h2 className={classes.adminDiv1h2}>Author</h2>
-          <div className="adminDiv2">
-            <img src={adminImg} className="adminImg1" />
-            <div>
-              <h3 className={classes.adminDiv2h3}>Admin</h3>
+        <Grid container className={classes.adminDivGrid}>
+          <div className={classes.adminDiv1}>
+            <h2 className={classes.adminDiv1h2}>Author</h2>
+            <div className="adminDiv2">
+              <img src={adminImg} className="adminImg1" />
+              <div>
+                <h3 className={classes.adminDiv2h3}>Admin</h3>
 
-              <p className={classes.adminDiv2p}>(super admin)</p>
+                <p className={classes.adminDiv2p}>(super admin)</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className={classes.adminDiv1}>
-          <h2 className={classes.adminDiv1h2}>Team Member</h2>
-          <div className="adminDiv2">
-            <img src={designerImg} className="adminImg1" />
-            <div>
-              <h3 className={classes.adminDiv2h3}>Designer b.</h3>
-              <p className={classes.adminDiv2p}>(you)</p>
+          <div className={classes.adminDiv1}>
+            <h2 className={classes.adminDiv1h2}>Team Member</h2>
+            <div className="adminDiv2">
+              <img src={designerImg} className="adminImg1" />
+              <div>
+                <h3 className={classes.adminDiv2h3}>Designer b.</h3>
+                <p className={classes.adminDiv2p}>(you)</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className={classes.adminDiv1}>
-          <h2 className={classes.adminDiv1h2}>Brand</h2>
-          <div className="adminDiv2">
-            <img src={UserImg} className="adminImg1" />
-            <div>
-              <h3 className={classes.adminDiv2h3}>Desihgn M</h3>
+          <div className={classes.adminDiv1}>
+            <h2 className={classes.adminDiv1h2}>Brand</h2>
+            <div className="adminDiv2">
+              <img src={UserImg} className="adminImg1" />
+              <div>
+                <h3 className={classes.adminDiv2h3}>Desihgn M</h3>
 
-              {/* <p className={classes.adminDiv2p}>(super admin)</p> */}
+                {/* <p className={classes.adminDiv2p}>(super admin)</p> */}
+              </div>
             </div>
           </div>
+        </Grid>
+        <hr />
+        <div className={classes.catdivmain}>
+          <div className={classes.catdiv1}>
+            <h2 className={classes.adminDiv1h2}>Category</h2>
+            <Typography variant="h6">Graphic Design</Typography>
+          </div>
+          <div className={classes.catdiv1}>
+            <h2 className={classes.adminDiv1h2}>Type</h2>
+            <Typography variant="h6" className="desc1">
+              Book Cover
+            </Typography>
+          </div>
+          <div className={classes.catdiv1}>
+            <h2 className={classes.adminDiv1h2}>Description</h2>
+            <Typography variant="h6" className="desc1">
+              Lorem ipsum dolor sit amet,
+            </Typography>
+          </div>
+          <div className={classes.catdiv1}>
+            <h2 className={classes.adminDiv1h2}>Size</h2>
+            <Typography variant="h6" className="desc1">
+              1024 X 1440px
+            </Typography>
+          </div>
+          <div className={classes.catdiv1}>
+            <h2 className={classes.adminDiv1h2}>Details</h2>
+            <Typography variant="h6" className="desc1">
+              Active
+            </Typography>
+          </div>
         </div>
-      </Grid>
-      <hr />
-      <div className={classes.catdivmain}>
-        <div className={classes.catdiv1}>
-          <h2 className={classes.adminDiv1h2}>Category</h2>
-          <p className="desc1">Graphic Design</p>
-        </div>
-        <div className={classes.catdiv1}>
-          <h2 className={classes.adminDiv1h2}>Type</h2>
-          <p className="desc1">Book Cover</p>
-        </div>
-        <div className={classes.catdiv1}>
-          <h2 className={classes.adminDiv1h2}>Description</h2>
-          <p className="desc1">Lorem ipsum dolor sit amet,</p>
-        </div>
-        <div className={classes.catdiv1}>
-          <h2 className={classes.adminDiv1h2}>Size</h2>
-          <p className="desc1">1024 X 1440px</p>
-        </div>
-        <div className={classes.catdiv1}>
-          <h2 className={classes.adminDiv1h2}>Details</h2>
-          <p className="desc1">Active</p>
-        </div>
-      </div>
+      </Box>
       {/* <MDBox className={classes.mainImageContainer}>
         {files.length > 0 || filesType.length > 0 ? (
           <FileUpload
