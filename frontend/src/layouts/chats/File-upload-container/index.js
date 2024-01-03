@@ -1,4 +1,4 @@
-import { Grid, IconButton, MenuItem, Select, Button, InputLabel, FormControl } from "@mui/material";
+import { Grid,Box, IconButton, MenuItem, Select, Button, InputLabel, FormControl, Typography } from "@mui/material";
 import { UploadIcon } from "assets/mi-banana-icons/upload-icon";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
@@ -28,6 +28,8 @@ import { Jpeg, Jpg, Png, Svg } from "redux/global/file-formats";
 import FileUpload from "./file-upload-container/File-upload";
 import { MoonLoader } from "react-spinners";
 import { getProjectData } from "redux/global/global-functions";
+import { mibananaColor } from "assets/new-images/colors";
+import { fontsFamily } from "assets/font-family";
 
 const inputSxStyles = {
   "& .MuiInputBase-root > input": {
@@ -368,15 +370,29 @@ const FileUploadContainer = ({
   };
 
   return (
-    <MDBox className={classes.Container}>
-      <Grid>
-        <div className={classes.driveDiv}>
-          <p>DRIVE</p>
-        </div>
+    <MDBox  sx={{
+      bgcolor: "#F6F6E8",
+      px:1
+    }}>
+      <Grid >
+      <MDTypography
+            sx={({ palette: { primary } }) => ({
+              fontFamily: fontsFamily.poppins,
+              color: mibananaColor.tableHeaderColor,
+              fontWeight: "bold",
+              fontSize: "16px",
+              padding: "10px 0",
+              borderBottom: `2px solid ${mibananaColor.tableHeaderColor}`,
+            })}
+            variant="h4"
+            pb={1}
+          >
+            DRIVE
+          </MDTypography>
       </Grid>
-      <hr />
-      <Grid>
-        <div className={classes.uploadbtndiv}>
+      <Box  sx={{background:"#fff",mt:1, pt:1}} >
+      <Grid >
+        <Box  className={classes.uploadbtndiv}>
           <button className={classes.uploadbtn}>Files</button>
           <button className={classes.uploadbtn}>Folders</button>
 
@@ -397,7 +413,7 @@ const FileUploadContainer = ({
             <option value="designer">Designer</option>
           </select>
           <button className={classes.uploadbtn}>Date</button>
-        </div>
+        </Box>
       </Grid>
       <Grid container>
         {version?.length > 0 ? (
@@ -418,7 +434,7 @@ const FileUploadContainer = ({
                         <h6 className="userName1">Designer</h6>
                         <p className="date1">{dateFun(ver?.time)}</p>
                       </div>
-                      <img src={tickImg} className="TickImg1" />
+                      <img src={tickImg} className="TickImg1"  />
                     </div>
                   </div>
                 </Grid>
@@ -503,25 +519,26 @@ const FileUploadContainer = ({
       <div className={classes.catdivmain}>
         <div className={classes.catdiv1}>
           <h2 className={classes.adminDiv1h2}>Category</h2>
-          <p className="desc1">Graphic Design</p>
+          <Typography variant="h6" >Graphic Design</Typography>
         </div>
         <div className={classes.catdiv1}>
           <h2 className={classes.adminDiv1h2}>Type</h2>
-          <p className="desc1">Book Cover</p>
+          <Typography variant="h6" className="desc1">Book Cover</Typography>
         </div>
         <div className={classes.catdiv1}>
           <h2 className={classes.adminDiv1h2}>Description</h2>
-          <p className="desc1">Lorem ipsum dolor sit amet,</p>
+          <Typography variant="h6" className="desc1">Lorem ipsum dolor sit amet,</Typography>
         </div>
         <div className={classes.catdiv1}>
           <h2 className={classes.adminDiv1h2}>Size</h2>
-          <p className="desc1">1024 X 1440px</p>
+          <Typography variant="h6" className="desc1">1024 X 1440px</Typography>
         </div>
         <div className={classes.catdiv1}>
           <h2 className={classes.adminDiv1h2}>Details</h2>
-          <p className="desc1">Active</p>
+          <Typography variant="h6" className="desc1">Active</Typography>
         </div>
       </div>
+      </Box>
       {/* <MDBox className={classes.mainImageContainer}>
         {files.length > 0 || filesType.length > 0 ? (
           <FileUpload
