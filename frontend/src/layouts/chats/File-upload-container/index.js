@@ -267,6 +267,7 @@ const FileUploadContainer = ({
         setLoading(false);
         setFiles([]);
         setFilesType([]);
+        designerFiles();
       })
       .catch((err) => {
         setLoading(false);
@@ -303,7 +304,7 @@ const FileUploadContainer = ({
             await clientFiles();
             setTimeout(() => {
               openSuccessSB();
-            }, 2000);
+            }, 1000);
           })
           .catch((err) => {
             throw err;
@@ -320,6 +321,7 @@ const FileUploadContainer = ({
   };
 
   const handleSubmit = async (filType) => {
+    console.log("role handle submit", role);
     if (role?.designer || role?.projectManager || role?.admin) {
       managerUploadFiles(filType);
     } else {
