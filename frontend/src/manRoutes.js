@@ -8,9 +8,7 @@ import ChangePassword from "layouts/settings/change-password";
 import Chating from "layouts/chats";
 import Navbar from "examples/Navbars/MyNavbar/Navbar";
 import ViewBrand from "examples/brand-table/view-brand/view-brand";
-const user_details = JSON.stringify(localStorage.getItem('user-details'))
 
-console.log(user_details)
 const routes = [
   {
     type: "collapse",

@@ -9,26 +9,35 @@ import MDTypography from 'components/MDTypography';
 import { setCurrentIndex } from 'redux/actions/actions';
 import { useDispatch } from 'react-redux';
 import { reRenderChatComponent } from 'redux/actions/actions';
-import { East } from '@mui/icons-material';
+import { East, StarRate } from '@mui/icons-material';
 import { setRightSideBar } from 'redux/actions/actions';
 import { toggleDrawer } from 'redux/global/global-functions';
 import { fontsFamily } from 'assets/font-family';
 import { mibananaColor } from 'assets/new-images/colors';
 
 const ProjectList = ({ item, index, currentIndex, showProjects }) => {
-    const [msg, setMsgArr] = useState([])
+    const [msg, setMsgArr] = useState("")
 
     useEffect(() => {
         async function getChatMessage() {
             try {
                 const { data } = await apiClient('/chat-message/' + item?._id)
-                setMsgArr(data?.chat?.chat_msg)
-            } catch (error) {
-                setMsgArr([])
+                if (data?.chat?.chat_msg?.length > 0) {
+                    const chatMessage = data?.chat?.chat_msg
+                    const lastMessage = chatMessage[chatMessage?.length - 1].view ? chatMessage[chatMessage?.length - 1].message : 'no unread message' 
+                    console.log(chatMessage)
+                    setMsgArr(lastMessage)
+                } else {
+                    setMsgArr("no message inside chat")
+                }
+            } catch(error) {
+                setMsgArr("")
+                console.log(error)
             }
         }
         getChatMessage()
-    }, [])
+    }, [item])
+
 
     const statusColor = () => {
         let statusColor = ''
@@ -70,7 +79,6 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
         color: mibananaColor.tableHeaderColor,
         wordBreak: 'break-word'
     }
-
     return (
         <MDBox
             display="flex"
@@ -92,7 +100,7 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
                     <span style={statusStyle()}>{item?.status}</span>
                 </MDBox>
             </MDBox>
-            <MDBox sx={chatMsg}>This is chat msg chat msg</MDBox>
+            <MDBox sx={chatMsg}>{msg}</MDBox>
         </MDBox >
     )
 }
@@ -106,6 +114,7 @@ export default () => {
     const projects = useSelector(state => state.project_list.CustomerProjects)
     const setState = (payload) => dispatch(setRightSideBar(payload))
     const rightSideDrawer = useSelector(state => state.rightSideDrawer)
+    const notification = useSelector(state => state.userDetails.notifications)
 
     function showProjects(id, index) {
         setIndex(index)
@@ -114,7 +123,6 @@ export default () => {
             navigate("/chat/" + id)
         }, 400)
     }
-
 
     const list = (anchor) => (
         <Box

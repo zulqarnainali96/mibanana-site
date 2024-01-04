@@ -6,7 +6,7 @@
   height:100%;
   padding-block:5px;
   padding: 0;
-  overflow: scroll;
+  overflow-y: auto;
 }
 
 .chat::-webkit-scrollbar {
@@ -81,7 +81,7 @@ h6,
 }
 
 .textareaStyle {
-  width: 80%;
+  width: 88%;
   height: 100%;
   color: #444;
   font-family: "Poppins", arial;
@@ -89,7 +89,7 @@ h6,
   padding: 2px 8px;
   background-color: white;
   border-color: transparent;
-  padding: 10px;
+  padding: 5px;
   resize: initial;
   /* border-radius: 10px; */
 }
