@@ -60,11 +60,11 @@ input[type="text"] {
 }
 
 button {
-  padding: 10px 20px;
+  padding: 5px 18px;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 0px;
   cursor: pointer;
   outline: none;
 }
@@ -107,6 +107,10 @@ h6,
   background: black;
   color: #FDD700;
   width: 100%;
+  font-family: Poppins;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 5px;
 }
 
 .uploadfilebtn:hover {
@@ -146,8 +150,9 @@ h6,
 }
 
 .selectType1 {
-  margin: 6px;
-  border-radius: 5px;
+  margin: 6px 6px 6px 0px;
+  border-radius: 1px;
+  outline: 0;
 }
 
 .fileImg1 {
@@ -180,4 +185,43 @@ h6,
   text-align: center;
   width: 100%;
   padding: 25px;
+}
+
+.loaderfile {
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+}
+
+.activeClass {
+  background-color: #FDD700 !important;
+}
+
+.activeClass option {
+  background-color: white !important;
+}
+
+.downloadicon {
+  position: relative;
+  left: 55px;
+  cursor: pointer;
+}
+
+.filesGrid {
+  height: 430px;
+  overflow: auto;
+}
+
+.imagePreviewOverlay {
+  width: 100%;
+  height: 100px;
+}
+
+.styles-module_wrapper__1I_qj {
+  background: black !important;
+  width: 30% !important;
+  height: 30% !important;
+  top: 45% !important;
+  left: 63% !important;
+  border-radius: 10px !important;
 }

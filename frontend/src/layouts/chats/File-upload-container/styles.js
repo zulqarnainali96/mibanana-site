@@ -139,7 +139,7 @@ export const useStyles = makeStyles({
     border: "1px solid gray",
     background: "transparent",
     color: "black",
-    margin: "6px",
+    margin: "6px 0px 6px 6px",
   },
   "uploadbtn:hover": {
     background: "#FDD700",
@@ -175,12 +175,11 @@ export const useStyles = makeStyles({
   UserDiv: {
     width: "100%",
     background: "#F6F6E8",
-    display:"flex",
-    alignItems:"center"
+    display: "flex",
+    alignItems: "center",
   },
   fileDiv2: {
     margin: "10px 10px",
-    
   },
   fileDiv2p: {
     textAlign: "center",

@@ -10,6 +10,10 @@ import {
   Typography,
 } from "@mui/material";
 import { UploadIcon } from "assets/mi-banana-icons/upload-icon";
+import CircularProgress from "@mui/material/CircularProgress";
+import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
+import ImageViewer from "react-simple-image-viewer";
+
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
@@ -90,6 +94,7 @@ const FileUploadContainer = ({
   const [loading, setLoading] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
   const [isRender, setIsRender] = useState(false);
+  const [activebtn, setActiveBtn] = useState("");
 
   const project = projects?.find((item) => item._id === id);
   const version1 = project?.add_files[0]?.version1;
@@ -100,14 +105,28 @@ const FileUploadContainer = ({
   const re_render_chat = reduxState?.re_render_chat;
   const fileRef = useRef(null);
   const role = currentUserRole(reduxState);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [previewimg, setpreviewimg] = useState("");
+
+  const openImageViewer = useCallback((img) => {
+    setpreviewimg(img);
+    setIsViewerOpen(true);
+  }, []);
+
+  const closeImageViewer = () => {
+    setpreviewimg("");
+    setIsViewerOpen(false);
+  };
 
   const openFileSelect = () => {
     fileRef.current.click();
   };
   const handleFileTypeChange = (event) => {
+    setActiveBtn("type");
     setSelectedFileType(event.target.value); // Update selected file type on change
   };
   const handleFilePeopleChange = (event) => {
+    setActiveBtn("folder");
     setSelectedFilePeople(event.target.value); // Update selected file type on change
   };
 
@@ -336,7 +355,7 @@ const FileUploadContainer = ({
       type: item?.type,
     });
   };
-  const DownloadFile = () => {
+  const DownloadFile = (downloadfileName) => {
     if (!downloadfileName) return alert("Please select file");
     window.open(downloadfileName, "_blank");
   };
@@ -424,13 +443,19 @@ const FileUploadContainer = ({
       <Box sx={{ background: "#fff", mt: 1, pt: 1 }}>
         <Grid>
           <Box className={classes.uploadbtndiv}>
-            <button className={classes.uploadbtn} onClick={getAllfiles}>
+            <button
+              className={`${classes.uploadbtn} ${activebtn == "files" && "activeClass"}`}
+              onClick={() => {
+                setActiveBtn("files");
+                getAllfiles();
+              }}
+            >
               Files
             </button>
             <select
               value={selectedFilePeople}
               onChange={handleFilePeopleChange}
-              className="selectType1"
+              className={`selectType1 ${activebtn == "folder" && "activeClass"}`}
             >
               <option value="">Folders</option>
               <option value="customer">Customer</option>
@@ -440,7 +465,7 @@ const FileUploadContainer = ({
             <select
               value={selectedFileType}
               onChange={handleFileTypeChange}
-              className="selectType1"
+              className={`selectType1 ${activebtn == "type" && "activeClass"}`}
             >
               <option value="">Type</option>
               <option value="svg">SVG</option>
@@ -450,27 +475,48 @@ const FileUploadContainer = ({
             </select>
           </Box>
         </Grid>
-        <Grid container>
-          {version?.length > 0 ? (
+        <Grid container className="filesGrid">
+          {!loading ? (
             <>
-              {filterFunction(version).length > 0 ? (
-                filterFunction(version)?.map((ver) => (
-                  <>
-                    <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
-                      <div className={classes.uploadedfileMainDiv}>
-                        {(role?.projectManager || role?.designer || role?.admin) && (
-                          <div onClick={() => deleteFile(ver?.name)} className="deleteIcon">
-                            x
-                          </div>
-                        )}
-                        {console.log("var", ver)}
-                        <div className={classes.fileDiv2}>
-                          <div>
-                            <img src={ver.url} className="fileImg1" />
-                          </div>
-                          <p className={classes.fileDiv2p}>{ver.name.substring(0, 15)}</p>
-                        </div>
-                        {/* <div className={classes.UserDiv}>
+              {" "}
+              {version?.length > 0 ? (
+                <>
+                  {filterFunction(version).length > 0 ? (
+                    filterFunction(version)?.map((ver) => (
+                      <>
+                        <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
+                          <div className={classes.uploadedfileMainDiv}>
+                            {(role?.projectManager || role?.designer || role?.admin) && (
+                              <div onClick={() => deleteFile(ver?.name)} className="deleteIcon">
+                                x
+                              </div>
+                            )}
+
+                            <DownloadForOfflineIcon
+                              onClick={() => DownloadFile(ver?.download_link)}
+                              className="downloadicon"
+                            />
+                            {console.log("var", ver)}
+                            <div className={classes.fileDiv2}>
+                              <div>
+                                <img
+                                  src={ver.url}
+                                  className="fileImg1"
+                                  onClick={() => openImageViewer(ver.url)}
+                                />
+                                {isViewerOpen && (
+                                  <ImageViewer
+                                    src={[previewimg]}
+                                    disableScroll={false}
+                                    closeOnClickOutside={true}
+                                    onClose={closeImageViewer}
+                                    style={{ width: "100%", height: "100px" }}
+                                  />
+                                )}
+                              </div>
+                              <p className={classes.fileDiv2p}>{ver.name.substring(0, 15)}</p>
+                            </div>
+                            {/* <div className={classes.UserDiv}>
                         <img src={designerImg} className="adminImg1" />
                         <div>
                           <h6 className="userName1">Designer</h6>
@@ -478,22 +524,30 @@ const FileUploadContainer = ({
                         </div>
                         <img src={tickImg} className="TickImg1" />
                       </div> */}
-                      </div>
-                    </Grid>
-                  </>
-                ))
+                          </div>
+                        </Grid>
+                      </>
+                    ))
+                  ) : (
+                    <div className="nofilefoundDiv">
+                      {" "}
+                      <h1>No file found</h1>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="nofilefoundDiv">
                   {" "}
-                  <h1>No file found</h1>
+                  <h1>No data found</h1>
                 </div>
               )}
             </>
           ) : (
-            <div className="nofilefoundDiv">
-              {" "}
-              <h1>No data found</h1>
-            </div>
+            <>
+              <div className="loaderfile">
+                <CircularProgress />
+              </div>
+            </>
           )}
         </Grid>
 
