@@ -371,7 +371,7 @@ const projectOngoing = async (req, res) => {
         if (findproject) {
             const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'Ongoing' })
             if (updatingStatus) {
-                return res.status(201).send({ message: 'Project Attended' })
+                return res.status(201).send({ message: 'Project Ongoing' })
             }
             else {
                 return res.status(400).send({ message: 'Found error while Updating Project' })
@@ -412,51 +412,3 @@ const projectSubmitted = async (req, res) => {
 }
 
 module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectSubmitted, deleteCustomerFiles, projectOngoing }
-
-
-// [
-//     {
-//       _id: new ObjectId("6518020ab029630971206a6b"),
-//       user: new ObjectId("64fe366943475b69f1b73bf5"),
-//       name: 'Testing',
-//       project_category: 'Graphic Design',
-//       design_type: 'App',
-//       brand: 'Ideas',
-//       project_title: 'New One',
-//       project_description: 'Project Desc',
-//       describe_audience: 'Describle Audience',
-//       sizes: '1080 x 1080',
-//       resources: 'My Content',
-//       reference_example: null,
-//       add_files: [],
-//       specific_software_names: 'Adobe Photoshop',
-//       is_active: true,
-//       status: 'Ongoing',
-//       team_members: [ {
-//         id : 222 ,
-//         name : 'zain'
-//       } ],
-//     },
-//     {
-//       _id: new ObjectId("6518365ab029630971206b8b"),
-//       user: new ObjectId("64fe366943475b69f1b73bf5"),
-//       name: 'Testing',
-//       project_category: 'Illustrations',
-//       design_type: 'App',
-//       brand: 'Nike',
-//       project_title: 'Zain hashmi',
-//       project_description: 'zxcz',
-//       describe_audience: 'sd',
-//       sizes: '1080 x 1080',
-//       resources: 'weq',
-//       reference_example: null,
-//       add_files: [],
-//       specific_software_names: 'Adobe Photoshop',
-//       is_active: true,
-//       status: 'Ongoing',
-//       team_members: [ {
-//         id : 223 ,
-//         name : 'zain'
-//       } ],
-//     }
-//   ]

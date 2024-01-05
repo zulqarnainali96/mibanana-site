@@ -25,7 +25,7 @@ import UploadFile from 'components/File upload button/FileUpload';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { openBrandModalFunc } from 'redux/actions/actions';
-import { Typography } from '@mui/material';
+import { Typography, useMediaQuery } from '@mui/material';
 import AiLogo from 'assets/mi-banana-icons/ai-logo.png'
 import fileImage from 'assets/mi-banana-icons/file-image.png'
 
@@ -83,18 +83,21 @@ const OtherFilesShow = ({ file, deleteOtherSingleFile }) => {
 
     )
 }
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
     '& .MuiPaper-root': {
-        maxWidth: '70% !important'
+        maxWidth: '70% !important',
+        [breakpoints.down('lg')]: {
+            width: '95%'
+        },
     },
     '& .MuiInputBase-root': {
         paddingBlock: '15px'
     },
     '& .MuiDialogContent-root': {
-        padding: theme.spacing(2),
+        padding: spacing(2),
     },
     '& .MuiDialogActions-root': {
-        padding: theme.spacing(1),
+        padding: spacing(1),
         width: "100%"
     },
 }));
@@ -164,9 +167,10 @@ const CreateProject1 = ({
 }) => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const is768 = useMediaQuery("(min-width:768px)")
     const func = () => dispatch(openBrandModalFunc(true))
     const filter = createFilterOptions()
-    
+
     function moveToBrandPage() {
         handleClose()
         navigate("/mi-brands")
@@ -178,10 +182,19 @@ const CreateProject1 = ({
         if (formValue.file_formats.length === 3) {
             const disable = !fileFormats.includes(formValue.file_formats.map(item => { return item }))
             return disable
+
         } else {
             return false
         }
     };
+
+    const marginNone = (breakpoints) => ({
+        m: 1,
+        width: '100%',
+        [breakpoints.down('md')]: {
+            margin: '0px'
+        }
+    })
 
     return (
         <BootstrapDialog open={open} sx={{ width: '100% !important' }} >
@@ -207,33 +220,8 @@ const CreateProject1 = ({
             <DialogContent>
                 <Box component="form" onSubmit={onSubmit} sx={{ display: 'flex', flexWrap: 'wrap' }}>
                     <Grid width={"100%"} container spacing={2} justifyContent={"space-between"} alignItems={"center"}>
-                        <Grid item xxl={6} xl={6}>
-                            <FormControl sx={{ m: 1, width: '100%', }}>
-                                {/* <InputLabel htmlFor='project_category_label' >Select Project Category *</InputLabel> */}
-                                {/* <Select
-                                    labelId="project_category_label"
-                                    name="project_category"
-                                    required
-                                    // value={formValue.project_category}
-                                    variant='filled'
-                                    onChange={handleChange}
-                                    // IconComponent={() => <CloseSharp onClick={() => onRemoveChange('project_category')} fontSize='small' sx={{ marginRight: 1, cursor: "pointer" }} />}
-                                    input={<OutlinedInput
-                                        label="Select Project Category" />}
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    {category.map((name) => (
-                                        <MenuItem
-                                            key={name}
-                                            value={name}
-                                            disabled={name !== 'Graphic Design'}
-                                        >
-                                            {name}
-                                        </MenuItem>
-                                    ))}
-                                </Select> */}
+                        <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
+                            <FormControl sx={({ breakpoints }) => marginNone(breakpoints)}>
                                 <Autocomplete
                                     value={formValue.project_category}
                                     onChange={(event, newValue) => {
@@ -248,30 +236,8 @@ const CreateProject1 = ({
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xxl={6} xl={6}>
-                            <FormControl sx={{ width: '100%', }}>
-                                {/* <InputLabel htmlFor="design_type_label">Select Design Type *</InputLabel> */}
-                                {/* <Select
-                                    labelId="design_type_label"
-                                    // value={formValue.design_type}
-                                    name='design_type'
-                                    required
-                                    MenuProps={MenuProps}
-                                    onChange={handleChange}
-                                    input={<OutlinedInput label="Select Design Type" />}
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    {designType.map((name) => (
-                                        <MenuItem
-                                            key={name}
-                                            value={name}
-                                        >
-                                            {name}
-                                        </MenuItem>
-                                    ))}
-                                </Select> */}
+                        <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
+                            <FormControl sx={({ breakpoints }) => marginNone(breakpoints)}>
                                 <Autocomplete
                                     value={formValue.design_type}
                                     onChange={(event, newValue) => {
@@ -287,8 +253,12 @@ const CreateProject1 = ({
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xxl={6} xl={6}>
-                            <FormControl sx={{ m: 1, width: '100%', position: 'relative' }}>
+                        <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
+                            <FormControl sx={({ breakpoints }) => ({
+                                m: 1, width: '100%', position: 'relative', [breakpoints.down('md')]: {
+                                    margin: 0,
+                                }
+                            })}>
                                 {brandOption.length === 0 ? (
                                     <> <InputLabel htmlFor="brand_label">Select Brand *</InputLabel>
                                         <Select
@@ -334,13 +304,17 @@ const CreateProject1 = ({
                             <MDTypography
                                 variant="a"
                                 size="medium"
-                                sx={{ position: 'absolute', left: '30px', color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
+                                sx={{ position: 'sticky', left: '30px', color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
                                 onClick={moveToBrandPage}>
                                 Create brand
                             </MDTypography>
                         </Grid>
-                        <Grid item xxl={6} xl={6}>
-                            <FormControl sx={{ m: 1, width: '100%', }}>
+                        <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
+                            <FormControl sx={({ breakpoints }) => ({
+                                m: 1, width: '100%', [breakpoints.down('md')]: {
+                                    margin: 0,
+                                }
+                            })}>
                                 <MDInput type="text"
                                     name="project_title"
                                     onChange={handleChange}
@@ -354,7 +328,7 @@ const CreateProject1 = ({
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xxl={12} xl={12} mt={2}>
+                        <Grid item xxl={12} xl={12} lg={12} md={12} xs={12} mt={2}>
                             <MDBox mb={2} sx={{
                                 display: "flex", flexDirection: "column",
                                 "& > textarea:focus": {
@@ -374,37 +348,72 @@ const CreateProject1 = ({
                                     placeholder="Project Description" variant="outlined" />
                             </MDBox>
                         </Grid>
-                        <Grid item xxl={6} xl={6}>
+                        <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
                             <Typography variant="h4" size="medium">Custom width*</Typography>
-                            <FormControl sx={{ m: 1, width: '30%', }}>
+                            <FormControl sx={({ breakpoints }) => ({
+                                m: 1, width: '30%',
+                                [breakpoints.down('lg')]: {
+                                    width: '100%'
+                                },
+                                [breakpoints.down('md')]: {
+                                    margin: 0,
+                                    marginBottom : '6px'
+                                }
+                            })}>
                                 <MDInput
                                     type="number"
                                     name="width"
                                     onChange={handleChange}
                                     required
                                     placeholder="Width *" variant="outlined" fullWidth
-                                    sx={{
+                                    sx={({ breakpoints, spacing }) => ({
                                         "& > *": {
                                             padding: '6px 8px !important'
+                                        },
+                                        [breakpoints.down('lg')]: {
+                                            paddingBlock: '5px',
+                                            fontSize: '13px'
                                         }
-                                    }}
+
+                                    })}
                                 />
                             </FormControl>
-                            <FormControl sx={{ m: 1, width: '30%', }}>
+                            <FormControl sx={({ breakpoints }) => ({
+                                m: 1, width: '30%',
+                                [breakpoints.down('lg')]: {
+                                    width: '100%'
+                                },
+                                [breakpoints.down('md')]: {
+                                    margin: 0,
+                                    marginBottom : '6px'
+                                }
+                            })}>
                                 <MDInput
                                     type="number"
                                     name="height"
                                     onChange={handleChange}
                                     placeholder="Height *" variant="outlined" fullWidth
                                     required
-                                    sx={{
+                                    sx={({ breakpoints }) => ({
                                         "& > *": {
                                             padding: '6px 8px !important'
+                                        },
+                                        [breakpoints.down('md')]: {
+                                            paddingBlock: '5px !important',
+                                            fontSize: '13px'
                                         }
-                                    }}
+
+                                    })}
                                 />
                             </FormControl>
-                            <FormControl sx={{ m: 1, width: '30%', }}>
+                            <FormControl sx={({ breakpoints }) => ({
+                                m: 1, width: '30%',
+                                [breakpoints.down('md')]: {
+                                    width: '100% !important',
+                                    margin: 0,
+                                    marginBottom : '6px'
+                                },
+                            })}>
                                 <Autocomplete
                                     onChange={(event, newValue) => {
                                         setFormValue({
@@ -420,9 +429,21 @@ const CreateProject1 = ({
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xxl={6} xl={6}>
-                            <MDBox display="flex" gap="5px" sx={{ m: 1, marginTop: '28px', width: '100%' }}>
-                                <FormControl sx={{ m: 1, width: '100%', }}>
+                        <Grid item xxl={6} xl={6} lg={12} sm={12} md={12} xs={12}>
+                            <MDBox display="flex" gap="5px" sx={({ breakpoints }) => ({
+                                m: 1, marginTop: '28px', width: '100%',
+                                [breakpoints.down('md')]: {
+                                    flexWrap: "wrap",
+                                    marginTop: '20px',
+                                    margin : 0,
+                                }
+                            })}>
+                                <FormControl sx={({ breakpoints }) => ({
+                                    m: 1, width: '100%', [breakpoints.down('md')]: {
+                                        margin: 0,
+                                        marginBottom : '6px'
+                                    }
+                                })}>
                                     <Autocomplete
                                         value={formValue.file_formats}
                                         onChange={(event, newValue) => {
@@ -440,7 +461,11 @@ const CreateProject1 = ({
                                         multiple
                                     />
                                 </FormControl>
-                                <FormControl sx={{ m: 1, width: '100%', }}>
+                                <FormControl sx={({ breakpoints }) => ({
+                                    m: 1, width: '100%', [breakpoints.down('md')]: {
+                                        margin: 0,
+                                    }
+                                })}>
                                     <Autocomplete
                                         value={formValue.specific_software_names}
                                         onChange={(event, newValue) => {
@@ -462,7 +487,7 @@ const CreateProject1 = ({
                                 </FormControl>
                             </MDBox>
                         </Grid>
-                        <Grid item xxl={3} xl={3}>
+                        <Grid item xxl={3} xl={3} lg={12} md={12} xs={12} >
                             <MDBox>
                                 <UploadFile
                                     id="customer-upload-image"
@@ -476,7 +501,7 @@ const CreateProject1 = ({
                             <MDTypography component="span" sx={{ color: 'red', fontWeight: '300', fontSize: '14px' }} >Note : Only .png, .pdf, <br />.jpg, .jpeg, .ai, .zip, .psd, .eps <br />formats are allowed <br /> Max Select 7</MDTypography>
 
                         </Grid>
-                        <Grid item xxl={9} xl={9} ml={-10} alignSelf={"flex-start"} sx={{
+                        <Grid item xxl={9} xl={9} lg={12} md={12} xs={12} ml={-10} alignSelf={"flex-start"} sx={{
                             height: '124px',
                             overflowY: 'auto'
                         }} >
@@ -506,7 +531,14 @@ const CreateProject1 = ({
                         </Grid>
                     </Grid>
                     <DialogActions>
-                        <MDBox marginRight="100px">
+                        <MDBox marginRight="100px" sx={!is768 ? {
+                            marginRight: '-4px',
+                            fontSize: '13px',
+                            position: 'absolute !important',
+                            bottom: '100px',
+                            textAlign: 'center',
+                            width: '82%',
+                        } : {}}>
                             {uploadProgress > 0 && (
                                 <>
                                     <p>Upload Progress: {uploadProgress}%</p>
@@ -514,7 +546,7 @@ const CreateProject1 = ({
                                 </>
                             )}
                         </MDBox>
-                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button onClick={handleClose} >Cancel</Button>
                         <SubmitButton sx={{ color: 'white !important' }} disabled={loading} variant='contained' type='submit'
                             endIcon={<MoonLoader loading={loading} size={18} color='#fff' />}
                         >

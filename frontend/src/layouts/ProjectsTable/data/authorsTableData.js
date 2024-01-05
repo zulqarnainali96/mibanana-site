@@ -38,7 +38,9 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const [loading4, setLoading4] = useState(false)
   const [loading5, setLoading5] = useState(false)
   const [loading6, setLoading6] = useState(false)
+
   const handleMenuOpen = (event) => {
+    event.preventDefault()
     setAnchorEl(event.currentTarget);
   };
 
@@ -92,7 +94,6 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
         }, 900)
       })
   }
-
   const duplicateProject = async () => {
     setLoading2(true)
     if (!item._id) {
@@ -290,7 +291,6 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
         }, 900)
       })
   }
-
   const renderErrorSB = (
     <MDSnackbar
       color="error"
@@ -304,7 +304,6 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
       bgWhite
     />
   );
-
   const renderSuccessSB = (
     <MDSnackbar
       color="success"
@@ -321,16 +320,11 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
-  const ActionItem = () => {
-
-  }
-
   return (
     <MDBox>
-      <MDBox onClick={handleMenuOpen}>
+      <div onClick={handleMenuOpen}>
         <svg xmlns="http://www.w3.org/2000/svg" className="active-svg" width="27" height="27" fill="none"><path stroke="inherit" stroke-linecap="round" stroke-linejoin="round" d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" /></svg>
-      </MDBox>
+      </div>
       {children ? children :
         <Menu
           id="dropdown-menu"

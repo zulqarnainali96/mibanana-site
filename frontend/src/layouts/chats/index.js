@@ -85,6 +85,7 @@ const Chating = ({ reduxState, reduxActions }) => {
   const getUserRoles = () => {
     if (reduxState?.userDetails?.roles.includes("Graphic-Designer")) return "Graphic-Designer";
     if (reduxState?.userDetails?.roles.includes("Project-Manager")) return "Project-Manager";
+    if (reduxState?.userDetails?.roles.includes("admin")) return "Admin";
     if (reduxState?.userDetails?.roles.includes("Customer")) return "Customer";
   };
 
@@ -313,14 +314,14 @@ const Chating = ({ reduxState, reduxActions }) => {
         sx={{
           height: "87vh",
         }}
-        >
+      >
         <Grid
           item
           lg={6}
           xs={12}
           sx={{
-            pb:"10% !important",
-            position:"relative",
+            // pb:"10% !important",
+            position: "relative",
             bgcolor: "#F6F6E8",
             padding: 0,
             height: "100%",
@@ -329,7 +330,7 @@ const Chating = ({ reduxState, reduxActions }) => {
               width: "0",
               height: "0",
             },
-           
+
           }}
         >
           <MDTypography
@@ -352,15 +353,15 @@ const Chating = ({ reduxState, reduxActions }) => {
             alignItems={"flex-start"}
             flexDirection={"column"}
             sx={{
-              height:"100%",
-              overflow: "scroll",
+              height: "86%",
+              overflowY: "scroll",
               "::-webkit-scrollbar": {
                 width: "10px",
                 height: "0",
               },
               "::-webkit-scrollbar-thumb": {
                 backgroundColor: "#888",
-                borderRadius:2
+                borderRadius: 2
               },
             }}
           >
@@ -369,113 +370,115 @@ const Chating = ({ reduxState, reduxActions }) => {
                 <Box className="chat">
                   {msgArray?.length
                     ? msgArray.map((item, index, messages) => {
-                        return (
-                          <pre
-                            key={index}
-                            className={`message ${
-                              item.user === reduxState.userDetails?.id ? "right" : "left"
+                      return (
+                        <pre
+                          key={index}
+                          className={`message ${item.user === reduxState.userDetails?.id ? "right" : "left"
                             }`}
-                            style={{ position: "relative" }}
-                          >
-                            <Box sx={{ display: "flex" }}>
-                              <img
-                                src={item.avatar}
-                                width={50}
-                                height={50}
-                                loading="lazy"
+                          style={{ position: "relative" }}
+                        >
+                          <Box sx={{ display: "flex" }}>
+                            <img
+                              src={item.avatar}
+                              width={50}
+                              height={50}
+                              loading="lazy"
+                              style={{
+                                borderRadius: 0,
+                                marginTop: -7,
+                                display: "inline-block",
+                                left: item.user === user ? "70px" : "-9px",
+                              }}
+                            />
+                            <Box width="100%" ml={"18px"}>
+                              <Box
+                                className="user-name"
                                 style={{
-                                  borderRadius: 0,
-                                  marginTop: -7,
-                                  display: "inline-block",
-                                  left: item.user === user ? "70px" : "-9px",
+                                  display: "flex",
+                                  gap: "8px",
+                                  alignItems: "center",
                                 }}
-                              />
-                              <Box width="100%" ml={4}>
-                                <Box
-                                  className="user-name"
-                                  style={{
-                                    display: "flex",
-                                    gap: "8px",
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  <p style={{ ...nameStyle, position: "relative", width: "100%" }}>
-                                    {item.name}
-                                    <span
-                                      style={{ ...nameStyle, fontWeight: "300", fontSize: "12px" }}
-                                    >
-                                      {" (" + item?.role + ")"}
-                                    </span>
-                                    <span
-                                      style={{
-                                        fontSize: "10px",
-                                        fontWeight: "300",
-                                        position: "absolute",
-                                        right: "10px",
-                                        color: mibananaColor.tableHeaderColor,
-                                      }}
-                                    >
-                                      {item.time_data ? item.time_data : null}
-                                    </span>
-                                  </p>
-                                </Box>
-                                <Box
-                                  sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
-                                  className="message-content"
-                                >
-                                  {item.message}
-                                </Box>
+                              >
+                                <p style={{ ...nameStyle, position: "relative", width: "100%" }}>
+                                  {item.name}
+                                  <span
+                                    style={{ ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                                  >
+                                    {" (" + item?.role + ")"}
+                                  </span>
+                                  <span
+                                    style={{
+                                      fontSize: "10px",
+                                      fontWeight: "300",
+                                      position: "absolute",
+                                      right: "10px",
+                                      color: mibananaColor.tableHeaderColor,
+                                    }}
+                                  >
+                                    {item.time_data ? item.time_data : null}
+                                  </span>
+                                </p>
+                              </Box>
+                              <Box
+                                sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                                className="message-content"
+                              >
+                                {item.message}
                               </Box>
                             </Box>
-                          </pre>
-                        );
-                      })
+                          </Box>
+                        </pre>
+                      );
+                    })
                     : null}
                 </Box>
               </MDBox>
             </Grid>
           </Grid>
-              <Box
-                width="100%"
-                m='auto'
-                mt={0}
-                p={1}
-                sx={{
-                  display: "flex",
-                  justifyContent:"center",
-                  alignItems: "center",
-                  position: "absolute",
-                  left:"0",
-                  bottom:"-30px"
-                }}
-              >
-                <Box mr={2}>
-                  <img
-                    src={avatar ? avatar : ImageAvatar}
-                    width={50}
-                    height={50}
-                    alt="person-image"
-                  />
-                </Box>
-                <textarea
-                  rows={2}
-                  className="textareaStyle"
-                  value={message}
-                  placeholder="Type your message here"
-                  onChange={(e) => sendMessage(e.target.value)}
-                  style={{ fontFamily: fontsFamily.poppins }}
-                />
-                <SendOutlined
-                  fontSize="large"
-                  sx={{
-                    position: "absolute",
-                    right: 50,
-                    fill: mibananaColor.tableHeaderColor,
-                    cursor: "pointer",
-                  }}
-                  onClick={onSendMessage}
-                />
-              </Box>
+          <Box
+            width="98%"
+            m='auto'
+            mt={0}
+            p={1}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              position: "absolute",
+              paddingBlock : '10px',
+              left: "0",
+              bottom: "0px",
+              gap : '15px',
+              backgroundColor: mibananaColor.headerColor
+            }}
+          >
+            <Box>
+              <img
+                src={avatar ? avatar : ImageAvatar}
+                width={50}
+                height={50}
+                alt="person-image"
+              />
+            </Box>
+            <textarea
+              rows={2}
+              className="textareaStyle"
+              value={message}
+              placeholder="Type your message here"
+              onChange={(e) => sendMessage(e.target.value)}
+              style={{ fontFamily: fontsFamily.poppins }}
+            />
+            <SendOutlined
+              fontSize="large"
+              sx={{
+                position: "absolute",
+                right: 20,
+                fill: mibananaColor.tableHeaderColor,
+                cursor: "pointer",
+              }}
+              onClick={onSendMessage}
+            />
+          </Box>
         </Grid>
         <Grid item lg={6} md={12} xs={12} pt="0 !important" height="100%">
           <Box className="chat">

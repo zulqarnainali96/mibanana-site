@@ -88,6 +88,9 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
     file_formats: [],
     specific_software_names: '',
   })
+  const is600 = useMediaQuery("(min-width:600px)")
+  const is800 = useMediaQuery("(min-width:800px)")
+
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
 
@@ -373,17 +376,17 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
           flexDirection="column"
           p={.8}
           mb={.2}
-          width="230px"
+          width="240px"
           gap="5px"
-          sx={{ backgroundColor: newMsg?.view ? "#ccc" : "white", ":hover": { backgroundColor: '#ddd', cursor: 'pointer', borderRadius: '0px !important' } }}
+          sx={{ backgroundColor: newMsg?.view ? "#4b45458c" : "white", ":hover": { backgroundColor: '#ddd', cursor: 'pointer', borderRadius: '0px !important' } }}
           onClick={() => clearIncomingMsg(newMsg, i)}
         >
-          <MDTypography fontSize="medium" fontWeight="bold" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.yellowTextColor }}>{newMsg?.project_title}</MDTypography>
+          <MDTypography fontSize="medium" fontWeight="bold" sx={notificationStyles}>{newMsg?.project_title}</MDTypography>
           <MDBox display="flex" gap="8px" width="100%">
             {newMsg?.avatar ? <img src={newMsg?.avatar} loading="lazy" width={40} height={40} style={{ borderRadius: '20px' }} /> : <img src={DefaultAvatar} loading="lazy" width={40} height={40} style={{ borderRadius: '20px' }} />}
             <MDBox display="flex" flexDirection="column" gap="5px" width="100%">
-              <MDTypography fontSize="small" fontWeight="300" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.yellowTextColor }}>{newMsg?.message}</MDTypography>
-              <MDTypography fontSize="small" fontWeight="300" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.yellowTextColor }}>{"New Message from "}<b style={{ display: 'block' }}>{newMsg?.role}</b></MDTypography>
+              <MDTypography fontSize="small" fontWeight="300" sx={notificationStyles}>{newMsg?.message}</MDTypography>
+              <MDTypography fontSize="small" fontWeight="300" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.tableHeaderColor, fontStyle: 'italic' }}>{"received message from "}<b style={{ display: 'block' }}>{newMsg?.role}</b></MDTypography>
             </MDBox>
           </MDBox>
         </MDBox>
@@ -396,7 +399,6 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       {/* <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" /> */}
     </Menu>
   );
-
   useEffect(() => {
     setInComingMsg(true)
   }, [userNewChatMessage])
@@ -426,8 +428,55 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
   const gridItemResponsive = ({ breakpoints }) => ({
     [breakpoints.up('xs')]: {
       padding: '12px'
-    }
+    },
+    [breakpoints.down('xs')]: {
+      padding: '0px !important'
+    },
   })
+  const responsiveStyle = () => {
+    let fontSize = ''
+    if (!is800) {
+      fontSize = '15px'
+    } else if (!is600) {
+      fontSize = "13px"
+    } else {
+      fontSize = "1.25rem"
+
+    }
+    return {
+      fontSize
+    }
+  }
+  const roleResponsive = () => {
+    let fontSize = ''
+    if (!is800) {
+      fontSize = '14px'
+    } else if (!is600) {
+      fontSize = "10px"
+    } else {
+      fontSize = "16px"
+    }
+    return {
+      fontSize
+    }
+
+  }
+  const imgResponsive = () => {
+    let width = ''
+    let height = ''
+    if (!is800) {
+      width = '50px'
+      height = '50px'
+    } else if (!is600) {
+      width = '45px'
+      height = '45px'
+    }
+    return {
+      width,
+      height
+    }
+
+  }
   useEffect(() => {
     getAllNotificationsMsg()
   }, [])
@@ -468,59 +517,25 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
         title="SUCCESS"
         sideRadius={false}
       />
-      <Grid container className={navbarStyles.gridContainer}>
-        <Grid item xxl={7} xl={4} lg={4} md={4} xs={12} textAlign={!isLarge && "center"}
-        //  sx={({breakpoints}) => ({
-        //   [breakpoints.only('xxl')] : {
-        //     backgroundColor : 'red'
-        //   },
-        //   [breakpoints.only('xl')] : {
-        //     backgroundColor : 'green'
-        //   },
-        //   [breakpoints.only('lg')] : {
-        //     backgroundColor : 'blue'
-        //   },
-        //   [breakpoints.only('md')] : {
-        //     backgroundColor : 'brown'
-        //   },
-        //   [breakpoints.only('xs')] : {
-        //     backgroundColor : 'purple'
-        //   },
-        //  })} 
-        >
-          <img src={MibananaIcon} loading='lazy' width={"250px"} height={"54px"} />
+      <Grid container className={navbarStyles.gridContainer} sx={{ paddingInline: !is600 ? "0.5rem" : "5rem", alignItems: !is800 && "center" }}>
+        <Grid item xxl={6.5} xl={4} lg={4} md={5} sm={6} xs={5} textAlign={!isLarge && "center"}>
+          <img src={MibananaIcon} loading='lazy' width={!is600 ? "190px" : "250px"} height={!is600 ? "56px" : "54px"} />
         </Grid >
-        <Grid item xxl={5} xl={8} lg={8} md={8} xs={12}>
+        <Grid item xxl={5.5} xl={8} lg={8} md={7} sm={6} xs={7}>
           <Grid container alignItems="center">
-            <Grid item xxl={2} xl={2} lg={2} pl={"20px"} md={4} xs={4} alignSelf={"flex-end"} sx={gridItemResponsive}>
-              <img src={personImage} style={{ display: "block" }} width={"61px"} height={"61px"} />
+            <Grid item xxl={5} xl={5} display={"flex"} gap="18px" lg={5} md={8} sm={12} xs={12} sx={gridItemResponsive}>
+              <img src={personImage} style={{ display: "block" }} width={!is600 ? "45px" : !is800 ? "50px" : "61px"} height={!is600 ? "45px" : !is800 ? "50px" : "61px"} />
+              <div>
+                <MDTypography className={navbarStyles.insideText} sx={responsiveStyle}>Hello {showRoles()}!</MDTypography>
+                <MDTypography fontSize="medium" className={`${navbarStyles.poppins} ${navbarStyles.userRole}`} sx={roleResponsive}>{showPersonRoles()}</MDTypography>
+              </div>
             </Grid>
-            <Grid item xxl={4} xl={4} lg={4} md={8} xs={8} sx={gridItemResponsive}>
-              <MDTypography className={navbarStyles.insideText}>Hello {showRoles()}!</MDTypography>
-              <MDTypography fontSize="medium" className={`${navbarStyles.poppins} ${navbarStyles.userRole}`}>{showPersonRoles()}</MDTypography>
-            </Grid>
-            <Grid item xxl={6} xl={6} lg={6} md={10} xs={12} >
-              <Grid container >
-                <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
-                  <Badge badgeContent={inComingMessage()} sx={({ palette: { primary } }) => ({
-
-                    "& .MuiBadge-badge": { fontSize: '1rem', backgroundColor: inComingMessage() === "" ? "transparent" : primary.main, color: primary.contrastText }
-                  })}>
-                    <div
-                      className={navbarStyles.btnContainer}
-                      onClick={handleOpenMenu}
-                    >
-                      {notificationsIcon}
-                    </div>
-                  </Badge>
-                </Grid>
-                {renderMenu()}
-                <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
+            <Grid item xxl={7} display={!is800 && "none"} xl={7} lg={6} md={10} xs={12} >
+              <Grid container justifyContent={"center"}>
+                <Grid item xxl={12} xl={12} lg={12} md={12} sm={12} xs={12} display="flex" alignItems={"center"} gap={"8px"} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
                   <div className={navbarStyles.btnContainer}>
                     <RightSideDrawer list={list} />
                   </div>
-                </Grid>
-                <Grid item xxl={2} lg={2} md={2} xs={4} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
                   <div
                     className={navbarStyles.btnContainer}
                     onClick={handleUserProfileMenu}
@@ -530,30 +545,16 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
                       sx={{ fill: "#F6F6E8" }} />
                   </div>
                   {renderUserMenu()}
+                  <ProjectButton
+                    variant="contained"
+                    size='medium'
+                    startIcon={projectIcon}
+                    onClick={handleClickOpen}
+                  >
+                    Create Project
+                  </ProjectButton>
                 </Grid>
-                {/* <Grid item xl={2}>
-                <IconButton
-                  size="small"
-                  disableRipple
-                  color="inherit"
-                  sx={navbarMobileMenu}
-                  onClick={handleMiniSidenav}
-                >
-                  <Icon fontSize="medium">
-                    {miniSidenav ? "menu_open" : "menu"}
-                  </Icon>
-                </IconButton>
-                <MDBox
-                  className={navbarStyles.btnContainer}
-                  onClick={handleMiniSidenav}
-                  sx={navbarMobileMenu}
-                >
-                  <Icon fontSize="medium">
-                    {miniSidenav ? "menu_open" : "menu"}
-                  </Icon>
-                </MDBox>
-              </Grid> */}
-                <Grid item xxl={6} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({
+                {/* <Grid item xxl={6} xl={6} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({
                   [breakpoints.only('xs')]: {
                     paddingTop: '5px',
                     paddingBottom: '14px',
@@ -568,7 +569,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
                   >
                     Create Project
                   </ProjectButton>
-                </Grid>
+                </Grid> */}
               </Grid>
             </Grid>
           </Grid>
@@ -576,6 +577,12 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       </Grid >
     </div>
   )
+}
+
+const notificationStyles = {
+  fontFamily: fontsFamily.poppins,
+  color: mibananaColor.yellowTextColor,
+  wordBreak: 'break-word',
 }
 
 export default reduxContainer(NewNavbar)

@@ -19,16 +19,20 @@ import "../../examples/new-table/table-style.css"
 import { fontsFamily } from "assets/font-family"
 import { mibananaColor } from "assets/new-images/colors"
 import { ArrowDownward } from "@mui/icons-material"
+import { currentUserRole } from "redux/global/global-functions"
+import { Link } from "react-router-dom"
 
 export const Action = ({ item }) => {
     const [anchorEl, setAnchorEl] = useState(null)
     const dispatch = useDispatch()
     const id = useSelector(state => state.userDetails.id)
+    const reduxState = useSelector(state => state)
     const iseditBrand = useSelector(state => state.iseditBrand)
     const [errorSB, setErrorSB] = useState(false);
     const [successSB, setSuccessSB] = useState(false);
     const [respMessage, setRespMessage] = useState("")
     const [loading, setLoading] = useState(false)
+    const role = currentUserRole(reduxState)
 
     const openSuccessSB = () => setSuccessSB(true);
     const closeSuccessSB = () => setSuccessSB(false);
@@ -83,7 +87,6 @@ export const Action = ({ item }) => {
         dispatch(getCurrentBrandID(item._id))
         dispatch(openEditBrandModal(true))
     }
-
     const renderErrorSB = (
         <MDSnackbar
             color="error"
@@ -97,7 +100,6 @@ export const Action = ({ item }) => {
             bgWhite
         />
     );
-
     const renderSuccessSB = (
         <MDSnackbar
             color="success"
@@ -111,19 +113,6 @@ export const Action = ({ item }) => {
             bgWhite
         />
     );
-
-    const bbDetails = {
-        brand_name: 'Nike',
-        brand_description: 'Nike',
-        logo: 'logo',
-        web_url: 'site url',
-        facebook_url: 'facebook url',
-        instagram_url: 'instagram url',
-        twitter_url: 'twitter url',
-        linkedin_url: 'linkedin',
-        tiktok_url: 'tiktok url'
-    }
-
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
@@ -145,15 +134,32 @@ export const Action = ({ item }) => {
                     horizontal: "center"
                 }}
             >
-                <MenuItem onClick={openBrandModal}>
-                    Edit
-                </MenuItem>
-                <MenuItem sx={containerStyles} onClick={deleteBrandList}>
-                    <h6 style={{ fontWeight: '300', color: 'inherit' }}>Delete</h6>
-                    <IconButton>
-                        <MoonLoader size={20} loading={loading} />
-                    </IconButton>
-                </MenuItem>
+                {role?.customer ? (
+                    <>
+                        <MenuItem onClick={openBrandModal}>
+                            Edit
+                        </MenuItem>
+                        <MenuItem sx={containerStyles} onClick={deleteBrandList}>
+                            <h6 style={{ fontWeight: '300', color: 'inherit' }}>Delete</h6>
+                            <IconButton>
+                                <MoonLoader size={20} loading={loading} />
+                            </IconButton>
+                        </MenuItem>
+                    </>
+                ) : role?.admin ?
+                    (
+                        <MenuItem sx={containerStyles} onClick={() => { }}>
+                            <h6 style={{ fontWeight: '300', color: 'inherit' }}>Delete</h6>
+                            <IconButton>
+                                <MoonLoader size={20} loading={loading} />
+                            </IconButton>
+                        </MenuItem>
+                    ) : (
+                        <MenuItem sx={containerStyles} onClick={() => { }}>
+                            <h6 style={{ fontWeight: '300', color: 'inherit' }}>No Options</h6>
+                        </MenuItem>
+                    )
+                }
             </Menu>
             {renderSuccessSB}
             {renderErrorSB}
@@ -180,9 +186,11 @@ const ShowFiles = ({ item }) => {
 
 const BrandData = () => {
     const userID = useSelector(state => state.userDetails.id)
+    const reduxState = useSelector(state => state)
     const new_brand = useSelector(state => state.new_brand)
     const customerBrand = useSelector(state => state.customerBrand)
     const dispatch = useDispatch()
+    const role = currentUserRole(reduxState)
     const func = (value) => dispatch(getCustomerBrand(value))
 
     useEffect(() => {
@@ -204,7 +212,10 @@ const BrandData = () => {
         }
         getBrandLogo()
         return {
-            logo: <>{arr.url ? <img src={arr.url} width={50} height={50} /> : null}</>,
+            logo: <>{ role?.customer ? (<img src={arr?.url} width={50} height={50} alt="brand-logo" />) :
+                    (<Link to={`/brand/${item?._id}`} ><img src={arr?.url} width={50} height={50} />
+                    </Link>)
+            }</>,
 
             brand_name: <MDTypography variant="h4" sx={textStyles}>
                 {item.brand_name}

@@ -1,21 +1,6 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
+import { fontsFamily } from "assets/font-family";
 
 export default styled(TextField)(({ theme, ownerState }) => {
   const { palette, functions } = theme;
@@ -50,6 +35,7 @@ export default styled(TextField)(({ theme, ownerState }) => {
     backgroundRepeat: "no-repeat",
     backgroundPosition: `right ${pxToRem(12)} center`,
     backgroundSize: `${pxToRem(16)} ${pxToRem(16)}`,
+    
 
     "& .Mui-focused": {
       "& .MuiOutlinedInput-notchedOutline, &:after": {
@@ -64,6 +50,7 @@ export default styled(TextField)(({ theme, ownerState }) => {
 
   return {
     backgroundColor: disabled ? `${grey[200]} !important` : transparent.main,
+    fontFamily : fontsFamily.poppins,
     pointerEvents: disabled ? "none" : "auto",
     ...(error && errorStyles()),
     ...(success && successStyles()),

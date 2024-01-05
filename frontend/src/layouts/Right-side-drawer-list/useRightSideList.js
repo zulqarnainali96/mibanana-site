@@ -9,56 +9,107 @@ import MDTypography from 'components/MDTypography';
 import { setCurrentIndex } from 'redux/actions/actions';
 import { useDispatch } from 'react-redux';
 import { reRenderChatComponent } from 'redux/actions/actions';
-import { East } from '@mui/icons-material';
+import { East, StarRate } from '@mui/icons-material';
 import { setRightSideBar } from 'redux/actions/actions';
 import { toggleDrawer } from 'redux/global/global-functions';
 import { fontsFamily } from 'assets/font-family';
 import { mibananaColor } from 'assets/new-images/colors';
 
 const ProjectList = ({ item, index, currentIndex, showProjects }) => {
-    const [msg, setMsgArr] = useState([])
+    const [msg, setMsgArr] = useState("")
 
     useEffect(() => {
         async function getChatMessage() {
             try {
                 const { data } = await apiClient('/chat-message/' + item?._id)
-                setMsgArr(data?.chat?.chat_msg)
-            } catch (error) {
-                setMsgArr([])
+                if (data?.chat?.chat_msg?.length > 0) {
+                    const chatMessage = data?.chat?.chat_msg
+                    const lastMessage = chatMessage[chatMessage?.length - 1].view ? chatMessage[chatMessage?.length - 1].message : 'no unread message' 
+                    console.log(chatMessage)
+                    setMsgArr(lastMessage)
+                } else {
+                    setMsgArr("no message inside chat")
+                }
+            } catch(error) {
+                setMsgArr("")
+                console.log(error)
             }
         }
         getChatMessage()
-    }, [])
+    }, [item])
 
+
+    const statusColor = () => {
+        let statusColor = ''
+        if (item?.status === 'Ongoing' || item?.status === 'Submitted') {
+            statusColor = mibananaColor.greenShade2
+        }
+        else if (item?.status === 'Completed') {
+            statusColor = 'blue'
+        }
+        else if (item?.status === 'Approval') {
+            statusColor = 'red'
+        } else {
+            statusColor = '#ccc'
+        }
+        return {
+            borderRadius: '30px',
+            display: 'block',
+            width: '13px',
+            height: '13px',
+            backgroundColor: statusColor
+        }
+    }
+    const statusStyle = () => {
+        return {
+            fontSize: '13px',
+            fontFamily: fontsFamily.poppins,
+            fontWeight: '300',
+            color: mibananaColor.greenShade2
+        }
+    }
+    const titleStyle = {
+        fontSize: "16px",
+        fontsFamily: fontsFamily.poppins,
+        fontWeight: '400',
+        color: mibananaColor.yellowTextColor
+    }
+    const chatMsg = {
+        fontSize: "13px",
+        color: mibananaColor.tableHeaderColor,
+        textOverflow: 'ellipsis',
+        whiteSpace: "break-spaces",
+        
+    }
+    const shrinkText = () => {
+        let shrinkText = msg.substring(0, 80)
+        if(msg?.length > 80){
+            shrinkText += "....."
+        }
+        return shrinkText
+    }
     return (
         <MDBox
             display="flex"
             flexDirection="column"
             alignItems="left" p={1}
-            border="1px solid #ccc"
             width="98%"
-            margin="4px auto"
+            margin="8px auto"
             shadow={currentIndex === index ? "xl" : "none"}
             // shadow={currentIndex === index ? "8px 6px 19px -1px #ccc" : "1px 4px 8px 2px #ccc"}
-            bgColor={currentIndex === index ? "#d5efe25e" : "inherit"}
+            // bgColor={currentIndex === index ? "#d5efe25e" : "inherit"}
+            bgColor={mibananaColor.headerColor}
             sx={{ cursor: "pointer" }}
+            onClick={() => showProjects(item?._id)}
         >
-            <MDBox display="flex" gap="12px" alignItems="center" onClick={() => showProjects(item?._id)}>
-                <span style={{ borderRadius: '30px', width: '15px', height: '15px', backgroundColor: item?.status === 'Ongoing' ? '#FFE135' : 'red' }}></span>
-                <MDTypography fontSize="small" sx={{ fontsFamily: fontsFamily.poppins, fontWeight:'400',color:mibananaColor.yellowTextColor}}>{item.project_title}</MDTypography>
-        </MDBox>
-            {/* <Grid container height={"auto"} spacing={2}>
-                <Grid item xxl={4} xl={4} md={4} xs={4}>
-                    <p style={{ fontSize: '14px', fontWeight: '500' }}>last message : &nbsp;</p>
-                </Grid>
-                <Grid item xxl={7} xl={7} md={7} xs={7}>
-                    <span style={{ fontSize: '16px', fontWeight: '300', whiteSpace: 'pre-wrap' }}>{msg.length > 0 ? msg[msg.length - 1].message : 'no msg yet'}</span>
-                </Grid>
-            </Grid>     
-            <MDBox>
-                <p style={{ fontSize: '14px', fontWeight: '500' }}>From : <span style={{ fontSize: '14px', fontWeight: '400' }}>{msg[msg?.length - 1]?.role}</span></p>
-            </MDBox> */}
-    {/* <Button onClick={() => showProjects(item?._id)}>View project</Button> */ }
+            <MDBox display="flex" gap="12px" justifyContent="space-between" alignItems="center" >
+                <MDTypography sx={titleStyle}>{item.project_title}</MDTypography>
+                <MDBox display="flex" gap="5px" alignItems="center">
+                    <span style={statusColor()}></span>
+                    <span style={statusStyle()}>{item?.status}</span>
+                </MDBox>
+            </MDBox>
+            <MDBox sx={chatMsg}>{shrinkText()}</MDBox>
         </MDBox >
     )
 }
@@ -72,6 +123,7 @@ export default () => {
     const projects = useSelector(state => state.project_list.CustomerProjects)
     const setState = (payload) => dispatch(setRightSideBar(payload))
     const rightSideDrawer = useSelector(state => state.rightSideDrawer)
+    const notification = useSelector(state => state.userDetails.notifications)
 
     function showProjects(id, index) {
         setIndex(index)
@@ -80,7 +132,6 @@ export default () => {
             navigate("/chat/" + id)
         }, 400)
     }
-
 
     const list = (anchor) => (
         <Box
