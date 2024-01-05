@@ -94,20 +94,29 @@ h6,
   resize: initial;
   /* border-radius: 10px; */
 }
+
 .textareaStyle::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
+  width: 8px;
+  /* Width of the scrollbar */
 }
+
 .textareaStyle::-webkit-scrollbar-track {
-  background: transparent; /* Track color */
+  background: transparent;
+  /* Track color */
 }
+
 .textareaStyle::-webkit-scrollbar-thumb {
-  background: #888; /* Thumb color */
-  border-radius: 20px; /* Roundness of the thumb */
+  background: #888;
+  /* Thumb color */
+  border-radius: 20px;
+  /* Roundness of the thumb */
 }
 
 .textareaStyle::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Thumb color on hover */
+  background: #555;
+  /* Thumb color on hover */
 }
+
 .textareaStyle::placeholder {
   padding-top: 5px;
   font-style: italic;
@@ -220,7 +229,7 @@ h6,
 }
 
 .filesGrid {
-  height: 430px;
+  max-height: 430px;
   overflow: auto;
 }
 
