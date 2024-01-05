@@ -77,7 +77,16 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
     const chatMsg = {
         fontSize: "13px",
         color: mibananaColor.tableHeaderColor,
-        wordBreak: 'break-word'
+        textOverflow: 'ellipsis',
+        whiteSpace: "break-spaces",
+        
+    }
+    const shrinkText = () => {
+        let shrinkText = msg.substring(0, 80)
+        if(msg?.length > 80){
+            shrinkText += "....."
+        }
+        return shrinkText
     }
     return (
         <MDBox
@@ -100,7 +109,7 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
                     <span style={statusStyle()}>{item?.status}</span>
                 </MDBox>
             </MDBox>
-            <MDBox sx={chatMsg}>{msg}</MDBox>
+            <MDBox sx={chatMsg}>{shrinkText()}</MDBox>
         </MDBox >
     )
 }

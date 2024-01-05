@@ -34,5 +34,8 @@
   .mi-table .category-list li{
       padding-inline-start: 56px;
   }
+  .formstyle::placeholder {
+    color : #ccc
+  }
     
   

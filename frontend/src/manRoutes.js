@@ -8,6 +8,7 @@ import ChangePassword from "layouts/settings/change-password";
 import Chating from "layouts/chats";
 import Navbar from "examples/Navbars/MyNavbar/Navbar";
 import ViewBrand from "examples/brand-table/view-brand/view-brand";
+import MibananTeam from "layouts/mibanana-team";
 
 const routes = [
   {
@@ -50,8 +51,8 @@ const routes = [
     key: "mibanana-team",
     icon: <Icon fontSize="small">handshake_outlined</Icon>,
     route: "/mibanana-team",
-    // component: <Navbar />
-  },
+    component : <MibananTeam />
+},
   
   {
     type: "collapse-dropdown",

@@ -186,9 +186,11 @@ const ShowFiles = ({ item }) => {
 
 const BrandData = () => {
     const userID = useSelector(state => state.userDetails.id)
+    const reduxState = useSelector(state => state)
     const new_brand = useSelector(state => state.new_brand)
     const customerBrand = useSelector(state => state.customerBrand)
     const dispatch = useDispatch()
+    const role = currentUserRole(reduxState)
     const func = (value) => dispatch(getCustomerBrand(value))
 
     useEffect(() => {
@@ -208,12 +210,12 @@ const BrandData = () => {
                 arr.url = result ? result?.url : fileImage
             }
         }
-        function viewBrand(id) {
-
-        }
         getBrandLogo()
         return {
-            logo: <>{arr.url ? <Link to={`/brand/${item?._id}`} ><img src={arr?.url} width={50} height={50} /></Link> : null}</>,
+            logo: <>{ role?.customer ? (<img src={arr?.url} width={50} height={50} alt="brand-logo" />) :
+                    (<Link to={`/brand/${item?._id}`} ><img src={arr?.url} width={50} height={50} />
+                    </Link>)
+            }</>,
 
             brand_name: <MDTypography variant="h4" sx={textStyles}>
                 {item.brand_name}

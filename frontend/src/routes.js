@@ -45,6 +45,7 @@ import CompanyProfile from "layouts/settings/company-profile/company-profile";
 import ChangePassword from "layouts/settings/change-password";
 import Chating from "layouts/chats";
 import Navbar from "examples/Navbars/MyNavbar/Navbar";
+import MibananTeam from "layouts/mibanana-team";
 const routes = [
   {
     type: "collapse",
@@ -75,16 +76,14 @@ const routes = [
     route: "/chat/:id",
     component: <Chating />
   },
-
   {
     type: "collapse",
     name: "MiBanana Team",
     key: "mibanana-team",
     icon: <Icon fontSize="small">handshake_outlined</Icon>,
     route: "/mibanana-team",
-    // component: <Navbar />
+    component: <MibananTeam />
   },
-  
   {
     type: "collapse-dropdown",
     name: "Settings",
@@ -111,6 +110,6 @@ const routes = [
       },
     ],
   },
-  
+
 ];
 export default routes;

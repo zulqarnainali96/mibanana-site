@@ -187,7 +187,7 @@ const BrandForm = ({
                         >
                             <Grid item xxl={3} xl={3}>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel control={<Checkbox
+                                    <FormControlLabel sx={{mr:0,ml:0}} control={<Checkbox
                                         // classes={{ checked: classes.checkedCheckbox }}
                                         checked={checkboxState.isLogochk}
                                         sx={{
@@ -203,21 +203,21 @@ const BrandForm = ({
                                     <label style={Styles} htmlFor='logo' aria-label='logo'>Logo</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel control={<Checkbox checked={checkboxState.isMoodBoardchk} sx={{ width: 30, height: 30 }}
+                                    <FormControlLabel sx={{mr:0,ml:0}} control={<Checkbox checked={checkboxState.isMoodBoardchk} sx={{ width: 30, height: 30 }}
                                         onChange={() => handleCheckboxes('isMoodBoardchk')}
                                     />}
                                     />
                                     <label style={Styles} htmlFor='moodboard' aria-label='moodboard'>Moodboard</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel control={<Checkbox checked={checkboxState.isBrandGuidechk} sx={{ width: 30, height: 30 }}
+                                    <FormControlLabel sx={{mr:0,ml:0}} control={<Checkbox checked={checkboxState.isBrandGuidechk} sx={{ width: 30, height: 30 }}
                                         onChange={() => handleCheckboxes('isBrandGuidechk')}
                                     />}
                                     />
                                     <label style={Styles} htmlFor='brand-guidelines' aria-label='guidelines'>Brand Guidelines</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel control={<Checkbox checked={checkboxState.isothers} sx={{ width: 30, height: 30 }}
+                                    <FormControlLabel sx={{mr:0,ml:0}} control={<Checkbox checked={checkboxState.isothers} sx={{ width: 30, height: 30 }}
                                         onChange={() => handleCheckboxes('isothers')} />}
                                     />
                                     <label style={Styles} htmlFor='Others' aria-label='others'>Others</label>
@@ -297,10 +297,7 @@ const BrandForm = ({
                                                 },
                                             }}
                                             value={image.upload_moodboard.length ? image.upload_moodboard[0]?.name : ''}
-                                            disabled={!checkboxState.isMoodBoardchk}
-
-                                        />
-                                        {/* <span style={{ fontSize: '12px' }}>allowed file png, jpg, jpeg</span> */}
+                                            disabled={!checkboxState.isMoodBoardchk}/>
                                     </MDBox>
                                     &nbsp; &nbsp;
                                     <label htmlFor='upload-moodboard' style={{ position: 'relative' }}>
@@ -318,14 +315,13 @@ const BrandForm = ({
                                         <input
                                             type="file"
                                             ref={moodboard}
-                                            hidden
+                                            hidden={true}
                                             style={uploadImage}
                                             accept=".ai, .eps, .psd, .jpg, .png, .pdf, .svg"
-                                            // accept="image/.png,.jpg,.jpeg"
                                             name="upload_moodboard"
                                             id="upload-moodboard"
                                             onChange={handleFileUpload}
-                                            disabled={!checkboxState.moodboard}
+                                            disabled={!checkboxState.isMoodBoardchk}
                                         />
                                     </label>
                                 </AlignGrid>
@@ -598,7 +594,6 @@ const textareaStyles = {
     fontSize: '17px',
     backgroundColor: 'transparent',
     fontWeight: '400',
-
 }
 export default BrandForm
 

@@ -143,7 +143,6 @@ const EditBrand = ({
             })
     }
 
-
     function downloadImage(url) {
         window.open(url, '_blank')
     }

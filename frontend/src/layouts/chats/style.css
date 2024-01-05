@@ -23,8 +23,8 @@
 }
 
 .message-content {
-  word-wrap: break-word;
-  /* font-family: Arial, Helvetica, sans-serif; */
+  text-overflow: ellipsis;
+  white-space: break-spaces;
   background: white;
 }
 
@@ -90,10 +90,24 @@ h6,
   background-color: white;
   border-color: transparent;
   padding: 5px;
+  padding-inline-end: 52px;
   resize: initial;
   /* border-radius: 10px; */
 }
+.textareaStyle::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+.textareaStyle::-webkit-scrollbar-track {
+  background: transparent; /* Track color */
+}
+.textareaStyle::-webkit-scrollbar-thumb {
+  background: #888; /* Thumb color */
+  border-radius: 20px; /* Roundness of the thumb */
+}
 
+.textareaStyle::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Thumb color on hover */
+}
 .textareaStyle::placeholder {
   padding-top: 5px;
   font-style: italic;
