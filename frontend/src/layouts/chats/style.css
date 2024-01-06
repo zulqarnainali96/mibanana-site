@@ -206,12 +206,18 @@ h6,
   text-align: center;
   width: 100%;
   padding: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loaderfile {
   width: 100%;
   text-align: center;
   padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .activeClass {
@@ -230,6 +236,7 @@ h6,
 
 .filesGrid {
   max-height: 430px;
+  height: 230px;
   overflow: auto;
 }
 

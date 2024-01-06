@@ -152,18 +152,21 @@ const FileUploadContainer = ({
     setVersion([]);
     setFileMsg("");
     setFileLoading(true);
+    setLoading(true);
     await apiClient
       .get("/api/designer-uploads/" + id)
       .then(({ data }) => {
         setVersion(data.filesInfo);
         setFileMsg("");
         setFileLoading(false);
+        setLoading(false);
       })
       .catch((err) => {
         setFileMsg("No Files Found");
         setCurrentImage({ url: "" });
         setVersion([]);
         setFileLoading(false);
+        setLoading(false);
       });
   }
   // const handleFileUpload = (event) => {
@@ -370,8 +373,7 @@ const FileUploadContainer = ({
   };
 
   useEffect(() => {
-    // clientFiles();
-    designerFiles();
+    getAllfiles();
   }, []);
   useEffect(() => {
     getfiles();
@@ -385,9 +387,37 @@ const FileUploadContainer = ({
       role?.projectManager || role?.designer || role?.admin ? designerFiles() : clientFiles();
     }
   };
-  const getAllfiles = () => {
-    designerFiles();
-    // clientFiles();
+
+  async function clientFilesforAll() {
+    try {
+      const response = await apiClient.get("/get-customer-files/" + id);
+      const { data } = response;
+
+      return data.filesInfo || [];
+    } catch (err) {
+      return [];
+    }
+  }
+  const designerFilesforAll = async () => {
+    try {
+      setFileLoading(true);
+      const response = await apiClient.get("/api/designer-uploads/" + id);
+      const { data } = response;
+      setFileLoading(false);
+
+      return data.filesInfo || [];
+    } catch (err) {
+      setFileLoading(false);
+      return [];
+    }
+  };
+  const getAllfiles = async () => {
+    setLoading(true);
+    const clientFilesData = await clientFilesforAll();
+    const designerFiles = await designerFilesforAll();
+    const combinedData = [...clientFilesData, ...designerFiles];
+    setVersion(combinedData);
+    setLoading(false);
   };
   // useEffect(() => {
   //     clientFiles()
