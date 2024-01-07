@@ -47,7 +47,7 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
         else if (item?.status === 'Completed') {
             statusColor = 'blue'
         }
-        else if (item?.status === 'Approval') {
+        else if (item?.status === 'Project manager') {
             statusColor = 'red'
         } else {
             statusColor = '#ccc'
