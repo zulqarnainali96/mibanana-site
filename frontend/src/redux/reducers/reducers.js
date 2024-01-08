@@ -9,7 +9,7 @@ const initialState = {
         "All",
         "Archived",
         "Cancelled",
-        "Approval",
+        "Project manager",
         "Completed",
         "Ongoing",
         "For Review",

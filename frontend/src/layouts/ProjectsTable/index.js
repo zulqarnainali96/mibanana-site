@@ -95,8 +95,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     }
     function projectStatus(status) {
         switch (status) {
-            case 'Approval':
-                return "Approval"
+            case 'Project manager':
+                return "Project manager"
             case 'Completed':
                 return "Completed"
             case 'Ongoing':
@@ -113,7 +113,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     }
     function getStatusStyle(status) {
         switch (status) {
-            case 'Approval':
+            case 'Project manager':
                 return "#c5495d"
             case 'Completed':
                 return "#E7F7EF"
@@ -132,7 +132,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     }
     function getStatusColor(status) {
         switch (status) {
-            case 'Approval':
+            case 'Project manager':
                 return "white"
             case 'Completed':
                 return "#0FAF62"
@@ -263,7 +263,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
         "All",
         "Archived",
         "Cancelled",
-        "Approval",
+        "Project manager",
         "Completed",
         "Ongoing",
         "For Review",

@@ -48,7 +48,7 @@ function Dashboard({ reduxActions, reduxState }) {
   const [respMessage, setRespMessage] = useState("")
 
   const projectQueue = project_list?.filter(item => {
-    return item.status === 'Approval'
+    return item.status === 'Project manager'
   })
   const sumbitAndOngoing = () => {
     const Ongoing = project_list?.filter(item => item.status === 'Ongoing')
@@ -139,8 +139,8 @@ function Dashboard({ reduxActions, reduxState }) {
 
   function projectStatus(status) {
     switch (status) {
-      case 'Approval':
-        return "Approval"
+      case 'Project manager':
+        return "Project manager"
       case 'Completed':
         return "Completed"
       case 'Ongoing':
@@ -157,7 +157,7 @@ function Dashboard({ reduxActions, reduxState }) {
   }
   function getStatusStyle(status) {
     switch (status) {
-      case 'Approval':
+      case 'Project manager':
         return "#c5495d"
       case 'Completed':
         return "#E7F7EF"
@@ -176,7 +176,7 @@ function Dashboard({ reduxActions, reduxState }) {
   }
   function getStatusColor(status) {
     switch (status) {
-      case 'Approval':
+      case 'Project manager':
         return "white"
       case 'Completed':
         return "#0FAF62"
