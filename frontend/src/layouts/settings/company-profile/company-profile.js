@@ -14,8 +14,23 @@ import { useSelector } from 'react-redux'
 import MDSnackbar from 'components/MDSnackbar'
 import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
+import PhoneInput from 'react-phone-input-2'
+import { makeStyles } from '@mui/styles'
+
+const useStyles = makeStyles({
+    Container: {
+        width: '100%',
+    },
+    inputStyles: {
+        width: '100% !important',
+        borderRadius: '5px',
+        height: '46px !important',
+        borderRadius: 8
+    }
+})
 
 const CompanyProfile = () => {
+    const classes = useStyles()
     const [companyData, setCompanyData] = useState({
         company_name: '', contact_person: '', company_size: '', primary_email: '', primary_phone: '',
         time_zone: '', company_address: ''
@@ -26,7 +41,6 @@ const CompanyProfile = () => {
     const [loading, setLoading] = useState(false)
     const id = useSelector(state => state.userDetails?.id)
     const companyName = useSelector(state => state.userDetails.company_profile)
-
     const openSuccessSB = () => setSuccessSB(true);
     const closeSuccessSB = () => setSuccessSB(false);
 
@@ -70,7 +84,6 @@ const CompanyProfile = () => {
             })
 
     }
-
     const getProfileDetails = async () => {
         await apiClient.get("/settings/company-profile/" + id)
             .then(resp => {
@@ -78,6 +91,12 @@ const CompanyProfile = () => {
             })
             .catch(e => {
             })
+    }
+    const handlePhoneChange1 = (phone) => {
+        companyData({
+            ...companyData,
+            primary_phone: phone
+        })
     }
 
     const renderErrorSB = (
@@ -107,7 +126,6 @@ const CompanyProfile = () => {
             bgWhite
         />
     );
-
     useEffect(() => {
         getProfileDetails()
         setCompanyData({
@@ -115,6 +133,7 @@ const CompanyProfile = () => {
             company_name: companyName ? companyName : ''
         })
     }, [])
+    console.log(companyData)
 
     return (
         <DashboardLayout>
@@ -123,7 +142,7 @@ const CompanyProfile = () => {
                 sx={({ breakpoints }) => ({
                     [breakpoints.down('md')]: {
                         width: '98%',
-                        marginLeft : '3px',
+                        marginLeft: '3px',
                     },
                     [breakpoints.up('md')]: {
                         width: '75%',
@@ -177,8 +196,23 @@ const CompanyProfile = () => {
                                         </Grid>
                                         <Grid item xxl={6} xl={6} lg={6} xs={12} md={12}>
                                             <MDBox mb={2} sx={{ position: "relative" }}>
-                                                <label style={Styles} htmlFor='phone'>Primary Phone <span style={colorRed}>*</span></label>
-                                                <MDInput type="phone" value={companyData.primary_phone} name="primary_phone" onChange={handleChange} required placeholder="Primary Phone" variant="outlined" fullWidth />
+                                                <label style={Styles} htmlFor='phone'>Primary Phone <span style={colorRed}>*</span>
+                                                </label>
+                                                <PhoneInput
+                                                    country={"us"}
+                                                    className="marginBottom"
+                                                    value={companyData?.primary_phone}
+                                                    onChange={phone => handlePhoneChange1(phone)}
+                                                    placeholder='Primary Phone '
+                                                    inputProps={{
+                                                        name: 'phone',
+                                                        required: true,
+                                                        autoFocus: true,
+                                                    }}
+                                                    enableSearch
+                                                    containerClass={classes.Container}
+                                                    inputClass={classes.inputStyles}
+                                                />
                                             </MDBox>
                                         </Grid>
                                         <Grid item xxl={10} xl={10} lg={10} xs={12} md={12}>

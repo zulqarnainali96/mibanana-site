@@ -23,6 +23,7 @@ import NewNavbar from "examples/Navbars/NewDesign/NewNavbar";
 import { currentUserRole } from "redux/global/global-functions";
 import { useSelector } from "react-redux";
 import ViewBrand from "examples/brand-table/view-brand/view-brand";
+import 'react-quill/dist/quill.snow.css'
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -40,7 +41,6 @@ export default function App() {
   const state = useSelector(state => state)
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
-  console.log('path ', pathname)
 
   // Cache for the rtl
   useMemo(() => {

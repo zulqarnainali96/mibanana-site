@@ -82,9 +82,9 @@ const AdminRoutes = [
                 component: <CreateCustomer />, // Replace with your actual component for Profile settings
             },
             {
-                name: "Sign up",
-                key: "sign-up",
-                route: "/settings/sign-up",
+                name: "Sign-up Customer",
+                key: "sign-up-customer",
+                route: "/settings/sign-up-customer",
                 component: <SignUp />, // Replace with your actual component for Profile settings
             },
             {

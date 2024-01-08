@@ -28,6 +28,10 @@ import { openBrandModalFunc } from 'redux/actions/actions';
 import { Typography, useMediaQuery } from '@mui/material';
 import AiLogo from 'assets/mi-banana-icons/ai-logo.png'
 import fileImage from 'assets/mi-banana-icons/file-image.png'
+import ReactQuil from "react-quill";
+import { formats } from 'assets/react-quill-settings/react-quill-settings';
+import { modules } from 'assets/react-quill-settings/react-quill-settings';
+import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -101,7 +105,6 @@ const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => 
         width: "100%"
     },
 }));
-
 const category = [
     "Graphic Design",
     // "Copywriting",
@@ -150,12 +153,12 @@ const sizes = [
     { title: "1080 x 1920" },
     { title: "1920 x 1080" }
 ]
-
 const fileFormats = ["Jpg", "Png", "Pdf", "gif"]
 const SoftwareNames = [
     "Adobe Photoshop", "Adobe InDesign", "Adobe Illustrator", "Canva", "Figma"
 ]
 const unitOptions = ['px', 'inch', 'cm']
+
 
 const CreateProject1 = ({
     reduxState, handleClose, open, handleChange,
@@ -170,6 +173,7 @@ const CreateProject1 = ({
     const is768 = useMediaQuery("(min-width:768px)")
     const func = () => dispatch(openBrandModalFunc(true))
     const filter = createFilterOptions()
+    const classes = reactQuillStyles()
 
     function moveToBrandPage() {
         handleClose()
@@ -187,7 +191,12 @@ const CreateProject1 = ({
             return false
         }
     };
-
+    const getDescriptionText = (value) => {
+        setFormValue({
+            ...formValue,
+            project_description: value
+        })
+    }
     const marginNone = (breakpoints) => ({
         m: 1,
         width: '100%',
@@ -253,7 +262,7 @@ const CreateProject1 = ({
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
+                        <Grid item xxl={6} xl={6} lg={12} pt={"24px !important"} md={12} xs={12}>
                             <FormControl sx={({ breakpoints }) => ({
                                 m: 1, width: '100%', position: 'relative', [breakpoints.down('md')]: {
                                     margin: 0,
@@ -309,7 +318,7 @@ const CreateProject1 = ({
                                 Create brand
                             </MDTypography>
                         </Grid>
-                        <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
+                        <Grid item xxl={6} xl={6} lg={12} pt={"0 !important"} md={12} xs={12}>
                             <FormControl sx={({ breakpoints }) => ({
                                 m: 1, width: '100%', [breakpoints.down('md')]: {
                                     margin: 0,
@@ -336,7 +345,7 @@ const CreateProject1 = ({
                                 }
                             }}>
                                 <label htmlFor='company_address'>Project Description *</label>
-                                <textarea
+                                {/* <textarea
                                     style={textareaStyles}
                                     type="text"
                                     rows={9}
@@ -345,7 +354,16 @@ const CreateProject1 = ({
                                     cols={100}
                                     name="project_description"
                                     onChange={handleChange}
-                                    placeholder="Project Description" variant="outlined" />
+                                    placeholder="Project Description" variant="outlined"
+                                /> */}
+                                <ReactQuil
+                                    theme="snow"
+                                    value={formValue.project_description || ''}
+                                    onChange={getDescriptionText}
+                                    modules={modules}
+                                    formats={formats}
+                                    className={classes.quill}
+                                />
                             </MDBox>
                         </Grid>
                         <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
@@ -357,7 +375,7 @@ const CreateProject1 = ({
                                 },
                                 [breakpoints.down('md')]: {
                                     margin: 0,
-                                    marginBottom : '6px'
+                                    marginBottom: '6px'
                                 }
                             })}>
                                 <MDInput
@@ -385,7 +403,7 @@ const CreateProject1 = ({
                                 },
                                 [breakpoints.down('md')]: {
                                     margin: 0,
-                                    marginBottom : '6px'
+                                    marginBottom: '6px'
                                 }
                             })}>
                                 <MDInput
@@ -411,7 +429,7 @@ const CreateProject1 = ({
                                 [breakpoints.down('md')]: {
                                     width: '100% !important',
                                     margin: 0,
-                                    marginBottom : '6px'
+                                    marginBottom: '6px'
                                 },
                             })}>
                                 <Autocomplete
@@ -435,13 +453,13 @@ const CreateProject1 = ({
                                 [breakpoints.down('md')]: {
                                     flexWrap: "wrap",
                                     marginTop: '20px',
-                                    margin : 0,
+                                    margin: 0,
                                 }
                             })}>
                                 <FormControl sx={({ breakpoints }) => ({
                                     m: 1, width: '100%', [breakpoints.down('md')]: {
                                         margin: 0,
-                                        marginBottom : '6px'
+                                        marginBottom: '6px'
                                     }
                                 })}>
                                     <Autocomplete
@@ -498,7 +516,13 @@ const CreateProject1 = ({
                                     isCloseIcon={true}
                                 />
                             </MDBox>
-                            <MDTypography component="span" sx={{ color: 'red', fontWeight: '300', fontSize: '14px' }} >Note : Only .png, .pdf, <br />.jpg, .jpeg, .ai, .zip, .psd, .eps <br />formats are allowed <br /> Max Select 7</MDTypography>
+                            <MDTypography
+                                component="h5"
+                                sx={{ color: '#b19d9db5', fontWeight: '300', fontSize: '12px',paddingTop : '10px' }}
+                            >
+                                Note : Only .png, .pdf, .jpg, .jpeg,<br />  .ai, .zip, .psd, .eps
+                                formats are allowed <br />  Max Select 7
+                            </MDTypography>
 
                         </Grid>
                         <Grid item xxl={9} xl={9} lg={12} md={12} xs={12} ml={-10} alignSelf={"flex-start"} sx={{

@@ -16,6 +16,21 @@ import { MoonLoader } from 'react-spinners'
 import MDSnackbar from 'components/MDSnackbar'
 import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
+import PhoneInput from 'react-phone-input-2'
+import { makeStyles } from '@mui/styles'
+
+
+const useStyles = makeStyles({
+    Container: {
+        width: '90%',
+    },
+    inputStyles: {
+        width: '100% !important',
+        borderRadius: '5px',
+        height: '46px !important',
+        borderRadius: 8
+    }
+})
 
 const EditProfile = ({ reduxState, reduxActions }) => {
     const [imageUrl, setImageUrl] = useState(defaultImage);
@@ -27,7 +42,7 @@ const EditProfile = ({ reduxState, reduxActions }) => {
     const userID = useSelector(state => state.userDetails)
     const ID = userID?.hasOwnProperty("_id") ? userID?._id : userID?.id
     const is991 = useMediaQuery("(min-width:990px)")
-
+    const classes = useStyles()
     const [respMessage, setRespMessage] = useState("")
     const [errorSB, setErrorSB] = useState(false);
     const [successSB, setSuccessSB] = useState(false);
@@ -228,7 +243,12 @@ const EditProfile = ({ reduxState, reduxActions }) => {
             uploadWithoutProfile()
         }
     }
-
+    const handlePhoneChange1 = (phone) => {
+        setProfileData({
+            ...profileData,
+            phone: phone
+        })
+    }
     useEffect(() => {
         function getProfile() {
             const { email, name: fullName, phone_no: phone, avatar: user_avatar } = reduxState.userDetails
@@ -274,6 +294,7 @@ const EditProfile = ({ reduxState, reduxActions }) => {
         fontSize: "15px",
         marginLeft: 4
     }
+
     return (
         <DashboardLayout>
             {/* <DashboardNavbar /> */}
@@ -338,7 +359,21 @@ const EditProfile = ({ reduxState, reduxActions }) => {
                                     <Grid item xxl={10} xl={10} lg={10} xs={12} md={12}>
                                         <MDBox mb={2} sx={{ position: "relative" }}>
                                             <label style={Styles} htmlFor='phone'>Phone *</label>
-                                            <MDInput type="phone" required value={profileData?.phone} name="phone" onChange={handleChange} placeholder="No of people in the company" variant="outlined" fullWidth />
+                                            <PhoneInput
+                                                country={"us"}
+                                                className="marginBottom"
+                                                value={profileData?.phone}
+                                                onChange={phone => handlePhoneChange1(phone)}
+                                                placeholder='Your primary phone no'
+                                                inputProps={{
+                                                    name: 'phone',
+                                                    required: true,
+                                                    autoFocus: true,
+                                                }}
+                                                enableSearch
+                                                containerClass={classes.Container}
+                                                inputClass={classes.inputStyles}
+                                            />
                                         </MDBox>
                                     </Grid>
                                 </Grid>
@@ -346,17 +381,17 @@ const EditProfile = ({ reduxState, reduxActions }) => {
                                     <MDButton type="submit" color="warning" fullWidth
                                         circular={true}
                                         endIcon={
-                                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                            <ArrowForward fontSize='large' />&nbsp;
-                                            <MoonLoader loading={loading} size={20} color='#121212' />
-                                        </div>}
+                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                                <ArrowForward fontSize='large' />&nbsp;
+                                                <MoonLoader loading={loading} size={20} color='#121212' />
+                                            </div>}
                                         sx={{
                                             color: '#000 !important',
                                             fontSize: 14,
                                             textTransform: "capitalize",
                                         }}
                                     >
-                                        {profileData?.fullName ? "Update" : "Submit"} &nbsp; 
+                                        {profileData?.fullName ? "Update" : "Submit"} &nbsp;
                                     </MDButton>
                                 </MDBox>
                             </MDBox>

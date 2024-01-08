@@ -84,6 +84,13 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         setAddMore([])
     }
 
+    const getDescriptionText = (value) => {
+        setFormValue({
+            ...formValue,
+            brand_description : value
+        })
+    }
+
     const onhandleChange = (event) => {
         event.stopPropagation();
         const { name, value } = event.target
@@ -229,7 +236,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         image, other, addMoreField,
         addMore, loading, onSubmit,
         setImage, setAddMore, setFilesArray,
-        filesArray,
+        filesArray, getDescriptionText,
     }
     useEffect(() => {
         return () => {

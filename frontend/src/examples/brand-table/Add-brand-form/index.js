@@ -14,6 +14,9 @@ import { Checkbox, DialogActions, Divider, FormControlLabel } from '@mui/materia
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import MoonLoader from 'react-spinners/MoonLoader'
 import { makeStyles } from '@mui/styles'
+import ReactQuil from 'react-quill'
+import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings'
+import { formats, modules } from 'assets/react-quill-settings/react-quill-settings'
 
 const BrandModal = styled(Dialog)(({ theme }) => ({
     // '& .MuiInputBase-root': {
@@ -64,6 +67,7 @@ const BrandForm = ({
     filesArray,
     checkboxState,
     setCheckState,
+    getDescriptionText,
 
 }) => {
     const logoRef = useRef(null)
@@ -80,7 +84,6 @@ const BrandForm = ({
         setAddMore(addMoreField.filter(more => addMoreField.indexOf(more) !== index))
         setFilesArray(filesArray.filter(list => list.name !== item.name))
     }
-
     const handleCheckboxes = (name) => {
         setCheckState({
             ...checkboxState,
@@ -97,6 +100,7 @@ const BrandForm = ({
         },
     });
     const classes = useStyles();
+    const quillClasses = reactQuillStyles();
 
     const openLogo = (ref) => {
         ref.current.click()
@@ -137,8 +141,15 @@ const BrandForm = ({
                                 }
                             }}>
                             <label style={Styles} htmlFor='brand_description'>Brand Description</label>
-                            <textarea style={textareaStyles}
-                                type="text" rows={5} cols={100} name="brand_description" onChange={onChange} placeholder="Brand Description and links" variant="outlined" />
+                            <ReactQuil
+                                theme="snow"
+                                onChange={getDescriptionText}
+                                modules={modules}
+                                formats={formats}
+                                className={quillClasses.quill}
+                            />
+                            {/* <textarea style={textareaStyles}
+                                type="text" rows={5} cols={100} name="brand_description" onChange={onChange} placeholder="Brand Description and links" variant="outlined" /> */}
                         </MDBox>
                     </Grid>
                     <Grid item xxl={6} lg={6} xs={12} md={12}>
@@ -187,7 +198,7 @@ const BrandForm = ({
                         >
                             <Grid item xxl={3} xl={3}>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel sx={{mr:0,ml:0}} control={<Checkbox
+                                    <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox
                                         // classes={{ checked: classes.checkedCheckbox }}
                                         checked={checkboxState.isLogochk}
                                         sx={{
@@ -203,21 +214,21 @@ const BrandForm = ({
                                     <label style={Styles} htmlFor='logo' aria-label='logo'>Logo</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel sx={{mr:0,ml:0}} control={<Checkbox checked={checkboxState.isMoodBoardchk} sx={{ width: 30, height: 30 }}
+                                    <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox checked={checkboxState.isMoodBoardchk} sx={{ width: 30, height: 30 }}
                                         onChange={() => handleCheckboxes('isMoodBoardchk')}
                                     />}
                                     />
                                     <label style={Styles} htmlFor='moodboard' aria-label='moodboard'>Moodboard</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel sx={{mr:0,ml:0}} control={<Checkbox checked={checkboxState.isBrandGuidechk} sx={{ width: 30, height: 30 }}
+                                    <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox checked={checkboxState.isBrandGuidechk} sx={{ width: 30, height: 30 }}
                                         onChange={() => handleCheckboxes('isBrandGuidechk')}
                                     />}
                                     />
                                     <label style={Styles} htmlFor='brand-guidelines' aria-label='guidelines'>Brand Guidelines</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel sx={{mr:0,ml:0}} control={<Checkbox checked={checkboxState.isothers} sx={{ width: 30, height: 30 }}
+                                    <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox checked={checkboxState.isothers} sx={{ width: 30, height: 30 }}
                                         onChange={() => handleCheckboxes('isothers')} />}
                                     />
                                     <label style={Styles} htmlFor='Others' aria-label='others'>Others</label>
@@ -297,7 +308,7 @@ const BrandForm = ({
                                                 },
                                             }}
                                             value={image.upload_moodboard.length ? image.upload_moodboard[0]?.name : ''}
-                                            disabled={!checkboxState.isMoodBoardchk}/>
+                                            disabled={!checkboxState.isMoodBoardchk} />
                                     </MDBox>
                                     &nbsp; &nbsp;
                                     <label htmlFor='upload-moodboard' style={{ position: 'relative' }}>
