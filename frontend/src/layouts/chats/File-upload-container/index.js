@@ -296,6 +296,7 @@ const FileUploadContainer = ({
         console.error(err.message);
       });
   };
+  console.log("project ", project);
   const customerUploadFiles = async (filType) => {
     setLoading(true);
     if (filType.length === 0) return;
@@ -626,28 +627,35 @@ const FileUploadContainer = ({
             <div className="adminDiv2">
               <img src={adminImg} className="adminImg1" />
               <div>
-                <h3 className={classes.adminDiv2h3}>Admin</h3>
+                <h3 className={classes.adminDiv2h3}>{project?.name}</h3>
 
-                <p className={classes.adminDiv2p}>(super admin)</p>
+                {/* <p className={classes.adminDiv2p}>(super admin)</p> */}
               </div>
             </div>
           </div>
           <div className={classes.adminDiv1}>
             <h2 className={classes.adminDiv1h2}>Team Member</h2>
             <div className="adminDiv2">
-              <img src={designerImg} className="adminImg1" />
-              <div>
-                <h3 className={classes.adminDiv2h3}>Designer b.</h3>
-                <p className={classes.adminDiv2p}>(you)</p>
-              </div>
+              {project?.team_members.length > 0 ? (
+                <>
+                  {" "}
+                  <img src={designerImg} className="adminImg1" />
+                  <div>
+                    <h3 className={classes.adminDiv2h3}>Designer b.</h3>
+                    <p className={classes.adminDiv2p}>(you)</p>
+                  </div>
+                </>
+              ) : (
+                <p className="notassign">Not Assigned</p>
+              )}
             </div>
           </div>
           <div className={classes.adminDiv1}>
             <h2 className={classes.adminDiv1h2}>Brand</h2>
             <div className="adminDiv2">
-              <img src={UserImg} className="adminImg1" />
+              {/* <img src={UserImg} className="adminImg1" /> */}
               <div>
-                <h3 className={classes.adminDiv2h3}>Desihgn M</h3>
+                <h3 className={classes.adminDiv2h3}>{project?.brand}</h3>
 
                 {/* <p className={classes.adminDiv2p}>(super admin)</p> */}
               </div>
@@ -658,30 +666,30 @@ const FileUploadContainer = ({
         <div className={classes.catdivmain}>
           <div className={classes.catdiv1}>
             <h2 className={classes.adminDiv1h2}>Category</h2>
-            <Typography variant="h6">Graphic Design</Typography>
+            <Typography variant="h6">{project?.project_category}</Typography>
           </div>
           <div className={classes.catdiv1}>
             <h2 className={classes.adminDiv1h2}>Type</h2>
             <Typography variant="h6" className="desc1">
-              Book Cover
+              {project?.design_type}
             </Typography>
           </div>
           <div className={classes.catdiv1}>
             <h2 className={classes.adminDiv1h2}>Description</h2>
             <Typography variant="h6" className="desc1">
-              Lorem ipsum dolor sit amet,
+              {project?.project_description}
             </Typography>
           </div>
           <div className={classes.catdiv1}>
             <h2 className={classes.adminDiv1h2}>Size</h2>
             <Typography variant="h6" className="desc1">
-              1024 X 1440px
+              {project?.sizes}
             </Typography>
           </div>
           <div className={classes.catdiv1}>
             <h2 className={classes.adminDiv1h2}>Details</h2>
             <Typography variant="h6" className="desc1">
-              Active
+              {project?.is_Active ? "ACtive" : "Not Active"}
             </Typography>
           </div>
         </div>

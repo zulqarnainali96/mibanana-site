@@ -140,6 +140,8 @@ export const useStyles = makeStyles({
     background: "transparent",
     color: "black",
     margin: "6px 0px 6px 6px",
+    fontFamily: "Poppins",
+    fontSize: "12px",
   },
   "uploadbtn:hover": {
     background: "#FDD700",
@@ -191,6 +193,7 @@ export const useStyles = makeStyles({
     margin: "5px",
     padding: "5px",
     width: "30%",
+    fontFamily: "Poppins",
   },
   adminDivGrid: {
     background: "#F6F6E8",
@@ -211,6 +214,7 @@ export const useStyles = makeStyles({
     padding: "5px",
     background: "#F6F6E8",
     flexWrap: "wrap",
+    fontFamily: "Poppins",
   },
   adminDiv1h2: {
     color: "#C6C3B6",

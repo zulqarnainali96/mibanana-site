@@ -145,6 +145,7 @@ h6,
 
 .adminDiv2 {
   display: flex;
+  align-items: center;
 }
 
 .adminImg1 {
@@ -167,13 +168,15 @@ h6,
 }
 
 .desc1 {
-  font-size: 12px;
+  font-size: 12px !important;
 }
 
 .selectType1 {
   margin: 6px 6px 6px 0px;
   border-radius: 1px;
   outline: 0;
+  font-family: "Poppins";
+  font-size: 12px;
 }
 
 .fileImg1 {
@@ -236,7 +239,7 @@ h6,
 
 .filesGrid {
   max-height: 430px;
-  height: 230px;
+  height: 430px;
   overflow: auto;
 }
 
@@ -245,11 +248,25 @@ h6,
   height: 100px;
 }
 
+.notassign {
+  font-size: 12px;
+  font-family: "Poppins";
+}
+
 .styles-module_wrapper__1I_qj {
-  background: black !important;
+  background: transparent !important;
   width: 30% !important;
   height: 30% !important;
   top: 45% !important;
   left: 63% !important;
   border-radius: 10px !important;
+}
+
+.styles-module_close__2I1sI {
+  color: black !important;
+  top: -26px !important;
+  right: 70px !important;
+  opacity: 1 !important;
+  font-size: 27px !important;
+  font-weight: 100 !important;
 }
