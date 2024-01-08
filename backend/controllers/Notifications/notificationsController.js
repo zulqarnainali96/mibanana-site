@@ -150,15 +150,45 @@ const updateChatMessage = async (req, res) => {
             const obj = { ...currentObj, view: false }
             arr.splice(userId, 1, obj)
             user.notifications = [...arr]
-            const array = await user.save()
+            await user.save()
             return res.status(200).send({ msgArray: arr })
-        } else { 
+        } else {
             return res.status(404).send({ message: 'No user found' })
         }
     } catch (error) {
         res.status(500).send({ message: "Internal Server Error" });
     }
 }
+
+const updateAllChatMessage = async (req, res) => {
+    const _id = req.params.id
+    if (!_id) {
+        return res.status(402).send({ message: 'ID not found' })
+    }
+    try {
+        const user = await User.findById(_id)
+        if (user) {
+            const notifications = user?.notifications?.map((item) => {
+                let obj = item
+                if (obj.view === true) {
+                    obj.view = false
+                }
+                return obj
+            })
+            const updateChat = await User.findByIdAndUpdate(_id, { notifications })
+            if (updateChat) {
+                const user2 = await User.findById(_id)
+                return res.status(200).send({ msgArray: user2.notifications, message: 'Chats Updated' })
+            } 
+        } else {
+            return res.status(404).send({ message: 'No user found' })
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({ message: "Internal Server Error" });
+    }
+}
+
 const getUserNotifications = async (req, res) => {
     const _id = req.params.id
     if (!_id) {
@@ -178,4 +208,4 @@ const getUserNotifications = async (req, res) => {
     }
 }
 
-module.exports = { postMessageToOtherMembers, getUserNotifications, updateChatMessage }
+module.exports = { postMessageToOtherMembers, getUserNotifications, updateChatMessage, updateAllChatMessage }

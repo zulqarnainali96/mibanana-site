@@ -20,6 +20,14 @@ export const useStyles = makeStyles({
         color: '#000 !important',
         fontWeight: '400 !important'
     },
+    notificationPoint : {
+        position: 'absolute', 
+        padding: '6px',
+        top:6,
+        right:6, 
+        borderRadius: '30px',
+        backgroundColor:mibananaColor.yellowColor
+    },
     btnContainer: {
         backgroundColor: mibananaColor.yellowTextColor,
         padding: '4px',
@@ -29,5 +37,6 @@ export const useStyles = makeStyles({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        position : 'relative'
     }
 })

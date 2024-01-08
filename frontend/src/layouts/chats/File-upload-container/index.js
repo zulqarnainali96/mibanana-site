@@ -296,7 +296,7 @@ const FileUploadContainer = ({
         console.error(err.message);
       });
   };
-  console.log("project ", project);
+  // console.log("project ", project);
   const customerUploadFiles = async (filType) => {
     setLoading(true);
     if (filType.length === 0) return;
@@ -527,7 +527,7 @@ const FileUploadContainer = ({
                               onClick={() => DownloadFile(ver?.download_link)}
                               className="downloadicon"
                             />
-                            {console.log("var", ver)}
+                            {/* {console.log("var", ver)} */}
                             <div className={classes.fileDiv2}>
                               <div>
                                 <img

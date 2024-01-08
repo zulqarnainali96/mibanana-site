@@ -21,7 +21,7 @@ const { downloadFile, getFiles, uploadFile } = require('../google-cloud-storage/
 const { designerUpload, getDesignerFiles, deleteDesigners, deleteDesignerFiles } = require('../controllers/Projects/Graphic_design/designer_upload')
 const { UploadProfileImage, UploadWithoutProfileImage } = require('../controllers/profile-image/profileImage')
 const { getAllRequiredFields, createUserRole, getNewCustomerDetails, getNonActiveCustomer, deleteCurrentCustomer, updateCustomerDetails  } = require('../controllers/userController')
-const { postMessageToOtherMembers, getUserNotifications, updateChatMessage } = require('../controllers/Notifications/notificationsController')
+const { postMessageToOtherMembers, getUserNotifications, updateChatMessage, updateAllChatMessage } = require('../controllers/Notifications/notificationsController')
 
 
 
@@ -123,5 +123,6 @@ router.post('/api/user/no-profile/:id', UploadWithoutProfileImage)
 router.post('/api/send-message-to-others', postMessageToOtherMembers)
 router.get('/api/get-notifications/:id', getUserNotifications)
 router.get('/api/udpate-notifications/:userId/:id', updateChatMessage)
+router.get('/api/udpate-all-notifications/:id', updateAllChatMessage)
 
 module.exports = router 

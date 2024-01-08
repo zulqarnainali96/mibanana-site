@@ -1,5 +1,5 @@
 import List from '@mui/material/List';
-import { Box } from '@mui/material';
+import { Badge, Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import apiClient from 'api/apiClient';
@@ -25,7 +25,6 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
                 if (data?.chat?.chat_msg?.length > 0) {
                     const chatMessage = data?.chat?.chat_msg
                     const lastMessage = chatMessage[chatMessage?.length - 1].view ? chatMessage[chatMessage?.length - 1].message : 'no unread message'
-                    console.log(chatMessage)
                     setMsgArr(lastMessage)
                 } else {
                     setMsgArr("no message inside chat")
@@ -77,7 +76,7 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
     const chatMsg = {
         fontSize: "13px",
         color: mibananaColor.tableHeaderColor,
-        padding : '10px',
+        padding: '10px',
         textOverflow: 'ellipsis',
         whiteSpace: "break-spaces",
 

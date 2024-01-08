@@ -54,6 +54,7 @@ const Chating = ({ reduxState, reduxActions }) => {
   const role = currentUserRole(reduxState);
   const currentTime = new Date(); // Get the current date and time
   const formattedTime = currentTime.toLocaleTimeString();
+  const formattedDate = currentTime.toLocaleDateString();
   const [msgArray, setMsgArray] = useState([]);
   const [limit, setLimit] = useState(15);
   const [message, sendMessage] = useState("");
@@ -130,6 +131,7 @@ const Chating = ({ reduxState, reduxActions }) => {
         name: name,
         avatar: avatar ? avatar : ImageAvatar,
         time_data: formattedTime,
+        date: formattedDate,
         message: message,
         role: getUserRoles(),
         view: true,
@@ -156,6 +158,7 @@ const Chating = ({ reduxState, reduxActions }) => {
         name: name,
         avatar: avatar ? avatar : ImageAvatar,
         time_data: formattedTime,
+        date: formattedDate,
         message: message,
         role: getUserRoles(),
         view: true,
@@ -425,9 +428,9 @@ const Chating = ({ reduxState, reduxActions }) => {
                               <Box
                                 sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
                                 className="message-content"
-                                dangerouslySetInnerHTML={{__html:item.message}}
+                                dangerouslySetInnerHTML={{ __html: item.message }}
                               >
-                                
+
                               </Box>
                             </Box>
                           </Box>
@@ -485,7 +488,7 @@ const Chating = ({ reduxState, reduxActions }) => {
               sx={{
                 position: "absolute",
                 right: 20,
-                top : 45,
+                top: 45,
                 fill: mibananaColor.tableHeaderColor,
                 cursor: "pointer",
               }}

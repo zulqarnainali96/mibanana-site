@@ -155,6 +155,18 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       })
     getToTheProject(item?.project_id)
   }
+ async function updateAllChatMessage () {
+    const id = reduxState.userDetails?.id
+    if(getMessageNotification()){
+     await apiClient.get(`/api/udpate-all-notifications/${id}`)
+        .then(({ data }) => {
+          console.log('updated chat data =>',data)
+          reduxActions.getUserNewChatMessage(data?.msgArray)
+        }).catch((err) => {
+          console.error(err.message)
+        })
+    }
+  }
   function showPersonRoles() {
     if (role?.projectManager) return "(Project Manager)"
     if (role?.admin) return "(Admin)"
@@ -459,7 +471,6 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
     return {
       fontSize
     }
-
   }
   const imgResponsive = () => {
     let width = ''
@@ -477,6 +488,11 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
     }
 
   }
+  const getMessageNotification = () => {
+    const isnotifications = userNewChatMessage?.some(item => item.view === true)
+    return isnotifications
+  }
+  console.log( 'get notifications ',getMessageNotification())
   useEffect(() => {
     getAllNotificationsMsg()
   }, [])
@@ -533,7 +549,8 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
             <Grid item xxl={7} display={!is800 && "none"} xl={7} lg={6} md={10} xs={12} >
               <Grid container justifyContent={"center"}>
                 <Grid item xxl={12} xl={12} lg={12} md={12} sm={12} xs={12} display="flex" alignItems={"center"} gap={"8px"} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
-                  <div className={navbarStyles.btnContainer}>
+                  <div className={navbarStyles.btnContainer} onClick={updateAllChatMessage}>
+                    {getMessageNotification() ? <span className={navbarStyles.notificationPoint}></span> : null}
                     <RightSideDrawer list={list} />
                   </div>
                   <div
