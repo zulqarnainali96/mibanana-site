@@ -541,7 +541,7 @@ const FileUploadContainer = ({
                                     disableScroll={false}
                                     closeOnClickOutside={true}
                                     onClose={closeImageViewer}
-                                    style={{ width: "100%", height: "100px" }}
+                                    style={{ width: "100% !important", height: "100px",backgroundColor:'red' }}
                                   />
                                 )}
                               </div>

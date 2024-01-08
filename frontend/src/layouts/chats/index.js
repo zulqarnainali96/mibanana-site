@@ -32,6 +32,8 @@ import { Box } from "@mui/material";
 import { fontsFamily } from "assets/font-family";
 import { mibananaColor } from "assets/new-images/colors";
 import { position } from "stylis";
+import ReactQuill from "react-quill";
+import { modules, formats, reactQuillStyles2 } from "assets/react-quill-settings/react-quill-settings";
 // https://socket-dot-mi-banana-401205.uc.r.appspot.com
 // http://34.125.239.154
 
@@ -81,6 +83,7 @@ const Chating = ({ reduxState, reduxActions }) => {
   const { id: user, name } = reduxState?.userDetails;
   const socketRef = useRef(socketIO);
   let avatar = useSelector((state) => state.userDetails?.avatar);
+  const classes = reactQuillStyles2()
 
   const getUserRoles = () => {
     if (reduxState?.userDetails?.roles.includes("Graphic-Designer")) return "Graphic-Designer";
@@ -422,8 +425,9 @@ const Chating = ({ reduxState, reduxActions }) => {
                               <Box
                                 sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
                                 className="message-content"
+                                dangerouslySetInnerHTML={{__html:item.message}}
                               >
-                                {item.message}
+                                
                               </Box>
                             </Box>
                           </Box>
@@ -445,10 +449,10 @@ const Chating = ({ reduxState, reduxActions }) => {
               justifyContent: "flex-end",
               alignItems: "center",
               position: "absolute",
-              paddingBlock : '10px',
+              paddingBlock: '10px',
               left: "0",
               bottom: "0px",
-              gap : '15px',
+              gap: '15px',
               backgroundColor: mibananaColor.headerColor
             }}
           >
@@ -460,19 +464,28 @@ const Chating = ({ reduxState, reduxActions }) => {
                 alt="person-image"
               />
             </Box>
-            <textarea
+            {/* <textarea
               rows={2}
               className="textareaStyle"
               value={message}
               placeholder="Type your message here"
               onChange={(e) => sendMessage(e.target.value)}
               style={{ fontFamily: fontsFamily.poppins }}
+            /> */}
+            <ReactQuill
+              theme="snow"
+              value={message}
+              onChange={(value) => sendMessage(value)}
+              modules={modules}
+              formats={formats}
+              className={classes.quill}
             />
             <SendOutlined
               fontSize="large"
               sx={{
                 position: "absolute",
                 right: 20,
+                top : 45,
                 fill: mibananaColor.tableHeaderColor,
                 cursor: "pointer",
               }}

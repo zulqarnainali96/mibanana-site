@@ -191,8 +191,8 @@ const BrandForm = ({
                     </Grid>
                     <Grid item xxl={12} xl={12} lg={12} xs={12} md={12}>
                         <MDTypography variant="h2" px={2} py={0} fontSize="large" fontWeight="bold">Upload Brand Materials</MDTypography>
-                        <MDTypography variant="h6" px={2} py={0} fontSize="small" sx={{ color: "red" }} fontWeight="bold">Max 7 files allowed</MDTypography>
-                        <MDTypography variant="p" px={2} py={0} fontSize="small" sx={{ color: "red" }}>allowed formats ai .eps .psd .jpg .png .pdf .svg</MDTypography>
+                        <MDTypography variant="h6" px={2} py={0} sx={{ color: "#ccc",fontSize:"13px !important" }} fontWeight="bold">Max 7 files allowed</MDTypography>
+                        <MDTypography variant="p" px={2} py={0} sx={{ color: "#ccc",fontSize:"12px !important" }}>allowed formats ai .eps .psd .jpg .png .pdf .svg</MDTypography>
                         <Grid container margin={1} justifyContent={"space-between"}
                             sx={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '8px', overflowY: 'scroll', height: '260px' }}
                         >

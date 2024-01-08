@@ -24,13 +24,13 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
                 const { data } = await apiClient('/chat-message/' + item?._id)
                 if (data?.chat?.chat_msg?.length > 0) {
                     const chatMessage = data?.chat?.chat_msg
-                    const lastMessage = chatMessage[chatMessage?.length - 1].view ? chatMessage[chatMessage?.length - 1].message : 'no unread message' 
+                    const lastMessage = chatMessage[chatMessage?.length - 1].view ? chatMessage[chatMessage?.length - 1].message : 'no unread message'
                     console.log(chatMessage)
                     setMsgArr(lastMessage)
                 } else {
                     setMsgArr("no message inside chat")
                 }
-            } catch(error) {
+            } catch (error) {
                 setMsgArr("")
                 console.log(error)
             }
@@ -45,7 +45,7 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
             statusColor = mibananaColor.greenShade2
         }
         else if (item?.status === 'Completed') {
-            statusColor = 'blue'
+            statusColor = 'green'
         }
         else if (item?.status === 'Project manager') {
             statusColor = 'red'
@@ -77,17 +77,18 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
     const chatMsg = {
         fontSize: "13px",
         color: mibananaColor.tableHeaderColor,
+        padding : '10px',
         textOverflow: 'ellipsis',
         whiteSpace: "break-spaces",
-        
+
     }
-    const shrinkText = () => {
-        let shrinkText = msg.substring(0, 80)
-        if(msg?.length > 80){
-            shrinkText += "....."
-        }
-        return shrinkText
-    }
+    // const shrinkText = () => {
+    //     let shrinkText = msg.substring(0, 80)
+    //     if(msg?.length > 80){
+    //         shrinkText += "....."
+    //     }
+    //     return shrinkText
+    // }
     return (
         <MDBox
             display="flex"
@@ -109,7 +110,7 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
                     <span style={statusStyle()}>{item?.status}</span>
                 </MDBox>
             </MDBox>
-            <MDBox sx={chatMsg}>{shrinkText()}</MDBox>
+            <MDBox sx={chatMsg} dangerouslySetInnerHTML={{ __html: msg }}></MDBox>
         </MDBox >
     )
 }

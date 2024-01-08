@@ -212,9 +212,10 @@ const BrandData = () => {
         }
         getBrandLogo()
         return {
-            logo: <>{ role?.customer ? (<img src={arr?.url} width={50} height={50} alt="brand-logo" />) :
-                    (<Link to={`/brand/${item?._id}`} ><img src={arr?.url} width={50} height={50} />
-                    </Link>)
+            logo: <>{role?.customer ? (<img src={arr?.url} 
+                    style={{ maxWidth: 70, maxHeight: 70, width: 'auto', height: 'auto' }} alt="brand-logo" />) :
+                (<Link to={`/brand/${item?._id}`} ><img src={arr?.url} width={"100%"} />
+                </Link>)
             }</>,
 
             brand_name: <MDTypography variant="h4" sx={textStyles}>
