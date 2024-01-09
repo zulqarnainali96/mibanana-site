@@ -4,6 +4,7 @@ import {
   IconButton,
   MenuItem,
   Select,
+  OutlinedInput,
   Button,
   InputLabel,
   FormControl,
@@ -15,6 +16,7 @@ import { UploadIcon } from "assets/mi-banana-icons/upload-icon";
 import CircularProgress from "@mui/material/CircularProgress";
 import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
 import ImageViewer from "react-simple-image-viewer";
+import SelectMembers from "../team-members/select-members";
 
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
@@ -23,6 +25,7 @@ import MDTypography from "components/MDTypography";
 import { useDropzone } from "react-dropzone";
 import React from "react";
 import { useStyles } from "./styles";
+import SuccessModal from "components/SuccessBox/SuccessModal";
 
 import ShowFiles from "./show-files/ShowFiles";
 import adminImg from "assets/images/admin.svg";
@@ -47,6 +50,7 @@ import { getProjectData } from "redux/global/global-functions";
 import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
 import { Close } from "@mui/icons-material";
+import { useSelector } from "react-redux";
 
 const inputSxStyles = {
   "& .MuiInputBase-root > input": {
@@ -73,6 +77,7 @@ const FileUploadContainer = ({
   reduxState,
   reduxActions,
 }) => {
+  const idIs = useSelector((state) => state.userDetails?.id);
   const projects = reduxState?.project_list?.CustomerProjects;
   const [currentImage, setCurrentImage] = useState({
     name: "",
@@ -103,6 +108,7 @@ const FileUploadContainer = ({
   const version1 = project?.add_files[0]?.version1;
   const [version, setVersion] = useState(version1);
   const [downloadfileName, setDownloadFileName] = useState("");
+  const [memberName, setMemberName] = useState([]);
   const [files, setFiles] = useState([]);
   const [fileMsg, setFileMsg] = useState("");
   const re_render_chat = reduxState?.re_render_chat;
@@ -112,11 +118,19 @@ const FileUploadContainer = ({
   const [previewimg, setpreviewimg] = useState("");
   const [currentVersion, setSelectVersion] = useState("")
   const [fileVersion, setFileVersionList] = useState(project?.version)
+  const [designerObj, setDesignerObj] = useState([]);
+  const [designerList, setDesignerList] = useState([]);
+  const [is_member, setIsMember] = useState(false);
+  const [successOpen, setsuccessOpen] = useState(false);
+  const [successMessage, setsuccessMessage] = useState("");
 
   const openImageViewer = useCallback((img) => {
     setpreviewimg(img);
     setIsViewerOpen(true);
   }, []);
+  const handleChange = (event) => {
+    setMemberName(event.target.value);
+  };
 
   const closeImageViewer = () => {
     setpreviewimg("");
@@ -328,7 +342,7 @@ const FileUploadContainer = ({
         console.error(err.message);
       });
   };
-  // console.log("project ", project);
+  console.log("project ", project);
   const customerUploadFiles = async (filType) => {
     setLoading(true);
     if (filType.length === 0) return;
@@ -511,6 +525,77 @@ const FileUploadContainer = ({
 
   }
   console.log(currentVersion)
+  // console.log("idIs", idIs);
+  // console.log("id", id);
+  useEffect(() => {
+    if (role?.projectManager) {
+      apiClient
+        .get("/api/get-designer-list/" + idIs)
+        .then(({ data }) => {
+          setDesignerObj(data?.designerlist);
+          setDesignerList(data?.designerlist);
+        })
+        .catch((e) => {
+          // console.log('Getting designer list ', e?.response?.data?.message)
+        });
+    }
+  }, [is_member]);
+  const personProject = () => {
+    if (reduxState.project_list?.CustomerProjects) {
+      const singleProject = reduxState.project_list?.CustomerProjects?.find(
+        (item) => item?._id === id
+      );
+      return singleProject;
+    } else {
+      return {};
+    }
+  };
+
+  const SubmitProject = async (e) => {
+    setMemberName(e.target.value);
+    console.log("selected member", e.target.value, role?.projectManager);
+
+    if (role?.projectManager && e.target.value) {
+      let project = personProject();
+      project.team_members = e.target.value;
+      project.status = "Ongoing";
+      project.is_active = true;
+
+      let data = {
+        project_id: personProject()?._id,
+        project_data: project,
+        // project_data: {
+        //     team_member : memberName,
+        //     status : "Ongoing",
+        //     is_active : isActive
+        // }
+      };
+      console.log("data is", data);
+      setLoading(true);
+      await apiClient
+        .patch("/graphic-project", data)
+        .then(({ data }) => {
+          const { save } = data;
+          setsuccessMessage(data?.message);
+          setsuccessOpen(true);
+          // const updatedProjects = reduxState.project_list.CustomerProjects.filter( item => item._id !== save.id)
+          // const allProject = [...updatedProjects,save]
+          // reduxFunctions.getCustomerProjects(allProject)
+          // setRespMessage(data?.message);
+          setIsMember((prev) => !prev);
+          setLoading(false);
+          // setTimeout(() => {
+          //   handleOpen();
+          //   // openSuccessSB()
+          // }, 600);
+        })
+        .catch((e) => {
+          setLoading(false);
+          console.error("Error assgin project => ", e?.response?.data?.message);
+        });
+    }
+  };
+  const handleClose = () => setsuccessOpen(false);
 
   return (
     <MDBox
@@ -519,6 +604,14 @@ const FileUploadContainer = ({
         px: 1,
       }}
     >
+      <SuccessModal
+        open={successOpen}
+        msg={successMessage}
+        onClose={handleClose}
+        width="30%"
+        title="SUCCESS"
+        sideRadius={false}
+      />
       <Grid>
         <MDTypography
           sx={({ palette: { primary } }) => ({
@@ -622,7 +715,7 @@ const FileUploadContainer = ({
                               onClick={() => DownloadFile(ver?.download_link)}
                               className="downloadicon"
                             />
-                            {/* {console.log("var", ver)} */}
+                            {console.log("var", ver)}
                             <div className={classes.fileDiv2}>
                               <div>
                                 <img
@@ -636,7 +729,7 @@ const FileUploadContainer = ({
                                     disableScroll={false}
                                     closeOnClickOutside={true}
                                     onClose={closeImageViewer}
-                                    style={{ width: "100% !important", height: "100px", backgroundColor: 'red' }}
+                                    style={{ width: "100%", height: "100px" }}
                                   />
                                 )}
                               </div>
@@ -731,17 +824,40 @@ const FileUploadContainer = ({
           <div className={classes.adminDiv1}>
             <h2 className={classes.adminDiv1h2}>Team Member</h2>
             <div className="adminDiv2">
+              {console.log("projectproject", project)}
               {project?.team_members.length > 0 ? (
                 <>
                   {" "}
                   <img src={designerImg} className="adminImg1" />
                   <div>
-                    <h3 className={classes.adminDiv2h3}>Designer b.</h3>
-                    <p className={classes.adminDiv2p}>(you)</p>
+                    <h3 className={classes.adminDiv2h3}>{project?.team_members}</h3>
+                    {/* <p className={classes.adminDiv2p}>(you)</p> */}
                   </div>
                 </>
               ) : (
-                <p className="notassign">Not Assigned</p>
+                <>
+                  {" "}
+                  {role?.projectManager ? (
+                    <Select
+                      value={memberName}
+                      onChange={SubmitProject}
+                      displayEmpty
+                      className={`selectType2 ${activebtn === "folder" && "activeClass"}`}
+                    >
+                      <MenuItem value="" className="">
+                        Select team member
+                      </MenuItem>
+                      {designerList?.length &&
+                        designerList.map((item) => (
+                          <MenuItem value={item.name} key={item._id} className="">
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  ) : (
+                    <p className="notassign">Not Assigned</p>
+                  )}
+                </>
               )}
             </div>
           </div>
