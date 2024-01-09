@@ -489,7 +489,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
 
   }
   const getMessageNotification = () => {
-    const isnotifications = userNewChatMessage?.some(item => item.view === true)
+    const isnotifications = userNewChatMessage?.some(item => item?.view === true)
     return isnotifications
   }
   console.log( 'get notifications ',getMessageNotification())

@@ -53,14 +53,11 @@ function Dashboard({ reduxActions, reduxState }) {
   const sumbitAndOngoing = () => {
     const Ongoing = project_list?.filter(item => item.status === 'Ongoing')
     const isSubmitted = project_list?.filter(item => item.status === 'Submitted')
-    console.log('isSubmitted ', isSubmitted)
-    console.log('Ongoing ', Ongoing)
     if (Ongoing?.length > 0 && isSubmitted?.length === 0) return Ongoing?.length
     else if (isSubmitted?.length > 0 && Ongoing?.length === 0) return isSubmitted?.length
     else if (isSubmitted?.length > 0 && Ongoing?.length > 0) return isSubmitted?.length + Ongoing?.length
     else { return 0 }
   }
-  console.log(sumbitAndOngoing())
   const projectCompleted = project_list?.filter(item => item.status === 'Completed')
 
   const activeProject = project_list?.filter(item => {
@@ -89,7 +86,6 @@ function Dashboard({ reduxActions, reduxState }) {
   async function getAllProjectsID() {
     let Projects = reduxState.project_list?.CustomerProjects
     let filterIDS = Projects?.map(item => item._id)
-    console.log(filterIDS)
     const data = {
       user: reduxState.userDetails?.id,
       arrayofIDS: filterIDS
