@@ -182,6 +182,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
 
         const projectid = project_list.CustomerProjects.indexOf(item);
 
+        console.log(item)
+
         const getUserNotifcations = async () => {
           await apiClient
             .get("/chat-message/" + projectid)

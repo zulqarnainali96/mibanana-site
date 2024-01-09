@@ -259,8 +259,8 @@ h6,
 }
 
 .filesGrid {
-  max-height: 227px;
-  height: 227px;
+  max-height: 41vh;
+  height: 41vh;
   overflow: auto;
 }
 

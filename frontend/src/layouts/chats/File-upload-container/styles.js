@@ -134,6 +134,10 @@ export const useStyles = makeStyles({
   },
   uploadbtndiv: {
     display: "flex",
+    gap : '7px',
+    "& > select" : {
+      cursor : 'pointer',
+    }
   },
   uploadbtn: {
     border: "1px solid gray",

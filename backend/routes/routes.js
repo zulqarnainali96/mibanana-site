@@ -18,7 +18,7 @@ const { getBrandList, createBrand, deleteBrandList, updateBrandList, addMoreImag
 const changePassword = require('../controllers/forgetPassControll')
 const verifyToken = require('../controllers/verifyEmail/verify-email-control')
 const { downloadFile, getFiles, uploadFile } = require('../google-cloud-storage/gCloudStorage')
-const { designerUpload, getDesignerFiles, deleteDesigners, deleteDesignerFiles } = require('../controllers/Projects/Graphic_design/designer_upload')
+const { designerUpload, getDesignerFiles, deleteDesigners, deleteDesignerFiles, designerUploadsOnVersion, getFilesOnVersionBasis } = require('../controllers/Projects/Graphic_design/designer_upload')
 const { UploadProfileImage, UploadWithoutProfileImage } = require('../controllers/profile-image/profileImage')
 const { getAllRequiredFields, createUserRole, getNewCustomerDetails, getNonActiveCustomer, deleteCurrentCustomer, updateCustomerDetails  } = require('../controllers/userController')
 const { postMessageToOtherMembers, getUserNotifications, updateChatMessage, updateAllChatMessage } = require('../controllers/Notifications/notificationsController')
@@ -109,6 +109,8 @@ router.get('/get-files/download/:name', downloadFile)
 // Route for Designer Uploading files releated to project
 
 router.post('/api/designer-uploads/:id', uploadFiles.array('files', 5), designerUpload)
+router.post('/api/version-uploads/:version/:id', uploadFiles.array('files', 5), designerUploadsOnVersion)
+router.get('/api/get-version-uploads/:version/:id', getFilesOnVersionBasis)
 router.get('/api/designer-uploads/:id', getDesignerFiles)
 
 
