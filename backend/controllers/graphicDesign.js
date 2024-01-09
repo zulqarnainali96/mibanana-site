@@ -47,6 +47,7 @@ const createGraphicDesign = asyncHandler(async (req, res) => {
                 sizes,
                 specific_software_names,
                 is_active,
+                version : ["1"],
                 status: 'Project manager',
 
                 // resources,
@@ -291,7 +292,7 @@ const duplicateProject = async (req, res) => {
 
             const obj = {
                 user, name, project_category, project_title, design_type, brand, project_description, file_formats,
-                sizes, specific_software_names, is_active: false, status: 'Project manager', team_members: []
+                sizes, specific_software_names, is_active: false, version : ["1"], status: 'Project manager', team_members: []
             }
             // console.log(obj)
             const creatingNewProject = await graphicDesignModel.create(obj)
