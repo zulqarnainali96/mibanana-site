@@ -557,7 +557,7 @@ const FileUploadContainer = ({
 
     if (role?.projectManager && e.target.value) {
       let project = personProject();
-      project.team_members = e.target.value;
+      project.team_members = [e.target.value];
       project.status = "Ongoing";
       project.is_active = true;
 
@@ -677,10 +677,11 @@ const FileUploadContainer = ({
               }
             </select>
             <button className="selectType1" onClick={clearCurrentVersion} style={removeVersionStyle}><Close sx={{ marginTop: "3px" }} /></button>
-            {role?.projectManager || role?.designer && <button className="selectType1" onClick={addFileVerion}
-              style={addVersionStyle}>
-              add new version
-            </button>}
+            {role?.projectManager || role?.designer ? (
+              <button className="selectType1" onClick={addFileVerion}
+                style={addVersionStyle}>
+                add new version
+              </button>) : null}
             {/* <Autocomplete
               value={currentVersion}
               onChange={(event, newValue) => {
@@ -830,7 +831,9 @@ const FileUploadContainer = ({
                   {" "}
                   <img src={designerImg} className="adminImg1" />
                   <div>
-                    <h3 className={classes.adminDiv2h3}>{project?.team_members}</h3>
+                    {project?.team_members.map( item =>(
+                      <h3 className={classes.adminDiv2h3}>{item.name}</h3>
+                    ))}
                     {/* <p className={classes.adminDiv2p}>(you)</p> */}
                   </div>
                 </>
@@ -849,7 +852,7 @@ const FileUploadContainer = ({
                       </MenuItem>
                       {designerList?.length &&
                         designerList.map((item) => (
-                          <MenuItem value={item.name} key={item._id} className="">
+                          <MenuItem value={item} key={item._id} className="">
                             {item.name}
                           </MenuItem>
                         ))}
@@ -887,8 +890,7 @@ const FileUploadContainer = ({
           </div>
           <div className={classes.catdiv1}>
             <h2 className={classes.adminDiv1h2}>Description</h2>
-            <Typography variant="h6" className="desc1">
-              {project?.project_description}
+            <Typography variant="h6" className="desc1" dangerouslySetInnerHTML={{ __html: project?.project_description }}>
             </Typography>
           </div>
           <div className={classes.catdiv1}>
