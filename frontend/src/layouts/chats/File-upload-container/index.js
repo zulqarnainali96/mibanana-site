@@ -17,6 +17,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
 import ImageViewer from "react-simple-image-viewer";
 import SelectMembers from "../team-members/select-members";
+import pdffile from "assets/images/pdffile.svg";
+import xls from "assets/images/xls.svg";
+import eps from "assets/images/eps.svg";
+import psdfile from "assets/images/psdfile.svg";
 
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
@@ -116,8 +120,8 @@ const FileUploadContainer = ({
   const role = currentUserRole(reduxState);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [previewimg, setpreviewimg] = useState("");
-  const [currentVersion, setSelectVersion] = useState("")
-  const [fileVersion, setFileVersionList] = useState(project?.version)
+  const [currentVersion, setSelectVersion] = useState("");
+  const [fileVersion, setFileVersionList] = useState(project?.version);
   const [designerObj, setDesignerObj] = useState([]);
   const [designerList, setDesignerList] = useState([]);
   const [is_member, setIsMember] = useState(false);
@@ -125,8 +129,28 @@ const FileUploadContainer = ({
   const [successMessage, setsuccessMessage] = useState("");
 
   const openImageViewer = useCallback((img) => {
-    setpreviewimg(img);
-    setIsViewerOpen(true);
+    console.log("image", img, pdffile);
+    const fileExtension = img.split(".").pop();
+    console.log("File extension:", fileExtension);
+    if (fileExtension === "pdf") {
+      setpreviewimg(pdffile);
+      setIsViewerOpen(true);
+    } else if (fileExtension === "ai") {
+      setpreviewimg(img);
+      setIsViewerOpen(true);
+    } else if (fileExtension === "xlsx" || fileExtension === "xls") {
+      setpreviewimg(xls);
+      setIsViewerOpen(true);
+    } else if (fileExtension === "eps") {
+      setpreviewimg(eps);
+      setIsViewerOpen(true);
+    } else if (fileExtension === "psd") {
+      setpreviewimg(psdfile);
+      setIsViewerOpen(true);
+    } else {
+      setpreviewimg(img);
+      setIsViewerOpen(true);
+    }
   }, []);
   const handleChange = (event) => {
     setMemberName(event.target.value);
@@ -150,10 +174,10 @@ const FileUploadContainer = ({
   };
 
   const addFileVerion = () => {
-    const lastNumber = parseInt(fileVersion[fileVersion.length - 1]);
+    const lastNumber = parseInt(fileVersion[fileVersion?.length - 1]);
     const newNumber = (lastNumber + 1).toString();
-    setFileVersionList(prev => [...prev, newNumber])
-  }
+    setFileVersionList((prev) => [...prev, newNumber]);
+  };
 
   async function clientFiles() {
     setVersion([]);
@@ -400,18 +424,18 @@ const FileUploadContainer = ({
         setLoading(false);
         setFiles([]);
         setFilesType([]);
-        getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject)
+        getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject);
         // designerFiles();
       })
       .catch((err) => {
         setLoading(false);
         console.error(err.message);
       });
-  }
+  };
   const handleSubmit = async (filType) => {
     console.log("role handle submit", role);
     if (currentVersion) {
-      versionUploads(filType)
+      versionUploads(filType);
     } else {
       if (role?.designer || role?.projectManager || role?.admin) {
         managerUploadFiles(filType);
@@ -421,8 +445,8 @@ const FileUploadContainer = ({
     }
   };
   const clearCurrentVersion = () => {
-    setSelectVersion("")
-  }
+    setSelectVersion("");
+  };
   const showImageOnContainer = (item) => {
     setDownloadFileName(item?.download_link);
     setCurrentImage({
@@ -520,11 +544,10 @@ const FileUploadContainer = ({
     }
   };
   const getListThroughVersion = (e) => {
-    setSelectVersion(e.target.value)
-    getFilesOnVerion(e.target.value)
-
-  }
-  console.log(currentVersion)
+    setSelectVersion(e.target.value);
+    getFilesOnVerion(e.target.value);
+  };
+  console.log(currentVersion);
   // console.log("idIs", idIs);
   // console.log("id", id);
   useEffect(() => {
@@ -677,20 +700,24 @@ const FileUploadContainer = ({
             </select>
             <select
               className="selectType1"
-              style={{ borderRight: '0px' }}
+              style={{ borderRight: "0px" }}
               value={currentVersion}
-              onChange={getListThroughVersion}>
+              onChange={getListThroughVersion}
+            >
               <option value="">Not Selected</option>
-              {fileVersion.length > 0 ? fileVersion.map(item => (
+              {fileVersion?.length > 0 ? (
+                fileVersion.map((item) => (
+                  <>
+                    <option value={item}>{`version ${item}`}</option>
+                  </>
+                ))
+              ) : (
                 <>
-                  <option value={item}>{`version ${item}`}</option>
-                </>
-              ))
-                : <>
                   <option value="">no options</option>
                 </>
-              }
+              )}
             </select>
+<<<<<<< HEAD
             <button className="selectType1" onClick={clearCurrentVersion} style={removeVersionStyle}><Close sx={{ marginTop: "3px" }} /></button>
             {role?.projectManager || role?.designer || role?.admin ? (
               <button className="selectType1" onClick={addFileVerion}
@@ -702,6 +729,20 @@ const FileUploadContainer = ({
                 style={addVersionStyle}>
                 Delete version
               </button>) : null}
+=======
+            <button
+              className="selectType1"
+              onClick={clearCurrentVersion}
+              style={removeVersionStyle}
+            >
+              <Close sx={{ marginTop: "3px" }} />
+            </button>
+            {role?.projectManager || role?.designer ? (
+              <button className="selectType1" onClick={addFileVerion} style={addVersionStyle}>
+                add new version
+              </button>
+            ) : null}
+>>>>>>> 56754bd87c9efda9390703b0e68ad2114f4d87dd
             {/* <Autocomplete
               value={currentVersion}
               onChange={(event, newValue) => {
@@ -851,7 +892,11 @@ const FileUploadContainer = ({
                   {" "}
                   <img src={designerImg} className="adminImg1" />
                   <div>
+<<<<<<< HEAD
                     {project?.team_members.map(item => (
+=======
+                    {project?.team_members.map((item) => (
+>>>>>>> 56754bd87c9efda9390703b0e68ad2114f4d87dd
                       <h3 className={classes.adminDiv2h3}>{item.name}</h3>
                     ))}
                     {/* <p className={classes.adminDiv2p}>(you)</p> */}
@@ -910,8 +955,11 @@ const FileUploadContainer = ({
           </div>
           <div className={classes.catdiv1}>
             <h2 className={classes.adminDiv1h2}>Description</h2>
-            <Typography variant="h6" className="desc1" dangerouslySetInnerHTML={{ __html: project?.project_description }}>
-            </Typography>
+            <Typography
+              variant="h6"
+              className="desc1"
+              dangerouslySetInnerHTML={{ __html: project?.project_description }}
+            ></Typography>
           </div>
           <div className={classes.catdiv1}>
             <h2 className={classes.adminDiv1h2}>Size</h2>
@@ -969,16 +1017,16 @@ const addVersionStyle = {
   backgroundColor: mibananaColor.headerColor,
   outline: 1,
   color: "#000",
-  marginLeft: '-10px'
-}
+  marginLeft: "-10px",
+};
 
 const removeVersionStyle = {
   backgroundColor: "transparent",
-  color: '#000',
+  color: "#000",
   paddingInline: 11,
   height: 30,
-  marginLeft: '-13px',
-  border: '1px solid #000',
-  borderLeft: '0px'
-}
+  marginLeft: "-13px",
+  border: "1px solid #000",
+  borderLeft: "0px",
+};
 export default reduxContainer(FileUploadContainer);

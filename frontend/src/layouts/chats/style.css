@@ -250,8 +250,12 @@ h6,
 
 .downloadicon {
   position: relative;
-  left: 55px;
+  left: 70px;
+  bottom: 23px;
   cursor: pointer;
+  width: 15% !important;
+  height: 23px !important;
+
 }
 
 .filesGrid {
