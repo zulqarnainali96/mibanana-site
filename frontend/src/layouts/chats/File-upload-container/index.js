@@ -595,6 +595,21 @@ const FileUploadContainer = ({
         });
     }
   };
+
+  const deleteVersion = () => {
+    const deleteFile = () => {
+      apiClient.delete(``)
+    }
+    if (!currentVersion.length) {
+      let message = 'Type version no that you want to delete'
+      const val = prompt(message)
+      if (val) {
+
+      }
+    } else {
+      console.log(currentVersion)
+    }
+  }
   const handleClose = () => setsuccessOpen(false);
 
   return (
@@ -677,10 +692,15 @@ const FileUploadContainer = ({
               }
             </select>
             <button className="selectType1" onClick={clearCurrentVersion} style={removeVersionStyle}><Close sx={{ marginTop: "3px" }} /></button>
-            {role?.projectManager || role?.designer ? (
+            {role?.projectManager || role?.designer || role?.admin ? (
               <button className="selectType1" onClick={addFileVerion}
                 style={addVersionStyle}>
-                add new version
+                Add new version
+              </button>) : null}
+            {role?.projectManager || role?.designer || role?.admin ? (
+              <button className="selectType1" onClick={deleteVersion}
+                style={addVersionStyle}>
+                Delete version
               </button>) : null}
             {/* <Autocomplete
               value={currentVersion}
@@ -831,7 +851,7 @@ const FileUploadContainer = ({
                   {" "}
                   <img src={designerImg} className="adminImg1" />
                   <div>
-                    {project?.team_members.map( item =>(
+                    {project?.team_members.map(item => (
                       <h3 className={classes.adminDiv2h3}>{item.name}</h3>
                     ))}
                     {/* <p className={classes.adminDiv2p}>(you)</p> */}

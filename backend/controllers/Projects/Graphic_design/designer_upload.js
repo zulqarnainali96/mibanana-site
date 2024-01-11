@@ -40,7 +40,6 @@ const designerUpload = async (req, res) => {
         res.status(500).send({ message: 'Internal Server error' })
     }
 }
-
 const getDesignerFiles = async (req, res) => {
     const _id = req.params.id
 
@@ -161,6 +160,59 @@ const getFilesOnVersionBasis = async (req, res) => {
         res.status(500).send({ message: 'Internal Server error' })
     }
 }
+const deleteFileOnVersionBasis = async (req, res) => {
+    const _id = req.params.id
+    const versionNo = req.params.version
+    if (!_id) {
+        return res.status(402).send({ message: 'ID not provided Try login again' })
+    }
+    if (!versionNo) {
+        return res.status(402).send({ message: 'Version name not provided' })
+    }
+    try {
+        const currentProject = await Projects.findById(_id)
+        if (currentProject) {
+            const findUser = await User.findById({ _id: currentProject?.user })
+            if (findUser) {
+                let { project_title } = currentProject
+                let { name, _id: userId } = findUser
+                project_title = project_title.replace(/\s/g, '')
+                name = name.replace(/\s/g, '')
+                const prefix = `${name}-${userId}/${project_title}-${_id}/version-${versionNo}/`
+                const [files] = await bucket.getFiles({ prefix })
+                await Promise.all(
+                    files?.map(async (file) => {
+                        try {
+                            await file.delete();
+                            console.log(`Deleted file: ${file.name}`);
+                        } catch (error) {
+                            throw error
+                        }
+                    })
+                ).then(async () => {
+                    const currentProject = await Projects.findById(_id)
+                    const result = currentProject?.version?.filter(item => item !== versionNo)
+                    currentProject.version = result
+                    const deleting = await currentProject.save()
+                    if (deleting) {
+                        return res.status(200).send({ message: 'Version Deleted' })
+                    } else {
+                        return res.status(200).send({ message: 'Failed to delete version no' })
+                    }
+                }).catch((err) => { throw err })
+            } else {
+                return res.status(400).send({ message: 'User Not Found try again!' })
+            }
+        } else {
+            return res.status(404).send({ message: 'project Not Found' })
+        }
+
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({ message: 'Internal Server error' })
+    }
+
+}
 const deleteDesignerFiles = async (req, res) => {
     const _id = req.params.id
     const fileName = req.params.filename
@@ -222,7 +274,7 @@ const deleteDesigners = async (req, res) => {
     }
 }
 
-module.exports = { deleteDesigners, getDesignerFiles, designerUpload, deleteDesignerFiles, designerUploadsOnVersion, getFilesOnVersionBasis }
+module.exports = { deleteDesigners, getDesignerFiles, designerUpload, deleteDesignerFiles, designerUploadsOnVersion, getFilesOnVersionBasis, deleteFileOnVersionBasis }
 
 // const { add_files } = currentProject
 //                 if (add_files.length > 0 && add_files.some( item => item.hasOwnProperty('version1'))  && !add_files.some( item => item.hasOwnProperty('designer_upload'))) {
