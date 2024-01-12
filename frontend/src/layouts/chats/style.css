@@ -191,6 +191,15 @@ h6,
   font-family: "Poppins";
   font-size: 12px;
 }
+.addnewversion:hover {
+  background: #dcdccf !important;
+}
+.addnewversion:active {
+  background: #c1c1b2 !important;
+}
+.addnewversion:focus-visible {
+  background: #dcdccf !important;
+}
 
 .selectType2 {
   margin: 6px 6px 6px 0px;
@@ -276,6 +285,34 @@ h6,
   height: 36vh;
   overflow: auto;
 }
+.filesGrid::-webkit-scrollbar {
+  width: 8px;
+}
+.filesGrid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  cursor: pointer;
+}
+.filesGrid::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: #888;
+  cursor: pointer;
+}
+/* "&::-webkit-scrollbar": {
+  width: "11px",
+},
+"&::-webkit-scrollbar-track": {
+  background: "#f1f1f1",
+  cursor: "pointer",
+},
+"&::-webkit-scrollbar-thumb": {
+  background: "#888",
+  borderRadius: "8px",
+  cursor: "pointer",
+},
+"&::-webkit-scrollbar-thumb:hover": {
+  background: "#555",
+  cursor: "pointer",
+}, */
 
 .imagePreviewOverlay {
   width: 100%;

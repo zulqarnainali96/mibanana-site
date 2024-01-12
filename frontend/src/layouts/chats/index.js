@@ -281,9 +281,6 @@ const Chating = ({ reduxState, reduxActions }) => {
 
   useEffect(() => {
     joinChatRoom();
-    // return () => {
-    //     socketRef.current.disconnect();
-    // }
   }, []);
 
   return (

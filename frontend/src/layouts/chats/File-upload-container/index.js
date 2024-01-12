@@ -647,6 +647,7 @@ const FileUploadContainer = ({
         msg={successMessage}
         onClose={handleClose}
         width="30%"
+        color="#288e28"
         title="SUCCESS"
         sideRadius={false}
       />
@@ -667,7 +668,7 @@ const FileUploadContainer = ({
         </MDTypography>
       </Grid>
       <Box sx={{ background: "#fff", mt: 1, pt: 1 }}>
-        <Grid>
+        {/* <Grid> */}
           <Box className={classes.uploadbtndiv}>
             <button
               className={`${classes.uploadbtn} ${activebtn == "files" && "activeClass"}`}
@@ -719,28 +720,17 @@ const FileUploadContainer = ({
             </select>
             <button className="selectType1" onClick={clearCurrentVersion} style={removeVersionStyle}><Close sx={{ marginTop: "3px" }} /></button>
             {role?.projectManager || role?.designer || role?.admin ? (
-              <button className="selectType1" onClick={addFileVerion}
+              <button className="selectType1 addnewversion" onClick={addFileVerion}
                 style={addVersionStyle}>
                 Add new version
               </button>) : null}
             {role?.projectManager || role?.designer || role?.admin ? (
-              <button className="selectType1" onClick={deleteVersion}
+              <button className="selectType1 addnewversion" onClick={deleteVersion}
                 style={addVersionStyle}>
                 Delete version
               </button>) : null}
-            {/* <Autocomplete
-              value={currentVersion}
-              onChange={(event, newValue) => {
-                setSelectVersion(newValue)
-              }}
-              id="select-file-version"
-              // aria-required
-              options={["version 1", "version 2"]}
-              sx={{ width: '25%' }}
-              renderInput={(params) => <TextField {...params} label="Select version" />}
-            /> */}
           </Box>
-        </Grid>
+        {/* </Grid> */}
         <Grid container className="filesGrid">
           {!loading ? (
             <>

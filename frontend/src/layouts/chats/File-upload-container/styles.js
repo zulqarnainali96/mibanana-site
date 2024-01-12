@@ -84,6 +84,7 @@ export const useStyles = makeStyles({
     alignItems: "center",
     "&::-webkit-scrollbar": {
       width: "11px",
+      borderRadius: 10,
     },
     "&::-webkit-scrollbar-track": {
       background: "#f1f1f1",
@@ -134,9 +135,14 @@ export const useStyles = makeStyles({
   },
   uploadbtndiv: {
     display: "flex",
+    overflowX : 'auto',
     gap : '7px',
     "& > select" : {
       cursor : 'pointer',
+    },
+    "&::-webkit-scrollbar" : {
+      width : 0,
+      height : 0 
     }
   },
   uploadbtn: {
