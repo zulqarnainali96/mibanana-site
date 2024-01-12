@@ -82,7 +82,7 @@ const getDesignerFiles = async (req, res) => {
 const designerUploadsOnVersion = async (req, res) => {
     const files = req.files
     const _id = req.params.id
-    const version = req.params.version
+    const versionNo = req.params.version
     if (!_id) {
         return res.status(400).send({ message: 'ID not found' })
     }
@@ -92,7 +92,7 @@ const designerUploadsOnVersion = async (req, res) => {
             let { user, name, project_title } = currentProject
             project_title = project_title.replace(/\s/g, '')
             name = name.replace(/\s/g, '')
-            const prefix = `${name}-${user}/${project_title}-${_id}/version-${version}/`
+            const prefix = `${name}-${user}/${project_title}-${_id}/version-${versionNo}/`
             await Promise.all(files?.map(file => {
                 const options = {
                     resumable: false,
@@ -104,16 +104,16 @@ const designerUploadsOnVersion = async (req, res) => {
                 .then(async () => {
                     if (currentProject?.version?.length > 0) {
                         const versions = currentProject?.version
-                        const checkVersions = versions?.some(item => item !== version)
+                        const checkVersions = versions?.some(item => item !== versionNo)
                         if (checkVersions) {
-                            const lastNumber = parseInt(versions[versions.length - 1])
-                            const newNumber = (lastNumber + 1).toString();
-                            currentProject.version = [...versions, newNumber]
+                            // const lastNumber = parseInt(versions[versions.length - 1])
+                            // const newNumber = (lastNumber + 1).toString();
+                            currentProject.version = [...versions, versionNo]
                             await currentProject.save()
                         }
 
                     }
-                    return res.status(201).send({ message: `Files uploaded on version-${version}` })
+                    return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
                 })
         }
 
@@ -124,7 +124,7 @@ const designerUploadsOnVersion = async (req, res) => {
 }
 const getFilesOnVersionBasis = async (req, res) => {
     const _id = req.params.id
-    const version = req.params.version
+    const versionNo = req.params.version
     if (!_id) {
         return res.status(400).send({ message: 'ID not found' })
     }
@@ -134,7 +134,7 @@ const getFilesOnVersionBasis = async (req, res) => {
             let { user, name, project_title } = currentProject
             project_title = project_title.replace(/\s/g, '')
             name = name.replace(/\s/g, '')
-            const prefix = `${name}-${user}/${project_title}-${_id}/version-${version}/`
+            const prefix = `${name}-${user}/${project_title}-${_id}/version-${versionNo}/`
             const [files] = await bucket.getFiles({ prefix })
             let filesInfo = files?.map((file) => {
                 let obj = {}
@@ -149,7 +149,7 @@ const getFilesOnVersionBasis = async (req, res) => {
                 return obj
             })
             if (filesInfo.length > 0) {
-                return res.status(200).send({ message: 'Files found on verion ' + version, filesInfo })
+                return res.status(200).send({ message: 'Files found on verion ' + versionNo, filesInfo })
             }
             if (filesInfo.length === 0 && files.length === 0) {
                 return res.status(404).send({ message: 'No Files Found' })

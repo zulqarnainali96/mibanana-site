@@ -196,8 +196,9 @@ export const useStyles = makeStyles({
     flexDirection: "column",
     margin: "5px",
     padding: "5px",
-    width: "30%",
+    width: "20%",
     fontFamily: "Poppins",
+
   },
   adminDivGrid: {
     background: "#F6F6E8",
@@ -205,6 +206,9 @@ export const useStyles = makeStyles({
   },
   catdiv1: {
     width: "30%",
+  },
+  descriptiondiv : {
+    width: "100%",
   },
   adminDiv2h3: {
     fontSize: "13px",

@@ -6,9 +6,22 @@
   height: 100%;
   padding-block: 5px;
   padding: 0;
+  padding-block-end : 30px;
+  overflow-y: auto;
+}
+.chat-2 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-block: 5px;
+  padding: 0;
   overflow-y: auto;
 }
 
+.chat-2::-webkit-scrollbar {
+  width: 0px;
+  height: 0;
+}
 .chat::-webkit-scrollbar {
   width: 0px;
   height: 0;
@@ -149,7 +162,7 @@ h6,
 }
 
 .adminImg1 {
-  width: 30%;
+  width: 45%;
   padding: 5px;
 }
 
@@ -260,7 +273,7 @@ h6,
 
 .filesGrid {
   max-height: 41vh;
-  height: 41vh;
+  height: 36vh;
   overflow: auto;
 }
 

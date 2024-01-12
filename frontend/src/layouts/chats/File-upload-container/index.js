@@ -717,7 +717,6 @@ const FileUploadContainer = ({
                 </>
               )}
             </select>
-<<<<<<< HEAD
             <button className="selectType1" onClick={clearCurrentVersion} style={removeVersionStyle}><Close sx={{ marginTop: "3px" }} /></button>
             {role?.projectManager || role?.designer || role?.admin ? (
               <button className="selectType1" onClick={addFileVerion}
@@ -729,20 +728,6 @@ const FileUploadContainer = ({
                 style={addVersionStyle}>
                 Delete version
               </button>) : null}
-=======
-            <button
-              className="selectType1"
-              onClick={clearCurrentVersion}
-              style={removeVersionStyle}
-            >
-              <Close sx={{ marginTop: "3px" }} />
-            </button>
-            {role?.projectManager || role?.designer ? (
-              <button className="selectType1" onClick={addFileVerion} style={addVersionStyle}>
-                add new version
-              </button>
-            ) : null}
->>>>>>> 56754bd87c9efda9390703b0e68ad2114f4d87dd
             {/* <Autocomplete
               value={currentVersion}
               onChange={(event, newValue) => {
@@ -892,11 +877,7 @@ const FileUploadContainer = ({
                   {" "}
                   <img src={designerImg} className="adminImg1" />
                   <div>
-<<<<<<< HEAD
                     {project?.team_members.map(item => (
-=======
-                    {project?.team_members.map((item) => (
->>>>>>> 56754bd87c9efda9390703b0e68ad2114f4d87dd
                       <h3 className={classes.adminDiv2h3}>{item.name}</h3>
                     ))}
                     {/* <p className={classes.adminDiv2p}>(you)</p> */}
@@ -933,34 +914,26 @@ const FileUploadContainer = ({
             <h2 className={classes.adminDiv1h2}>Brand</h2>
             <div className="adminDiv2">
               {/* <img src={UserImg} className="adminImg1" /> */}
-              <div>
+              <div style={{ marginTop: '25px' }}>
                 <h3 className={classes.adminDiv2h3}>{project?.brand}</h3>
-
                 {/* <p className={classes.adminDiv2p}>(super admin)</p> */}
               </div>
             </div>
           </div>
+          <div className={classes.adminDiv1}>
+            <h2 className={classes.adminDiv1h2}>Category</h2>
+            <Typography variant="h6" sx={{ marginTop: '25px' }}>{project?.project_category}</Typography>
+          </div>
         </Grid>
         <hr />
         <div className={classes.catdivmain}>
-          <div className={classes.catdiv1}>
-            <h2 className={classes.adminDiv1h2}>Category</h2>
-            <Typography variant="h6">{project?.project_category}</Typography>
-          </div>
           <div className={classes.catdiv1}>
             <h2 className={classes.adminDiv1h2}>Type</h2>
             <Typography variant="h6" className="desc1">
               {project?.design_type}
             </Typography>
           </div>
-          <div className={classes.catdiv1}>
-            <h2 className={classes.adminDiv1h2}>Description</h2>
-            <Typography
-              variant="h6"
-              className="desc1"
-              dangerouslySetInnerHTML={{ __html: project?.project_description }}
-            ></Typography>
-          </div>
+
           <div className={classes.catdiv1}>
             <h2 className={classes.adminDiv1h2}>Size</h2>
             <Typography variant="h6" className="desc1">
@@ -972,6 +945,16 @@ const FileUploadContainer = ({
             <Typography variant="h6" className="desc1">
               {project?.is_Active ? "ACtive" : "Not Active"}
             </Typography>
+          </div>
+        </div>
+        <div className={classes.adminDivGrid}>
+          <div className={classes.descriptiondiv}>
+            <h2 className={classes.adminDiv1h2}>Description</h2>
+            <Typography
+              variant="h6"
+              className="desc1"
+              dangerouslySetInnerHTML={{ __html: project?.project_description }}
+            ></Typography>
           </div>
         </div>
       </Box>

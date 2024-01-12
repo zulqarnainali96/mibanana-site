@@ -87,10 +87,10 @@ const Chating = ({ reduxState, reduxActions }) => {
   const classes = reactQuillStyles2()
 
   const getUserRoles = () => {
-    if (reduxState?.userDetails?.roles.includes("Graphic-Designer")) return "Graphic-Designer";
-    if (reduxState?.userDetails?.roles.includes("Project-Manager")) return "Project-Manager";
-    if (reduxState?.userDetails?.roles.includes("admin")) return "Admin";
-    if (reduxState?.userDetails?.roles.includes("Customer")) return "Customer";
+    if (role?.designer) return "Graphic-Designer";
+    if (role?.projectManager) return "Project-Manager";
+    if (role?.admin) return "Admin";
+    if (role?.customer) return "Customer";
   };
 
   const personProject = () => {
@@ -103,10 +103,7 @@ const Chating = ({ reduxState, reduxActions }) => {
       return {};
     }
   };
-  const isManager = reduxState.userDetails?.roles?.includes("Project-Manager") ? true : false;
-  const isDesigner = reduxState.userDetails?.roles?.includes("Graphic-Designer") ? true : false;
   const [isActive, setIsActive] = useState(personProject()?.is_active);
-
   const handleChange = (event) => {
     setMemberName(event.target.value);
   };
@@ -196,7 +193,7 @@ const Chating = ({ reduxState, reduxActions }) => {
       alert("Select team members");
       return;
     }
-    if (isManager && memberName.length > 0) {
+    if (role?.projectManager && memberName.length > 0) {
       let project = personProject();
       project.team_members = memberName;
       project.status = "Ongoing";
@@ -205,13 +202,7 @@ const Chating = ({ reduxState, reduxActions }) => {
       let data = {
         project_id: personProject()?._id,
         project_data: project,
-        // project_data: {
-        //     team_member : memberName,
-        //     status : "Ongoing",
-        //     is_active : isActive
-        // }
       };
-      // console.log(data)
       setLoading(true);
       await apiClient
         .patch("/graphic-project", data)
@@ -234,10 +225,6 @@ const Chating = ({ reduxState, reduxActions }) => {
         });
     }
   };
-
-  function deepCopy(arr) {
-    return arr.map((item) => (Array.isArray(item) ? deepCopy(item) : Object.assign({}, item)));
-  }
 
   useEffect(() => {
     socketRef.current.on("message", (message) => {
@@ -315,7 +302,7 @@ const Chating = ({ reduxState, reduxActions }) => {
         spacing={2}
         mt={0}
         py={3}
-        paddingInline={"60px"}
+        paddingInline={"45px"}
         // paddingBlock={"30px"}
         sx={{
           height: "87vh",
@@ -354,6 +341,7 @@ const Chating = ({ reduxState, reduxActions }) => {
             Activity
           </MDTypography>
           <Grid
+            ref={chatContainerRef}
             container
             justifyContent={"space-between"}
             alignItems={"flex-start"}
@@ -372,74 +360,72 @@ const Chating = ({ reduxState, reduxActions }) => {
             }}
           >
             <Grid item xxl={12} xl={12} lg={12} width={"100%"}>
-              <MDBox p={0} ref={chatContainerRef}>
-                <Box className="chat">
-                  {msgArray?.length
-                    ? msgArray.map((item, index, messages) => {
-                      return (
-                        <pre
-                          key={index}
-                          className={`message ${item.user === reduxState.userDetails?.id ? "right" : "left"
-                            }`}
-                          style={{ position: "relative" }}
-                        >
-                          <Box sx={{ display: "flex" }}>
-                            <img
-                              src={item.avatar}
-                              width={50}
-                              height={50}
-                              loading="lazy"
+              <Box className="chat" >
+                {msgArray?.length
+                  ? msgArray.map((item, index, messages) => {
+                    return (
+                      <pre
+                        key={index}
+                        className={`message ${item.user === reduxState.userDetails?.id ? "right" : "left"
+                          }`}
+                        style={{ position: "relative" }}
+                      >
+                        <Box sx={{ display: "flex" }}>
+                          <img
+                            src={item.avatar}
+                            width={50}
+                            height={50}
+                            loading="lazy"
+                            style={{
+                              borderRadius: 0,
+                              marginTop: -7,
+                              display: "inline-block",
+                              left: item.user === user ? "70px" : "-9px",
+                            }}
+                          />
+                          <Box width="100%" ml={"18px"}>
+                            <Box
+                              className="user-name"
                               style={{
-                                borderRadius: 0,
-                                marginTop: -7,
-                                display: "inline-block",
-                                left: item.user === user ? "70px" : "-9px",
+                                display: "flex",
+                                gap: "8px",
+                                alignItems: "center",
                               }}
-                            />
-                            <Box width="100%" ml={"18px"}>
-                              <Box
-                                className="user-name"
-                                style={{
-                                  display: "flex",
-                                  gap: "8px",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <p style={{ ...nameStyle, position: "relative", width: "100%" }}>
-                                  {item.name}
-                                  <span
-                                    style={{ ...nameStyle, fontWeight: "300", fontSize: "12px" }}
-                                  >
-                                    {" (" + item?.role + ")"}
-                                  </span>
-                                  <span
-                                    style={{
-                                      fontSize: "10px",
-                                      fontWeight: "300",
-                                      position: "absolute",
-                                      right: "10px",
-                                      color: mibananaColor.tableHeaderColor,
-                                    }}
-                                  >
-                                    {item.time_data ? item.time_data : null}
-                                  </span>
-                                </p>
-                              </Box>
-                              <Box
-                                sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
-                                className="message-content"
-                                dangerouslySetInnerHTML={{ __html: item.message }}
-                              >
+                            >
+                              <p style={{ ...nameStyle, position: "relative", width: "100%" }}>
+                                {item.name}
+                                <span
+                                  style={{ ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                                >
+                                  {" (" + item?.role + ")"}
+                                </span>
+                                <span
+                                  style={{
+                                    fontSize: "10px",
+                                    fontWeight: "300",
+                                    position: "absolute",
+                                    right: "10px",
+                                    color: mibananaColor.tableHeaderColor,
+                                  }}
+                                >
+                                  {item.time_data ? item.time_data : null}
+                                </span>
+                              </p>
+                            </Box>
+                            <Box
+                              sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                              className="message-content"
+                              dangerouslySetInnerHTML={{ __html: item.message }}
+                            >
 
-                              </Box>
                             </Box>
                           </Box>
-                        </pre>
-                      );
-                    })
-                    : null}
-                </Box>
-              </MDBox>
+                        </Box>
+                      </pre>
+                    );
+                  })
+                  : null}
+              </Box>
             </Grid>
           </Grid>
           <Box
@@ -497,7 +483,7 @@ const Chating = ({ reduxState, reduxActions }) => {
           </Box>
         </Grid>
         <Grid item lg={6} md={12} xs={12} pt="0 !important" height="100%">
-          <Box className="chat">
+          <Box className="chat-2">
             <FileUploadContainer
               setRespMessage={setRespMessage}
               openSuccessSB={openSuccessSB}
