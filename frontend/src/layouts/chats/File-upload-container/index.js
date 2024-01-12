@@ -127,6 +127,13 @@ const FileUploadContainer = ({
   const [is_member, setIsMember] = useState(false);
   const [successOpen, setsuccessOpen] = useState(false);
   const [successMessage, setsuccessMessage] = useState("");
+  const [showMore, setShowMore] = useState(false);
+
+  const toggleShowMore = () => {
+    setShowMore(!showMore);
+  };
+
+  const truncatedDescription = project?.project_description?.substring(0, 50);
 
   const openImageViewer = useCallback((img) => {
     console.log("image", img, pdffile);
@@ -621,18 +628,17 @@ const FileUploadContainer = ({
 
   const deleteVersion = () => {
     const deleteFile = () => {
-      apiClient.delete(``)
-    }
+      apiClient.delete(``);
+    };
     if (!currentVersion.length) {
-      let message = 'Type version no that you want to delete'
-      const val = prompt(message)
+      let message = "Type version no that you want to delete";
+      const val = prompt(message);
       if (val) {
-
       }
     } else {
-      console.log(currentVersion)
+      console.log(currentVersion);
     }
-  }
+  };
   const handleClose = () => setsuccessOpen(false);
 
   return (
@@ -668,8 +674,8 @@ const FileUploadContainer = ({
         </MDTypography>
       </Grid>
       <Box sx={{ background: "#fff", mt: 1, pt: 1 }}>
-        {/* <Grid> */}
-          <Box className={classes.uploadbtndiv}>
+        <Grid>
+          <>
             <button
               className={`${classes.uploadbtn} ${activebtn == "files" && "activeClass"}`}
               onClick={() => {
@@ -718,19 +724,29 @@ const FileUploadContainer = ({
                 </>
               )}
             </select>
-            <button className="selectType1" onClick={clearCurrentVersion} style={removeVersionStyle}><Close sx={{ marginTop: "3px" }} /></button>
+            {/* <button
+              className="selectType1"
+              onClick={clearCurrentVersion}
+              style={removeVersionStyle}
+            >
+              <Close sx={{ marginTop: "3px" }} />
+            </button> */}
             {role?.projectManager || role?.designer || role?.admin ? (
-              <button className="selectType1 addnewversion" onClick={addFileVerion}
-                style={addVersionStyle}>
+              <button
+                className="selectType1 addnewversion"
+                onClick={addFileVerion}
+                style={addVersionStyle}
+              >
                 Add new version
-              </button>) : null}
+              </button>
+            ) : null}
             {role?.projectManager || role?.designer || role?.admin ? (
-              <button className="selectType1 addnewversion" onClick={deleteVersion}
-                style={addVersionStyle}>
+              <button className=" addnewversion" onClick={deleteVersion} style={addVersionStyle}>
                 Delete version
-              </button>) : null}
-          </Box>
-        {/* </Grid> */}
+              </button>
+            ) : null}
+          </>
+        </Grid>
         <Grid container className="filesGrid">
           {!loading ? (
             <>
@@ -867,7 +883,7 @@ const FileUploadContainer = ({
                   {" "}
                   <img src={designerImg} className="adminImg1" />
                   <div>
-                    {project?.team_members.map(item => (
+                    {project?.team_members.map((item) => (
                       <h3 className={classes.adminDiv2h3}>{item.name}</h3>
                     ))}
                     {/* <p className={classes.adminDiv2p}>(you)</p> */}
@@ -904,7 +920,7 @@ const FileUploadContainer = ({
             <h2 className={classes.adminDiv1h2}>Brand</h2>
             <div className="adminDiv2">
               {/* <img src={UserImg} className="adminImg1" /> */}
-              <div style={{ marginTop: '25px' }}>
+              <div style={{ marginTop: "25px" }}>
                 <h3 className={classes.adminDiv2h3}>{project?.brand}</h3>
                 {/* <p className={classes.adminDiv2p}>(super admin)</p> */}
               </div>
@@ -912,7 +928,9 @@ const FileUploadContainer = ({
           </div>
           <div className={classes.adminDiv1}>
             <h2 className={classes.adminDiv1h2}>Category</h2>
-            <Typography variant="h6" sx={{ marginTop: '25px' }}>{project?.project_category}</Typography>
+            <Typography variant="h6" sx={{ marginTop: "25px" }}>
+              {project?.project_category}
+            </Typography>
           </div>
         </Grid>
         <hr />
@@ -937,17 +955,22 @@ const FileUploadContainer = ({
             </Typography>
           </div>
         </div>
-        <div className={classes.adminDivGrid}>
-          <div className={classes.descriptiondiv}>
-            <h2 className={classes.adminDiv1h2}>Description</h2>
-            <Typography
-              variant="h6"
-              className="desc1"
-              dangerouslySetInnerHTML={{ __html: project?.project_description }}
-            ></Typography>
-          </div>
-        </div>
       </Box>
+      <div className={classes.adminDivGrid}>
+        <div className={classes.descriptiondiv}>
+          <h2 className={classes.adminDiv1h2}>Description</h2>
+          <Typography
+            variant="h6"
+            className="desc1"
+            dangerouslySetInnerHTML={{
+              __html: showMore ? project?.project_description : truncatedDescription,
+            }}
+          ></Typography>
+          {project?.project_description.length > 50 && (
+            <Button onClick={toggleShowMore}>{showMore ? "Show Less" : "Show More"}</Button>
+          )}
+        </div>
+      </div>
       {/* <MDBox className={classes.mainImageContainer}>
         {files.length > 0 || filesType.length > 0 ? (
           <FileUpload

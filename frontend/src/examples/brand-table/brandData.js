@@ -258,8 +258,12 @@ const BrandData = () => {
       ),
 
       brand_description: (
-        <MDTypography variant="p" sx={{ ...textStyles, fontSize: "14px !important" }}>
-          {item.brand_description}
+        <MDTypography
+          variant="p"
+          sx={{ ...textStyles, fontSize: "14px !important" }}
+          dangerouslySetInnerHTML={{ __html: item.brand_description }}
+        >
+          {/* {item.brand_description} */}
         </MDTypography>
       ),
 

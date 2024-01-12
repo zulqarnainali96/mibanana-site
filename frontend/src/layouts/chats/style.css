@@ -6,9 +6,10 @@
   height: 100%;
   padding-block: 5px;
   padding: 0;
-  padding-block-end : 30px;
+  padding-block-end: 30px;
   overflow-y: auto;
 }
+
 .chat-2 {
   display: flex;
   flex-direction: column;
@@ -22,6 +23,7 @@
   width: 0px;
   height: 0;
 }
+
 .chat::-webkit-scrollbar {
   width: 0px;
   height: 0;
@@ -73,7 +75,7 @@ input[type="text"] {
 }
 
 button {
-  padding: 5px 18px;
+  padding: 0px 18px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -191,12 +193,15 @@ h6,
   font-family: "Poppins";
   font-size: 12px;
 }
+
 .addnewversion:hover {
   background: #dcdccf !important;
 }
+
 .addnewversion:active {
   background: #c1c1b2 !important;
 }
+
 .addnewversion:focus-visible {
   background: #dcdccf !important;
 }
@@ -282,21 +287,25 @@ h6,
 
 .filesGrid {
   max-height: 41vh;
-  height: 36vh;
+  height: 30vh;
   overflow: auto;
 }
+
 .filesGrid::-webkit-scrollbar {
   width: 8px;
 }
+
 .filesGrid::-webkit-scrollbar-track {
   background: #f1f1f1;
   cursor: pointer;
 }
+
 .filesGrid::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background: #888;
   cursor: pointer;
 }
+
 /* "&::-webkit-scrollbar": {
   width: "11px",
 },
