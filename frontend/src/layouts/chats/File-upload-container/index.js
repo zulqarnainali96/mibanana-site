@@ -89,13 +89,7 @@ const FileUploadContainer = ({
     type: "",
   });
   const classes = useStyles();
-  const onDrop = useCallback((acceptedFiles) => {
-    // Do something with dropped files
-    console.log("Dropped files:", acceptedFiles);
-    // You can handle the dropped files here or trigger your existing file upload logic
-    // For example, you can upload the dropped files by iterating through acceptedFiles and processing them
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
   const [selectedFileType, setSelectedFileType] = useState("");
   const [selectedFilePeople, setSelectedFilePeople] = useState("");
 
@@ -277,6 +271,14 @@ const FileUploadContainer = ({
     }
     await handleSubmit(filType);
   };
+  const onDrop = useCallback(async (acceptedFiles) => {
+    // Do something with dropped files
+    await handleSubmit(acceptedFiles);
+
+    // You can handle the dropped files here or trigger your existing file upload logic
+    // For example, you can upload the dropped files by iterating through acceptedFiles and processing them
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const deleteDesignerFiles = async (filename) => {
     setFileLoading(true);
     await apiClient
@@ -373,7 +375,6 @@ const FileUploadContainer = ({
         console.error(err.message);
       });
   };
-  console.log("project ", project);
   const customerUploadFiles = async (filType) => {
     setLoading(true);
     if (filType.length === 0) return;
@@ -440,14 +441,16 @@ const FileUploadContainer = ({
       });
   };
   const handleSubmit = async (filType) => {
-    console.log("role handle submit", role);
     if (currentVersion) {
       versionUploads(filType);
+      openSuccessSB();
     } else {
       if (role?.designer || role?.projectManager || role?.admin) {
         managerUploadFiles(filType);
+        openSuccessSB();
       } else {
         customerUploadFiles(filType);
+        openSuccessSB();
       }
     }
   };
