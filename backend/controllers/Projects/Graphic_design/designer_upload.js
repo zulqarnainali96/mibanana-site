@@ -103,17 +103,13 @@ const designerUploadsOnVersion = async (req, res) => {
             }))
                 .then(async () => {
                     if (currentProject?.version?.length > 0) {
-                        const versions = currentProject?.version
-                        const checkVersions = versions?.some(item => item !== versionNo)
-                        if (checkVersions) {
-                            // const lastNumber = parseInt(versions[versions.length - 1])
-                            // const newNumber = (lastNumber + 1).toString();
+                        if (!currentProject.version?.includes(versionNo)) {
+                            const versions = currentProject.version
                             currentProject.version = [...versions, versionNo]
                             await currentProject.save()
                         }
-
+                        return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
                     }
-                    return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
                 })
         }
 
@@ -167,7 +163,7 @@ const deleteFileOnVersionBasis = async (req, res) => {
         return res.status(402).send({ message: 'ID not provided Try login again' })
     }
     if (!versionNo) {
-        return res.status(402).send({ message: 'Version name not provided' })
+        return res.status(402).send({ message: 'Version no not provided' })
     }
     try {
         const currentProject = await Projects.findById(_id)
