@@ -85,10 +85,10 @@ button {
 }
 
 button:hover {
-  background-color: #FDD700;
+  background-color: #fdd700;
 }
 
-.css-1l4uw88>h2,
+.css-1l4uw88 > h2,
 h4,
 h6,
 .MuiGrid-root {
@@ -136,12 +136,12 @@ h6,
   padding-top: 5px;
   font-style: italic;
   font-size: 13px;
-  color: #C6C3B6;
+  color: #c6c3b6;
 }
 
 .uploadfilebtn {
   background: black;
-  color: #FDD700;
+  color: #fdd700;
   width: 100%;
   font-family: Poppins;
   font-size: 14px;
@@ -187,13 +187,18 @@ h6,
 }
 
 .selectType1 {
-  margin: 6px 6px 6px 0px;
+  margin: 0px 5px;
   border-radius: 1px;
   outline: 0;
   font-family: "Poppins";
+  padding : 4px 12px;
   font-size: 12px;
 }
 
+.addnewversion {
+  margin:  5px 5px !important;
+  padding: 4px 12px !important;
+}
 .addnewversion:hover {
   background: #dcdccf !important;
 }
@@ -220,7 +225,6 @@ h6,
 .optionType2 {
   padding: 5px 0;
   border: 2px solid lightcyan;
-
 }
 
 .fileImg1 {
@@ -242,7 +246,6 @@ h6,
 }
 
 .deleteIcon:hover {
-
   background-color: #dddfe2;
   border-radius: 30px;
   padding: 0 5px;
@@ -268,7 +271,7 @@ h6,
 }
 
 .activeClass {
-  background-color: #FDD700 !important;
+  background-color: #fdd700 !important;
 }
 
 .activeClass option {
@@ -282,7 +285,6 @@ h6,
   cursor: pointer;
   width: 15% !important;
   height: 23px !important;
-
 }
 
 .filesGrid {

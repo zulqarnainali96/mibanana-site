@@ -45,7 +45,7 @@ import { useRef } from "react";
 import { currentUserRole } from "redux/global/global-functions";
 import reduxContainer from "redux/containers/containers";
 import apiClient from "api/apiClient";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import SelectFolder from "./select-folder/SelectFolder";
 import { Jpeg, Jpg, Png, Svg } from "redux/global/file-formats";
 import FileUpload from "./file-upload-container/File-upload";
@@ -115,6 +115,7 @@ const FileUploadContainer = ({
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [previewimg, setpreviewimg] = useState("");
   const [currentVersion, setSelectVersion] = useState("");
+  console.log(project?.version)
   const [fileVersion, setFileVersionList] = useState(project?.version);
   const [designerObj, setDesignerObj] = useState([]);
   const [designerList, setDesignerList] = useState([]);
@@ -127,12 +128,12 @@ const FileUploadContainer = ({
     setShowMore(!showMore);
   };
 
-  const truncatedDescription = project?.project_description?.substring(0, 50);
+  const truncatedDescription = project?.project_description?.substring(0, 400);
 
   const openImageViewer = useCallback((img) => {
-    console.log("image", img, pdffile);
+    // console.log("image", img, pdffile);
     const fileExtension = img.split(".").pop();
-    console.log("File extension:", fileExtension);
+    // console.log("File extension:", fileExtension);
     if (fileExtension === "pdf") {
       setpreviewimg(pdffile);
       setIsViewerOpen(true);
@@ -161,7 +162,6 @@ const FileUploadContainer = ({
     setpreviewimg("");
     setIsViewerOpen(false);
   };
-
   const openFileSelect = () => {
     fileRef.current.click();
   };
@@ -179,7 +179,6 @@ const FileUploadContainer = ({
     const newNumber = (lastNumber + 1).toString();
     setFileVersionList((prev) => [...prev, newNumber]);
   };
-
   async function clientFiles() {
     setVersion([]);
     setFileMsg("");
@@ -279,6 +278,7 @@ const FileUploadContainer = ({
     // For example, you can upload the dropped files by iterating through acceptedFiles and processing them
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
   const deleteDesignerFiles = async (filename) => {
     setFileLoading(true);
     await apiClient
@@ -366,14 +366,32 @@ const FileUploadContainer = ({
       .post("/api/designer-uploads/" + id, formdata)
       .then(({ data }) => {
         setLoading(false);
+        if (data?.message) {
+          setRespMessage(data.message)
+          setTimeout(() => {
+            openSuccessSB()
+          }, 400)
+        }
         setFiles([]);
         setFilesType([]);
         designerFiles();
       })
       .catch((err) => {
-        setLoading(false);
-        console.error(err.message);
-      });
+        if (err.response) {
+          const { message } = err.response.data
+          setRespMessage(message)
+          setLoading(false)
+          setTimeout(() => {
+            openErrorSB()
+          }, 400)
+          return
+        }
+        setLoading(false)
+        setRespMessage(err.message)
+        setTimeout(() => {
+          openErrorSB()
+        }, 400)
+      })
   };
   const customerUploadFiles = async (filType) => {
     setLoading(true);
@@ -412,13 +430,21 @@ const FileUploadContainer = ({
           });
       })
       .catch((err) => {
-        setLoading(false);
-        setRespMessage(err?.response?.data.message);
+        if (err.response) {
+          const { message } = err.response.data
+          setRespMessage(message)
+          setLoading(false)
+          setTimeout(() => {
+            openErrorSB()
+          }, 400)
+          return
+        }
+        setLoading(false)
+        setRespMessage(err.message)
         setTimeout(() => {
-          openErrorSB();
-        }, 1200);
-        console.error("Error Found =>", err);
-      });
+          openErrorSB()
+        }, 400)
+      })
   };
   const versionUploads = async (filType) => {
     setLoading(true);
@@ -428,51 +454,48 @@ const FileUploadContainer = ({
     }
     await apiClient
       .post(`/api/version-uploads/${currentVersion}/${id}`, formdata)
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         setLoading(false);
         setFiles([]);
         setFilesType([]);
-        getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject);
-        // designerFiles();
+        await getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject);
+        await getFilesOnVerion(currentVersion)
+        if (data.message) {
+          setRespMessage(data.message)
+          setTimeout(() => {
+            openSuccessSB()
+          },)
+        }
       })
       .catch((err) => {
-        setLoading(false);
-        console.error(err.message);
-      });
+        if (err.response) {
+          const { message } = err.response.data
+          setRespMessage(message)
+          setLoading(false)
+          setTimeout(() => {
+            openErrorSB()
+          }, 400)
+          return
+        }
+        setLoading(false)
+        setRespMessage(err.message)
+        setTimeout(() => {
+          openErrorSB()
+        }, 400)
+      })
   };
   const handleSubmit = async (filType) => {
-    if (currentVersion) {
+    if (currentVersion && role?.designer || role?.projectManager || role?.admin) {
       versionUploads(filType);
-      openSuccessSB();
-    } else {
-      if (role?.designer || role?.projectManager || role?.admin) {
-        managerUploadFiles(filType);
-        openSuccessSB();
-      } else {
-        customerUploadFiles(filType);
-        openSuccessSB();
-      }
+    } else if (!currentVersion && role?.designer || role?.projectManager || role?.admin) {
+      managerUploadFiles(filType);
+    } else if(role?.customer) {
+      customerUploadFiles(filType);
     }
-  };
-  const clearCurrentVersion = () => {
-    setSelectVersion("");
-  };
-  const showImageOnContainer = (item) => {
-    setDownloadFileName(item?.download_link);
-    setCurrentImage({
-      name: item?.name,
-      url: item?.url,
-      type: item?.type,
-    });
   };
   const DownloadFile = (downloadfileName) => {
     if (!downloadfileName) return alert("Please select file");
     window.open(downloadfileName, "_blank");
-  };
-  const handleFolderName = (newValue) => {
-    setCurrentFolder(newValue);
-    if (newValue === "Customer Uploads") clientFiles();
-    if (newValue === "Designer Uploads") designerFiles();
   };
   const removeFiles = () => {
     setFiles([]);
@@ -481,6 +504,11 @@ const FileUploadContainer = ({
   useEffect(() => {
     getAllfiles();
   }, []);
+
+  useEffect( () => {
+    setFileVersionList(project?.version)
+    console.log('changed =>>>>>......')
+  }, [project?.version])
   useEffect(() => {
     getfiles();
   }, [selectedFilePeople]);
@@ -526,10 +554,6 @@ const FileUploadContainer = ({
     setVersion(combinedData);
     setLoading(false);
   };
-  // useEffect(() => {
-  //     clientFiles()
-  //     // designerFiles()
-  // }, [re_render_chat])
   const dateFun = (timestamp) => {
     const date = new Date(timestamp);
 
@@ -557,9 +581,6 @@ const FileUploadContainer = ({
     setSelectVersion(e.target.value);
     getFilesOnVerion(e.target.value);
   };
-  console.log(currentVersion);
-  // console.log("idIs", idIs);
-  // console.log("id", id);
   useEffect(() => {
     if (role?.projectManager) {
       apiClient
@@ -586,7 +607,7 @@ const FileUploadContainer = ({
 
   const SubmitProject = async (e) => {
     setMemberName(e.target.value);
-    console.log("selected member", e.target.value, role?.projectManager);
+    // console.log("selected member", e.target.value, role?.projectManager);
 
     if (role?.projectManager && e.target.value) {
       let project = personProject();
@@ -603,7 +624,7 @@ const FileUploadContainer = ({
         //     is_active : isActive
         // }
       };
-      console.log("data is", data);
+      // console.log("data is", data);
       setLoading(true);
       await apiClient
         .patch("/graphic-project", data)
@@ -628,27 +649,56 @@ const FileUploadContainer = ({
         });
     }
   };
-
-  const deleteVersion = () => {
-    const deleteFile = () => {
-      apiClient.delete(``);
-    };
+  const deleteVersion = async (version) => {
+    setLoading(true)
+    apiClient.delete(`/api/del-version-uploads/${version}/${id}`)
+      .then(({ data }) => {
+        setLoading(false);
+        getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject)
+        setVersion([])
+        if (data?.message) {
+          setRespMessage(data.message)
+          setTimeout(() => {
+            openSuccessSB()
+          }, 400)
+        }
+      }).catch((err) => {
+        if (err.response) {
+          const { message } = err.response.data
+          setRespMessage(message)
+          setLoading(false)
+          setTimeout(() => {
+            openErrorSB()
+          }, 400)
+          return
+        }
+        setLoading(false)
+        setRespMessage(err.message)
+        setTimeout(() => {
+          openErrorSB()
+        }, 400)
+      })
+  };
+  const versionHandler = async () => {
     if (!currentVersion.length) {
       let message = "Type version no that you want to delete";
-      const val = prompt(message);
+      const val = parseInt(prompt(message));
       if (val) {
+        await deleteVersion(val)
       }
     } else {
-      console.log(currentVersion);
+      await deleteVersion(currentVersion)
     }
   };
   const handleClose = () => setsuccessOpen(false);
 
   return (
     <MDBox
+      className="zain zain"
       sx={{
         bgcolor: "#F6F6E8",
         px: 1,
+        height : project?.project_description?.lenght < 400 ? '100vh' : '100%'
       }}
     >
       <SuccessModal
@@ -710,7 +760,7 @@ const FileUploadContainer = ({
             </select>
             <select
               className="selectType1"
-              style={{ borderRight: "0px" }}
+              // style={{ borderRight: "0px" }}
               value={currentVersion}
               onChange={getListThroughVersion}
             >
@@ -744,7 +794,7 @@ const FileUploadContainer = ({
               </button>
             ) : null}
             {role?.projectManager || role?.designer || role?.admin ? (
-              <button className=" addnewversion" onClick={deleteVersion} style={addVersionStyle}>
+              <button className="selectType1 addnewversion" onClick={versionHandler} style={addVersionStyle}>
                 Delete version
               </button>
             ) : null}
@@ -771,7 +821,7 @@ const FileUploadContainer = ({
                               onClick={() => DownloadFile(ver?.download_link)}
                               className="downloadicon"
                             />
-                            {console.log("var", ver)}
+                            {/* {console.log("var", ver)} */}
                             <div className={classes.fileDiv2}>
                               <div>
                                 <img
@@ -880,7 +930,7 @@ const FileUploadContainer = ({
           <div className={classes.adminDiv1}>
             <h2 className={classes.adminDiv1h2}>Team Member</h2>
             <div className="adminDiv2">
-              {console.log("projectproject", project)}
+              {/* {console.log("projectproject", project)} */}
               {project?.team_members.length > 0 ? (
                 <>
                   {" "}
@@ -969,8 +1019,8 @@ const FileUploadContainer = ({
               __html: showMore ? project?.project_description : truncatedDescription,
             }}
           ></Typography>
-          {project?.project_description.length > 50 && (
-            <Button onClick={toggleShowMore}>{showMore ? "Show Less" : "Show More"}</Button>
+          {project?.project_description?.length > 400 && (
+            <Link onClick={toggleShowMore}>{showMore ? "Show Less" : "Show More"}</Link>
           )}
         </div>
       </div>
@@ -1014,9 +1064,7 @@ const FileUploadContainer = ({
 
 const addVersionStyle = {
   backgroundColor: mibananaColor.headerColor,
-  outline: 1,
   color: "#000",
-  marginLeft: "-10px",
 };
 
 const removeVersionStyle = {
