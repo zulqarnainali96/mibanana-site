@@ -562,14 +562,14 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
                       sx={{ fill: "#F6F6E8" }} />
                   </div>
                   {renderUserMenu()}
-                  <ProjectButton
+                  {role?.customer && <ProjectButton
                     variant="contained"
                     size='medium'
                     startIcon={projectIcon}
                     onClick={handleClickOpen}
                   >
                     Create Project
-                  </ProjectButton>
+                  </ProjectButton>}
                 </Grid>
                 {/* <Grid item xxl={6} xl={6} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({
                   [breakpoints.only('xs')]: {
