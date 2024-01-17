@@ -11,7 +11,7 @@ export default styled(Drawer)(({ theme, ownerState }) => {
   const { pxToRem, linearGradient } = functions;
 
   let backgroundValue = darkMode
-    ? 'blue'
+    ? "blue"
     : linearGradient(gradients.dark.main, gradients.dark.state);
 
   if (transparentSidenav) {
@@ -22,10 +22,10 @@ export default styled(Drawer)(({ theme, ownerState }) => {
 
   // styles for the sidenav when miniSidenav={false}
   const drawerOpenStyles = () => ({
-    background: 'white',
-    borderRadius : 0,
-    margin : 0,
-    height : '86.8%',
+    background: "white",
+    borderRadius: 0,
+    margin: 0,
+    height: "86.8%",
     transform: "translateX(0)",
     transition: transitions.create("transform", {
       easing: transitions.easing.sharp,
@@ -71,8 +71,8 @@ export default styled(Drawer)(({ theme, ownerState }) => {
   return {
     "& .MuiDrawer-paper": {
       boxShadow: xxl,
-      marginTop : "125px !important",
-      position : 'absolute !important',
+      marginTop: "125px !important",
+      position: "absolute !important",
       border: "none",
       ...(miniSidenav ? drawerCloseStyles() : drawerOpenStyles()),
     },

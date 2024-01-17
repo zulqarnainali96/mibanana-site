@@ -23,7 +23,7 @@ import NewNavbar from "examples/Navbars/NewDesign/NewNavbar";
 import { currentUserRole } from "redux/global/global-functions";
 import { useSelector } from "react-redux";
 import ViewBrand from "examples/brand-table/view-brand/view-brand";
-import 'react-quill/dist/quill.snow.css'
+import "react-quill/dist/quill.snow.css";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -38,7 +38,7 @@ export default function App() {
     darkMode,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
-  const state = useSelector(state => state)
+  const state = useSelector((state) => state);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
 
@@ -102,7 +102,7 @@ export default function App() {
     key: "current-brand",
     route: "/brand/:id",
     component: <ViewBrand />,
-  }
+  };
   const configsButton = (
     <MDBox
       display="flex"
@@ -140,7 +140,11 @@ export default function App() {
                   (transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo
                 }
                 brandName="MiBanana"
-                routes={role?.admin ? AdminRoutes : [...routes, (role?.projectManager || role?.designer && manager_router)]}
+                routes={
+                  role?.admin
+                    ? AdminRoutes
+                    : [...routes, role?.projectManager || (role?.designer && manager_router)]
+                }
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
               />
@@ -149,14 +153,23 @@ export default function App() {
         </>
       )}
       <MDBox className="zainasdasd">
-        {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar />}
+        {pathname === "/authentication/mi-sign-in" ? null : (
+          <NewNavbar
+            routes={
+              role?.admin
+                ? AdminRoutes
+                : [...routes, role?.projectManager || (role?.designer && manager_router)]
+            }
+          />
+        )}
         <Routes>
-          {user !== null ? (
-            role?.admin ? getRoutes(AdminRoutes) :
-              role?.projectManager ? getRoutes(projectManager) :
-                getRoutes(routes)) :
-            getRoutes(authRoutes)
-          }
+          {user !== null
+            ? role?.admin
+              ? getRoutes(AdminRoutes)
+              : role?.projectManager
+              ? getRoutes(projectManager)
+              : getRoutes(routes)
+            : getRoutes(authRoutes)}
           <Route
             path="*"
             element={
