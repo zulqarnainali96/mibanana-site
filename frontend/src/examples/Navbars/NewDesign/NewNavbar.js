@@ -590,90 +590,95 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   useEffect(() => {
     getAllNotificationsMsg();
   }, []);
-  const renderRoutes = routes.map(
+  const renderRoutes = routes?.map(
     ({ type, name, icon, title, noCollapse, collapse, key, href, route }) => {
       let returnValue;
-
-      if (type === "collapse") {
-        returnValue = href ? (
-          <Link
-            href={href}
-            key={key}
-            target="_blank"
-            rel="noreferrer"
-            sx={{ textDecoration: "none" }}
-          >
-            <SidenavCollapse
-              name={name}
-              icon={icon}
-              active={key === collapseName}
-              noCollapse={noCollapse}
-            />
-          </Link>
-        ) : (
-          <NavLink key={key} to={route}>
-            <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
-          </NavLink>
-        );
-      } else if (type === "collapse-dropdown" && collapse) {
-        returnValue = (
-          <div key={key}>
-            <SidenavCollapse
-              name={name}
-              icon={icon}
-              active={key === collapseName}
-              onClick={handleMenuOpen}
-            />
-            <Menu
-              id="dropdown-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
+      if (type) {
+        if (type === "collapse") {
+          returnValue = href ? (
+            <Link
+              href={href}
+              key={key}
+              target="_blank"
+              rel="noreferrer"
+              sx={{ textDecoration: "none" }}
             >
-              {collapse.map(({ name, key, route, icon }) => (
-                <MenuItem key={key} onClick={() => navigate(route)} selected={key === collapseName}>
-                  {name}
-                </MenuItem>
-              ))}
-              {/* {isAdmin && 
-              <MenuItem
-                onClick={() => navigate("/settings/create-accounts")}
-              // selected={}
+              <SidenavCollapse
+                name={name}
+                icon={icon}
+                active={key === collapseName}
+                noCollapse={noCollapse}
+              />
+            </Link>
+          ) : (
+            <NavLink key={key} to={route}>
+              <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
+            </NavLink>
+          );
+        } else if (type === "collapse-dropdown" && collapse) {
+          returnValue = (
+            <div key={key}>
+              <SidenavCollapse
+                name={name}
+                icon={icon}
+                active={key === collapseName}
+                onClick={handleMenuOpen}
+              />
+              <Menu
+                id="dropdown-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
               >
-                Create accounts
-              </MenuItem>
-
-            } */}
-            </Menu>
-          </div>
-        );
-      } else if (type === "title") {
-        returnValue = (
-          <MDTypography
-            key={key}
-            color={textColor}
-            display="block"
-            variant="caption"
-            fontWeight="bold"
-            textTransform="uppercase"
-            pl={3}
-            mt={2}
-            mb={1}
-            ml={1}
+                {collapse.map(({ name, key, route, icon }) => (
+                  <MenuItem
+                    key={key}
+                    onClick={() => navigate(route)}
+                    selected={key === collapseName}
+                  >
+                    {name}
+                  </MenuItem>
+                ))}
+                {/* {isAdmin && 
+          <MenuItem
+            onClick={() => navigate("/settings/create-accounts")}
+          // selected={}
           >
-            {title}
-          </MDTypography>
-        );
-      } else if (type === "divider") {
-        returnValue = (
-          <Divider
-            key={key}
-            light={
-              (!darkMode && !whiteSidenav && !transparentSidenav) ||
-              (darkMode && !transparentSidenav && whiteSidenav)
-            }
-          />
-        );
+            Create accounts
+          </MenuItem>
+
+        } */}
+              </Menu>
+            </div>
+          );
+        } else if (type === "title") {
+          returnValue = (
+            <MDTypography
+              key={key}
+              color={textColor}
+              display="block"
+              variant="caption"
+              fontWeight="bold"
+              textTransform="uppercase"
+              pl={3}
+              mt={2}
+              mb={1}
+              ml={1}
+            >
+              {title}
+            </MDTypography>
+          );
+        } else if (type === "divider") {
+          returnValue = (
+            <Divider
+              key={key}
+              light={
+                (!darkMode && !whiteSidenav && !transparentSidenav) ||
+                (darkMode && !transparentSidenav && whiteSidenav)
+              }
+            />
+          );
+        }
       }
 
       return returnValue;
