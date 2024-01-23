@@ -71,21 +71,14 @@ const upadteProject = asyncHandler(async (req, res) => {
     if (!project_id) {
         return res.status(400).json({ message: "id not provided Try Login again" })
     }
-    // console.log('project data', project_data)
     const { team_members, is_active, status } = project_data
-    // console.log(' => ', team_members, is_active, status)
-
     if (project_id) {
         const findingProj = await graphicDesignModel.findById(project_id)
-        // console.log(findingProj)
         if (findingProj) {
-            if (findingProj.team_members.lenght) {
-                // console.log('IF BLOCK')
+            if (findingProj.team_members.length) {
                 findingProj.team_members = [...findingProj.team_members, ...team_members]
             } else {
-                // console.log(findingProj.team_members)
                 findingProj.team_members = team_members
-                // console.log('ELSE BLOCK')
             }
             findingProj.status = status
             findingProj.is_active = is_active
@@ -346,7 +339,7 @@ const projectAttend = async (req, res) => {
     try {
         const findproject = await graphicDesignModel.findById(id)
         if (findproject) {
-            const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'Attend' })
+            const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'Ongoing' })
             if (updatingStatus) {
                 return res.status(201).send({ message: 'Project Attended' })
             }
@@ -386,7 +379,6 @@ const projectOngoing = async (req, res) => {
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
-
 const projectSubmitted = async (req, res) => {
     const id = req.params.id
     if (!id) {

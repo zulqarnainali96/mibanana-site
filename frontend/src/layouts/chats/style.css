@@ -13,7 +13,6 @@
 .chat-2 {
   display: flex;
   flex-direction: column;
-  height: 100%;
   padding-block: 5px;
   padding: 0;
   overflow-y: auto;
@@ -161,6 +160,7 @@ h6,
 .adminDiv2 {
   display: flex;
   align-items: center;
+  height: 100%;
 }
 
 .adminImg1 {
@@ -184,6 +184,14 @@ h6,
 
 .desc1 {
   font-size: 12px !important;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  padding-inline: 17px;
+}
+.desc1 > * {
+  font-size: 12px !important;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
 }
 
 .selectType1 {
@@ -191,13 +199,42 @@ h6,
   border-radius: 1px;
   outline: 0;
   font-family: "Poppins";
-  padding : 4px 12px;
+  border: 1px solid #f6f6e8;
+  padding: 4px 12px;
   font-size: 12px;
+}
+.uploadbtn {
+  border: 1px solid #f6f6e8;
+  background: transparent;
+  color: black;
+  padding: 4px 12px;
+  margin: 0px 5px;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+}
+.uploadbtn:hover {
+  background: #fdd700;
+}
+
+@media screen and (max-width: 1600px) and (min-width: 1200px) {
+  .selectType1 {
+    margin: 0 2px !important;
+    padding: 4px 6px !important;
+    font-size: 8px !important;
+  }
+  .uploadbtn {
+    padding: 4px 6px;
+    margin: 0px 2px;
+    font-size: 8px;
+  }
+  .addnewversion {
+    padding: 4px 7px !important;
+  }
 }
 
 .addnewversion {
-  margin:  5px 5px !important;
-  padding: 4px 12px !important;
+  margin: 5px 5px;
+  padding: 4px 12px;
 }
 .addnewversion:hover {
   background: #dcdccf !important;
@@ -279,26 +316,46 @@ h6,
 }
 
 .downloadicon {
+  position: absolute;
+  cursor: pointer;
+  top: 8px;
+  right: 11px;
+  scale: 1.7;
+}
+/* .downloadicon {
   position: relative;
   left: 70px;
   bottom: 23px;
   cursor: pointer;
   width: 15% !important;
   height: 23px !important;
-}
+} */
 
 .filesGrid {
   max-height: 41vh;
   height: 30vh;
   overflow: auto;
 }
-
+.chat-parent-container::-webkit-scrollbar {
+  width: 8px;
+}
 .filesGrid::-webkit-scrollbar {
   width: 8px;
 }
 
+.chat-parent-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  cursor: pointer;
+}
+
 .filesGrid::-webkit-scrollbar-track {
   background: #f1f1f1;
+  cursor: pointer;
+}
+
+.chat-parent-container::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: #888;
   cursor: pointer;
 }
 

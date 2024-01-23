@@ -1,17 +1,12 @@
 import React from 'react'
-import { useStyles } from '../dashboardStyle'
 import { Grid } from '@mui/material'
 import MDBox from 'components/MDBox'
-import { useState } from 'react'
 import "./status-style.css"
 
-const StatusBox = ({ children, is400 }) => {
-    const styles = useStyles()
-    const [styleSetup1, setStyleSetup1] = useState(false)
-    const selectBox = () => setStyleSetup1(prev => !prev)
+const StatusBox = ({ children }) => {
     return (
-        <Grid item className="status-box" onClick={selectBox} xs={12} xxl={3.6} xl={3.6} md={5.6} lg={3.6} pl={0} pt={0}>
-            <MDBox className={`${styles.itemStyles} status-box`} sx={{ height: is400 ? "175px" : "218px" }}>
+        <Grid item className="status-box box-container" xs={12} xxl={3.6} xl={3.6} md={5.6} lg={3.6} pl={0} pt={0}>
+            <MDBox className={`itemStyles status-box`} >
                 {children}
             </MDBox>
         </Grid>

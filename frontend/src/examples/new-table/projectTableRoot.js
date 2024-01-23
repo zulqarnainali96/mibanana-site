@@ -4,10 +4,12 @@ import MDBox from "components/MDBox";
 import { useMaterialUIController } from "context";
 import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
+import { useMediaQuery } from "@mui/material";
 
 export function DataTableHeadCell({ width, children, sorted, align, ...rest }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
+  const isLg = useMediaQuery("(max-width:768px)")
 
   return (
     <MDBox
@@ -17,6 +19,7 @@ export function DataTableHeadCell({ width, children, sorted, align, ...rest }) {
       px={3}
       sx={({ palette: { light }, borders: { borderWidth } }) => ({
         borderBottom: `${borderWidth[1]} solid ${light.main}`,
+        paddingLeft : isLg ? '12px !important' : '24px',  
       })}
     >
       <MDBox
@@ -26,7 +29,7 @@ export function DataTableHeadCell({ width, children, sorted, align, ...rest }) {
         // color={darkMode ? "white" : "secondary"}
         opacity={0.7}
         sx={({ typography: { size, fontWeightBold }, palette: { light } }) => ({
-          fontSize: '.9rem',
+          fontSize: isLg ? '12px' : '.9rem',
           color: mibananaColor.tableHeaderColor,
           backgroundColor: mibananaColor.headerColor,
           fontFamily: fontsFamily.poppins,

@@ -289,6 +289,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                 fileRef={fileRef}
                 removeEditFiles={removeEditFiles}
                 setEditMoreImages={setEditMoreImages}
+                getDescriptionText={getDescriptionText}
             />
             <SuccessModal
                 msg={respMessage}
@@ -296,7 +297,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                 onClose={() => setShowSuccessModal(false)}
                 width="30%"
                 color="#288e28"
-                title="SUCCESS"
+                // title="SUCCESS"
                 sideRadius={false}
             />
             <MDBox ml={4} pt={2} pb={3}>

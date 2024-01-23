@@ -184,6 +184,7 @@ export const useStyles = makeStyles({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    position : 'relative',
   },
   UserDiv: {
     width: "100%",
@@ -205,6 +206,9 @@ export const useStyles = makeStyles({
     padding: "5px",
     width: "20%",
     fontFamily: "Poppins",
+
+  },
+  adminInsideDiv : {
 
   },
   adminDivGrid: {

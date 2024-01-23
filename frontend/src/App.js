@@ -148,12 +148,12 @@ export default function App() {
           ) : null}
         </>
       )}
-      <MDBox className="zainasdasd">
+      <MDBox>
         {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar />}
         <Routes>
           {user !== null ? (
             role?.admin ? getRoutes(AdminRoutes) :
-              role?.projectManager ? getRoutes(projectManager) :
+              role?.projectManager || role?.designer  ? getRoutes(projectManager) :
                 getRoutes(routes)) :
             getRoutes(authRoutes)
           }

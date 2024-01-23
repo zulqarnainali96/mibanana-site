@@ -18,8 +18,12 @@ import { Close, PictureAsPdf, RemoveCircle, Download } from '@mui/icons-material
 import apiClient from 'api/apiClient'
 import { useDispatch } from 'react-redux'
 import { getNew_Brand } from 'redux/actions/actions'
+import ReactQuil from 'react-quill'
 import AiLogo from 'assets/mi-banana-icons/ai-logo.png'
 import fileImage from 'assets/mi-banana-icons/file-image.png'
+import { modules } from 'assets/react-quill-settings/react-quill-settings'
+import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings'
+import { formats } from 'assets/react-quill-settings/react-quill-settings'
 
 const BrandModal = styled(Dialog)(({ theme }) => ({
     // '& .MuiInputBase-root': {
@@ -67,7 +71,7 @@ const EditBrand = ({
     handleFileUploadEdit,
     setEditMoreImages,
     removeEditFiles,
-
+    getDescriptionText,
 }) => {
     const [loading, setLoading] = useState(false)
     const currentid = useSelector(state => state.currentBrandId)
@@ -77,6 +81,7 @@ const EditBrand = ({
     const name = useSelector(state => state.userDetails.name)
     const dispatch = useDispatch()
     const new_brand = useSelector(state => state.new_brand)
+    const quillClasses = reactQuillStyles();
 
 
     let Jpg = "image/jpg"
@@ -145,7 +150,7 @@ const EditBrand = ({
 
     function downloadImage(url) {
         window.open(url, '_blank')
-    }
+    } 
 
     function handleDeleteFiles(name) {
         setDeleteFiles(prev => [...prev, name])
@@ -161,6 +166,7 @@ const EditBrand = ({
         }
 
     }, [iseditBrand, currentid])
+    console.log('formvalue ', formValue)
 
     return (
         <BrandModal open={open} sx={{ width: '100% !important' }} >
@@ -194,8 +200,16 @@ const EditBrand = ({
                                 }
                             }}>
                             <label style={Styles} htmlFor='brand_description'>Brand Description</label>
-                            <textarea style={textareaStyles}
-                                type="text" rows={5} cols={100} name="brand_description" value={formValue.brand_description} onChange={onChange} placeholder="Brand Description and links" variant="outlined" />
+                            {/* <textarea style={textareaStyles}
+                                type="text" rows={5} cols={100} name="brand_description" value={formValue.brand_description} onChange={onChange} placeholder="Brand Description and links" variant="outlined" /> */}
+                            <ReactQuil
+                                theme="snow"
+                                onChange={getDescriptionText}
+                                modules={modules}
+                                value={formValue.brand_description}
+                                formats={formats}
+                                className={quillClasses.quill}
+                            />
                         </MDBox>
                     </Grid>
                     <Grid item xxl={6} lg={6} xs={12} md={12}>
@@ -267,7 +281,7 @@ const EditBrand = ({
                                                     <span style={{ fontSize: '12px', color: '#333' }}>{item.name}</span>
                                                     <Download fontSize='large' sx={{ cursor: 'pointer' }} onClick={() => downloadImage(item.download_link)} />
                                                 </>
-                                            ) : item.type.startsWith(pdf) ?
+                                            ) : item?.type?.startsWith(pdf) ?
                                                 (<>
                                                     {deleteFiles?.includes(item.name) ? (
                                                         <RemoveCircle fontSize='medium' sx={{ position: 'absolute', top: '0px', right: '-5px', background: '#ddd', borderRadius: '20px', transition: 'all.4s ease-in', cursor: 'pointer' }} onClick={() => removeDeleteFiles(item.name)} />
@@ -306,7 +320,7 @@ const EditBrand = ({
                                         }
                                     </Grid>
                                 )
-                            }) : <p>No images found</p>}
+                            }) : <p>No files found</p>}
                             {/* // top: formValue?.files?.length === 2 ? '0px' : undefined  */}
 
                         </Grid>

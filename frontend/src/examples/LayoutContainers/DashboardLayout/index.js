@@ -15,10 +15,12 @@ function DashboardLayout({ children }) {
 
   return (
     <MDBox
+      className="chat-parent-container"
       sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
         // p: 3,
         position: "relative",
         backgroundColor : "#FFF !important",
+        overflowY : 'auto',
         height : "86.9vh",
         [breakpoints.up("xl")]: {
           marginLeft: miniSidenav ? pxToRem(120) : pxToRem(254),

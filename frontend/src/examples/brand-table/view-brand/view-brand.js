@@ -15,7 +15,7 @@ import { MoonLoader } from 'react-spinners'
 import AiLogo from 'assets/mi-banana-icons/ai-logo.png'
 import fileImage from 'assets/mi-banana-icons/file-image.png'
 import reduxContainer from 'redux/containers/containers'
-import "../brand-table.css" 
+import "../brand-table.css"
 
 let Jpg = "image/jpg"
 let Jpeg = "image/jpeg"
@@ -50,10 +50,15 @@ const ViewBrand = ({ reduxState, onChange }) => {
     const copyText = (ref) => {
         if (ref.current) {
             navigator.clipboard.writeText(ref.current.value)
-                .then(() => {})
-                .catch(err => {});
+                .then(() => { })
+                .catch(err => { });
         }
     };
+    const copyBrandDescriptionText = () => {
+        navigator.clipboard.writeText(formValue?.brand_description)
+            .then(() => {  })
+            .catch(err => {alert("failed to copy text") });
+    }
 
     const currentBrand = reduxState.customerBrand?.find(item => item._id === id)
     useEffect(() => {
@@ -63,9 +68,10 @@ const ViewBrand = ({ reduxState, onChange }) => {
         })
 
     }, [id])
+
     return (
         <DashboardLayout>
-            <MDBox pt={2} pb={3}>
+            <MDBox pt={2} pb={0}>
                 <Grid container >
                     <Grid item xxl={10} xl={10} lg={10} md={12} xs={12} sx={{ background: 'white', boxShadow: "4px 3px 7px -2px #cccccc0d", marginLeft: '8px' }}>
                         <MDBox pt={4} pb={3} px={3} >
@@ -200,9 +206,10 @@ const ViewBrand = ({ reduxState, onChange }) => {
                                                 }
                                             }}>
                                             <label style={Styles} htmlFor='brand_description'>Brand Description</label>
-                                            <textarea
+                                            {/* <textarea 
                                                 style={textareaStyles}
                                                 value={formValue.brand_description}
+                                                dangerouslySetInnerHTML={{__html:formValue.brand_description}}
                                                 ref={form8}
                                                 type="text"
                                                 disabled
@@ -211,16 +218,20 @@ const ViewBrand = ({ reduxState, onChange }) => {
                                                 cols={100}
                                                 name="brand_description"
                                                 placeholder="Brand Description and links"
-                                            />
-
-                                            <ContentCopy fontSize="medium" sx={copySvg} onClick={() => copyText(form8)} />
+                                            /> */}
+                                            <MDBox
+                                                sx={textareaStyles}
+                                                dangerouslySetInnerHTML={{ __html: formValue?.brand_description }}
+                                            >
+                                            </MDBox>
+                                            <ContentCopy fontSize="medium" sx={{ ...copySvg, right: 9 }} onClick={copyBrandDescriptionText} />
                                         </MDBox>
                                     </Grid>
                                     <Grid item pt={"20px"} xxl={12} lg={12} sm={12} xs={12} md={12}>
                                         <Grid container spacing={1}
                                             sx={{
                                                 overflowY: 'auto',
-                                                height: 'auto',
+                                                height: '140px',
                                                 border: '1px solid #ccc',
                                                 borderRadius: '11px',
                                                 marginInline: '-3px',
@@ -231,17 +242,17 @@ const ViewBrand = ({ reduxState, onChange }) => {
                                                         {
                                                             item?.type?.startsWith(Jpg) || item?.type?.startsWith(Png) || item?.type?.startsWith(Svg) || item?.type?.startsWith(Jpeg) ? (
                                                                 <>
-                                                                    <img src={item.url} width={70} height={70} loading='lazy' style={{ cursor: 'pointer' }} onClick={() => window.open(item.url, '_blank')} />
+                                                                    <img src={item.url} width={70} height={70} loading='lazy' style={imageStyles} onClick={() => window.open(item.url, '_blank')} />
                                                                     <span style={{ fontSize: '12px', color: '#333' }}>{item.name}</span>
                                                                     <Download fontSize='small' sx={{ cursor: 'pointer' }} onClick={() => downloadImage(item.download_link)} />
                                                                 </>
                                                             ) : item?.type?.startsWith(aiLogo) ? (
                                                                 <>
-                                                                    <img src={AiLogo} width={70} height={70} loading='lazy' style={{ cursor: 'pointer' }} onClick={() => window.open(item.url, '_blank')} />
+                                                                    <img src={AiLogo} width={70} height={70} loading='lazy' style={imageStyles} onClick={() => window.open(item.url, '_blank')} />
                                                                     <span style={{ fontSize: '12px', color: '#333' }}>{item.name}</span>
                                                                     <Download fontSize='small' sx={{ cursor: 'pointer' }} onClick={() => downloadImage(item.download_link)} />
                                                                 </>
-                                                            ) : item.type.startsWith(pdf) ?
+                                                            ) : item?.type?.startsWith(pdf) ?
                                                                 (<>
                                                                     <PictureAsPdf sx={{
                                                                         fontSize: '4rem !important',
@@ -251,13 +262,13 @@ const ViewBrand = ({ reduxState, onChange }) => {
                                                                 </>)
                                                                 : item.type?.includes(psdfile) ?
                                                                     (<>
-                                                                        <img src={fileImage} width={70} height={70} loading='lazy' style={{ cursor: 'pointer' }} onClick={() => window.open(item.url, '_blank')} />
+                                                                        <img src={fileImage} width={70} height={70} loading='lazy' style={imageStyles} onClick={() => window.open(item.url, '_blank')} />
                                                                         <span style={{ fontSize: '12px', color: '#333' }}>{item.name}</span>
                                                                         <Download fontSize='small' sx={{ cursor: 'pointer' }} onClick={() => downloadImage(item.download_link)} />
 
                                                                     </>) : (
                                                                         <>
-                                                                            <img src={fileImage} width={70} height={70} loading='lazy' style={{ cursor: 'pointer' }} onClick={() => window.open(item.url, '_blank')} />
+                                                                            <img src={fileImage} width={70} height={70} loading='lazy' style={imageStyles} onClick={() => window.open(item.url, '_blank')} />
                                                                             <span style={{ fontSize: '12px', color: '#333' }}>{item.name}</span>
                                                                             <Download fontSize='small' sx={{ cursor: 'pointer' }} onClick={() => downloadImage(item.download_link)} />
 
@@ -286,6 +297,13 @@ const Styles = {
     color: mibananaColor.yellowColorTextColor,
     fontWeight: 'bold',
 }
+const imageStyles = {
+    maxWidth: '100px',
+    maxHeight: '100px',
+    height: 'auto',
+    width: '100px',
+    cursor: 'pointer',
+}
 
 const colorRed = {
     color: 'red'
@@ -299,14 +317,18 @@ const titleStyles = {
     fontWeight: 'bold !important',
     userSelect: 'none'
 }
+
 const textareaStyles = {
     padding: '10px',
+    height: '160px',
     borderRadius: '8px',
     border: '1px solid #ccc',
     fontFamily: fontsFamily.poppins,
     fontSize: '15px',
     backgroundColor: 'transparent',
     fontWeight: '300',
+    paddingInline: '25px',
+    overflowY: 'auto'
 }
 const inputStyle = {
     position: 'relative',

@@ -39,6 +39,7 @@ import {
   navbarMobileMenu,
 } from "examples/Navbars/DashboardNavbar/styles";
 import { setMiniSidenav } from 'context'
+import "./navbar-style.css"
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions }) => {
@@ -90,6 +91,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
   })
   const is600 = useMediaQuery("(min-width:600px)")
   const is800 = useMediaQuery("(min-width:800px)")
+  const islg = useMediaQuery("(min-width:911px)")
 
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
@@ -155,12 +157,12 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       })
     getToTheProject(item?.project_id)
   }
- async function updateAllChatMessage () {
+  async function updateAllChatMessage() {
     const id = reduxState.userDetails?.id
-    if(getMessageNotification()){
-     await apiClient.get(`/api/udpate-all-notifications/${id}`)
+    if (getMessageNotification()) {
+      await apiClient.get(`/api/udpate-all-notifications/${id}`)
         .then(({ data }) => {
-          console.log('updated chat data =>',data)
+          console.log('updated chat data =>', data)
           reduxActions.getUserNewChatMessage(data?.msgArray)
         }).catch((err) => {
           console.error(err.message)
@@ -445,33 +447,22 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       padding: '0px !important'
     },
   })
-  const responsiveStyle = () => {
-    let fontSize = ''
-    if (!is800) {
-      fontSize = '15px'
-    } else if (!is600) {
-      fontSize = "13px"
-    } else {
-      fontSize = "1.25rem"
-
-    }
-    return {
-      fontSize
-    }
-  }
-  const roleResponsive = () => {
-    let fontSize = ''
-    if (!is800) {
-      fontSize = '14px'
-    } else if (!is600) {
-      fontSize = "10px"
-    } else {
-      fontSize = "16px"
-    }
-    return {
-      fontSize
-    }
-  }
+  const responsiveStyle = ({ breakpoints }) => ({
+    [breakpoints.up('lg')]: {
+      fontSize: '20px !important',
+    },
+    [breakpoints.down('lg')]: {
+      fontSize: '16px !important',
+    },
+  })
+  const roleResponsive = ({ breakpoints }) => ({
+    [breakpoints.up('lg')]: {
+      fontSize: '16px !important',
+    },
+    [breakpoints.down('lg')]: {
+      fontSize: '15px !important',
+    },
+  })
   const imgResponsive = () => {
     let width = ''
     let height = ''
@@ -492,13 +483,13 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
     const isnotifications = userNewChatMessage?.some(item => item?.view === true)
     return isnotifications
   }
-  console.log( 'get notifications ',getMessageNotification())
+  // console.log('get notifications ', getMessageNotification())
   useEffect(() => {
     getAllNotificationsMsg()
   }, [])
 
   return (
-    <div>
+    <>
       <CreateProject1
         formValue={formValue}
         setFormValue={setFormValue}
@@ -522,7 +513,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
         setShowSuccessModal={setShowSuccessModal}
         brandOption={brandOption}
         removeSingleFile={removeSingleFile}
-        deleteOtherSingleFile={deleteOtherSingleFile}
+        deleteOtherSingleFile={deleteOtherSingleFile} s
       />
       <SuccessModal
         msg={respMessage}
@@ -530,23 +521,28 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
         onClose={() => setShowSuccessModal(false)}
         width="30%"
         color="#288e28"
-        title="SUCCESS"
+        // title="SUCCESS"
         sideRadius={false}
       />
-      <Grid container className={navbarStyles.gridContainer} sx={{ paddingInline: !is600 ? "0.5rem" : "5rem", alignItems: !is800 && "center" }}>
-        <Grid item xxl={6.5} xl={4} lg={4} md={5} sm={6} xs={5} textAlign={!isLarge && "center"}>
-          <img src={MibananaIcon} loading='lazy' width={!is600 ? "190px" : "250px"} height={!is600 ? "56px" : "54px"} />
+      <Grid container className={navbarStyles.gridContainer} sx={
+        { paddingInline: !is600 ? "0.5rem" : "5rem", alignItems: !is800 && "center", paddingBlock: !islg ? "13px" : '20px', }}>
+        <Grid item xxl={6.5} xl={4} lg={4} md={5} sm={6} xs={5} display={"flex"} alignItems={"center"} textAlign={!isLarge && "center"}>
+          <img className='logo-image' src={MibananaIcon} loading='lazy' />
         </Grid >
         <Grid item xxl={5.5} xl={8} lg={8} md={7} sm={6} xs={7}>
           <Grid container alignItems="center">
-            <Grid item xxl={5} xl={5} display={"flex"} gap="18px" lg={5} md={8} sm={12} xs={12} sx={gridItemResponsive}>
-              <img src={personImage} style={{ display: "block" }} width={!is600 ? "45px" : !is800 ? "50px" : "61px"} height={!is600 ? "45px" : !is800 ? "50px" : "61px"} />
-              <div>
-                <MDTypography className={navbarStyles.insideText} sx={responsiveStyle}>Hello {showRoles()}!</MDTypography>
-                <MDTypography fontSize="medium" className={`${navbarStyles.poppins} ${navbarStyles.userRole}`} sx={roleResponsive}>{showPersonRoles()}</MDTypography>
+            <Grid item xxl={5} xl={5} display={"flex"} gap="18px" lg={5} md={12} sm={12} xs={12} sx={gridItemResponsive}>
+              <img className="person-image" src={personImage} />
+              <div className='hello-text-container'>
+                <MDTypography className="hello-text" sx={responsiveStyle}>Hello {showRoles()}!</MDTypography>
+                <MDTypography className="person-role" sx={roleResponsive}>{showPersonRoles()}</MDTypography>
               </div>
             </Grid>
-            <Grid item xxl={7} display={!is800 && "none"} xl={7} lg={6} md={10} xs={12} >
+            <Grid item xxl={7} xl={7} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({
+              [breakpoints.down('lg')]: {
+                display: 'none'
+              }
+            })}>
               <Grid container justifyContent={"center"}>
                 <Grid item xxl={12} xl={12} lg={12} md={12} sm={12} xs={12} display="flex" alignItems={"center"} gap={"8px"} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
                   <div className={navbarStyles.btnContainer} onClick={updateAllChatMessage}>
@@ -592,7 +588,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
           </Grid>
         </Grid >
       </Grid >
-    </div>
+    </>
   )
 }
 

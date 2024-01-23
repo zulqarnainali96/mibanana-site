@@ -2,7 +2,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from "react";
-import { Menu } from "@mui/material";
+import { Menu, useMediaQuery } from "@mui/material";
 import apiClient from "api/apiClient";
 import MDSnackbar from "components/MDSnackbar";
 import { useSelector } from "react-redux";
@@ -38,6 +38,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const [loading4, setLoading4] = useState(false)
   const [loading5, setLoading5] = useState(false)
   const [loading6, setLoading6] = useState(false)
+  
 
   const handleMenuOpen = (event) => {
     event.preventDefault()
@@ -340,7 +341,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
           {role?.customer ? <MenuItemDropdown loading={loading2} onClick={duplicateProject} title={"Duplicate"} /> : (
             <MenuItemDropdown loading={loading5} onClick={projectAttend} title={"Attend"} />
           )}
-          {!role?.customer && <MenuItemDropdown loading={loading6} onClick={projectOngoing} title={"Ongoing"} />}
+          {/* {!role?.customer && <MenuItemDropdown loading={loading6} onClick={projectOngoing} title={"Ongoing"} />} */}
           {role?.customer ? <MenuItemDropdown loading={loading3} onClick={projectCompleted} title={"Completed"} /> : (
             <MenuItemDropdown loading={loading4} onClick={projectSubmitted} title={"Submitted"} />
           )}
@@ -352,164 +353,23 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   )
 }
 function data() {
-  // console.log('project ', reduxState.project_list)
   return {
     columns: [
-      { Header: "author", accessor: "name", align: "left", },
-      { Header: "Team Member", accessor: "team_members", align: "left" },
+      { Header: "project title", accessor: "project_title", align: "left", },
+      { Header: "author", accessor: "name", align: "center", },
+      { Header: "Team Member", accessor: "team_members", align: "center" },
       { Header: "status", accessor: "status", align: "center" },
       { Header: "Category", accessor: "project_category", align: "center" },
       { Header: "Active on", accessor: "active", align: "center" },
       { Header: "Submitted on", accessor: "createdAt", align: "center" },
       { Header: "Action", accessor: "action", align: "center" },
     ],
-    // rows: [
-    //   {
-    //     author: <Author name="Social Media Designs" />,
-    //     team_member: <MDTypography color="dark" variant="h6">Frank</MDTypography>,
-    //     function: <Job title="Frank" description="Organization" />,
-    //     status: (
-    //       <MDBox ml={-1}>
-    //         <MDBadge badgeContent="Ongoing" sx={{ "& .MuiBadge-badge": { background: '#FFE135', color: '#333', textTransform: 'capitalize', fontSize: ".8rem" } }} circular="true" size="lg" />
-    //       </MDBox>
-    //     ),
-    //     category: (
-    //       <MDTypography variant="h6" color="text" fontWeight="medium">
-    //         Graphic Design
-    //       </MDTypography>
-    //     ),
-    //     active: <MDTypography color="dark" variant="p">{new Date().toDateString() + " " + new Date().toLocaleTimeString("pk", {
-    //       hour: "numeric",
-    //       minute: "numeric"
-    //     })}</MDTypography>,
-    //     submitted: <MDTypography color="dark" variant="p">{new Date().toDateString() + " " + new Date().toLocaleTimeString("pk", {
-    //       hour: "numeric",
-    //       minute: "numeric"
-    //     })}</MDTypography>,
-    //     action: (
-    //       <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
-    //         <Action />
-    //       </MDTypography>
-    //     ),
-    //   },
-    //   {
-    //     author: <Author name="Blog" />,
-    //     team_member: <MDTypography color="dark" variant="h6">Jessica</MDTypography>,
-    //     function: <Job title="Programator" description="Developer" />,
-    //     status: (
-    //       <MDBox ml={-1}>
-    //         <MDBadge badgeContent="Ongoing" sx={{ "& .MuiBadge-badge": { background: '#FFE135', color: '#333', textTransform: 'capitalize', fontSize: ".8rem" } }} circular="true" size="lg" />
-    //       </MDBox>
-    //     ),
-    //     category: (
-    //       <MDTypography variant="h6" color="text" fontWeight="medium">
-    //         Video Editing
-    //       </MDTypography>
-    //     ),
-    //     active: <MDTypography color="dark" variant="p">{new Date().toDateString() + " " + new Date().toLocaleTimeString("pk", {
-    //       hour: "numeric",
-    //       minute: "numeric"
-    //     })}</MDTypography>,
-    //     submitted: <MDTypography color="dark" variant="p">{new Date().toDateString() + " " + new Date().toLocaleTimeString("pk", {
-    //       hour: "numeric",
-    //       minute: "numeric"
-    //     })}</MDTypography>,
-    //     action: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         <Action />
-    //       </MDTypography>
-    //     ),
-    //   },
-    //   {
-    //     author: <Author name="Instagram Reels" />,
-    //     team_member: <MDTypography color="dark" variant="h6">Abdul</MDTypography>,
-    //     status: (
-    //       <MDBox ml={-1}>
-    //         <MDBadge badgeContent="Completed" sx={{ "& .MuiBadge-badge": { background: '#E7F7EF', color: '#0FAF62', textTransform: 'capitalize', fontSize: ".8rem" } }} circular="true" size="lg" />
-    //       </MDBox>
-    //     ),
-    //     category: (
-    //       <MDTypography variant="h6" color="text" fontWeight="medium">
-    //         Copy Writing
-    //       </MDTypography>
-    //     ),
-    //     active: <MDTypography color="dark" variant="p">{new Date().toDateString() + " " + new Date().toLocaleTimeString("pk", {
-    //       hour: "numeric",
-    //       minute: "numeric"
-    //     })}</MDTypography>,
-    //     submitted: <MDTypography color="dark" variant="p">{new Date().toDateString() + " " + new Date().toLocaleTimeString("pk", {
-    //       hour: "numeric",
-    //       minute: "numeric"
-    //     })}</MDTypography>,
-    //     action: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         <Action />
-    //       </MDTypography>
-    //     ),
-    //   },
-    //   {
-    //     author: <Author name="Broucher" />,
-    //     team_member: <MDTypography color="dark" variant="h6">Gretchen</MDTypography>,
-    //     category: (
-    //       <MDTypography variant="h6" color="text" fontWeight="medium">
-    //         Video Editing
-    //       </MDTypography>
-    //     ),
-    //     active: <MDTypography color="dark" variant="p">{new Date().toDateString()}</MDTypography>,
-    //     status: (
-    //       <MDBox ml={-1}>
-    //         <MDBadge badgeContent="Ongoing" sx={{ "& .MuiBadge-badge": { background: '#FFE135', color: '#333', textTransform: 'capitalize', fontSize: ".8rem" } }} circular="true" size="lg" />
-    //       </MDBox>
-    //     ),
-    //     category: (
-    //       <MDTypography variant="h6" color="text" fontWeight="medium">
-    //         Video Editing
-    //       </MDTypography>
-    //     ),
-    //     active: <MDTypography color="dark" variant="p">{new Date().toDateString() + " " + new Date().toLocaleTimeString("pk", {
-    //       hour: "numeric",
-    //       minute: "numeric"
-    //     })}</MDTypography>,
-    //     submitted: <MDTypography color="dark" variant="p">{new Date().toDateString() + " " + new Date().toLocaleTimeString("pk", {
-    //       hour: "numeric",
-    //       minute: "numeric"
-    //     })}</MDTypography>,
-    //     action: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         <Action />
-    //       </MDTypography>
-    //     ),
-    //   },
-    //   {
-    //     author: <Author name="Richard Gran" />,
-    //     team_member: <MDTypography color="dark" variant="h6">Zain</MDTypography>,
-    //     function: <Job title="Manager" description="Executive" />,
-    //     status: (
-    //       <MDBox ml={-1}>
-    //         <MDBadge badgeContent="Completed" sx={{ "& .MuiBadge-badge": { background: '#E7F7EF', color: '#0FAF62', textTransform: 'capitalize', fontSize: ".8rem" } }} circular="true" size="lg" />
-    //       </MDBox>
-    //     ),
-    //     category: (
-    //       <MDTypography variant="h6" color="text" fontWeight="small">
-    //         Video Editing
-    //       </MDTypography>
-    //     ),
-    //     active: <MDTypography color="dark" variant="p">{new Date().toDateString() + " " + new Date().toLocaleTimeString("pk", {
-    //       hour: "numeric",
-    //       minute: "numeric"
-    //     })}</MDTypography>,
-    //     submitted: <MDTypography color="dark" variant="p">{new Date().toDateString() + " " + new Date().toLocaleTimeString("pk", {
-    //       hour: "numeric",
-    //       minute: "numeric"
-    //     })}</MDTypography>,
-    //     action: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         <Action />
-    //       </MDTypography>
-    //     ),
-    //   },
-
-    // ],
+    
+    small_columns: [
+      { Header: "project title", accessor: "project_title", align: "left", },
+      { Header: "status", accessor: "status", align: "center" },
+      { Header: "Action", accessor: "action", align: "center" },
+    ],
   };
 }
 

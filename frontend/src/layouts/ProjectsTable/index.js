@@ -24,9 +24,10 @@ import { currentUserRole } from "redux/global/global-functions";
 import NewProjectsTable from "examples/new-table";
 import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
+import { useMediaQuery } from "@mui/material";
 
 const ProjectTable = ({ reduxState, reduxActions }) => {
-  const { columns } = authorsTableData();
+  const { columns, small_columns } = authorsTableData();
   const navigate = useNavigate();
   const { project_list } = reduxState;
   const [respMessage, setRespMessage] = useState("");
@@ -43,6 +44,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   const closeSuccessSB = () => setSuccessSB(false);
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
+  const isLg = useMediaQuery("(max-width:768px)")
   const dispatch = useDispatch();
 
   // const [open, setOpen] = useState(false)
@@ -106,6 +108,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
         return "Ongoing";
       case "HeadsUp":
         return "HeadsUp";
+      case 'Assigned':
+        return "Assigned"
       case "Attend":
         return "Attend";
       case "Submitted":
@@ -161,173 +165,304 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
 
   const rows = project_list?.CustomerProjects?.length
     ? project_list.CustomerProjects.map((item, i) => {
-        const date = new Date(item.createdAt);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-indexed
-        const day = String(date.getDate()).padStart(2, "0");
-        let hours = date.getHours();
-        const minutes = String(date.getMinutes()).padStart(2, "0");
-        const seconds = String(date.getSeconds()).padStart(2, "0");
-        let ampm = "AM";
+      const date = new Date(item.createdAt);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-indexed
+      const day = String(date.getDate()).padStart(2, "0");
+      let hours = date.getHours();
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      const seconds = String(date.getSeconds()).padStart(2, "0");
+      let ampm = "AM";
 
-        // Convert to 12-hour format and set AM/PM
-        if (hours >= 12) {
-          ampm = "PM";
-          if (hours > 12) {
-            hours -= 12;
-          }
+      // Convert to 12-hour format and set AM/PM
+      if (hours >= 12) {
+        ampm = "PM";
+        if (hours > 12) {
+          hours -= 12;
         }
-        hours = String(hours).padStart(2, "0");
-        const readableTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
+      }
+      hours = String(hours).padStart(2, "0");
+      const readableTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
 
-        const projectid = project_list.CustomerProjects.indexOf(item);
+      const projectid = project_list.CustomerProjects.indexOf(item);
 
-        console.log(item)
+      console.log(item)
 
-        const getUserNotifcations = async () => {
-          await apiClient
-            .get("/chat-message/" + projectid)
-            .then(({ data }) => {
-              if (data?.chat?.chat_msg.length > 0) {
-                const messages = data?.chat?.chat_msg;
-                const filterData = messages.filter(
-                  (item) => item.user !== reduxState?.userDetails?.id
-                );
-                reduxActions.getUserNewChatMessage(filterData);
-              }
-            })
-            .catch((err) => console.log(err));
-        };
-        socketIO.emit("room-message", "", projectid);
-        // getUserNotifcations()
+      const getUserNotifcations = async () => {
+        await apiClient
+          .get("/chat-message/" + projectid)
+          .then(({ data }) => {
+            if (data?.chat?.chat_msg.length > 0) {
+              const messages = data?.chat?.chat_msg;
+              const filterData = messages.filter(
+                (item) => item.user !== reduxState?.userDetails?.id
+              );
+              reduxActions.getUserNewChatMessage(filterData);
+            }
+          })
+          .catch((err) => console.log(err));
+      };
+      socketIO.emit("room-message", "", projectid);
+      // getUserNotifcations()
 
-        return {
-          name: (
-            <MDBox lineHeight={1}>
-              <MDTypography
-                display={"block"}
-                sx={{ textDecoration: "underline !important" }}
-                variant="button"
-                fontWeight="medium"
-              >
-                <MDBox
-                  sx={{
-                    "&:hover": { color: "blue" },
-                    fontFamily: fontsFamily.poppins,
-                    fontWeight: "400  !important",
-                    color: mibananaColor.yellowTextColor,
-                  }}
-                  onClick={() => projectActiveorNot(projectid)}
-                >
-                  {item?.name}
-                </MDBox>
-              </MDTypography>
-            </MDBox>
-          ),
-
-          team_members: (
+      return {
+        project_title: (
+          <MDBox lineHeight={1}>
             <MDTypography
-              display="flex"
-              flexDirection="column"
-              gap="10px"
-              sx={{
-                fontFamily: fontsFamily.poppins,
-                fontWeight: "400  !important",
-                color: mibananaColor.yellowTextColor,
-              }}
+              display={"block"}
+              sx={{ textDecoration: "underline !important" }}
+              variant="button"
+              fontWeight="medium"
             >
-              {item.team_members?.length > 0 ? (
-                item.team_members.map((item) => (
-                  <MDTypography
-                    color="#333"
-                    variant="h6"
-                    sx={{ fontFamily: fontsFamily.poppins, fontWeight: "400  !important" }}
-                  >
-                    {item.name}
-                  </MDTypography>
-                ))
-              ) : (
+              <MDBox
+                sx={{
+                  "&:hover": { color: "blue" },
+                  fontFamily: fontsFamily.poppins,
+                  fontWeight: "400  !important",
+                  color: mibananaColor.yellowTextColor,
+                }}
+                onClick={() => projectActiveorNot(projectid)}
+              >
+                {item?.project_title}
+              </MDBox>
+            </MDTypography>
+          </MDBox>
+        ),
+        name: (
+          <MDTypography
+            variant="h6"
+            sx={{
+              fontFamily: fontsFamily.poppins,
+              fontWeight: "400  !important",
+              color: mibananaColor.yellowTextColor,
+            }}
+          >
+            {item?.name}
+          </MDTypography>
+        ),
+
+        team_members: (
+          <MDTypography
+            display="flex"
+            flexDirection="column"
+            gap="10px"
+            sx={{
+              fontFamily: fontsFamily.poppins,
+              fontWeight: "400  !important",
+              color: mibananaColor.yellowTextColor,
+            }}
+          >
+            {item.team_members?.length > 0 ? (
+              item.team_members.map((item) => (
                 <MDTypography
                   color="#333"
-                  fontSize="small"
                   variant="h6"
                   sx={{ fontFamily: fontsFamily.poppins, fontWeight: "400  !important" }}
                 >
-                  Currently not Assigned to <br /> any Team members
+                  {item.name}
                 </MDTypography>
-              )}
-            </MDTypography>
-          ),
-          status: (
-            <MDBox ml={-1}>
-              <MDBadge
-                badgeContent={projectStatus(item?.status)}
-                sx={{
-                  "& .MuiBadge-badge": {
-                    background: mibananaColor.yellowColor,
-                    color: mibananaColor.yellowTextColor,
-                    textTransform: "capitalize",
-                    fontSize: ".9rem",
-                    borderRadius: "0px",
-                    fontFamily: fontsFamily.poppins,
-                    fontWeight: "400  !important",
-                  },
-                }}
-                circular="true"
-                size="lg"
-              />
-            </MDBox>
-          ),
-          project_category: (
-            <MDTypography
-              variant="h6"
+              ))
+            ) : (
+              <MDTypography
+                color="#333"
+                fontSize="small"
+                variant="h6"
+                sx={{ fontFamily: fontsFamily.poppins, fontWeight: "400  !important" }}
+              >
+                Currently not Assigned to <br /> any Team members
+              </MDTypography>
+            )}
+          </MDTypography>
+        ),
+        status: (
+          <MDBox ml={-1}>
+            <MDBadge
+              badgeContent={projectStatus(item?.status)}
               sx={{
-                fontFamily: fontsFamily.poppins,
-                fontWeight: "400  !important",
-                color: mibananaColor.yellowTextColor,
+                "& .MuiBadge-badge": {
+                  background: mibananaColor.yellowColor,
+                  color: mibananaColor.yellowTextColor,
+                  textTransform: "capitalize",
+                  fontSize: ".9rem",
+                  borderRadius: "0px",
+                  fontFamily: fontsFamily.poppins,
+                  fontWeight: "400  !important",
+                },
               }}
-            >
-              {item.project_category}
-            </MDTypography>
-          ),
-          active: (
-            <MDTypography
-              variant="p"
-              sx={{
-                fontFamily: fontsFamily.poppins,
-                fontWeight: "400  !important",
-                color: mibananaColor.yellowTextColor,
-              }}
-            >
-              {!item.is_active ? "Not Active" : item.updatedAt}
-            </MDTypography>
-          ),
-          createdAt: (
-            <MDTypography
-              variant="p"
-              sx={{
-                fontFamily: fontsFamily.poppins,
-                fontWeight: "400  !important",
-                color: mibananaColor.yellowTextColor,
-              }}
-            >
-              {readableTimestamp}
-            </MDTypography>
-          ),
-          action: (
-            <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-              <Action
-                item={item}
-                resonseMessage={setRespMessage}
-                errorSBNot={openErrorSB}
-                successSBNot={openSuccessSB}
-                role={role}
-              />
-            </MDTypography>
-          ),
-        };
-      })
+              circular="true"
+              size="lg"
+            />
+          </MDBox>
+        ),
+        project_category: (
+          <MDTypography
+            variant="h6"
+            sx={{
+              fontFamily: fontsFamily.poppins,
+              fontWeight: "400  !important",
+              color: mibananaColor.yellowTextColor,
+            }}
+          >
+            {item.project_category}
+          </MDTypography>
+        ),
+        active: (
+          <MDTypography
+            variant="p"
+            sx={{
+              fontFamily: fontsFamily.poppins,
+              fontWeight: "400  !important",
+              color: mibananaColor.yellowTextColor,
+            }}
+          >
+            {!item.is_active ? "Not Active" : item.updatedAt}
+          </MDTypography>
+        ),
+        createdAt: (
+          <MDTypography
+            variant="p"
+            sx={{
+              fontFamily: fontsFamily.poppins,
+              fontWeight: "400  !important",
+              color: mibananaColor.yellowTextColor,
+            }}
+          >
+            {readableTimestamp}
+          </MDTypography>
+        ),
+        action: (
+          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+            <Action
+              item={item}
+              resonseMessage={setRespMessage}
+              errorSBNot={openErrorSB}
+              successSBNot={openSuccessSB}
+              role={role}
+            />
+          </MDTypography>
+        ),
+      };
+    })
     : [];
+  const small_rows = project_list?.CustomerProjects?.length
+    ? project_list.CustomerProjects.map((item, i) => {
+      const date = new Date(item.createdAt);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-indexed
+      const day = String(date.getDate()).padStart(2, "0");
+      let hours = date.getHours();
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      const seconds = String(date.getSeconds()).padStart(2, "0");
+      let ampm = "AM";
+
+      // Convert to 12-hour format and set AM/PM
+      if (hours >= 12) {
+        ampm = "PM";
+        if (hours > 12) {
+          hours -= 12;
+        }
+      }
+      hours = String(hours).padStart(2, "0");
+      const readableTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
+      const projectid = project_list.CustomerProjects.indexOf(item);
+      socketIO.emit("room-message", "", projectid);
+
+      return {
+        project_title: (
+          <MDBox lineHeight={1}>
+            <MDTypography
+              display={"block"}
+              sx={{ textDecoration: "underline !important" }}
+              variant="button"
+              fontWeight="medium"
+            >
+              <MDBox
+                sx={{
+                  "&:hover": { color: "blue" },
+                  fontFamily: fontsFamily.poppins,
+                  fontSize : isLg && '12px', 
+                  fontWeight: "400  !important",
+                  color: mibananaColor.yellowTextColor,
+                }}
+                onClick={() => projectActiveorNot(projectid)}
+              >
+                {item?.project_title}
+              </MDBox>
+            </MDTypography>
+          </MDBox>
+        ),
+        status: (
+          <MDBox ml={-1}>
+            <MDBadge
+              badgeContent={projectStatus(item?.status)}
+              sx={{
+                "& .MuiBadge-badge": {
+                  background: mibananaColor.yellowColor,
+                  color: mibananaColor.yellowTextColor,
+                  textTransform: "capitalize",
+                  fontSize: isLg ? "12px" : ".9rem",
+                  borderRadius: "0px",
+                  fontFamily: fontsFamily.poppins,
+                  fontWeight: "400  !important",
+                },
+              }}
+              circular="true"
+              size="lg"
+            />
+          </MDBox>
+        ),
+        action: (
+          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+            <Action
+              item={item}
+              resonseMessage={setRespMessage}
+              errorSBNot={openErrorSB}
+              successSBNot={openSuccessSB}
+              role={role}
+            />
+          </MDTypography>
+        ),
+      };
+    })
+    : [];
+
+    // const small_rows = project_list?.CustomerProjects?.length > 0 ? project_list?.CustomerProjects?.map((item, i) => {
+    //   const date = new Date(item.createdAt);
+    //   let hours = date.getHours();
+    //   let ampm = "AM";
+  
+    //   if (hours >= 12) {
+    //     ampm = "PM";
+    //     if (hours > 12) {
+    //       hours -= 12;
+    //     }
+    //   }
+    //   hours = String(hours).padStart(2, "0");
+    //   const projectid = project_list.indexOf(item)
+    //   socketIO.emit("room-message", '', projectid)
+  
+    //   return {
+    //     project_title: (
+    //       <MDBox lineHeight={1}>
+    //         <MDTypography display={"block"} sx={{ textDecoration: 'underline !important' }} variant="button" fontWeight="medium">
+    //           <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor,fontSize : isLg && '12px' }} onClick={() => projectActiveorNot(projectid)}>
+    //             {item?.project_title}
+    //           </MDBox>
+    //         </MDTypography>
+    //       </MDBox>),
+    //     status: <MDBox ml={-1}>
+    //       <MDBadge badgeContent={projectStatus(item?.status)}
+    //         sx={{
+    //           "& .MuiBadge-badge":
+    //             { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: isLg ? "12px" : ".9rem", borderRadius: '0px', fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }
+    //         }} circular="true" size="lg" />
+    //     </MDBox>,
+    //     action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+    //       <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} />
+    //     </MDTypography>
+  
+    //   }
+    // }) : []
 
   useEffect(() => {
     const id = reduxState?.userDetails?.id;
@@ -363,6 +498,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   let statuses = [
     "All",
     "Archived",
+    "Assigned",
     "Cancelled",
     "Project manager",
     "Completed",
@@ -418,7 +554,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     setPersonName(value);
   };
 
-  console.log(reduxState);
   const clearValue = () => {
     setPersonName("");
     reduxActions.getCustomerProject(copyProjectList);
@@ -435,7 +570,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
         <Grid container spacing={6}>
           <Grid item xs={12} pt={0}>
             <MDTypography pl={"15px"} sx={titleStyles}>
-              miProjects1
+              miProjects
             </MDTypography>
             <Grid container justifyContent={"space-between"} alignItems={"center"} width={"100%"}>
               <Grid item xxl={8} xl={12} lg={12} md={12} xs={12} display={"flex"}>
@@ -475,7 +610,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
             <Card sx={cardStyles}>
               <MDBox>
                 <NewProjectsTable
-                  table={{ columns, rows }}
+                  table={{ columns : isLg ? small_columns : columns, rows : isLg ? small_rows : rows }}
                   entriesPerPage={{ defaultValue: 5 }}
                   showTotalEntries={true}
                   pagination={{ variant: "contained", color: "warning" }}

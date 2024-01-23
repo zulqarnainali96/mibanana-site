@@ -2,7 +2,7 @@ import Modal from 'examples/ModalLayout'
 import MDTypography from 'components/MDTypography'
 import { fontsFamily } from 'assets/font-family'
 
-const SuccessModal = ({ width, msg, onClose, open, sideRadius, color, title }) => {
+const SuccessModal = ({ width, msg, onClose, open, sideRadius, color, title, bgColor }) => {
 
     return (
         <Modal
@@ -11,8 +11,9 @@ const SuccessModal = ({ width, msg, onClose, open, sideRadius, color, title }) =
             onClose={onClose}
             sideRadius={sideRadius}
             isBorder={false}
-            title={title}
+            // title={title && title}
             color={`${color} !important`}
+            // bgColor={bgColor}
         >
             <MDTypography
                 fontSize="30px"

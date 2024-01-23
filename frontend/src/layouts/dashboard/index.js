@@ -27,6 +27,7 @@ import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
 import "./status-box/status-style.css"
 import { currentUserRole } from "redux/global/global-functions";
+import "./status-box/status-style.css"
 
 function Dashboard({ reduxActions, reduxState }) {
   const project_list = reduxState.project_list?.CustomerProjects
@@ -34,10 +35,7 @@ function Dashboard({ reduxActions, reduxState }) {
   const user = reduxState?.userDetails
   const [errorSB, setErrorSB] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
-  const isDesigner = reduxState.userDetails.roles?.includes("Graphic-Designer") ? true : false
-  const { list } = useRightSideList()
-  const styles = useStyles()
-  const is400 = useMediaQuery("(max-width:500px)")
+  const isLg = useMediaQuery("(max-width:768px)")
 
 
   const openErrorSB = () => setErrorSB(true);
@@ -60,9 +58,9 @@ function Dashboard({ reduxActions, reduxState }) {
   }
   const projectCompleted = project_list?.filter(item => item.status === 'Completed')
 
-  const activeProject = project_list?.filter(item => {
-    return item.status === 'Ongoing'
-  })
+  // const activeProject = project_list?.filter(item => {
+  //   return item.status === 'Ongoing'
+  // })
 
   const navigate = useNavigate()
 
@@ -143,8 +141,8 @@ function Dashboard({ reduxActions, reduxState }) {
         return "Ongoing"
       case 'HeadsUp':
         return "HeadsUp"
-      case 'Attend':
-        return "Attend"
+      case 'Assigned':
+        return "Assigned"
       case 'Submitted':
         return "Submitted"
       default:
@@ -251,15 +249,26 @@ function Dashboard({ reduxActions, reduxState }) {
     // getUserNotifcations()
 
     return {
-      name: (
+      project_title: (
         <MDBox lineHeight={1}>
           <MDTypography display={"block"} sx={{ textDecoration: 'underline !important' }} variant="button" fontWeight="medium">
             <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }} onClick={() => projectActiveorNot(projectid)}>
-              {item?.name}
+              {item?.project_title}
             </MDBox>
           </MDTypography>
         </MDBox>),
-
+      name: (
+        <MDTypography
+          variant="h6"
+          sx={{
+            fontFamily: fontsFamily.poppins,
+            fontWeight: "400  !important",
+            color: mibananaColor.yellowTextColor,
+          }}
+        >
+          {item?.name}
+        </MDTypography>
+      ),
       team_members: <MDTypography display="flex" flexDirection="column" gap="10px" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>
         {item.team_members?.length > 0 ? item.team_members.map(item => <MDTypography color="#333" variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }}>{item.name}</MDTypography>) :
           <MDTypography color="#333" fontSize="small" variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }}>Currently not Assigned to <br /> any Team members</MDTypography>}
@@ -284,7 +293,48 @@ function Dashboard({ reduxActions, reduxState }) {
 
     }
   }) : []
+
+  const small_rows = project_list?.length > 0 ? project_list.map((item, i) => {
+
+    const date = new Date(item.createdAt);
+    let hours = date.getHours();
+    let ampm = "AM";
+
+    if (hours >= 12) {
+      ampm = "PM";
+      if (hours > 12) {
+        hours -= 12;
+      }
+    }
+    hours = String(hours).padStart(2, "0");
+    const projectid = project_list.indexOf(item)
+    socketIO.emit("room-message", '', projectid)
+
+    return {
+      project_title: (
+        <MDBox lineHeight={1}>
+          <MDTypography display={"block"} sx={{ textDecoration: 'underline !important' }} variant="button" fontWeight="medium">
+            <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor,fontSize : isLg && '12px' }} onClick={() => projectActiveorNot(projectid)}>
+              {item?.project_title}
+            </MDBox>
+          </MDTypography>
+        </MDBox>),
+      status: <MDBox ml={-1}>
+        <MDBadge badgeContent={projectStatus(item?.status)}
+          sx={{
+            "& .MuiBadge-badge":
+              { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: isLg ? "12px" : ".9rem", borderRadius: '0px', fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }
+          }} circular="true" size="lg" />
+      </MDBox>,
+      action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} />
+      </MDTypography>
+
+    }
+  }) : []
+
   const columns = [
+    { Header: "project title", accessor: "project_title", align: "left", },
     { Header: "author", accessor: "name", align: "left", },
     { Header: "Team Member", accessor: "team_members", align: "left" },
     { Header: "status", accessor: "status", align: "center" },
@@ -293,49 +343,53 @@ function Dashboard({ reduxActions, reduxState }) {
     { Header: "Submitted on", accessor: "createdAt", align: "center" },
     { Header: "Action", accessor: "action", align: "center" },
   ]
+  const small_columns = [
+    { Header: "project title", accessor: "project_title", align: "left", },
+    { Header: "status", accessor: "status", align: "center" },
+    { Header: "Action", accessor: "action", align: "center" },
+  ]
   return (
     <DashboardLayout>
       <MDBox p={"10px 12px"} mt={'0px'} sx={{ backgroundColor: 'white !important' }}>
-        <Grid container justifyContent={"center"} sx={{ gap: '10px' }}>
-          <StatusBox is400={is400}>
-            <Grid container alignItems={"center"} sx={{}}>
+        <Grid container className="status-container">
+          <StatusBox>
+            <Grid container alignItems={"center"} height="100%" >
               <Grid item xxl={8} xl={8} lg={7} md={7} xs={7} >
-                <MDTypography className={`${styles.headingStyle} heading-style`} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{projectCompleted?.length > 0 ? projectCompleted?.length : 0}</MDTypography>
+                <MDTypography className="heading-style" >{projectCompleted?.length > 0 ? projectCompleted?.length : 0}</MDTypography>
               </Grid>
               <Grid xxl={3} xl={3} lg={5} md={5} xs={5}>
                 {checkIcon}
-                <MDTypography className={styles.headingStyle2}>Completed Projects</MDTypography>
+                <MDTypography className="heading-style-2">Completed Projects</MDTypography>
               </Grid>
             </Grid>
           </StatusBox>
-          <StatusBox is400={is400}>
-            <Grid container alignItems={"center"} sx={{}}>
-              <Grid item xxl={8} xl={8} lg={7} md={7} xs={7} >
-                <MDTypography className={styles.headingStyle} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{sumbitAndOngoing()}</MDTypography>
+          <StatusBox>
+            <Grid container alignItems={"center"} height="100%">
+              <Grid item xxl={8} xl={8} lg={7} md={7} xs={7}>
+                <MDTypography className="heading-style">{sumbitAndOngoing()}</MDTypography>
               </Grid>
               <Grid xxl={3} xl={3} lg={5} md={5} xs={5}>
                 {bananaIcon}
-                <MDTypography className={styles.headingStyle2}>Active Projects</MDTypography>
+                <MDTypography className="heading-style-2">Active Projects</MDTypography>
               </Grid>
             </Grid>
           </StatusBox>
-          <StatusBox is400={is400}>
-            <Grid container alignItems={"center"} sx={{}}>
+          <StatusBox>
+            <Grid container alignItems={"center"} height="100%">
               <Grid item xxl={8} xl={8} lg={7} md={7} xs={7} >
-                <MDTypography className={styles.headingStyle} sx={{ fontSize: is400 ? "5rem !important" : "8rem !important", textAlign: "center" }}>{projectQueue?.length > 0 ? projectQueue?.length : 0}</MDTypography>
+                <MDTypography className="heading-style">{projectQueue?.length > 0 ? projectQueue?.length : 0}</MDTypography>
               </Grid>
               <Grid xxl={3} xl={3} lg={5} md={5} xs={5}>
                 {clockIcon}
-                <MDTypography className={styles.headingStyle2}>Queue Projects</MDTypography>
+                <MDTypography className="heading-style-2">Queue Projects</MDTypography>
               </Grid>
             </Grid>
           </StatusBox>
-          <Grid item xxl={11} xl={11} lg={11} md={11} xs={12} display={"flex"} justifyContent={"center"} alignItems={"center"} sx={({ breakpoints: { } }) => {
-          }}>
+          <Grid item xxl={11} xl={11} lg={11} md={11} xs={12} display={"flex"} justifyContent={"center"} alignItems={"center"}>
             <Card sx={cardStyles}>
               <MDBox>
                 <NewProjectsTable
-                  table={{ columns, rows }}
+                  table={{ columns : isLg ? small_columns : columns , rows : isLg ? small_rows : rows  }}
                   entriesPerPage={{ defaultValue: 5 }}
                   showTotalEntries={true}
                   pagination={{ variant: 'contained', color: "warning" }}

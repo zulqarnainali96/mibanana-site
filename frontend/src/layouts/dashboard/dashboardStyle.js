@@ -25,11 +25,7 @@ export const useStyles = makeStyles({
             boxShadow: '-4px 16px 29px -8px #44444461'
         }
     },
-    headingStyle: {
-        fontSize: '8rem !important',
-        fontWeight: '800 !important',
-        color: '#C6C3B6 !important',
-    },
+    
     headingStyle2: {
         fontSize: '1.38rem !important',
         color : mibananaColor.yellowTextColor,

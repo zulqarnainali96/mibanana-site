@@ -5,21 +5,16 @@ import { mibananaColor } from "assets/new-images/colors";
 export const useStyles = makeStyles({
     gridContainer: {
         backgroundColor: mibananaColor.headerColor,
-        paddingBlock: '20px',
         paddingInline: '5rem',
-        justifyContent : 'space-between'
+        justifyContent : 'space-between',
     },
     poppins: fontsFamily.poppins + " !important",
-    insideText: {
-        fontFamily: fontsFamily.poppins + " !important",
-        fontWeight: '800',
-        color: 'black !important'
+    // insideText: {
+    //     fontFamily: fontsFamily.poppins + " !important",
+    //     fontWeight: '800',
+    //     color: 'black !important'
 
-    },
-    userRole: {
-        color: '#000 !important',
-        fontWeight: '400 !important'
-    },
+    // },
     notificationPoint : {
         position: 'absolute', 
         padding: '6px',

@@ -1,0 +1,57 @@
+root {
+  --font-family: "Poppins", sans-serif;
+}
+.logo-image {
+  width: 250px;
+  height: auto;
+}
+
+/* style={{ display: "block" }} width={!is600 ? "45px" : !is800 ? "50px" : "61px"} height={!is600 ? "45px" : !is800 ? "50px" : "61px"} */
+
+.person-role,
+.hello-text {
+  font-family: var(--font-family);
+}
+.person-image {
+  display: block;
+  width: 61px;
+  height: 61px;
+}
+
+.person-role {
+  color: #000 !important;
+  font-weight: 400 !important;
+}
+
+.hello-text {
+  font-weight: 800 !important;
+  color: black !important;
+  width: 100%;
+  text-align: right;
+}
+
+/* / Media Queries */
+
+@media screen and (max-width: 768px) {
+  .logo-image {
+    width: 190px;
+    height: auto;
+  }
+  .hello-text-container {
+    width: 100%;
+  }
+  .person-role,
+  .person-image {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .logo-image {
+    width: 160px;
+    margin-left: 18px;
+  }
+  .hello-text {
+    margin-right: 13px !important;
+  }
+}

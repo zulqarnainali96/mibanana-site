@@ -8,6 +8,13 @@
 .active-svg {
     stroke: #C6C3B6;
 }
+
 .row-style:hover .active-svg {
     stroke : white !important;
+}
+
+@media screen and (max-width:768px) {
+     .active-svg {
+        scale: .8;
+     }   
 }

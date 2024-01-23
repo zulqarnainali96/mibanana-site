@@ -27,7 +27,7 @@ export const Action = ({ item }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.userDetails.id);
   const reduxState = useSelector((state) => state);
-  const iseditBrand = useSelector((state) => state.iseditBrand);
+  // const iseditBrand = useSelector((state) => state.iseditBrand);
   const [errorSB, setErrorSB] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
   const [respMessage, setRespMessage] = useState("");
@@ -156,14 +156,14 @@ export const Action = ({ item }) => {
             </MenuItem>
           </>
         ) : role?.admin ? (
-          <MenuItem sx={containerStyles} onClick={() => {}}>
+          <MenuItem sx={containerStyles} onClick={() => { }}>
             <h6 style={{ fontWeight: "300", color: "inherit" }}>Delete</h6>
             <IconButton>
               <MoonLoader size={20} loading={loading} />
             </IconButton>
           </MenuItem>
         ) : (
-          <MenuItem sx={containerStyles} onClick={() => {}}>
+          <MenuItem sx={containerStyles} onClick={() => { }}>
             <h6 style={{ fontWeight: "300", color: "inherit" }}>No Options</h6>
           </MenuItem>
         )}
@@ -230,6 +230,7 @@ const BrandData = () => {
         arr.url = result ? result?.url : fileImage;
       }
     }
+    let brandDescription = item.brand_description?.substring(0, 50) + '...'
     getBrandLogo();
     return {
       logo: (
@@ -250,7 +251,8 @@ const BrandData = () => {
           )}
         </>
       ),
-
+      
+      
       brand_name: (
         <MDTypography variant="h4" sx={textStyles}>
           {item.brand_name}
@@ -261,7 +263,7 @@ const BrandData = () => {
         <MDTypography
           variant="p"
           sx={{ ...textStyles, fontSize: "14px !important" }}
-          dangerouslySetInnerHTML={{ __html: item.brand_description }}
+          dangerouslySetInnerHTML={{ __html: brandDescription}}
         >
           {/* {item.brand_description} */}
         </MDTypography>

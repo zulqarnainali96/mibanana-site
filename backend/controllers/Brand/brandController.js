@@ -102,7 +102,7 @@ const getBrandList = async (req, res) => {
     try {
         const brands = await brand_model.find({ user: user }).lean().exec()
         const [users] = await User.find({ _id: user })
-        if (users?.roles.includes("Admin") || users?.roles.includes("Project-Manager")) {
+        if (users?.roles.includes("Admin") || users?.roles.includes("Project-Manager") || users?.roles.includes("Graphic-Designer")) {
             const allBrands = await brand_model.find()
             return res.status(200).send({ message: 'All List Found', brandList: allBrands })
         }

@@ -55,7 +55,6 @@ import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
 import { Close } from "@mui/icons-material";
 import { useSelector } from "react-redux";
-import ImageViewModal from "examples/image-modal";
 
 const inputSxStyles = {
   "& .MuiInputBase-root > input": {
@@ -118,6 +117,7 @@ const FileUploadContainer = ({
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [previewimg, setpreviewimg] = useState("");
   const [currentVersion, setSelectVersion] = useState("");
+  console.log(project?.version)
   const [fileVersion, setFileVersionList] = useState(project?.version);
   const [designerObj, setDesignerObj] = useState([]);
   const [designerList, setDesignerList] = useState([]);
@@ -240,6 +240,28 @@ const FileUploadContainer = ({
         setLoading(false);
       });
   }
+  // const handleFileUpload = (event) => {
+  //   const files = event.target.files;
+  //   const newFiles = [];
+  //   for (let i = 0; i < files.length; i++) {
+  //     const file = files[i];
+  //     setFilesType((prev) => [...prev, file]);
+  //     if (
+  //       file.type.startsWith(Jpg) ||
+  //       file.type.startsWith(Jpeg) ||
+  //       file.type.startsWith(Png) ||
+  //       file.type.startsWith(Svg)
+  //     ) {
+  //       const reader = new FileReader();
+  //       reader.onload = function () {
+  //         newFiles.push(reader.result);
+  //         setFiles(newFiles);
+  //       };
+  //       reader.readAsDataURL(file);
+  //     }
+  //   }
+  // };
+
   const handleFileUpload = async (event) => {
     const files = event.target.files;
     let filType = [];
@@ -585,16 +607,24 @@ const FileUploadContainer = ({
 
   const SubmitProject = async (e) => {
     setMemberName(e.target.value);
+    // console.log("selected member", e.target.value, role?.projectManager);
+
     if (role?.projectManager && e.target.value) {
       let project = personProject();
       project.team_members = [e.target.value];
-      project.status = "Assigned";
+      project.status = "Ongoing";
       project.is_active = true;
 
       let data = {
         project_id: personProject()?._id,
         project_data: project,
+        // project_data: {
+        //     team_member : memberName,
+        //     status : "Ongoing",
+        //     is_active : isActive
+        // }
       };
+      // console.log("data is", data);
       setLoading(true);
       await apiClient
         .patch("/graphic-project", data)
@@ -602,8 +632,16 @@ const FileUploadContainer = ({
           const { save } = data;
           setsuccessMessage(data?.message);
           setsuccessOpen(true);
+          // const updatedProjects = reduxState.project_list.CustomerProjects.filter( item => item._id !== save.id)
+          // const allProject = [...updatedProjects,save]
+          // reduxFunctions.getCustomerProjects(allProject)
+          // setRespMessage(data?.message);
           setIsMember((prev) => !prev);
           setLoading(false);
+          // setTimeout(() => {
+          //   handleOpen();
+          //   // openSuccessSB()
+          // }, 600);
         })
         .catch((e) => {
           setLoading(false);
@@ -655,7 +693,7 @@ const FileUploadContainer = ({
   const handleClose = () => setsuccessOpen(false);
 
   return (
-    <MDBox className="chat-2" sx={{ height: '100%', backgroundColor: mibananaColor.headerColor }}>
+    <Box className="chat-2" sx={{ height: showMore ? '100%' : undefined }}>
 
       <MDBox
         sx={{
@@ -693,7 +731,7 @@ const FileUploadContainer = ({
           <Grid>
             <>
               <button
-                className={`uploadbtn ${activebtn == "files" && "activeClass"}`}
+                className={`${classes.uploadbtn} ${activebtn == "files" && "activeClass"}`}
                 onClick={() => {
                   setActiveBtn("files");
                   getAllfiles();
@@ -723,6 +761,7 @@ const FileUploadContainer = ({
               </select>
               <select
                 className="selectType1"
+                // style={{ borderRight: "0px" }}
                 value={currentVersion}
                 onChange={getListThroughVersion}
               >
@@ -739,6 +778,13 @@ const FileUploadContainer = ({
                   </>
                 )}
               </select>
+              {/* <button
+              className="selectType1"
+              onClick={clearCurrentVersion}
+              style={removeVersionStyle}
+            >
+              <Close sx={{ marginTop: "3px" }} />
+            </button> */}
               {role?.projectManager || role?.designer || role?.admin ? (
                 <button
                   className="selectType1 addnewversion"
@@ -776,6 +822,7 @@ const FileUploadContainer = ({
                                 onClick={() => DownloadFile(ver?.download_link)}
                                 className="downloadicon"
                               />
+                              {/* {console.log("var", ver)} */}
                               <div className={classes.fileDiv2}>
                                 <div>
                                   <img
@@ -784,16 +831,25 @@ const FileUploadContainer = ({
                                     onClick={() => openImageViewer(ver.url)}
                                   />
                                   {isViewerOpen && (
-                                    <ImageViewModal
-                                      open={isViewerOpen}
-                                      previewimg={previewimg}
+                                    <ImageViewer
+                                      src={[previewimg]}
+                                      disableScroll={false}
+                                      closeOnClickOutside={true}
                                       onClose={closeImageViewer}
+                                      style={{ width: "100%", height: "100px" }}
                                     />
                                   )}
                                 </div>
                                 <p className={classes.fileDiv2p}>{ver.name.substring(0, 15)}</p>
                               </div>
-
+                              {/* <div className={classes.UserDiv}>
+                        <img src={designerImg} className="adminImg1" />
+                        <div>
+                          <h6 className="userName1">Designer</h6>
+                          <p className="date1">{dateFun(ver?.time)}</p>
+                        </div>
+                        <img src={tickImg} className="TickImg1" />
+                      </div> */}
                             </div>
                           </Grid>
                         </>
@@ -867,12 +923,15 @@ const FileUploadContainer = ({
                 <img src={adminImg} className="adminImg1" />
                 <div>
                   <h3 className={classes.adminDiv2h3}>{project?.name}</h3>
+
+                  {/* <p className={classes.adminDiv2p}>(super admin)</p> */}
                 </div>
               </div>
             </div>
             <div className={classes.adminDiv1}>
               <h2 className={classes.adminDiv1h2}>Team Member</h2>
               <div className="adminDiv2">
+                {/* {console.log("projectproject", project)} */}
                 {project?.team_members.length > 0 ? (
                   <>
                     {" "}
@@ -881,6 +940,7 @@ const FileUploadContainer = ({
                       {project?.team_members.map((item) => (
                         <h3 className={classes.adminDiv2h3}>{item.name}</h3>
                       ))}
+                      {/* <p className={classes.adminDiv2p}>(you)</p> */}
                     </div>
                   </>
                 ) : (
@@ -913,17 +973,18 @@ const FileUploadContainer = ({
             <div className={classes.adminDiv1}>
               <h2 className={classes.adminDiv1h2}>Brand</h2>
               <div className="adminDiv2">
-                <h3 className={classes.adminDiv2h3}>{project?.brand}</h3>
+                {/* <img src={UserImg} className="adminImg1" /> */}
+                <div style={{ marginTop: "25px" }}>
+                  <h3 className={classes.adminDiv2h3}>{project?.brand}</h3>
+                  {/* <p className={classes.adminDiv2p}>(super admin)</p> */}
+                </div>
               </div>
             </div>
             <div className={classes.adminDiv1}>
               <h2 className={classes.adminDiv1h2}>Category</h2>
-              <div className="adminDiv2">
-                <h3 className={classes.adminDiv2h3}>{project?.project_category}</h3>
-              </div>
-              {/* <Typography variant="h6">
-                  {project?.project_category}
-                </Typography> */}
+              <Typography variant="h6" sx={{ marginTop: "25px" }}>
+                {project?.project_category}
+              </Typography>
             </div>
           </Grid>
           <hr />
@@ -944,7 +1005,7 @@ const FileUploadContainer = ({
             <div className={classes.catdiv1}>
               <h2 className={classes.adminDiv1h2}>Details</h2>
               <Typography variant="h6" className="desc1">
-                {project?.is_Active ? "Active" : "Not Active"}
+                {project?.is_Active ? "ACtive" : "Not Active"}
               </Typography>
             </div>
           </div>
@@ -971,7 +1032,7 @@ const FileUploadContainer = ({
           </div>
         </div>
       </MDBox>
-    </MDBox>
+    </Box>
   );
 };
 
