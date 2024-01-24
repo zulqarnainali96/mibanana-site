@@ -64,7 +64,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   // const handleChange = (event) => {
   //     // event.stopPropagation();
   //     const { name, value } = event.target
-  //     console.log(name, value)
   //     setFormValue({
   //         ...formValue,
   //         [name]: value
@@ -185,8 +184,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
       const readableTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
 
       const projectid = project_list.CustomerProjects.indexOf(item);
-
-      console.log(item)
 
       const getUserNotifcations = async () => {
         await apiClient
@@ -520,7 +517,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
       });
       reduxActions.getCustomerProject({ CustomerProjects: filterAccordingtoStatus });
     }
-    console.log(value === "All");
     if (value === "All") {
       reduxActions.getCustomerProject(copyProjectList);
     }
@@ -533,7 +529,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     setCopyProjectList(reduxState.project_list);
     if (value) {
       const filterAccordingtoStatus = reduxState?.project_list?.CustomerProjects?.filter((item) => {
-        console.log(value, item.project_category);
         return item.project_category === value;
       });
       reduxActions.getCustomerProject({ CustomerProjects: filterAccordingtoStatus });

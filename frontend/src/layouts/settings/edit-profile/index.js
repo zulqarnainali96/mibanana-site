@@ -69,67 +69,10 @@ const EditProfile = ({ reduxState, reduxActions }) => {
             reader.onloadend = () => {
                 setImageUrl(reader.result);
             };
-            // console.log("file ", file)
-            // console.log("result ", reader.result)
             reader.readAsDataURL(file);
         } else {
-            // console.log("No file selected")
         }
     };
-
-    // const handleSignUp = async (event) => {
-    //     event.preventDefault()
-    //     setLoading(true)
-    //     const formData = new FormData
-    //     formData.append('avatar', profileData.user_avatar)
-    //     formData.append('email', profileData.email)
-    //     formData.append('fullName', profileData.fullName)
-    //     formData.append('phone', profileData.phone)
-    //     formData.append('user', ID)
-    //     await apiClient.post("/api/settings-profile", formData)
-    //         .then(({ data }) => {
-    //             if (data?.profile !== null) {
-    //                 setLoading(false)
-    //                 setRespMessage(data?.message)
-    //                 const { fullName, phone, avatar, email, } = data?.profile
-    //                 setProfileData({ ...profileData, fullName, phone, email })
-    //                 setImageUrl(avatar)
-    //                 reduxActions.getUserAvatarUrl(avatar)
-    //                 setTimeout(() => {
-    //                     openSuccessSB()
-    //                 }, 1200)
-    //             }
-    //         })
-    //         .catch(err => {
-    //             if (err?.response) {
-    //                 console.error(err.response.data.message)
-    //                 setRespMessage(err.response.data.message)
-    //                 setLoading(false)
-    //                 setTimeout(() => {
-    //                     openErrorSB()
-    //                 }, 1200)
-    //             }
-    //             setLoading(false)
-    //             console.log(err?.message)
-    //         })
-    // }
-
-    // useEffect(() => {
-    //     function getProfileData() {
-    //         apiClient.get("/api/settings-profile/" + ID)
-    //             .then(({ data }) => {
-    //                 if (data?.profile !== null) {
-    //                     // console.log(data?.profie)
-    //                     const { fullName, phone, avatar, email, } = data?.profile
-    //                     setProfileData({ ...profileData, fullName: fullName, phone: phone, email: email, })
-    //                     setImageUrl(avatar?.length ? avatar : defaultImage)
-    //                     reduxActions.getUserAvatarUrl(avatar?.length ? avatar : defaultImage)
-    //                 }
-    //             }).catch((e) => console.log("Fetching profile Error ", e))
-    //     }
-    //     getProfileData()
-    // }, [])
-
     async function uploadWithProfile() {
         setLoading(true)
         const formData = new FormData
@@ -236,7 +179,6 @@ const EditProfile = ({ reduxState, reduxActions }) => {
     }
     async function UpdateProfile(event) {
         event.preventDefault()
-        // console.log(profileData.email,profileData.fullName,profileData.phone)
         if (profileImage.length) {
             uploadWithProfile()
         } else {
@@ -259,8 +201,6 @@ const EditProfile = ({ reduxState, reduxActions }) => {
         }
         getProfile()
     }, [])
-    console.log(reduxState.userDetails)
-
     const renderErrorSB = (
         <MDSnackbar
             color="error"

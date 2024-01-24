@@ -14,14 +14,14 @@ import MibananaIcon from "assets/new-images/navbars/mibanana-logo.png";
 import { useStyles } from "./new-navbar-style";
 // import personImage from 'assets/new-images/navbars/Rectangle.png'
 import MDTypography from "components/MDTypography";
-import { useLocation, NavLink, Navigate, useNavigate } from "react-router-dom";
+import { useLocation, NavLink, Navigate, useNavigate, Link } from "react-router-dom";
 import { notificationsIcon } from "assets/new-images/navbars/notificationIcon";
 import { AccountCircle } from "@mui/icons-material";
 import { useState } from "react";
 import { persistStore } from "redux-persist";
 import NotificationItem from "examples/Items/NotificationItem";
 import Divider from "@mui/material/Divider";
-import Link from "@mui/material/Link";
+// import Link from "@mui/material/Link";
 import { store } from "redux/store";
 import reduxContainer from "redux/containers/containers";
 import { getProjectData } from "redux/global/global-functions";
@@ -104,18 +104,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     reference_example: "",
     add_files: [],
     file_formats: [],
-<<<<<<< HEAD
     specific_software_names: '',
   })
   const is600 = useMediaQuery("(min-width:600px)")
   const is800 = useMediaQuery("(min-width:800px)")
   const islg = useMediaQuery("(min-width:911px)")
-=======
-    specific_software_names: "",
-  });
-  const is600 = useMediaQuery("(min-width:600px)");
-  const is800 = useMediaQuery("(min-width:800px)");
->>>>>>> ba7ff4f8ab66a89b20b603813f4b5a2dc0726345
 
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -409,10 +402,10 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       onClose={handleUserCloseMenu}
       sx={{ mt: 2 }}
     >
-      <Link to={"/settings/profile"}>
+      <Link to="/settings/profile">
         <NotificationItem icon={<Icon>person</Icon>} title="Profile" />
       </Link>
-      <Link to={"/settings/company-profile"}>
+      <Link to="/settings/company-profile">
         <NotificationItem icon={<Icon>account_box</Icon>} title="Company Profile" />
       </Link>
       <NotificationItem icon={<Icon>logout</Icon>} onClick={handleLogout} title="Logout" />
@@ -513,8 +506,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           <NotificationItem title="No message found" />
         </>
       )}
-      {/* <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" /> */}
-      {/* <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" /> */}
     </Menu>
   );
   useEffect(() => {
