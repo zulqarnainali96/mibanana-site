@@ -10,6 +10,7 @@
   overflow-y: auto;
 }
 
+
 .chat-2 {
   display: flex;
   flex-direction: column;
@@ -87,7 +88,7 @@ button:hover {
   background-color: #fdd700;
 }
 
-.css-1l4uw88 > h2,
+.css-1l4uw88>h2,
 h4,
 h6,
 .MuiGrid-root {
@@ -236,6 +237,7 @@ h6,
   margin: 5px 5px;
   padding: 4px 12px;
 }
+
 .addnewversion:hover {
   background: #dcdccf !important;
 }
@@ -409,4 +411,26 @@ h6,
   opacity: 1 !important;
   font-size: 27px !important;
   font-weight: 100 !important;
+}
+
+.headesidebar {
+  display: none !important;
+}
+
+.headersidebardiv {
+  display: none;
+}
+
+@media screen and (max-width: 1200px) {
+  .headesidebar {
+    display: flex !important;
+  }
+
+  .headersidebardiv {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 5px;
+  }
+
 }

@@ -28,12 +28,11 @@ import {
 } from "context";
 import { Button, ListItem, Menu, MenuItem, Toolbar } from "@mui/material";
 
-
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const collapseName = location.pathname.replace("/", "");
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -68,8 +67,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     */
     window.addEventListener("resize", handleMiniSidenav);
 
-
-
     // Call the handleMiniSidenav function to set the state with the initial value.
     handleMiniSidenav();
 
@@ -79,57 +76,52 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
 
-  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, collapse, key, href, route }) => {
-    let returnValue;
+  const renderRoutes = routes.map(
+    ({ type, name, icon, title, noCollapse, collapse, key, href, route }) => {
+      let returnValue;
 
-    if (type === "collapse") {
-      returnValue = href ? (
-        <Link
-          href={href}
-          key={key}
-          target="_blank"
-          rel="noreferrer"
-          sx={{ textDecoration: "none" }}
-        >
-          <SidenavCollapse
-            name={name}
-            icon={icon}
-            active={key === collapseName}
-            noCollapse={noCollapse}
-          />
-        </Link>
-      ) : (
-        <NavLink key={key} to={route}>
-          <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
-        </NavLink>
-      );
-
-    }
-    else if (type === "collapse-dropdown" && collapse) {
-      returnValue = (
-        <div key={key}>
-          <SidenavCollapse
-            name={name}
-            icon={icon}
-            active={key === collapseName}
-            onClick={handleMenuOpen}
-          />
-          <Menu
-            id="dropdown-menu"
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
+      if (type === "collapse") {
+        returnValue = href ? (
+          <Link
+            href={href}
+            key={key}
+            target="_blank"
+            rel="noreferrer"
+            sx={{ textDecoration: "none" }}
           >
-            {collapse.map(({ name, key, route, icon }) => (
-              <MenuItem
-                key={key}
-                onClick={() => navigate(route)}
-                selected={key === collapseName}
-              >
-                {name}
-              </MenuItem>
-            ))}
-            {/* {isAdmin && 
+            <SidenavCollapse
+              name={name}
+              icon={icon}
+              active={key === collapseName}
+              noCollapse={noCollapse}
+            />
+          </Link>
+        ) : (
+          <NavLink key={key} to={route}>
+            <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
+          </NavLink>
+        );
+      } else if (type === "collapse-dropdown" && collapse) {
+        returnValue = (
+          <div key={key}>
+            <SidenavCollapse
+              name={name}
+              icon={icon}
+              active={key === collapseName}
+              onClick={handleMenuOpen}
+            />
+            <Menu
+              id="dropdown-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              {collapse.map(({ name, key, route, icon }) => (
+                <MenuItem key={key} onClick={() => navigate(route)} selected={key === collapseName}>
+                  {name}
+                </MenuItem>
+              ))}
+              {/* {isAdmin && 
               <MenuItem
                 onClick={() => navigate("/settings/create-accounts")}
               // selected={}
@@ -138,42 +130,41 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
               </MenuItem>
 
             } */}
-          </Menu>
-        </div>
-      );
-    }
-    else if (type === "title") {
-      returnValue = (
-        <MDTypography
-          key={key}
-          color={textColor}
-          display="block"
-          variant="caption"
-          fontWeight="bold"
-          textTransform="uppercase"
-          pl={3}
-          mt={2}
-          mb={1}
-          ml={1}
-        >
-          {title}
-        </MDTypography>
-      );
-    } else if (type === "divider") {
-      returnValue = (
-        <Divider
-          key={key}
-          light={
-            (!darkMode && !whiteSidenav && !transparentSidenav) ||
-            (darkMode && !transparentSidenav && whiteSidenav)
-          }
-        />
-      );
-    }
+            </Menu>
+          </div>
+        );
+      } else if (type === "title") {
+        returnValue = (
+          <MDTypography
+            key={key}
+            color={textColor}
+            display="block"
+            variant="caption"
+            fontWeight="bold"
+            textTransform="uppercase"
+            pl={3}
+            mt={2}
+            mb={1}
+            ml={1}
+          >
+            {title}
+          </MDTypography>
+        );
+      } else if (type === "divider") {
+        returnValue = (
+          <Divider
+            key={key}
+            light={
+              (!darkMode && !whiteSidenav && !transparentSidenav) ||
+              (darkMode && !transparentSidenav && whiteSidenav)
+            }
+          />
+        );
+      }
 
-    return returnValue;
-  });
-
+      return returnValue;
+    }
+  );
 
   return (
     <SidenavRoot
@@ -183,7 +174,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     >
       <MDBox pt={"19px"} pb={1} px={4} textAlign="center">
         <MDBox
-          display={{ xs: "block", xl: "none" }}
+          // display={{ xs: "block", xl: "none" }}
           position="absolute"
           top={0}
           right={0}

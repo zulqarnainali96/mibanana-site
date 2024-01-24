@@ -1,36 +1,49 @@
-import React, { useEffect } from 'react'
-import MDBox from 'components/MDBox'
-import { Badge, Button, Grid, Icon, IconButton, Menu, useMediaQuery } from '@mui/material'
-import MibananaIcon from 'assets/new-images/navbars/mibanana-logo.png'
-import { useStyles } from './new-navbar-style'
+import React, { useEffect } from "react";
+import MDBox from "components/MDBox";
+import {
+  Badge,
+  Button,
+  Grid,
+  Icon,
+  IconButton,
+  Menu,
+  MenuItem,
+  useMediaQuery,
+} from "@mui/material";
+import MibananaIcon from "assets/new-images/navbars/mibanana-logo.png";
+import { useStyles } from "./new-navbar-style";
 // import personImage from 'assets/new-images/navbars/Rectangle.png'
-import MDTypography from 'components/MDTypography'
-import { notificationsIcon } from 'assets/new-images/navbars/notificationIcon'
-import { AccountCircle } from '@mui/icons-material'
-import { useState } from 'react'
-import { persistStore } from 'redux-persist'
-import { Link, useNavigate } from 'react-router-dom'
-import NotificationItem from 'examples/Items/NotificationItem'
-import { store } from 'redux/store'
-import reduxContainer from 'redux/containers/containers'
-import { getProjectData } from 'redux/global/global-functions'
-import { getBrandData } from 'redux/global/global-functions'
-import MDButton from 'components/MDButton'
-import DefaultAvatar from 'assets/mi-banana-icons/default-profile.png'
+import MDTypography from "components/MDTypography";
+import { useLocation, NavLink, Navigate, useNavigate } from "react-router-dom";
+import { notificationsIcon } from "assets/new-images/navbars/notificationIcon";
+import { AccountCircle } from "@mui/icons-material";
+import { useState } from "react";
+import { persistStore } from "redux-persist";
+import NotificationItem from "examples/Items/NotificationItem";
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
+import { store } from "redux/store";
+import reduxContainer from "redux/containers/containers";
+import { getProjectData } from "redux/global/global-functions";
+import { getBrandData } from "redux/global/global-functions";
+import MDButton from "components/MDButton";
+import DefaultAvatar from "assets/mi-banana-icons/default-profile.png";
 import { reRenderChatComponent } from "redux/actions/actions";
-import apiClient from 'api/apiClient'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
-import { currentUserRole } from 'redux/global/global-functions'
-import { mibananaColor } from 'assets/new-images/colors'
-import { styled } from '@mui/material/styles'
-import { fontsFamily } from 'assets/font-family'
-import { projectIcon } from 'assets/new-images/navbars/create-project-icon'
-import SuccessModal from 'components/SuccessBox/SuccessModal'
-import CreateProject1 from '../Form-modal/new'
-import useRightSideList from 'layouts/Right-side-drawer-list/useRightSideList'
-import RightSideDrawer from 'components/RightSideDrawer'
-import { useMaterialUIController } from 'context'
+import apiClient from "api/apiClient";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { currentUserRole } from "redux/global/global-functions";
+import { mibananaColor } from "assets/new-images/colors";
+import { styled } from "@mui/material/styles";
+import { fontsFamily } from "assets/font-family";
+import { projectIcon } from "assets/new-images/navbars/create-project-icon";
+import SuccessModal from "components/SuccessBox/SuccessModal";
+import CreateProject1 from "../Form-modal/new";
+import useRightSideList from "layouts/Right-side-drawer-list/useRightSideList";
+import RightSideDrawer from "components/RightSideDrawer";
+import List from "@mui/material/List";
+import { useMaterialUIController } from "context";
+import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 import {
   navbar,
   navbarContainer,
@@ -42,64 +55,93 @@ import { setMiniSidenav } from 'context'
 import "./navbar-style.css"
 let image = "image/"
 
-const NewNavbar = ({ reduxState, reduxActions }) => {
-  const navbarStyles = useStyles()
-  const isLarge = useMediaQuery("(min-width:800px)")
+const NewNavbar = ({ reduxState, reduxActions, routes }) => {
+  const navbarStyles = useStyles();
+  const location = useLocation();
+  const collapseName = location.pathname.replace("/", "");
+  const isLarge = useMediaQuery("(min-width:800px)");
   const [userMenu, setUserMenu] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
-  const [inComingMsg, setInComingMsg] = useState(false)
-  const userNewChatMessage = reduxState.userNewChatMessage
+  const [inComingMsg, setInComingMsg] = useState(false);
+  const userNewChatMessage = reduxState.userNewChatMessage;
   const handleUserProfileMenu = (event) => setUserMenu(event.currentTarget);
   const handleUserCloseMenu = () => setUserMenu(false);
   const handleCloseMenu = () => setOpenMenu(false);
-  const reduxDispatch = useDispatch()
-  const render_chat = useSelector(state => state.re_render_chat)
-  const role = currentUserRole(reduxState)
-  const personImage = reduxState?.userDetails?.avatar ? reduxState?.userDetails?.avatar : DefaultAvatar
-  const setChatRender = (payload) => reduxDispatch(reRenderChatComponent(payload))
-  const navigate = useNavigate()
-  const [respMessage, setRespMessage] = useState("")
+  const reduxDispatch = useDispatch();
+  const render_chat = useSelector((state) => state.re_render_chat);
+  const role = currentUserRole(reduxState);
+  const personImage = reduxState?.userDetails?.avatar
+    ? reduxState?.userDetails?.avatar
+    : DefaultAvatar;
+  const setChatRender = (payload) => reduxDispatch(reRenderChatComponent(payload));
+  const navigate = useNavigate();
+  const [respMessage, setRespMessage] = useState("");
   const [errorSB, setErrorSB] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
   const openSuccessSB = () => setSuccessSB(true);
-  const [add_files, setAddFiles] = useState([])
-  const [upload_files, setUploadFiles] = useState([])
+  const [add_files, setAddFiles] = useState([]);
+  const [upload_files, setUploadFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null)
+  const [selectedOption, setSelectedOption] = useState(null);
   const openErrorSB = () => setErrorSB(true);
-  const brandOption = reduxState.customerBrand?.map(item => item.brand_name)
+  const brandOption = reduxState.customerBrand?.map((item) => item.brand_name);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { list } = useRightSideList()
+  const { list } = useRightSideList();
   const [formValue, setFormValue] = useState({
-    project_category: '',
-    design_type: '',
-    brand: '',
-    project_title: '',
-    project_description: '',
-    describe_audience: '',
-    sizes: '',
-    width: '',
-    height: '',
-    unit: '',
-    resources: '',
-    reference_example: '',
+    project_category: "",
+    design_type: "",
+    brand: "",
+    project_title: "",
+    project_description: "",
+    describe_audience: "",
+    sizes: "",
+    width: "",
+    height: "",
+    unit: "",
+    resources: "",
+    reference_example: "",
     add_files: [],
     file_formats: [],
+<<<<<<< HEAD
     specific_software_names: '',
   })
   const is600 = useMediaQuery("(min-width:600px)")
   const is800 = useMediaQuery("(min-width:800px)")
   const islg = useMediaQuery("(min-width:911px)")
+=======
+    specific_software_names: "",
+  });
+  const is600 = useMediaQuery("(min-width:600px)");
+  const is800 = useMediaQuery("(min-width:800px)");
+>>>>>>> ba7ff4f8ab66a89b20b603813f4b5a2dc0726345
 
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
+  const {
+    miniSidenav,
+    transparentNavbar,
+    fixedNavbar,
+    openConfigurator,
+    darkMode,
+    whiteSidenav,
+    transparentSidenav,
+  } = controller;
+  const [anchorEl, setAnchorEl] = useState(null);
 
+  let textColor = "white";
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
 
   const handleClickOpen = () => {
-    setOpen(true)
+    setOpen(true);
   };
   const handleLogout = async () => {
     try {
@@ -112,50 +154,52 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
   };
   const handleClose = () => {
     // reduxActions.showModal(false)
-    setOpen(false)
+    setOpen(false);
   };
   const handleChange = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
     setFormValue({
       ...formValue,
-      [name]: value
-    })
-  }
+      [name]: value,
+    });
+  };
   const handleOpenMenu = (event) => {
-    setInComingMsg(false)
-    setOpenMenu(event.currentTarget)
+    setInComingMsg(false);
+    setOpenMenu(event.currentTarget);
   };
   function clearAllNotfications() {
-    reduxActions.getUserNewChatMessage([])
+    reduxActions.getUserNewChatMessage([]);
   }
   function getToTheProject(id) {
     if (id) {
-      navigate("/chat/" + id)
+      navigate("/chat/" + id);
       setTimeout(() => {
-        setChatRender(!render_chat)
-      }, 400)
+        setChatRender(!render_chat);
+      }, 400);
     } else {
-      return
+      return;
     }
   }
   function inComingMessage() {
-    if (reduxState?.userDetails?.roles?.includes("Admin")) return
-    const arr = userNewChatMessage?.filter(item => item.view === true)
-    if (arr?.length === 0) return ""
+    if (reduxState?.userDetails?.roles?.includes("Admin")) return;
+    const arr = userNewChatMessage?.filter((item) => item.view === true);
+    if (arr?.length === 0) return "";
     else {
-      return arr?.length
+      return arr?.length;
     }
   }
   function clearIncomingMsg(item, index) {
-    const userId = index
-    const _id = reduxState?.userDetails?.id
-    apiClient.get(`/api/udpate-notifications/${userId}/${_id}`)
+    const userId = index;
+    const _id = reduxState?.userDetails?.id;
+    apiClient
+      .get(`/api/udpate-notifications/${userId}/${_id}`)
       .then(({ data }) => {
-        reduxActions.getUserNewChatMessage(data?.msgArray)
-      }).catch((err) => {
-        console.error(err.message)
+        reduxActions.getUserNewChatMessage(data?.msgArray);
       })
-    getToTheProject(item?.project_id)
+      .catch((err) => {
+        console.error(err.message);
+      });
+    getToTheProject(item?.project_id);
   }
   async function updateAllChatMessage() {
     const id = reduxState.userDetails?.id
@@ -167,41 +211,44 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
         }).catch((err) => {
           console.error(err.message)
         })
+        .catch((err) => {
+          console.error(err.message);
+        });
     }
   }
   function showPersonRoles() {
-    if (role?.projectManager) return "(Project Manager)"
-    if (role?.admin) return "(Admin)"
-    if (role?.designer) return "(Graphic-Designer)"
-    if (role?.customer) return "(Customer)"
+    if (role?.projectManager) return "(Project Manager)";
+    if (role?.admin) return "(Admin)";
+    if (role?.designer) return "(Graphic-Designer)";
+    if (role?.customer) return "(Customer)";
   }
   function showRoles() {
-    if (role?.projectManager) return "Manager"
-    if (role?.admin) return "Admin"
-    if (role?.designer) return "Designer"
-    if (role?.customer) return "Customer"
+    if (role?.projectManager) return "Manager";
+    if (role?.admin) return "Admin";
+    if (role?.designer) return "Designer";
+    if (role?.customer) return "Customer";
   }
   const removeSingleFile = (img) => {
-    const result = add_files.filter(item => item?.url !== img?.url)
-    const result2 = upload_files.filter(item => item?.name !== img?.filename)
-    setAddFiles(result)
-    setUploadFiles(result2)
-  }
+    const result = add_files.filter((item) => item?.url !== img?.url);
+    const result2 = upload_files.filter((item) => item?.name !== img?.filename);
+    setAddFiles(result);
+    setUploadFiles(result2);
+  };
   const deleteOtherSingleFile = (file) => {
-    const result2 = upload_files.filter(item => item?.name !== file?.name)
-    setUploadFiles(result2)
-  }
+    const result2 = upload_files.filter((item) => item?.name !== file?.name);
+    setUploadFiles(result2);
+  };
   const removeFiles = () => {
-    setAddFiles([])
-    setUploadFiles([])
-    setUploadProgress(0)
-  }
+    setAddFiles([]);
+    setUploadFiles([]);
+    setUploadProgress(0);
+  };
   const handleFileUpload = (event) => {
     if (event.target.files.length === 8) {
-      alert("Upload maximum 7 files")
-      setUploadFiles([])
-      setAddFiles([])
-      return
+      alert("Upload maximum 7 files");
+      setUploadFiles([]);
+      setAddFiles([]);
+      return;
     }
     // setUploadFiles([])
     // setAddFiles([])
@@ -209,69 +256,76 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
     const newFiles = [];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      setUploadFiles(prev => [...prev, file])
+      setUploadFiles((prev) => [...prev, file]);
       if (file.type.startsWith(image)) {
         const reader = new FileReader();
         reader.onload = function () {
-          setAddFiles(prev => [...prev, { filename: file.name, url: reader.result }])
+          setAddFiles((prev) => [...prev, { filename: file.name, url: reader.result }]);
         };
         reader.readAsDataURL(file);
       }
     }
   };
   const onRemoveChange = (state) => {
-    setFormValue({ ...formValue, state: '' })
-  }
+    setFormValue({ ...formValue, state: "" });
+  };
   const uploadFile = (user_id, name, project_id, project_title) => {
-    const formdata = new FormData
+    const formdata = new FormData();
     setUploadProgress(0);
     for (let i = 0; i < upload_files.length; i++) {
-      formdata.append('files', upload_files[i]);
+      formdata.append("files", upload_files[i]);
     }
-    formdata.append('user_id', user_id)
-    formdata.append('name', name)
-    formdata.append('project_title', project_title)
-    formdata.append('project_id', project_id)
-    apiClient.post("/file/google-cloud", formdata, {
-      onUploadProgress: (progressEvent) => {
-        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        setUploadProgress(percentCompleted)
-      }
-    }).then(() => {
-      const data = {
-        user_id,
-        name,
-        project_id,
-        project_title
-      }
-      apiClient.post("/file/get-files", data)
-        .then(({ data }) => {
-          removeFiles()
-          setLoading(false)
-          // handleClose()
-          setRespMessage(data?.message)
-          setTimeout(() => {
-            openSuccessSB()
-          }, 2000)
-        }).catch(err => { throw err })
-    }).catch((err) => {
-      setLoading(false)
-      setRespMessage(err?.response?.data.message)
-      setTimeout(() => {
-        openErrorSB()
-      }, 1200)
-      console.error('Error Found =>', err)
-    })
-  }
+    formdata.append("user_id", user_id);
+    formdata.append("name", name);
+    formdata.append("project_title", project_title);
+    formdata.append("project_id", project_id);
+    apiClient
+      .post("/file/google-cloud", formdata, {
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(percentCompleted);
+        },
+      })
+      .then(() => {
+        const data = {
+          user_id,
+          name,
+          project_id,
+          project_title,
+        };
+        apiClient
+          .post("/file/get-files", data)
+          .then(({ data }) => {
+            removeFiles();
+            setLoading(false);
+            // handleClose()
+            setRespMessage(data?.message);
+            setTimeout(() => {
+              openSuccessSB();
+            }, 2000);
+          })
+          .catch((err) => {
+            throw err;
+          });
+      })
+      .catch((err) => {
+        setLoading(false);
+        setRespMessage(err?.response?.data.message);
+        setTimeout(() => {
+          openErrorSB();
+        }, 1200);
+        console.error("Error Found =>", err);
+      });
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (add_files.length > 0 && upload_files.length > 0) {
       if (add_files.length === 8 && upload_files.length === 8) {
-        alert('Maximum seven file allowed')
-        return
+        alert("Maximum seven file allowed");
+        return;
       }
     }
-    setLoading(true)
+    setLoading(true);
     let data = {
       id: reduxState.userDetails?.id,
       name: reduxState.userDetails?.name,
@@ -284,58 +338,64 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       specific_software_names: formValue.specific_software_names,
       file_formats: formValue.file_formats,
       is_active: false,
-    }
-    console.log('data  ', data, 'form value  ', formValue)
-    await apiClient.post('/graphic-project', data)
-      .then(resp => {
+    };
+    console.log("data  ", data, "form value  ", formValue);
+    await apiClient
+      .post("/graphic-project", data)
+      .then((resp) => {
         if (resp?.status === 201) {
-          const { message } = resp?.data
-          console.log(resp?.data)
-          setRespMessage(message)
-          reduxActions.getNew_Brand(!reduxState.new_brand)
+          const { message } = resp?.data;
+          console.log(resp?.data);
+          setRespMessage(message);
+          reduxActions.getNew_Brand(!reduxState.new_brand);
           let param = [
             reduxState.userDetails?.id,
             reduxState.userDetails?.name,
             resp.data?.project._id,
-            resp.data?.project.project_title
-          ]
+            resp.data?.project.project_title,
+          ];
           if (add_files.length > 0 && upload_files.length > 0) {
-            uploadFile(...param)
+            uploadFile(...param);
           }
-          setOpen(false)
+          setOpen(false);
           setTimeout(() => {
             // openSuccessSB()
-            setLoading(false)
-            setShowSuccessModal(true)
-          }, 300)
+            setLoading(false);
+            setShowSuccessModal(true);
+          }, 300);
         }
-        setLoading(false)
+        setLoading(false);
       })
-      .catch(error => {
-        setLoading(false)
-        setRespMessage(error.message)
+      .catch((error) => {
+        setLoading(false);
+        setRespMessage(error.message);
         setTimeout(() => {
-          openErrorSB()
-        }, 1000)
-      })
-
-  }
+          openErrorSB();
+        }, 1000);
+      });
+  };
   const getAllNotificationsMsg = () => {
-    const id = reduxState?.userDetails?.id
-    apiClient.get("/api/get-notifications/" + id).then(({ data }) => {
-      localStorage.setItem('user_details', JSON.stringify({
-        ...reduxState?.userDetails,
-        ...data.userDetails,
-      }))
-      reduxActions.getUserDetails({
-        ...reduxState?.userDetails,
-        ...data.userDetails,
+    const id = reduxState?.userDetails?.id;
+    apiClient
+      .get("/api/get-notifications/" + id)
+      .then(({ data }) => {
+        localStorage.setItem(
+          "user_details",
+          JSON.stringify({
+            ...reduxState?.userDetails,
+            ...data.userDetails,
+          })
+        );
+        reduxActions.getUserDetails({
+          ...reduxState?.userDetails,
+          ...data.userDetails,
+        });
+        reduxActions.getUserNewChatMessage(data.userDetails?.notifications);
       })
-      reduxActions.getUserNewChatMessage(data.userDetails?.notifications)
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   // Accunts Dropdown
   const renderUserMenu = () => (
     <Menu
@@ -356,8 +416,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
         <NotificationItem icon={<Icon>account_box</Icon>} title="Company Profile" />
       </Link>
       <NotificationItem icon={<Icon>logout</Icon>} onClick={handleLogout} title="Logout" />
-
-    </Menu >
+    </Menu>
   );
   // Notifications Dropdown
   const renderMenu = () => (
@@ -373,38 +432,83 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
       sx={{
         mt: 2,
         height: 400,
-        borderRadius: '0px',
-        padding: '10px',
-
+        borderRadius: "0px",
+        padding: "10px",
       }}
     >
       {userNewChatMessage?.length > 0 && (
-        <MDButton variant="filled" color="info" p={1} sx={{ width: '100%', fontsFamily: fontsFamily.poppins }} onClick={clearAllNotfications}>
+        <MDButton
+          variant="filled"
+          color="info"
+          p={1}
+          sx={{ width: "100%", fontsFamily: fontsFamily.poppins }}
+          onClick={clearAllNotfications}
+        >
           clear all message
         </MDButton>
       )}
-      {userNewChatMessage?.length > 0 ? userNewChatMessage.map((newMsg, i) => (
-        <MDBox
-          display="flex"
-          key={i}
-          flexDirection="column"
-          p={.8}
-          mb={.2}
-          width="240px"
-          gap="5px"
-          sx={{ backgroundColor: newMsg?.view ? "#4b45458c" : "white", ":hover": { backgroundColor: '#ddd', cursor: 'pointer', borderRadius: '0px !important' } }}
-          onClick={() => clearIncomingMsg(newMsg, i)}
-        >
-          <MDTypography fontSize="medium" fontWeight="bold" sx={notificationStyles}>{newMsg?.project_title}</MDTypography>
-          <MDBox display="flex" gap="8px" width="100%">
-            {newMsg?.avatar ? <img src={newMsg?.avatar} loading="lazy" width={40} height={40} style={{ borderRadius: '20px' }} /> : <img src={DefaultAvatar} loading="lazy" width={40} height={40} style={{ borderRadius: '20px' }} />}
-            <MDBox display="flex" flexDirection="column" gap="5px" width="100%">
-              <MDTypography fontSize="small" fontWeight="300" sx={notificationStyles}>{newMsg?.message}</MDTypography>
-              <MDTypography fontSize="small" fontWeight="300" sx={{ fontFamily: fontsFamily.poppins, color: mibananaColor.tableHeaderColor, fontStyle: 'italic' }}>{"received message from "}<b style={{ display: 'block' }}>{newMsg?.role}</b></MDTypography>
+      {userNewChatMessage?.length > 0 ? (
+        userNewChatMessage.map((newMsg, i) => (
+          <MDBox
+            display="flex"
+            key={i}
+            flexDirection="column"
+            p={0.8}
+            mb={0.2}
+            width="240px"
+            gap="5px"
+            sx={{
+              backgroundColor: newMsg?.view ? "#4b45458c" : "white",
+              ":hover": {
+                backgroundColor: "#ddd",
+                cursor: "pointer",
+                borderRadius: "0px !important",
+              },
+            }}
+            onClick={() => clearIncomingMsg(newMsg, i)}
+          >
+            <MDTypography fontSize="medium" fontWeight="bold" sx={notificationStyles}>
+              {newMsg?.project_title}
+            </MDTypography>
+            <MDBox display="flex" gap="8px" width="100%">
+              {newMsg?.avatar ? (
+                <img
+                  src={newMsg?.avatar}
+                  loading="lazy"
+                  width={40}
+                  height={40}
+                  style={{ borderRadius: "20px" }}
+                />
+              ) : (
+                <img
+                  src={DefaultAvatar}
+                  loading="lazy"
+                  width={40}
+                  height={40}
+                  style={{ borderRadius: "20px" }}
+                />
+              )}
+              <MDBox display="flex" flexDirection="column" gap="5px" width="100%">
+                <MDTypography fontSize="small" fontWeight="300" sx={notificationStyles}>
+                  {newMsg?.message}
+                </MDTypography>
+                <MDTypography
+                  fontSize="small"
+                  fontWeight="300"
+                  sx={{
+                    fontFamily: fontsFamily.poppins,
+                    color: mibananaColor.tableHeaderColor,
+                    fontStyle: "italic",
+                  }}
+                >
+                  {"received message from "}
+                  <b style={{ display: "block" }}>{newMsg?.role}</b>
+                </MDTypography>
+              </MDBox>
             </MDBox>
           </MDBox>
-        </MDBox>
-      )) : (
+        ))
+      ) : (
         <>
           <NotificationItem title="No message found" />
         </>
@@ -414,37 +518,37 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
     </Menu>
   );
   useEffect(() => {
-    setInComingMsg(true)
-  }, [userNewChatMessage])
+    setInComingMsg(true);
+  }, [userNewChatMessage]);
 
   useEffect(() => {
-    const id = reduxState?.userDetails?.id
-    getProjectData(id, reduxActions.getCustomerProject)
-    getBrandData(id, reduxActions.getCustomerBrand)
-  }, [reduxState.new_brand])
+    const id = reduxState?.userDetails?.id;
+    getProjectData(id, reduxActions.getCustomerProject);
+    getBrandData(id, reduxActions.getCustomerBrand);
+  }, [reduxState.new_brand]);
 
   const ProjectButton = styled(Button)(({ theme: { palette } }) => {
-    const { primary } = palette
+    const { primary } = palette;
     return {
       backgroundColor: primary.main,
       fontFamily: fontsFamily.poppins,
-      fontWeight: '400',
+      fontWeight: "400",
       borderRadius: 0,
-      height: '100%',
+      height: "100%",
       "&:hover": {
         backgroundColor: "#d9ba08",
       },
       "&:focus": {
         backgroundColor: "#d9ba08 !important",
-      }
-    }
-  })
+      },
+    };
+  });
   const gridItemResponsive = ({ breakpoints }) => ({
-    [breakpoints.up('xs')]: {
-      padding: '12px'
+    [breakpoints.up("xs")]: {
+      padding: "12px",
     },
-    [breakpoints.down('xs')]: {
-      padding: '0px !important'
+    [breakpoints.down("xs")]: {
+      padding: "0px !important",
     },
   })
   const responsiveStyle = ({ breakpoints }) => ({
@@ -464,29 +568,122 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
     },
   })
   const imgResponsive = () => {
-    let width = ''
-    let height = ''
+    let width = "";
+    let height = "";
     if (!is800) {
-      width = '50px'
-      height = '50px'
+      width = "50px";
+      height = "50px";
     } else if (!is600) {
-      width = '45px'
-      height = '45px'
+      width = "45px";
+      height = "45px";
     }
     return {
       width,
-      height
-    }
-
-  }
+      height,
+    };
+  };
   const getMessageNotification = () => {
     const isnotifications = userNewChatMessage?.some(item => item?.view === true)
     return isnotifications
   }
   // console.log('get notifications ', getMessageNotification())
   useEffect(() => {
-    getAllNotificationsMsg()
-  }, [])
+    getAllNotificationsMsg();
+  }, []);
+  const renderRoutes = routes?.map(
+    ({ type, name, icon, title, noCollapse, collapse, key, href, route }) => {
+      let returnValue;
+      if (type) {
+        if (type === "collapse") {
+          returnValue = href ? (
+            <Link
+              href={href}
+              key={key}
+              target="_blank"
+              rel="noreferrer"
+              sx={{ textDecoration: "none" }}
+            >
+              <SidenavCollapse
+                name={name}
+                icon={icon}
+                active={key === collapseName}
+                noCollapse={noCollapse}
+              />
+            </Link>
+          ) : (
+            <NavLink key={key} to={route}>
+              <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
+            </NavLink>
+          );
+        } else if (type === "collapse-dropdown" && collapse) {
+          returnValue = (
+            <div key={key}>
+              <SidenavCollapse
+                name={name}
+                icon={icon}
+                active={key === collapseName}
+                onClick={handleMenuOpen}
+              />
+              <Menu
+                id="dropdown-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                {collapse.map(({ name, key, route, icon }) => (
+                  <MenuItem
+                    key={key}
+                    onClick={() => navigate(route)}
+                    selected={key === collapseName}
+                  >
+                    {name}
+                  </MenuItem>
+                ))}
+                {/* {isAdmin && 
+          <MenuItem
+            onClick={() => navigate("/settings/create-accounts")}
+          // selected={}
+          >
+            Create accounts
+          </MenuItem>
+
+        } */}
+              </Menu>
+            </div>
+          );
+        } else if (type === "title") {
+          returnValue = (
+            <MDTypography
+              key={key}
+              color={textColor}
+              display="block"
+              variant="caption"
+              fontWeight="bold"
+              textTransform="uppercase"
+              pl={3}
+              mt={2}
+              mb={1}
+              ml={1}
+            >
+              {title}
+            </MDTypography>
+          );
+        } else if (type === "divider") {
+          returnValue = (
+            <Divider
+              key={key}
+              light={
+                (!darkMode && !whiteSidenav && !transparentSidenav) ||
+                (darkMode && !transparentSidenav && whiteSidenav)
+              }
+            />
+          );
+        }
+      }
+
+      return returnValue;
+    }
+  );
 
   return (
     <>
@@ -544,29 +741,43 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
               }
             })}>
               <Grid container justifyContent={"center"}>
-                <Grid item xxl={12} xl={12} lg={12} md={12} sm={12} xs={12} display="flex" alignItems={"center"} gap={"8px"} sx={({ breakpoints }) => ({ [breakpoints.only('xs')]: { paddingBottom: '14px' } })}>
+                <Grid
+                  item
+                  xxl={12}
+                  xl={12}
+                  lg={12}
+                  md={12}
+                  sm={6}
+                  xs={12}
+                  display="flex"
+                  alignItems={"center"}
+                  gap={"8px"}
+                  sx={({ breakpoints }) => ({
+                    [breakpoints.only("xs")]: { paddingBottom: "14px" },
+                  })}
+                >
                   <div className={navbarStyles.btnContainer} onClick={updateAllChatMessage}>
-                    {getMessageNotification() ? <span className={navbarStyles.notificationPoint}></span> : null}
+                    {getMessageNotification() ? (
+                      <span className={navbarStyles.notificationPoint}></span>
+                    ) : null}
                     <RightSideDrawer list={list} />
                   </div>
-                  <div
-                    className={navbarStyles.btnContainer}
-                    onClick={handleUserProfileMenu}
-                  >
-                    <AccountCircle
-                      fontSize='large'
-                      sx={{ fill: "#F6F6E8" }} />
+                  <div className={navbarStyles.btnContainer} onClick={handleUserProfileMenu}>
+                    <AccountCircle fontSize="large" sx={{ fill: "#F6F6E8" }} />
                   </div>
                   {renderUserMenu()}
-                  {role?.customer && <ProjectButton
-                    variant="contained"
-                    size='medium'
-                    startIcon={projectIcon}
-                    onClick={handleClickOpen}
-                  >
-                    Create Project
-                  </ProjectButton>}
+                  {role?.customer && (
+                    <ProjectButton
+                      variant="contained"
+                      size="medium"
+                      startIcon={projectIcon}
+                      onClick={handleClickOpen}
+                    >
+                      Create Project
+                    </ProjectButton>
+                  )}
                 </Grid>
+
                 {/* <Grid item xxl={6} xl={6} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({
                   [breakpoints.only('xs')]: {
                     paddingTop: '5px',
@@ -595,8 +806,7 @@ const NewNavbar = ({ reduxState, reduxActions }) => {
 const notificationStyles = {
   fontFamily: fontsFamily.poppins,
   color: mibananaColor.yellowTextColor,
-  wordBreak: 'break-word',
-}
+  wordBreak: "break-word",
+};
 
-export default reduxContainer(NewNavbar)
-
+export default reduxContainer(NewNavbar);
