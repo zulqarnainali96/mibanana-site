@@ -9,6 +9,9 @@ const ImageViewModal = ({ open, previewimg, onClose, allImages }) => {
   const is768 = useMediaQuery("(max-width:768px)")
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  console.log(previewimg)
+  console.log(currentIndex)
+
   const goToNextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % allImages.length);
   };
@@ -19,7 +22,9 @@ const ImageViewModal = ({ open, previewimg, onClose, allImages }) => {
     );
   };
   useEffect( () => {
+    setCurrentIndex(previewimg || 0)
   }, [currentIndex])
+
 
   return (
     <Dialog open={open} sx={viewStyles}>

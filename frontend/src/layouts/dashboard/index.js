@@ -145,6 +145,8 @@ function Dashboard({ reduxActions, reduxState }) {
         return "Assigned"
       case 'Submitted':
         return "Submitted"
+      case 'Attend' :
+        return 'Attend'  
       default:
         return "End"
     }

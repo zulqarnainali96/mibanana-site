@@ -120,7 +120,8 @@ const FileUploadContainer = ({
 
   const truncatedDescription = project?.project_description?.substring(0, 240);
 
-  const openImage = () => {
+  const openImage = (index) => {
+    setpreviewimg(index)
     setIsViewerOpen(true)
   }
 
@@ -129,7 +130,6 @@ const FileUploadContainer = ({
   };
 
   const closeImageViewer = () => {
-    setpreviewimg("");
     setIsViewerOpen(false);
   };
   const openFileSelect = () => {
@@ -764,7 +764,7 @@ const FileUploadContainer = ({
                 {version?.length > 0 ? (
                   <>
                     {filterFunction(version).length > 0 ? (
-                      filterFunction(version)?.map((ver) => (
+                      filterFunction(version)?.map((ver,index) => (
                         <>
                           <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
                             <div className={classes.uploadedfileMainDiv}>
@@ -783,7 +783,7 @@ const FileUploadContainer = ({
                                   <img
                                     src={ver.url}
                                     className="fileImg1"
-                                    onClick={() => openImage(ver.url)}
+                                    onClick={() => openImage(index)}
                                   />
                                   {isViewerOpen && (
                                     <ImageViewModal
