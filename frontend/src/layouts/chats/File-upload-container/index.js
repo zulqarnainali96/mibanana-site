@@ -1,7 +1,6 @@
 import {
   Grid,
   Box,
-  IconButton,
   MenuItem,
   Select,
   OutlinedInput,
@@ -21,6 +20,7 @@ import pdffile from "assets/images/pdffile.svg";
 import xls from "assets/images/xls.svg";
 import eps from "assets/images/eps.svg";
 import psdfile from "assets/images/psdfile.svg";
+import ai_logo from "assets/mi-banana-icons/ai-logo.png"
 
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
@@ -53,19 +53,9 @@ import { MoonLoader } from "react-spinners";
 import { getProjectData } from "redux/global/global-functions";
 import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
-import { Close } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import ImageViewModal from "examples/image-modal";
 
-const inputSxStyles = {
-  "& .MuiInputBase-root > input": {
-    padding: "0px 5px !important",
-    height: "36px !important",
-  },
-  "& .MuiInputBase-root > fieldset": {
-    border: "none !important",
-  },
-};
 const uploadBtn = {
   backgroundColor: "#98e225",
   padding: "10px 13px",
@@ -92,11 +82,10 @@ const FileUploadContainer = ({
     type: "",
   });
   const classes = useStyles();
+  const [previewAllImages, setPreviewAllImages] = useState([])
 
   const [selectedFileType, setSelectedFileType] = useState("");
   const [selectedFilePeople, setSelectedFilePeople] = useState("");
-
-  const [currentFolder, setCurrentFolder] = useState("Customer Uploads");
   const [filesType, setFilesType] = useState([]);
   const { id } = useParams();
 
@@ -108,7 +97,6 @@ const FileUploadContainer = ({
   const project = projects?.find((item) => item._id === id);
   const version1 = project?.add_files[0]?.version1;
   const [version, setVersion] = useState(version1);
-  const [downloadfileName, setDownloadFileName] = useState("");
   const [memberName, setMemberName] = useState([]);
   const [files, setFiles] = useState([]);
   const [fileMsg, setFileMsg] = useState("");
@@ -132,30 +120,10 @@ const FileUploadContainer = ({
 
   const truncatedDescription = project?.project_description?.substring(0, 240);
 
-  const openImageViewer = useCallback((img) => {
-    // console.log("image", img, pdffile);
-    const fileExtension = img.split(".").pop();
-    // console.log("File extension:", fileExtension);
-    if (fileExtension === "pdf") {
-      setpreviewimg(pdffile);
-      setIsViewerOpen(true);
-    } else if (fileExtension === "ai") {
-      setpreviewimg(img);
-      setIsViewerOpen(true);
-    } else if (fileExtension === "xlsx" || fileExtension === "xls") {
-      setpreviewimg(xls);
-      setIsViewerOpen(true);
-    } else if (fileExtension === "eps") {
-      setpreviewimg(eps);
-      setIsViewerOpen(true);
-    } else if (fileExtension === "psd") {
-      setpreviewimg(psdfile);
-      setIsViewerOpen(true);
-    } else {
-      setpreviewimg(img);
-      setIsViewerOpen(true);
-    }
-  }, []);
+  const openImage = () => {
+    setIsViewerOpen(true)
+  }
+
   const handleChange = (event) => {
     setMemberName(event.target.value);
   };
@@ -188,6 +156,7 @@ const FileUploadContainer = ({
       .get("/get-customer-files/" + id)
       .then(({ data }) => {
         setVersion(data.filesInfo);
+        handlePreviewImages(data?.filesInfo)
         setFileMsg("");
         setLoading(false);
       })
@@ -207,6 +176,7 @@ const FileUploadContainer = ({
       .get("/api/designer-uploads/" + id)
       .then(({ data }) => {
         setVersion(data.filesInfo);
+        handlePreviewImages(data?.filesInfo)
         setFileMsg("");
         setFileLoading(false);
         setLoading(false);
@@ -228,6 +198,7 @@ const FileUploadContainer = ({
       .get(`/api/get-version-uploads/${value}/${id}`)
       .then(({ data }) => {
         setVersion(data.filesInfo);
+        handlePreviewImages(data?.filesInfo)
         setFileMsg("");
         setFileLoading(false);
         setLoading(false);
@@ -487,6 +458,7 @@ const FileUploadContainer = ({
   useEffect(() => {
     setFileVersionList(project?.version)
   }, [project?.version])
+
   useEffect(() => {
     getfiles();
   }, [selectedFilePeople]);
@@ -524,11 +496,41 @@ const FileUploadContainer = ({
       return [];
     }
   };
+  const handlePreviewImages = (images) => {
+    let arr = []
+    for (let i = 0; i < images?.length; i++) {
+      const file_type = images[i]?.type?.split('/').pop()
+      console.log('file type', file_type)
+      const currentImage = images[i]?.url
+      const id = images[i]?.id
+      if (file_type === "pdf") {
+        arr.push({ id, image: pdffile })
+      } else if (file_type === "ai") {
+        arr.push({ id, image: ai_logo })
+      } else if (file_type === "xlsx" || file_type === "xls") {
+        arr.push({ id, image: xls })
+      } else if (file_type === "eps") {
+        arr.push({ id, image: eps })
+      } else if (file_type === "psd") {
+        arr.push({ id, image: psdfile })
+      } else if (file_type === "svg+xml") {
+        arr.push({ id, image: currentImage })
+      }
+      else {
+        arr.push({ id, image: currentImage })
+      }
+    }
+    setPreviewAllImages(arr)
+    // console.log(arr)
+  }
+
   const getAllfiles = async () => {
     setLoading(true);
     const clientFilesData = await clientFilesforAll();
     const designerFiles = await designerFilesforAll();
     const combinedData = [...clientFilesData, ...designerFiles];
+    // const previewImages = combinedData?.map(item => item.url)
+    handlePreviewImages(combinedData)
     setVersion(combinedData);
     setLoading(false);
   };
@@ -781,13 +783,14 @@ const FileUploadContainer = ({
                                   <img
                                     src={ver.url}
                                     className="fileImg1"
-                                    onClick={() => openImageViewer(ver.url)}
+                                    onClick={() => openImage(ver.url)}
                                   />
                                   {isViewerOpen && (
                                     <ImageViewModal
                                       open={isViewerOpen}
                                       previewimg={previewimg}
                                       onClose={closeImageViewer}
+                                      allImages={previewAllImages}
                                     />
                                   )}
                                 </div>

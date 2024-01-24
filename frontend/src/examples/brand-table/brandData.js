@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import nikeLogo from "../../assets/mi-banana-icons/nike.webp";
 import MDTypography from "components/MDTypography";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, Menu, MenuItem, useMediaQuery } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import MDBox from "components/MDBox";
 import { getBrandData } from "redux/global/global-functions";
@@ -212,6 +212,7 @@ const BrandData = () => {
   const dispatch = useDispatch();
   const role = currentUserRole(reduxState);
   const func = (value) => dispatch(getCustomerBrand(value));
+  const is768 = useMediaQuery("(max-width:768px)")
 
   useEffect(() => {
     getBrandData(userID, func);
@@ -219,6 +220,7 @@ const BrandData = () => {
 
   const textStyles = {
     fontFamily: fontsFamily.poppins,
+    fontSize : is768 ? '12px !important' : '15px',
     fontWeight: "400 !important",
     color: mibananaColor.yellowTextColor,
   };
@@ -280,6 +282,47 @@ const BrandData = () => {
       ),
     };
   });
+  const small_rows = customerBrand?.map((item) => {
+    const arr = { url: "" };
+    function getBrandLogo() {
+      if (item.files?.length > 0) {
+        const result = item.files?.find((list) => list.type?.startsWith("image/"));
+        arr.url = result ? result?.url : fileImage;
+      }
+    }
+    let brandDescription = item.brand_description?.substring(0, 50) + '...'
+    getBrandLogo();
+    return {
+      logo: (
+        <>
+          {role?.customer ? (
+            <img
+              src={arr?.url}
+              style={{ maxWidth: 70, maxHeight: 70, width: 50, height: "auto" }}
+              alt="brand-logo"
+            />
+          ) : (
+            <Link to={`/brand/${item?._id}`}>
+              <img
+                src={arr?.url}
+                style={{ maxWidth: 70, maxHeight: 70, width: 50, height: "auto" }}
+              />
+            </Link>
+          )}
+        </>
+      ),
+      brand_name: (
+        <MDTypography variant="h4" sx={textStyles}>
+          {item.brand_name}
+        </MDTypography>
+      ),
+      action: (
+        <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
+          <Action item={item} />
+        </MDTypography>
+      ),
+    };
+  });
   // const rows = [
   //     {
   //         logo: 'Logo', brand_name: 'Nike', brand_description: 'brand_description', files: 'files',
@@ -290,11 +333,17 @@ const BrandData = () => {
   // ]
   return {
     rows: customerBrand?.length > 0 ? rows : [],
+    small_rows: customerBrand?.length > 0 ? small_rows : [],
     columns: [
       { Header: "Logo", accessor: "logo", align: "left" },
-      { Header: "Company Name", accessor: "brand_name" },
-      { Header: "Company Description", accessor: "brand_description", align: "center" },
+      { Header: "Brand name", accessor: "brand_name" },
+      { Header: "Brand Description", accessor: "brand_description", align: "center" },
       { Header: "Files", accessor: "files", align: "center" },
+      { Header: "Action", accessor: "action", align: "center" },
+    ],
+    small_columns: [
+      { Header: "Logo", accessor: "logo", align: "left" },
+      { Header: "Brand name", accessor: "brand_name" },
       { Header: "Action", accessor: "action", align: "center" },
     ],
   };

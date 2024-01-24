@@ -1,0 +1,45 @@
+.handle-container {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 99;
+}
+
+.icon-btn {
+  cursor: pointer;
+}
+.icon-btn-color {
+  fill: #fff !important;
+}
+.close-btn {
+  position: absolute !important;
+  cursor: pointer !important;
+  top: 1px;
+  right: 20px;
+}
+
+.image-slider {
+  position: relative;
+  width: 100%;
+  max-width: 45%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.image-slider img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  aspect-ratio: 1;
+}
+
+@media screen and (max-width: 768px) {
+  .handle-container {
+    justify-content: space-between;
+  }
+  .image-slider {
+    max-width: 600px;
+  }
+}

@@ -24,7 +24,8 @@ import SuccessModal from 'components/SuccessBox/SuccessModal'
 import NewProjectsTable from 'examples/new-table'
 import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
-import { styled } from '@mui/material'
+import { styled, useMediaQuery } from '@mui/material'
+
 
 const MIBrandTable = ({ reduxState, reduxActions }) => {
     const open = reduxState.openBrandModel
@@ -35,6 +36,8 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
     const id = reduxState.userDetails.id
     const [errorSB, setErrorSB] = useState(false);
     const [successSB, setSuccessSB] = useState(false);
+    const is768 = useMediaQuery("(max-width:768px)")
+    const is500 = useMediaQuery("(max-width:500px)")
 
     // State for Checkbox
     const [checkState, setCheckState] = useState({
@@ -53,7 +56,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         replace_brand_guidelines: [],
         upload_more: []
     })
-    const { rows, columns } = useBrandData()
+    const { rows, small_rows, columns, small_columns } = useBrandData()
     const [formValue, setFormValue] = useState({
         brand_name: '', brand_description: '', web_url: '',
         facebook_url: '', instagram_url: '', twitter_url: '',
@@ -87,7 +90,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
     const getDescriptionText = (value) => {
         setFormValue({
             ...formValue,
-            brand_description : value
+            brand_description: value
         })
     }
 
@@ -305,7 +308,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                     <Grid item xxl={12} xl={12} md={12} xs={12}>
                         <Grid container alignItems={"center"} justifyContent={"space-around"}>
                             <Grid item xxl={isDesignerAndManagerAdmin ? 12 : 6} xl={isDesignerAndManagerAdmin ? 12 : 6}>
-                                <MDTypography sx={titleStyles}>miBrands</MDTypography>
+                                <MDTypography sx={{ ...titleStyles, fontSize: is500 ? '2rem' : '3rem', }}>miBrands</MDTypography>
                             </Grid>
                             {isDesignerAndManagerAdmin ? null :
                                 (<Grid item xxl={6} xl={6}>
@@ -333,7 +336,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                     <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>
                         <Card sx={{ width: "98%", mt: '20px' }}>
                             <NewProjectsTable
-                                table={{ columns, rows }}
+                                table={{ columns: is768 ? small_columns : columns, rows: is768 ? small_rows : rows }}
                                 entriesPerPage={{ defaultValue: 5 }}
                                 showTotalEntries={true}
                                 pagination={{ variant: 'contained', color: "warning" }}
@@ -357,7 +360,6 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
 export default reduxContainer(MIBrandTable)
 
 const titleStyles = {
-    fontSize: '3rem',
     width: '100%',
     color: mibananaColor.yellowColor,
     fontFamily: fontsFamily.poppins,
