@@ -45,6 +45,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
   const isLg = useMediaQuery("(max-width:768px)")
+  const is500 = useMediaQuery("(max-width:500px)")
   const dispatch = useDispatch();
 
   // const [open, setOpen] = useState(false)
@@ -564,7 +565,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
       >
         <Grid container spacing={6}>
           <Grid item xs={12} pt={0}>
-            <MDTypography pl={"15px"} sx={titleStyles}>
+            <MDTypography pl={"15px"} sx={{...titleStyles,fontSize : is500 ? '2rem' : '3rem' }}>
               miProjects
             </MDTypography>
             <Grid container justifyContent={"space-between"} alignItems={"center"} width={"100%"}>

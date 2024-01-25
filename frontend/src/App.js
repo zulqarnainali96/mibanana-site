@@ -98,6 +98,23 @@ export default function App() {
       return null;
     });
 
+  function getallRoutes() {
+    let route;
+    if (user !== null) {
+      if (role?.admin) {
+        route = AdminRoutes
+      }
+      else if (role?.projectManager || role?.designer) {
+        route = [...routes, projectManager]
+      }
+      else {
+        route = routes
+      }
+
+    }
+    return route
+  }
+
   const manager_router = {
     key: "current-brand",
     route: "/brand/:id",
@@ -153,11 +170,11 @@ export default function App() {
         </>
       )}
       <MDBox>
-        {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar />}
+        {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar routes={getallRoutes()} />}
         <Routes>
           {user !== null ? (
             role?.admin ? getRoutes(AdminRoutes) :
-              role?.projectManager || role?.designer  ? getRoutes(projectManager) :
+              role?.projectManager || role?.designer ? getRoutes(projectManager) :
                 getRoutes(routes)) :
             getRoutes(authRoutes)
           }

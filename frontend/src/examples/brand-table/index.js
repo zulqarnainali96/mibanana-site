@@ -308,7 +308,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                     <Grid item xxl={12} xl={12} md={12} xs={12}>
                         <Grid container alignItems={"center"} justifyContent={"space-around"}>
                             <Grid item xxl={isDesignerAndManagerAdmin ? 12 : 6} xl={isDesignerAndManagerAdmin ? 12 : 6}>
-                                <MDTypography sx={{ ...titleStyles, fontSize: is500 ? '2rem' : '3rem', }}>miBrands</MDTypography>
+                                <MDTypography sx={{...titleStyles,fontSize: is500 ? '2rem' : '3rem',}}>miBrands</MDTypography>
                             </Grid>
                             {isDesignerAndManagerAdmin ? null :
                                 (<Grid item xxl={6} xl={6}>

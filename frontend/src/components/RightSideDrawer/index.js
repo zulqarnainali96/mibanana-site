@@ -25,7 +25,7 @@ const RightSideDrawer = ({ list }) => {
         <div style={styles}>
             {['right'].map((anchor) => (
                 <React.Fragment key={anchor}>
-                    <span onClick={toggleDrawer(anchor, true, setState, rightSideDrawer)}>
+                    <span className='btn-container' onClick={toggleDrawer(anchor, true, setState, rightSideDrawer)}>
                         {chatIcon}
                     </span>
                     <Drawer

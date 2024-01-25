@@ -22,8 +22,10 @@ const ImageViewModal = ({ open, previewimg, onClose, allImages }) => {
     );
   };
   useEffect( () => {
-    setCurrentIndex(previewimg || 0)
   }, [currentIndex])
+  useEffect( () => {
+    setCurrentIndex(previewimg || 0)
+  }, [])
 
 
   return (

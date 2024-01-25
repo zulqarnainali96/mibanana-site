@@ -41,6 +41,7 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
         }
       >
         <ListItemIcon
+          className="side-nav-icon"
           sx={
             (theme) =>
               collapseIconBox(theme, { transparentSidenav, whiteSidenav, darkMode, active })
@@ -54,6 +55,7 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
         </ListItemIcon>
 
         <ListItemText
+          className="side-nav-text"
           primary={name}
           sx={
             (theme) =>
@@ -65,7 +67,7 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
               })
           }
         />
-        {name === 'Settings' && <Icon fontSize="small"><ArrowDropDownCircleOutlined /></Icon>}
+        {name === 'Settings' && <Icon  className="side-nav-text" fontSize="small"><ArrowDropDownCircleOutlined /></Icon>}
       </MDBox>
     </ListItem>
   );

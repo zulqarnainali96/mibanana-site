@@ -166,8 +166,6 @@ const EditBrand = ({
         }
 
     }, [iseditBrand, currentid])
-    console.log('formvalue ', formValue)
-
     return (
         <BrandModal open={open} sx={{ width: '100% !important' }} >
             <DialogTitle display={"flex"} position={"relative"} width={'100%'} justifyContent={"space-between"} alignItems={"center"}>

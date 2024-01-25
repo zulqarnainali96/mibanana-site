@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import MDBox from "components/MDBox";
 import {
-  Badge,
   Button,
   Grid,
   Icon,
-  IconButton,
   Menu,
   MenuItem,
   useMediaQuery,
@@ -15,7 +13,6 @@ import { useStyles } from "./new-navbar-style";
 // import personImage from 'assets/new-images/navbars/Rectangle.png'
 import MDTypography from "components/MDTypography";
 import { useLocation, NavLink, Navigate, useNavigate, Link } from "react-router-dom";
-import { notificationsIcon } from "assets/new-images/navbars/notificationIcon";
 import { AccountCircle } from "@mui/icons-material";
 import { useState } from "react";
 import { persistStore } from "redux-persist";
@@ -41,21 +38,18 @@ import SuccessModal from "components/SuccessBox/SuccessModal";
 import CreateProject1 from "../Form-modal/new";
 import useRightSideList from "layouts/Right-side-drawer-list/useRightSideList";
 import RightSideDrawer from "components/RightSideDrawer";
-import List from "@mui/material/List";
 import { useMaterialUIController } from "context";
 import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
-import {
-  navbar,
-  navbarContainer,
-  navbarRow,
-  navbarIconButton,
-  navbarMobileMenu,
-} from "examples/Navbars/DashboardNavbar/styles";
+import List from "@mui/material/List";
 import { setMiniSidenav } from 'context'
 import "./navbar-style.css"
+import MenuIcon from "@mui/icons-material/Menu"
+import { chatIcon } from 'assets/new-images/navbars/chats-icon';
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
+  console.log(routes)
+
   const navbarStyles = useStyles();
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
@@ -106,16 +100,14 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     file_formats: [],
     specific_software_names: '',
   })
-  const is600 = useMediaQuery("(min-width:600px)")
+  const [showAccountsbtn, setShowAccountsBtn] = useState(false)
+  const is768 = useMediaQuery("(max-width:768px)")
   const is800 = useMediaQuery("(min-width:800px)")
   const islg = useMediaQuery("(min-width:911px)")
 
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
-    transparentNavbar,
-    fixedNavbar,
-    openConfigurator,
     darkMode,
     whiteSidenav,
     transparentSidenav,
@@ -171,14 +163,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       }, 400);
     } else {
       return;
-    }
-  }
-  function inComingMessage() {
-    if (reduxState?.userDetails?.roles?.includes("Admin")) return;
-    const arr = userNewChatMessage?.filter((item) => item.view === true);
-    if (arr?.length === 0) return "";
-    else {
-      return arr?.length;
     }
   }
   function clearIncomingMsg(item, index) {
@@ -524,6 +508,27 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       backgroundColor: primary.main,
       fontFamily: fontsFamily.poppins,
       fontWeight: "400",
+      paddingBlock: "0.9rem",
+      borderRadius: 0,
+      height: "100%",
+      "&:hover": {
+        backgroundColor: "#d9ba08",
+      },
+      "&:focus": {
+        backgroundColor: "#d9ba08 !important",
+      },
+    };
+  });
+  const ProjectButton2 = styled(Button)(({ theme: { palette } }) => {
+    const { primary } = palette;
+    return {
+      backgroundColor: primary.main,
+      fontFamily: fontsFamily.poppins,
+      fontWeight: "400",
+      paddingInline : is768 ? '10px !important' : '12px !important',
+      fontSize : is768 ? '10px !important' : '13px !important',
+      padding : is768 ? '10px !important' : 'inherit',
+      paddingBlock: "0.9rem",
       borderRadius: 0,
       height: "100%",
       "&:hover": {
@@ -536,7 +541,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   });
   const gridItemResponsive = ({ breakpoints }) => ({
     [breakpoints.up("xs")]: {
-      padding: "12px",
+      padding: "11.4px",
     },
     [breakpoints.down("xs")]: {
       padding: "0px !important",
@@ -544,10 +549,10 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   })
   const responsiveStyle = ({ breakpoints }) => ({
     [breakpoints.up('lg')]: {
-      fontSize: '20px !important',
+      fontSize: '18px !important',
     },
     [breakpoints.down('lg')]: {
-      fontSize: '16px !important',
+      fontSize: '16px',
     },
   })
   const roleResponsive = ({ breakpoints }) => ({
@@ -558,21 +563,21 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       fontSize: '15px !important',
     },
   })
-  const imgResponsive = () => {
-    let width = "";
-    let height = "";
-    if (!is800) {
-      width = "50px";
-      height = "50px";
-    } else if (!is600) {
-      width = "45px";
-      height = "45px";
-    }
-    return {
-      width,
-      height,
-    };
-  };
+  // const imgResponsive = () => {
+  //   let width = "";
+  //   let height = "";
+  //   if (!is800) {
+  //     width = "50px";
+  //     height = "50px";
+  //   } else if (!is600) {
+  //     width = "45px";
+  //     height = "45px";
+  //   }
+  //   return {
+  //     width,
+  //     height,
+  //   };
+  // };
   const getMessageNotification = () => {
     const isnotifications = userNewChatMessage?.some(item => item?.view === true)
     return isnotifications
@@ -608,7 +613,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           );
         } else if (type === "collapse-dropdown" && collapse) {
           returnValue = (
-            <div key={key}>
+            <div key={key} className="small-bar-icon-style">
               <SidenavCollapse
                 name={name}
                 icon={icon}
@@ -630,15 +635,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
                     {name}
                   </MenuItem>
                 ))}
-                {/* {isAdmin && 
-          <MenuItem
-            onClick={() => navigate("/settings/create-accounts")}
-          // selected={}
-          >
-            Create accounts
-          </MenuItem>
-
-        } */}
               </Menu>
             </div>
           );
@@ -676,6 +672,10 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     }
   );
 
+  const handleMobileNav = useCallback(() => {
+    setShowAccountsBtn(prev => !prev)
+  }, [showAccountsbtn])
+
   return (
     <>
       <CreateProject1
@@ -712,84 +712,75 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         // title="SUCCESS"
         sideRadius={false}
       />
-      <Grid container className={navbarStyles.gridContainer} sx={
-        { paddingInline: !is600 ? "0.5rem" : "5rem", alignItems: !is800 && "center", paddingBlock: !islg ? "13px" : '20px', }}>
-        <Grid item xxl={6.5} xl={4} lg={4} md={5} sm={6} xs={5} display={"flex"} alignItems={"center"} textAlign={!isLarge && "center"}>
+      <Grid container className="grid-container">
+        <Grid className="grid-1" item xxl={6} xl={5} lg={5} md={6} sm={6} xs={6}>
           <img className='logo-image' src={MibananaIcon} loading='lazy' />
-        </Grid >
-        <Grid item xxl={5.5} xl={8} lg={8} md={7} sm={6} xs={7}>
-          <Grid container alignItems="center">
-            <Grid item xxl={5} xl={5} display={"flex"} gap="18px" lg={5} md={12} sm={12} xs={12} sx={gridItemResponsive}>
-              <img className="person-image" src={personImage} />
-              <div className='hello-text-container'>
-                <MDTypography className="hello-text" sx={responsiveStyle}>Hello {showRoles()}!</MDTypography>
-                <MDTypography className="person-role" sx={roleResponsive}>{showPersonRoles()}</MDTypography>
-              </div>
-            </Grid>
-            <Grid item xxl={7} xl={7} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({
-              [breakpoints.down('lg')]: {
-                display: 'none'
-              }
-            })}>
-              <Grid container justifyContent={"center"}>
-                <Grid
-                  item
-                  xxl={12}
-                  xl={12}
-                  lg={12}
-                  md={12}
-                  sm={6}
-                  xs={12}
-                  display="flex"
-                  alignItems={"center"}
-                  gap={"8px"}
-                  sx={({ breakpoints }) => ({
-                    [breakpoints.only("xs")]: { paddingBottom: "14px" },
-                  })}
-                >
-                  <div className={navbarStyles.btnContainer} onClick={updateAllChatMessage}>
-                    {getMessageNotification() ? (
-                      <span className={navbarStyles.notificationPoint}></span>
-                    ) : null}
-                    <RightSideDrawer list={list} />
-                  </div>
-                  <div className={navbarStyles.btnContainer} onClick={handleUserProfileMenu}>
-                    <AccountCircle fontSize="large" sx={{ fill: "#F6F6E8" }} />
-                  </div>
-                  {renderUserMenu()}
-                  {role?.customer && (
-                    <ProjectButton
-                      variant="contained"
-                      size="medium"
-                      startIcon={projectIcon}
-                      onClick={handleClickOpen}
-                    >
-                      Create Project
-                    </ProjectButton>
-                  )}
-                </Grid>
+        </Grid>
+        <Grid className="grid-2" item xxl={6} xl={7} lg={6} md={6} sm={6} xs={6}>
+          <MDBox className="grid-2-box">
+            <img className="person-image" src={personImage} />
+            <div className='hello-text-container'>
+              <MDTypography className="hello-text" sx={responsiveStyle}>Hello {showRoles()}!</MDTypography>
+              <MDTypography className="person-role" sx={roleResponsive}>{showPersonRoles()}</MDTypography>
+            </div>
+          </MDBox>
+          <MDBox className="grid-2-box">
+            <div className="btn-container" onClick={updateAllChatMessage}>
+              {getMessageNotification() ? (
+                <span className="notifications-point"></span>
+              ) : null}
+              <RightSideDrawer list={list} />
+            </div>
+            <div className="btn-container"
+              onClick={handleUserProfileMenu}>
+              <AccountCircle fontSize="large" />
+            </div>
+            <div className="btn-container menu-icon" onClick={handleMobileNav} >
+              <MenuIcon fontSize="large" />
+            </div>
+            {renderUserMenu()}
+            {role?.customer && (
+              <ProjectButton
+                variant="contained"
+                size="medium"
+                className="create-project-btn"
+                startIcon={projectIcon}
+                onClick={handleClickOpen}
+              >
+                Create Project
+              </ProjectButton>
+            )}
 
-                {/* <Grid item xxl={6} xl={6} lg={6} md={6} xs={12} sx={({ breakpoints }) => ({
-                  [breakpoints.only('xs')]: {
-                    paddingTop: '5px',
-                    paddingBottom: '14px',
-                    textAlign: 'center'
-                  }
-                })}>
-                  <ProjectButton
-                    variant="contained"
-                    size='medium'
-                    startIcon={projectIcon}
-                    onClick={handleClickOpen}
-                  >
-                    Create Project
-                  </ProjectButton>
-                </Grid> */}
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid >
-      </Grid >
+
+          </MDBox>
+        </Grid>
+        <Grid className="grid-3" item style={{ display: showAccountsbtn ? 'flex' : 'none' }}>
+          <div className="btn-container" onClick={updateAllChatMessage}>
+
+            {getMessageNotification() ? (
+              <span className={navbarStyles.notificationPoint}></span>
+            ) : null}
+            <RightSideDrawer list={list} />
+          </div>
+          <div className="btn-container"
+            onClick={handleUserProfileMenu}>
+            <AccountCircle fontSize="large" />
+          </div>
+          {role?.customer && (
+            <ProjectButton2
+              variant="contained"
+              size="small"
+              startIcon={projectIcon}
+              onClick={handleClickOpen}
+            >
+              Create Project
+            </ProjectButton2>
+          )}
+        </Grid>
+      </Grid>
+      <div className="small-navbar-container">
+        <List className="headesidebar">{renderRoutes}</List>
+      </div>
     </>
   )
 }
