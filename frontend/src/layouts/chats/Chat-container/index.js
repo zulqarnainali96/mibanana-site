@@ -10,18 +10,21 @@ import React from 'react'
 import ReactQuill from "react-quill";
 import { fontsFamily } from 'assets/font-family';
 import imageAvatar from "assets/mi-banana-icons/default-profile.png";
+import { useMediaQuery } from '@mui/material';
+import MDBox from 'components/MDBox';
 
-const ChatsContainer = ({ 
+const ChatsContainer = ({
     chatContainerRef,
-    msgArray, 
-    onSendMessage, 
-    reduxState, 
+    msgArray,
+    onSendMessage,
+    reduxState,
     sendMessage,
     message,
 }) => {
     const classes = reactQuillStyles2()
     const avatar = reduxState?.userDetails?.avatar;
     const id = reduxState?.userDetails?.id
+    const is500 = useMediaQuery("(max-width:500px)")
 
     return (
         <React.Fragment>
@@ -30,7 +33,7 @@ const ChatsContainer = ({
                     fontFamily: fontsFamily.poppins,
                     color: mibananaColor.tableHeaderColor,
                     fontWeight: "bold",
-                    fontSize: "16px",
+                    fontSize: is500 ? "14px !important" : "16px",
                     paddingBottom: "5px",
                     borderBottom: `2px solid ${mibananaColor.tableHeaderColor}`,
                 })}
@@ -63,44 +66,23 @@ const ChatsContainer = ({
                         {msgArray?.length
                             ? msgArray.map((item, index, messages) => {
                                 return (
-                                    <pre
-                                        key={index}
-                                        className={`message ${item.user === id ? "right" : "left"
-                                            }`}
-                                        style={{ position: "relative" }}
-                                    >
-                                        <Box sx={{ display: "flex" }}>
-                                            <img
-                                                src={item.avatar}
-                                                width={50}
-                                                height={50}
-                                                loading="lazy"
-                                                style={{
-                                                    borderRadius: 0,
-                                                    marginTop: -7,
-                                                    display: "inline-block",
-                                                    left: item.user === id ? "70px" : "-9px",
-                                                }}
-                                            />
-                                            <Box width="100%" ml={"18px"}>
-                                                <Box
-                                                    className="user-name"
-                                                    style={{
-                                                        display: "flex",
-                                                        gap: "8px",
-                                                        alignItems: "center",
-                                                    }}
-                                                >
-                                                    <p style={{ ...nameStyle, position: "relative", width: "100%" }}>
+                                    <>
+                                        {/* {is500 ? (
+                                            <prev key={index}
+                                                className={`message ${item.user === id ? "right" : "left"
+                                                    }`}
+                                                style={{ position: "relative" }}>
+                                                <MDBox display="flex" gap="12px">
+                                                    <p style={{ ...nameStyle, position: "relative", width: "100%", fontSize: "11px" }}>
                                                         {item.name}
                                                         <span
-                                                            style={{ ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                                                            style={{ ...nameStyle, fontWeight: "300", fontSize: "9px" }}
                                                         >
                                                             {" (" + item?.role + ")"}
                                                         </span>
                                                         <span
                                                             style={{
-                                                                fontSize: "10px",
+                                                                fontSize: "8px",
                                                                 fontWeight: "300",
                                                                 position: "absolute",
                                                                 right: "10px",
@@ -110,17 +92,75 @@ const ChatsContainer = ({
                                                             {item.time_data ? item.time_data : null}
                                                         </span>
                                                     </p>
-                                                </Box>
+                                                </MDBox>
                                                 <Box
-                                                    sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                                                    sx={{ mt: 1, p: '7px', paddingInline : is500 && '18px', ...nameStyle, fontWeight: "300", fontSize: "10px" }}
                                                     className="message-content"
                                                     dangerouslySetInnerHTML={{ __html: item.message }}
                                                 >
 
                                                 </Box>
+                                            </prev>
+                                        ) : (
+                                        <pre
+                                            key={index}
+                                            className={`message ${item.user === id ? "right" : "left"
+                                                }`}
+                                            style={{ position: "relative" }}
+                                        >
+                                            <Box sx={{ display: "flex" }}>
+                                                <img
+                                                    src={item.avatar}
+                                                    width={50}
+                                                    height={50}
+                                                    loading="lazy"
+                                                    style={{
+                                                        borderRadius: 0,
+                                                        marginTop: -7,
+                                                        display: "inline-block",
+                                                        left: item.user === id ? "70px" : "-9px",
+                                                    }}
+                                                />
+                                                <Box width="100%" ml={"18px"}>
+                                                    <Box
+                                                        className="user-name"
+                                                        style={{
+                                                            display: "flex",
+                                                            gap: "8px",
+                                                            alignItems: "center",
+                                                        }}
+                                                    >
+                                                        <p style={{ ...nameStyle, position: "relative", width: "100%" }}>
+                                                            {item.name}
+                                                            <span
+                                                                style={{ ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                                                            >
+                                                                {" (" + item?.role + ")"}
+                                                            </span>
+                                                            <span
+                                                                style={{
+                                                                    fontSize: "10px",
+                                                                    fontWeight: "300",
+                                                                    position: "absolute",
+                                                                    right: "10px",
+                                                                    color: mibananaColor.tableHeaderColor,
+                                                                }}
+                                                            >
+                                                                {item.time_data ? item.time_data : null}
+                                                            </span>
+                                                        </p>
+                                                    </Box>
+                                                    <Box
+                                                        sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                                                        className="message-content"
+                                                        dangerouslySetInnerHTML={{ __html: item.message }}
+                                                    >
+
+                                                    </Box>
+                                                </Box>
                                             </Box>
-                                        </Box>
-                                    </pre>
+                                        </pre>)} */}
+                                    </>
                                 );
                             })
                             : null}
@@ -144,11 +184,11 @@ const ChatsContainer = ({
                     backgroundColor: mibananaColor.headerColor
                 }}
             >
-                <Box>
+                <Box sx={{display : is500 ? "none" : 'block'}}>
                     <img
                         src={avatar ? avatar : imageAvatar}
-                        width={50}
-                        height={50}
+                        width={is500 ? 34 : 50}
+                        height={is500 ? "auto" : 50}
                         alt="person-image"
                     />
                 </Box>
@@ -159,6 +199,7 @@ const ChatsContainer = ({
                     modules={modules}
                     formats={formats}
                     className={classes.quill}
+                    style={{width : is500 ? '97%' : '87%'}}
                 />
                 <SendOutlined
                     fontSize="medium"

@@ -127,10 +127,50 @@
   }
 }
 
+@media screen and (max-width: 1040px) {
+  .grid-container {
+    padding-block: 22px;
+  }
+  .logo-image {
+    width: 180px;
+  }
+  .person-image {
+    width: 45px;
+    height: auto;
+  }
+  .hello-text-container .hello-text {
+    font-size: 15px !important;
+  }
+  .hello-text-container .person-role {
+    font-size: 13px !important;
+  }
+  .btn-container {
+    width: 40px;
+    height: 35px;
+  }
+  .btn-container svg {
+    scale: .8;
+  }
+  .small-navbar-container ul a li div,
+  .small-bar-icon-style li div {
+    padding: 0rem 0.325rem;
+  }
+  .small-navbar-container ul  {
+    height: 33px;
+  }
+  .small-navbar-container .side-nav-text span {
+    font-size: 0.775rem;
+    font-weight: 400;
+  }
+  .grid-3 .btn-container svg {
+    padding-top: 5px !important;
+  }
+}
+
 /* new navbar design test */
 @media screen and (max-width: 991px) {
   .grid-container {
-    padding-block: 13px;
+    padding-block: 20px;
   }
 }
 /* new navbar design test */
@@ -159,12 +199,14 @@
     scale: 0.9 !important;
     padding-top: 0;
   }
+  .small-navbar-container .side-nav-text {
+    display: none;
+  }
   .grid-2 .grid-2-box .btn-container:last-of-type svg {
     scale: 0.9;
   }
-
   .logo-image {
-    width: 190px;
+    width: 170px;
     height: auto;
   }
   .hello-text-container {
@@ -183,9 +225,7 @@
   }
   /* new navbar design test */
 
-  .small-navbar-container .side-nav-text {
-    display: none;
-  }
+ 
 }
 
 @media screen and (max-width: 500px) {
@@ -223,7 +263,7 @@
   .logo-image {
     width: 125px;
   }
-  .hello-text {
+  .hello-text-container .hello-text {
     font-size: 10px !important;
   }
 }

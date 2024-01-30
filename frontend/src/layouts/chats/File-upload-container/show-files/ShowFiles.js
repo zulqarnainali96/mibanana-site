@@ -1,54 +1,33 @@
-// import fileIcon from 'assets/mi-banana-icons/Photo.png'
-import MDBox from 'components/MDBox'
-import React, { useEffect } from 'react'
-import Cancel from '@mui/icons-material/Cancel'
-import AiImage from 'assets/mi-banana-icons/ai-logo.png'
-import fileImage from 'assets/mi-banana-icons/file-image.png'
-import { PictureAsPdf } from '@mui/icons-material'
-import { Jpg, Jpeg, Svg, Png, PDF, PsdFile, Ailogo } from 'redux/global/file-formats'
-const closeBtnStyle = {
-    fill: 'red',
-    position: 'absolute',
-    right: -6,
-    top: -12,
+import React from 'react'
+
+const ImageBox = ({ item, index, openImage, files }) => {
+    const { pdffile, ai_logo, xls, eps, psdfile } = files
+    const file_type = item?.type?.split('/').pop()
+    let currentImage = ''
+    if (file_type === "pdf") {
+        currentImage = pdffile
+    } else if (file_type === "ai") {
+        currentImage = ai_logo
+    } else if (file_type === "xlsx" || file_type === "xls") {
+        currentImage = xls
+    } else if (file_type === "postscript") {
+        const checkExt = item?.url?.split(".")?.pop()
+        if(checkExt === "eps") {
+            currentImage = eps
+        }
+    } else if (file_type === "psd") {
+        currentImage = psdfile
+    } else {
+        currentImage = item?.url
+    }
+    return <img className="fileImg1" src={currentImage} onClick={() => openImage(index)} />
 }
 
-const ImageBox = ({ item }) => {
-    if (item?.type?.startsWith(Jpg) || item?.type.startsWith(Jpeg) || item?.type.startsWith(Png) || item?.type.startsWith(Svg)) {
-        return <img src={item.url} width={'20%'} loading='lazy' alt={item.name} onClick={() => { }} />
-    } else if (item?.type.startsWith(PDF)) {
-        return <PictureAsPdf sx={{ fontSize: '10rem !important' }} />
-    } else if (item?.type?.startsWith(Ailogo)) {
-        return <img src={AiImage} loading='lazy' width={'20%'} alt={item.name} />
-    } else if (item?.type?.startsWith(PsdFile)) {
-        return <img src={fileImage} loading='lazy' width={'20%'} alt={item.name} />
-    }
-}
-
-const ShowFiles = ({ item, showImageOnContainer, deleteFile, currentImage,  }) => {
-    const boxStyles = {
-        cursor: 'pointer',
-        position: 'relative',
-        border: currentImage === item?.name ? '2px solid #98e225' : '',
-        padding: currentImage === item?.name ? '3px' : '',
-    }
-
+const ShowFiles = ({ item, index, openImage, files }) => {
     return (
-        <MDBox sx={boxStyles} onClick={() => showImageOnContainer(item)}>
-            <Cancel fontSize='medium' sx={closeBtnStyle} onClick={() => deleteFile(item?.name)} />
-            <span style={imageNameStyle}>{item.name}</span>
-            <ImageBox item={item} />
-        </MDBox>
+        <ImageBox key={index} item={item} index={index} openImage={openImage} files={files} />
     )
 }
 
 export default ShowFiles
 
-const imageNameStyle = {
-    fontSize: '12px',
-    paddingBottom: '10px',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    width: '80px'
-}

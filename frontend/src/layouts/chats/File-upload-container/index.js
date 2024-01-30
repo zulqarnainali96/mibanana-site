@@ -10,6 +10,7 @@ import {
   Typography,
   Autocomplete,
   TextField,
+  IconButton,
 } from "@mui/material";
 import { UploadIcon } from "assets/mi-banana-icons/upload-icon";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -55,6 +56,8 @@ import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
 import { useSelector } from "react-redux";
 import ImageViewModal from "examples/image-modal";
+import "./file-upload.css"
+import { Close } from "@mui/icons-material";
 
 const uploadBtn = {
   backgroundColor: "#98e225",
@@ -76,11 +79,6 @@ const FileUploadContainer = ({
 }) => {
   const idIs = useSelector((state) => state.userDetails?.id);
   const projects = reduxState?.project_list?.CustomerProjects;
-  const [currentImage, setCurrentImage] = useState({
-    name: "",
-    url: "",
-    type: "",
-  });
   const classes = useStyles();
   const [previewAllImages, setPreviewAllImages] = useState([])
 
@@ -89,9 +87,7 @@ const FileUploadContainer = ({
   const [filesType, setFilesType] = useState([]);
   const { id } = useParams();
 
-  const [loading, setLoading] = useState(false);
-  const [fileLoading, setFileLoading] = useState(false);
-  const [isRender, setIsRender] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [activebtn, setActiveBtn] = useState("");
 
   const project = projects?.find((item) => item._id === id);
@@ -120,10 +116,10 @@ const FileUploadContainer = ({
 
   const truncatedDescription = project?.project_description?.substring(0, 240);
 
-  const openImage = (index) => {
+  const openImage = useCallback((index) => {
     setpreviewimg(index)
     setIsViewerOpen(true)
-  }
+  }, [previewimg, isViewerOpen])
 
   const handleChange = (event) => {
     setMemberName(event.target.value);
@@ -144,9 +140,13 @@ const FileUploadContainer = ({
     setSelectedFilePeople(event.target.value); // Update selected file type on change
   };
   const addFileVerion = () => {
-    const lastNumber = parseInt(fileVersion[fileVersion?.length - 1]);
-    const newNumber = (lastNumber + 1).toString();
-    setFileVersionList((prev) => [...prev, newNumber]);
+    if (fileVersion?.length === 0) {
+      setFileVersionList(["1"]);
+    } else {
+      const lastNumber = parseInt(fileVersion[fileVersion?.length - 1]);
+      const newNumber = (lastNumber + 1).toString();
+      setFileVersionList((prev) => [...prev, newNumber]);
+    }
   };
   async function clientFiles() {
     setVersion([]);
@@ -162,7 +162,6 @@ const FileUploadContainer = ({
       })
       .catch((err) => {
         setFileMsg("No Files Found");
-        setCurrentImage({ url: "" });
         setVersion([]);
         setLoading(false);
       });
@@ -170,7 +169,6 @@ const FileUploadContainer = ({
   async function designerFiles() {
     setVersion([]);
     setFileMsg("");
-    setFileLoading(true);
     setLoading(true);
     await apiClient
       .get("/api/designer-uploads/" + id)
@@ -178,21 +176,17 @@ const FileUploadContainer = ({
         setVersion(data.filesInfo);
         handlePreviewImages(data?.filesInfo)
         setFileMsg("");
-        setFileLoading(false);
         setLoading(false);
       })
       .catch((err) => {
         setFileMsg("No Files Found");
-        setCurrentImage({ url: "" });
         setVersion([]);
-        setFileLoading(false);
         setLoading(false);
       });
   }
   async function getFilesOnVerion(value) {
     setVersion([]);
     setFileMsg("");
-    setFileLoading(true);
     setLoading(true);
     await apiClient
       .get(`/api/get-version-uploads/${value}/${id}`)
@@ -200,14 +194,11 @@ const FileUploadContainer = ({
         setVersion(data.filesInfo);
         handlePreviewImages(data?.filesInfo)
         setFileMsg("");
-        setFileLoading(false);
         setLoading(false);
       })
       .catch((err) => {
         setFileMsg("No Files Found");
-        setCurrentImage({ url: "" });
         setVersion([]);
-        setFileLoading(false);
         setLoading(false);
       });
   }
@@ -230,15 +221,12 @@ const FileUploadContainer = ({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const deleteDesignerFiles = async (filename) => {
-    setFileLoading(true);
     await apiClient
       .delete(`/api/del-designer-files/${id}/${filename}`)
       .then(({ data }) => {
         const { message } = data;
         setRespMessage(message);
         setTimeout(() => {
-          setFileLoading(false);
-          // setImageView([])
           openSuccessSB();
           designerFiles();
         }, 1000);
@@ -246,15 +234,12 @@ const FileUploadContainer = ({
       .catch((err) => {
         if (err.response) {
           const { message } = err.response.data;
-          // setImageView([])
-          setFileLoading(false);
           setRespMessage(message);
           setTimeout(() => {
             openErrorSB();
           }, 1000);
           return;
         } else {
-          setFileLoading(false);
           setRespMessage(err.message);
           setTimeout(() => {
             openErrorSB();
@@ -263,14 +248,12 @@ const FileUploadContainer = ({
       });
   };
   const deleteCustomerFiles = async (filename) => {
-    setFileLoading(true);
     await apiClient
       .delete(`/api/del-customer-files/${id}/${filename}`)
       .then(({ data }) => {
         const { message } = data;
         setRespMessage(message);
         setTimeout(() => {
-          setFileLoading(false);
           openSuccessSB();
           clientFiles();
         }, 1000);
@@ -278,16 +261,12 @@ const FileUploadContainer = ({
       .catch((err) => {
         if (err.response) {
           const { message } = err.response.data;
-          // setImageView([])
-          setFileLoading(false);
           setRespMessage(message);
           setVersion([]);
           setTimeout(() => {
             openErrorSB();
           }, 1000);
         } else {
-          setFileLoading(false);
-          // setImageView([])
           setVersion([]);
           setRespMessage(err.message);
           setTimeout(() => {
@@ -304,6 +283,15 @@ const FileUploadContainer = ({
     if (role?.projectManager || role?.designer || role?.admin) deleteDesignerFiles(filename);
     else {
       deleteCustomerFiles(filename);
+    }
+  };
+  const getListThroughVersion = (e) => {
+    if (e.target.value) {
+      setSelectVersion(e.target.value);
+      getFilesOnVerion(e.target.value);
+      console.log(e.target.value)
+    } else {
+      setSelectVersion("")
     }
   };
   const managerUploadFiles = async (filType) => {
@@ -425,21 +413,23 @@ const FileUploadContainer = ({
           setTimeout(() => {
             openErrorSB()
           }, 400)
-          return
+        } else {
+          setLoading(false)
+          setRespMessage(err.message)
+          setTimeout(() => {
+            openErrorSB()
+          }, 400)
         }
-        setLoading(false)
-        setRespMessage(err.message)
-        setTimeout(() => {
-          openErrorSB()
-        }, 400)
       })
   };
   const handleSubmit = async (filType) => {
-    if (currentVersion && role?.designer || role?.projectManager || role?.admin) {
-      versionUploads(filType);
-    } else if (!currentVersion && role?.designer || role?.projectManager || role?.admin) {
-      managerUploadFiles(filType);
-    } else if (role?.customer) {
+    if (role?.designer || role?.projectManager || role?.admin) {
+      if (currentVersion) {
+        versionUploads(filType);
+      } else {
+        managerUploadFiles(filType);
+      }
+    } else {
       customerUploadFiles(filType);
     }
   };
@@ -473,6 +463,8 @@ const FileUploadContainer = ({
     }
   };
 
+  // ---------- Version Files for All
+
   async function clientFilesforAll() {
     try {
       const response = await apiClient.get("/get-customer-files/" + id);
@@ -485,22 +477,41 @@ const FileUploadContainer = ({
   }
   const designerFilesforAll = async () => {
     try {
-      setFileLoading(true);
       const response = await apiClient.get("/api/designer-uploads/" + id);
       const { data } = response;
-      setFileLoading(false);
 
       return data.filesInfo || [];
     } catch (err) {
-      setFileLoading(false);
       return [];
     }
   };
+  const getAllVersionFiles = async () => {
+    if (fileVersion?.length === 0) return []
+    let allversionfiles = []
+    for (let b = 0; b < fileVersion?.length; b++) {
+      const current_version = fileVersion[b]
+      try {
+        const { data } = await apiClient.get(`/api/get-version-uploads/${current_version}/${id}`);
+        if (allversionfiles.length > 0) {
+          const files = [...allversionfiles, ...data?.filesInfo]
+          allversionfiles = files
+          console.log(files)
+        } else {
+          allversionfiles = data?.filesInfo
+        }
+      } catch (err) {
+        console.error('Error No file found in ' + current_version)
+      }
+    }
+    console.log(allversionfiles)
+    return allversionfiles
+  }
+  // ---------- Version Files for All
+
   const handlePreviewImages = (images) => {
     let arr = []
     for (let i = 0; i < images?.length; i++) {
       const file_type = images[i]?.type?.split('/').pop()
-      console.log('file type', file_type)
       const currentImage = images[i]?.url
       const id = images[i]?.id
       if (file_type === "pdf") {
@@ -509,7 +520,7 @@ const FileUploadContainer = ({
         arr.push({ id, image: ai_logo })
       } else if (file_type === "xlsx" || file_type === "xls") {
         arr.push({ id, image: xls })
-      } else if (file_type === "eps") {
+      } else if (file_type === "postscript") {
         arr.push({ id, image: eps })
       } else if (file_type === "psd") {
         arr.push({ id, image: psdfile })
@@ -521,15 +532,15 @@ const FileUploadContainer = ({
       }
     }
     setPreviewAllImages(arr)
-    // console.log(arr)
   }
 
   const getAllfiles = async () => {
     setLoading(true);
     const clientFilesData = await clientFilesforAll();
     const designerFiles = await designerFilesforAll();
-    const combinedData = [...clientFilesData, ...designerFiles];
-    // const previewImages = combinedData?.map(item => item.url)
+    const get_all_version_Files = await getAllVersionFiles()
+    const combinedData = [...clientFilesData, ...designerFiles, ...get_all_version_Files];
+    console.log(combinedData)
     handlePreviewImages(combinedData)
     setVersion(combinedData);
     setLoading(false);
@@ -557,10 +568,7 @@ const FileUploadContainer = ({
       return files;
     }
   };
-  const getListThroughVersion = (e) => {
-    setSelectVersion(e.target.value);
-    getFilesOnVerion(e.target.value);
-  };
+
   useEffect(() => {
     if (role?.projectManager) {
       apiClient
@@ -584,7 +592,6 @@ const FileUploadContainer = ({
       return {};
     }
   };
-
   const SubmitProject = async (e) => {
     setMemberName(e.target.value);
     if (role?.projectManager && e.target.value) {
@@ -655,7 +662,11 @@ const FileUploadContainer = ({
     }
   };
   const handleClose = () => setsuccessOpen(false);
-
+  useEffect(() => {
+    return () => {
+      setSelectVersion("")
+    }
+  }, [])
   return (
     <MDBox className="chat-2" sx={{ height: '100%', backgroundColor: mibananaColor.headerColor }}>
 
@@ -757,21 +768,21 @@ const FileUploadContainer = ({
               ) : null}
             </>
           </Grid>
-          <Grid container className="filesGrid">
-            {!loading ? (
+          {!loading ? (
+            <Grid container className="filesGrid" display={"grid"} position={"relative"}>
               <>
                 {" "}
                 {version?.length > 0 ? (
                   <>
                     {filterFunction(version).length > 0 ? (
-                      filterFunction(version)?.map((ver,index) => (
+                      filterFunction(version)?.map((ver, index) => (
                         <>
-                          <Grid item xxl={4} xl={4} lg={4} md={4} xs={4}>
-                            <div className={classes.uploadedfileMainDiv}>
+                          <Grid item xxl={3} xl={3} lg={3} md={3} xs={6} className="file-grid-item" height={version?.length < 5 ? "147px" : undefined}>
+                            <div className={`upload-file-main ${classes.uploadedfileMainDiv}`}>
                               {(role?.projectManager || role?.designer || role?.admin) && (
-                                <div onClick={() => deleteFile(ver?.name)} className="deleteIcon">
-                                  x
-                                </div>
+                                <IconButton onClick={() => deleteFile(ver?.name)} className="deleteIcon">
+                                  <Close fontSize="small" />
+                                </IconButton>
                               )}
 
                               <DownloadForOfflineIcon
@@ -779,11 +790,17 @@ const FileUploadContainer = ({
                                 className="downloadicon"
                               />
                               <div className={classes.fileDiv2}>
-                                <div>
-                                  <img
+                                <div className="file-image-container">
+                                  {/* <img
                                     src={ver.url}
                                     className="fileImg1"
                                     onClick={() => openImage(index)}
+                                  /> */}
+                                  <ShowFiles
+                                    item={ver}
+                                    index={index}
+                                    openImage={openImage}
+                                    files={{ pdffile, ai_logo, xls, eps, psdfile }}
                                   />
                                   {isViewerOpen && (
                                     <ImageViewModal
@@ -794,7 +811,7 @@ const FileUploadContainer = ({
                                     />
                                   )}
                                 </div>
-                                <p className={classes.fileDiv2p}>{ver.name.substring(0, 15)}</p>
+                                <p className={classes.fileDiv2p}>{ver?.name?.substring(0, 4)}</p>
                               </div>
 
                             </div>
@@ -815,15 +832,17 @@ const FileUploadContainer = ({
                   </div>
                 )}
               </>
-            ) : (
-              <>
-                <div className="loaderfile">
-                  <CircularProgress />
-                </div>
-              </>
-            )}
-          </Grid>
 
+            </Grid>
+          ) : (
+            <>
+              <Grid container justifyContent={"center"} height="30vh" alignItems={"center"}>
+                <Grid item textAlign="center" xxl={12} xl={12} md={12} lg={12} sm={12} xs={12}>
+                  <CircularProgress />
+                </Grid>
+              </Grid>
+            </>
+          )}
           <Grid container>
             <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>
               <div {...getRootProps()} className={classes.dropfileDiv} onClick={openFileSelect}>
@@ -863,8 +882,9 @@ const FileUploadContainer = ({
             </Grid>
             <Grid item xxl={3} xl={3} lg={3} md={3} xs={3}></Grid>
           </Grid>
-          <Grid container className={classes.adminDivGrid}>
-            <div className={classes.adminDiv1}>
+
+          <div className="project-details project-details-1">
+            <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Author</h2>
               <div className="adminDiv2">
                 <img src={adminImg} className="adminImg1" />
@@ -873,7 +893,7 @@ const FileUploadContainer = ({
                 </div>
               </div>
             </div>
-            <div className={classes.adminDiv1}>
+            <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Team Member</h2>
               <div className="adminDiv2">
                 {project?.team_members.length > 0 ? (
@@ -913,13 +933,13 @@ const FileUploadContainer = ({
                 )}
               </div>
             </div>
-            <div className={classes.adminDiv1}>
+            <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Brand</h2>
               <div className="adminDiv2">
                 <h3 className={classes.adminDiv2h3}>{project?.brand}</h3>
               </div>
             </div>
-            <div className={classes.adminDiv1}>
+            <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Category</h2>
               <div className="adminDiv2">
                 <h3 className={classes.adminDiv2h3}>{project?.project_category}</h3>
@@ -928,23 +948,29 @@ const FileUploadContainer = ({
                   {project?.project_category}
                 </Typography> */}
             </div>
-          </Grid>
+          </div>
           <hr />
-          <div className={classes.catdivmain}>
-            <div className={classes.catdiv1}>
+          <div className="project-details project-details-2">
+            <div className="project-details-div">
+              <h2 className={classes.adminDiv1h2}>Project Title</h2>
+              <Typography variant="h6" className="desc1">
+                {project?.project_title?.length > 10 ? project?.project_title?.substring(0, 10) + '...' : project?.project_title}
+              </Typography>
+            </div>
+            <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Type</h2>
               <Typography variant="h6" className="desc1">
                 {project?.design_type}
               </Typography>
             </div>
 
-            <div className={classes.catdiv1}>
+            <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Size</h2>
               <Typography variant="h6" className="desc1">
                 {project?.sizes}
               </Typography>
             </div>
-            <div className={classes.catdiv1}>
+            <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Details</h2>
               <Typography variant="h6" className="desc1">
                 {project?.is_Active ? "Active" : "Not Active"}
@@ -952,7 +978,7 @@ const FileUploadContainer = ({
             </div>
           </div>
         </Box>
-        <div className={classes.adminDivGrid}>
+        <div className="project-details project-details-3">
           <div className={classes.descriptiondiv}>
             <h2 className={classes.adminDiv1h2}>Description</h2>
             <Typography

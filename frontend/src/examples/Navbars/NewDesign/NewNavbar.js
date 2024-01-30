@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import MibananaIcon from "assets/new-images/navbars/mibanana-logo.png";
 import { useStyles } from "./new-navbar-style";
-// import personImage from 'assets/new-images/navbars/Rectangle.png'
 import MDTypography from "components/MDTypography";
 import { useLocation, NavLink, Navigate, useNavigate, Link } from "react-router-dom";
 import { AccountCircle } from "@mui/icons-material";
@@ -18,7 +17,6 @@ import { useState } from "react";
 import { persistStore } from "redux-persist";
 import NotificationItem from "examples/Items/NotificationItem";
 import Divider from "@mui/material/Divider";
-// import Link from "@mui/material/Link";
 import { store } from "redux/store";
 import reduxContainer from "redux/containers/containers";
 import { getProjectData } from "redux/global/global-functions";
@@ -48,8 +46,7 @@ import { chatIcon } from 'assets/new-images/navbars/chats-icon';
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
-  console.log(routes)
-
+  
   const navbarStyles = useStyles();
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
@@ -102,7 +99,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   })
   const [showAccountsbtn, setShowAccountsBtn] = useState(false)
   const is768 = useMediaQuery("(max-width:768px)")
-  const is800 = useMediaQuery("(min-width:800px)")
+  const is1040 = useMediaQuery("(max-width:1040px)")
   const islg = useMediaQuery("(min-width:911px)")
 
   const [controller, dispatch] = useMaterialUIController();
@@ -227,8 +224,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       setAddFiles([]);
       return;
     }
-    // setUploadFiles([])
-    // setAddFiles([])
     const files = event.target.files;
     const newFiles = [];
     for (let i = 0; i < files.length; i++) {
@@ -525,9 +520,9 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       backgroundColor: primary.main,
       fontFamily: fontsFamily.poppins,
       fontWeight: "400",
-      paddingInline : is768 ? '10px !important' : '12px !important',
-      fontSize : is768 ? '10px !important' : '13px !important',
-      padding : is768 ? '10px !important' : 'inherit',
+      paddingInline : is1040 ? '13px !important' : '12px !important',
+      fontSize : is1040 ? '10px !important' : '13px !important',
+      padding : is1040 ? '4px !important' : '12px',
       paddingBlock: "0.9rem",
       borderRadius: 0,
       height: "100%",

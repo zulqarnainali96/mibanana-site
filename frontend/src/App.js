@@ -24,6 +24,8 @@ import { currentUserRole } from "redux/global/global-functions";
 import { useSelector } from "react-redux";
 import ViewBrand from "examples/brand-table/view-brand/view-brand";
 import "react-quill/dist/quill.snow.css";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -35,7 +37,7 @@ export default function App() {
     sidenavColor,
     transparentSidenav,
     whiteSidenav,
-    darkMode,
+    darkMode, 
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const state = useSelector((state) => state);

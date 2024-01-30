@@ -2,12 +2,17 @@ const { Storage } = require('@google-cloud/storage')
 const path = require('path')
 const uniqID = require('uuid').v4
 const gCloudStorage = new Storage({
+    // projectId: 'mibanana-app',
     projectId: 'mi-banana-401205',
     keyFilename: path.join(__dirname, 'mibanana.json'),
 
 })
+// const new = 'mibanana-app-1bcac3255187.json'
+// const old = 'mibanana.json'
 const graphicProjectsModel = require('../models/graphic-design-model')
 const bucketName = `mi-banana-401205.appspot.com`
+// const bucketName2 = 'mibanana-files-bucket'
+
 const bucket = gCloudStorage.bucket(bucketName)
 const fs = require('fs')
 
@@ -23,6 +28,7 @@ const createFolder = async () => {
     })
     return { path }
 }
+
 let generationMatchPreCondition = 0
 
 const uploadFile = async (req, res) => {

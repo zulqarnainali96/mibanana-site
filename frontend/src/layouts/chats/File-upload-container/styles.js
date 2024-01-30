@@ -177,7 +177,6 @@ export const useStyles = makeStyles({
     background: "#C6C3B6",
   },
   uploadedfileMainDiv: {
-    border: "5px solid #F6F6E8",
     margin: "5px",
     // padding: "5px 10px",
     display: "flex",
@@ -193,7 +192,7 @@ export const useStyles = makeStyles({
     alignItems: "center",
   },
   fileDiv2: {
-    margin: "10px 10px",
+    margin: "5px 10px",
   },
   fileDiv2p: {
     textAlign: "center",
@@ -216,7 +215,7 @@ export const useStyles = makeStyles({
     justifyContent: "space-between",
   },
   catdiv1: {
-    width: "30%",
+    width: "25%",
   },
   descriptiondiv : {
     width: "100%",

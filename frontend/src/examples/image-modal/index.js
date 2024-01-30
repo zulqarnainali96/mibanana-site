@@ -6,16 +6,11 @@ import "./image-modal.css"
 import React, { useEffect, useState } from 'react'
 
 const ImageViewModal = ({ open, previewimg, onClose, allImages }) => {
-  const is768 = useMediaQuery("(max-width:768px)")
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  console.log(previewimg)
-  console.log(currentIndex)
 
   const goToNextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % allImages.length);
   };
-
   const goToPrevSlide = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? allImages.length - 1 : prevIndex - 1
@@ -23,8 +18,9 @@ const ImageViewModal = ({ open, previewimg, onClose, allImages }) => {
   };
   useEffect( () => {
   }, [currentIndex])
+  
   useEffect( () => {
-    setCurrentIndex(previewimg || 0)
+    setCurrentIndex(previewimg)
   }, [])
 
 
