@@ -83,31 +83,44 @@ const designerUploadsOnVersion = async (req, res) => {
     const files = req.files
     const _id = req.params.id
     const versionNo = req.params.version
+    console.log(req.params)
+    console.log(req.files)
     if (!_id) {
         return res.status(400).send({ message: 'ID not found' })
     }
     try {
         const currentProject = await Projects.findById(_id)
         if (currentProject) {
+            console.log('current p ', currentProject)
             let { user, name, project_title } = currentProject
             project_title = project_title.replace(/\s/g, '')
             name = name.replace(/\s/g, '')
             const prefix = `${name}-${user}/${project_title}-${_id}/version-${versionNo}/`
             await Promise.all(files?.map(file => {
+                console.log('File ', file)
                 const options = {
                     resumable: false,
                 }
                 const blob = bucket.file(prefix + file.originalname)
-                blob.createWriteStream(options).on('error', (err) => { throw err }).on('finish',
-                    async () => { }).end(file.buffer)
+                blob.createWriteStream(options).on('error', (err) => { throw err }).end(file.buffer)
             }))
                 .then(async () => {
+                    console.log('async')
+
                     if (currentProject?.version?.length > 0) {
-                        if (!currentProject.version?.includes(versionNo)) {
+                        const isCheck = currentProject.version?.includes(versionNo)
+                        if(!isCheck){
                             const versions = currentProject.version
                             currentProject.version = [...versions, versionNo]
                             await currentProject.save()
+                            return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
+                        } 
+                        else {
+                            return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
                         }
+                    } else {
+                        currentProject.version = [versionNo]
+                        await currentProject.save()
                         return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
                     }
                 })
@@ -271,16 +284,3 @@ const deleteDesigners = async (req, res) => {
 }
 
 module.exports = { deleteDesigners, getDesignerFiles, designerUpload, deleteDesignerFiles, designerUploadsOnVersion, getFilesOnVersionBasis, deleteFileOnVersionBasis }
-
-// const { add_files } = currentProject
-//                 if (add_files.length > 0 && add_files.some( item => item.hasOwnProperty('version1'))  && !add_files.some( item => item.hasOwnProperty('designer_upload'))) {
-
-//                     currentProject.add_files = [...add_files, { designer_upload: filesInfo }]
-//                     await currentProject.save()
-//                     return res.status(201).send({ message: 'Files Uploaded Successfully' })
-//                 } else if (add_files.length > 0 && add_files.some( item => item.hasOwnProperty('version1')) && add_files.some( item => item.hasOwnProperty('designer_upload'))) {
-
-//                     currentProject.add_files.designer_upload =  filesInfo
-//                     await currentProject.save()
-//                     return res.status(201).send({ message: 'Uploaded Successfully' })
-//                 }

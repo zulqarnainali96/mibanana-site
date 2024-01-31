@@ -346,6 +346,7 @@ const Chating = ({ reduxState, reduxActions }) => {
         })}>
           <FileUploadContainer
             setRespMessage={setRespMessage}
+            respMessage={respMessage}
             openSuccessSB={openSuccessSB}
             openErrorSB={openErrorSB}
             showMore={showMore}

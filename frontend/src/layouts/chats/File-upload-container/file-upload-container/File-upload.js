@@ -33,7 +33,7 @@ const ImageBox2 = ({ item }) => {
     }
     return (
         <Grid {...gridProps} padding={0} marginLeft={'6px'}>
-            <img src={item} width="100%" height="100%" loading='lazy' alt={'user-image'} onClick={() => { }} />
+            <img src={item} width="100%" height="100%" loading='lazy' alt={'user-image'}  />
         </Grid>
     )
 }

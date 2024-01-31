@@ -3,6 +3,7 @@ const path = require('path')
 const uniqID = require('uuid').v4
 const gCloudStorage = new Storage({
     // projectId: 'mibanana-app',
+    // keyFilename: path.join(__dirname, 'mibanana-app-1bcac3255187.json'),
     projectId: 'mi-banana-401205',
     keyFilename: path.join(__dirname, 'mibanana.json'),
 

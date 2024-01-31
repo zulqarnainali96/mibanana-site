@@ -133,7 +133,6 @@ export const Action = ({ item }) => {
             d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"
           />
         </svg>
-        {/* <MoreVertIcon onClick={handleMenuOpen} sx={{ height: "2em", fontSize: '27px !important', fill: anchorEl ? "white" : "black" }} /> */}
       </MDBox>
       <Menu
         id="dropdown-menu"
@@ -188,16 +187,20 @@ const ShowFiles = ({ item }) => {
       />
       {showfiles && (
         <MDTypography display="flex" flexDirection="column" variant="p" fontSize="small">
-          {item.files?.map((file) => (
-            <MDTypography
+          {item.files?.map((file) => {
+            const file_name = file.name?.split('.')?.shift()
+            const extension = file.name?.split('.')?.pop()
+            const name = file_name?.length > 14 ? file_name?.substring(0,14) + '...' + extension : file?.name 
+            
+            return <MDTypography
               sx={{ color: "#000", fontWeight: "bold" }}
               key={file.id}
               variant="p"
               fontSize="small"
             >
-              {file.name}
+              {name}
             </MDTypography>
-          ))}
+          })}
         </MDTypography>
       )}
     </MDBox>
@@ -220,7 +223,7 @@ const BrandData = () => {
 
   const textStyles = {
     fontFamily: fontsFamily.poppins,
-    fontSize : is768 ? '12px !important' : '15px',
+    fontSize: is768 ? '12px !important' : '15px',
     fontWeight: "400 !important",
     color: mibananaColor.yellowTextColor,
   };
@@ -253,8 +256,8 @@ const BrandData = () => {
           )}
         </>
       ),
-      
-      
+
+
       brand_name: (
         <MDTypography variant="h4" sx={textStyles}>
           {item.brand_name}
@@ -265,7 +268,7 @@ const BrandData = () => {
         <MDTypography
           variant="p"
           sx={{ ...textStyles, fontSize: "14px !important" }}
-          dangerouslySetInnerHTML={{ __html: brandDescription}}
+          dangerouslySetInnerHTML={{ __html: brandDescription }}
         >
           {/* {item.brand_description} */}
         </MDTypography>

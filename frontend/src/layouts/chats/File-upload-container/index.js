@@ -73,11 +73,12 @@ const FileUploadContainer = ({
   openSuccessSB,
   setRespMessage,
   reduxState,
+  respMessage,
   reduxActions,
   showMore,
   setShowMore
 }) => {
-  const idIs = useSelector((state) => state.userDetails?.id);
+  const person_id = useSelector((state) => state.userDetails?.id);
   const projects = reduxState?.project_list?.CustomerProjects;
   const classes = useStyles();
   const [previewAllImages, setPreviewAllImages] = useState([])
@@ -105,7 +106,6 @@ const FileUploadContainer = ({
   const [fileVersion, setFileVersionList] = useState(project?.version);
   const [designerObj, setDesignerObj] = useState([]);
   const [designerList, setDesignerList] = useState([]);
-  const [is_member, setIsMember] = useState(false);
   const [successOpen, setsuccessOpen] = useState(false);
   const [successMessage, setsuccessMessage] = useState("");
 
@@ -116,10 +116,9 @@ const FileUploadContainer = ({
 
   const truncatedDescription = project?.project_description?.substring(0, 240);
 
-  const openImage = useCallback((index) => {
-    setpreviewimg(index)
+  const openImage = useCallback(() => {
     setIsViewerOpen(true)
-  }, [previewimg, isViewerOpen])
+  }, [isViewerOpen])
 
   const handleChange = (event) => {
     setMemberName(event.target.value);
@@ -148,6 +147,8 @@ const FileUploadContainer = ({
       setFileVersionList((prev) => [...prev, newNumber]);
     }
   };
+
+  // Client Files ====================================
   async function clientFiles() {
     setVersion([]);
     setFileMsg("");
@@ -155,7 +156,7 @@ const FileUploadContainer = ({
     await apiClient
       .get("/get-customer-files/" + id)
       .then(({ data }) => {
-        setVersion(data.filesInfo);
+        // setVersion(data.filesInfo);
         handlePreviewImages(data?.filesInfo)
         setFileMsg("");
         setLoading(false);
@@ -166,6 +167,8 @@ const FileUploadContainer = ({
         setLoading(false);
       });
   }
+
+  // Designer Files ====================================
   async function designerFiles() {
     setVersion([]);
     setFileMsg("");
@@ -173,7 +176,7 @@ const FileUploadContainer = ({
     await apiClient
       .get("/api/designer-uploads/" + id)
       .then(({ data }) => {
-        setVersion(data.filesInfo);
+        // setVersion(data.filesInfo);
         handlePreviewImages(data?.filesInfo)
         setFileMsg("");
         setLoading(false);
@@ -191,7 +194,7 @@ const FileUploadContainer = ({
     await apiClient
       .get(`/api/get-version-uploads/${value}/${id}`)
       .then(({ data }) => {
-        setVersion(data.filesInfo);
+        // setVersion(data.filesInfo);
         handlePreviewImages(data?.filesInfo)
         setFileMsg("");
         setLoading(false);
@@ -211,21 +214,25 @@ const FileUploadContainer = ({
     }
     await handleSubmit(filType);
   };
-  const onDrop = useCallback(async (acceptedFiles) => {
+
+  const onDrop = async (acceptedFiles) => {
     // Do something with dropped files
     await handleSubmit(acceptedFiles);
 
     // You can handle the dropped files here or trigger your existing file upload logic
     // For example, you can upload the dropped files by iterating through acceptedFiles and processing them
-  }, []);
+  };
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const deleteDesignerFiles = async (filename) => {
+    setLoading(true)
     await apiClient
       .delete(`/api/del-designer-files/${id}/${filename}`)
       .then(({ data }) => {
         const { message } = data;
         setRespMessage(message);
+        setLoading(false)
         setTimeout(() => {
           openSuccessSB();
           designerFiles();
@@ -235,12 +242,13 @@ const FileUploadContainer = ({
         if (err.response) {
           const { message } = err.response.data;
           setRespMessage(message);
+          setLoading(false)
           setTimeout(() => {
             openErrorSB();
-          }, 1000);
-          return;
+          }, 1000)
         } else {
           setRespMessage(err.message);
+          setLoading(false)
           setTimeout(() => {
             openErrorSB();
           }, 1000);
@@ -276,25 +284,20 @@ const FileUploadContainer = ({
       });
   };
   const deleteFile = async (filename) => {
-    if (selectedFilePeople == "customer") {
-      deleteCustomerFiles(filename);
-      return;
+    if (role?.projectManager || role?.designer || role?.admin) {
+      deleteDesignerFiles(filename)
     }
-    if (role?.projectManager || role?.designer || role?.admin) deleteDesignerFiles(filename);
-    else {
-      deleteCustomerFiles(filename);
-    }
+
   };
   const getListThroughVersion = (e) => {
     if (e.target.value) {
       setSelectVersion(e.target.value);
       getFilesOnVerion(e.target.value);
-      console.log(e.target.value)
     } else {
       setSelectVersion("")
     }
   };
-  const managerUploadFiles = async (filType) => {
+  const managerUploadFiles = useCallback(async (filType) => {
     setLoading(true);
     const formdata = new FormData();
     for (let i = 0; i < filType.length; i++) {
@@ -322,15 +325,17 @@ const FileUploadContainer = ({
           setTimeout(() => {
             openErrorSB()
           }, 400)
-          return
+        } else {
+
+          setLoading(false)
+          setRespMessage(err.message)
+          setTimeout(() => {
+            openErrorSB()
+          }, 400)
         }
-        setLoading(false)
-        setRespMessage(err.message)
-        setTimeout(() => {
-          openErrorSB()
-        }, 400)
       })
-  };
+  }, [loading, respMessage, files, filesType])
+
   const customerUploadFiles = async (filType) => {
     setLoading(true);
     if (filType.length === 0) return;
@@ -385,6 +390,11 @@ const FileUploadContainer = ({
       })
   };
   const versionUploads = async (filType) => {
+    if (!currentVersion) {
+      console.log(currentVersion)
+      alert("please select version first")
+      return
+    }
     setLoading(true);
     const formdata = new FormData();
     for (let i = 0; i < filType.length; i++) {
@@ -397,7 +407,9 @@ const FileUploadContainer = ({
         setFiles([]);
         setFilesType([]);
         await getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject);
-        await getFilesOnVerion(currentVersion)
+        setTimeout(() => {
+          getFilesOnVerion(currentVersion)
+        }, 700)
         if (data.message) {
           setRespMessage(data.message)
           setTimeout(() => {
@@ -422,15 +434,18 @@ const FileUploadContainer = ({
         }
       })
   };
-  const handleSubmit = async (filType) => {
+  const handleSubmit = async (fileType) => {
     if (role?.designer || role?.projectManager || role?.admin) {
       if (currentVersion) {
-        versionUploads(filType);
+        versionUploads(fileType);
+        console.log('version upload')
+        console.log(isDragActive)
       } else {
-        managerUploadFiles(filType);
+        console.log('designer upload ' + currentVersion)
+        managerUploadFiles(fileType);
       }
     } else {
-      customerUploadFiles(filType);
+      customerUploadFiles(fileType);
     }
   };
   const DownloadFile = (downloadfileName) => {
@@ -503,7 +518,6 @@ const FileUploadContainer = ({
         console.error('Error No file found in ' + current_version)
       }
     }
-    console.log(allversionfiles)
     return allversionfiles
   }
   // ---------- Version Files for All
@@ -515,23 +529,23 @@ const FileUploadContainer = ({
       const currentImage = images[i]?.url
       const id = images[i]?.id
       if (file_type === "pdf") {
-        arr.push({ id, image: pdffile })
+        arr.push({ ...images[i], image: pdffile })
       } else if (file_type === "ai") {
-        arr.push({ id, image: ai_logo })
+        arr.push({ ...images[i], image: ai_logo })
       } else if (file_type === "xlsx" || file_type === "xls") {
-        arr.push({ id, image: xls })
+        arr.push({ ...images[i], image: xls })
       } else if (file_type === "postscript") {
-        arr.push({ id, image: eps })
+        arr.push({ ...images[i], image: eps })
       } else if (file_type === "psd") {
-        arr.push({ id, image: psdfile })
+        arr.push({ ...images[i], image: psdfile })
       } else if (file_type === "svg+xml") {
-        arr.push({ id, image: currentImage })
-      }
-      else {
-        arr.push({ id, image: currentImage })
+        arr.push({ ...images[i], image: currentImage })
+      } else {
+        arr.push({ ...images[i], image: currentImage })
       }
     }
-    setPreviewAllImages(arr)
+    // setPreviewAllImages(arr)
+    setVersion(arr)
   }
 
   const getAllfiles = async () => {
@@ -541,8 +555,8 @@ const FileUploadContainer = ({
     const get_all_version_Files = await getAllVersionFiles()
     const combinedData = [...clientFilesData, ...designerFiles, ...get_all_version_Files];
     console.log(combinedData)
+    // setVersion(combinedData);
     handlePreviewImages(combinedData)
-    setVersion(combinedData);
     setLoading(false);
   };
   const dateFun = (timestamp) => {
@@ -568,20 +582,20 @@ const FileUploadContainer = ({
       return files;
     }
   };
+  const getAllDesignersList = async () => {
+    apiClient.get("/api/get-designer-list/" + person_id)
+      .then(({ data }) => {
+        setDesignerObj(data?.designerlist)
+      })
+      .catch((e) => {
+      });
+  }
 
   useEffect(() => {
-    if (role?.projectManager) {
-      apiClient
-        .get("/api/get-designer-list/" + idIs)
-        .then(({ data }) => {
-          setDesignerObj(data?.designerlist);
-          setDesignerList(data?.designerlist);
-        })
-        .catch((e) => {
-          // console.log('Getting designer list ', e?.response?.data?.message)
-        });
-    }
-  }, [is_member]);
+    getAllDesignersList()
+    getAllfiles()
+  }, []);
+
   const personProject = () => {
     if (reduxState.project_list?.CustomerProjects) {
       const singleProject = reduxState.project_list?.CustomerProjects?.find(
@@ -611,7 +625,6 @@ const FileUploadContainer = ({
           const { save } = data;
           setsuccessMessage(data?.message);
           setsuccessOpen(true);
-          setIsMember((prev) => !prev);
           setLoading(false);
         })
         .catch((e) => {
@@ -663,10 +676,12 @@ const FileUploadContainer = ({
   };
   const handleClose = () => setsuccessOpen(false);
   useEffect(() => {
-    return () => {
-      setSelectVersion("")
-    }
+    console.log('testing')
+    console.log(currentVersion)
   }, [])
+
+  console.log(isViewerOpen)
+
   return (
     <MDBox className="chat-2" sx={{ height: '100%', backgroundColor: mibananaColor.headerColor }}>
 
@@ -791,23 +806,18 @@ const FileUploadContainer = ({
                               />
                               <div className={classes.fileDiv2}>
                                 <div className="file-image-container">
-                                  {/* <img
-                                    src={ver.url}
-                                    className="fileImg1"
-                                    onClick={() => openImage(index)}
-                                  /> */}
                                   <ShowFiles
-                                    item={ver}
-                                    index={index}
-                                    openImage={openImage}
-                                    files={{ pdffile, ai_logo, xls, eps, psdfile }}
+                                    src={ver?.image}
+                                    altname={ver?.name}
+                                    onClick={openImage}
                                   />
+                                  {/* <img src={ver?.image} click={openImage} className="fileImg1" /> */}
                                   {isViewerOpen && (
                                     <ImageViewModal
                                       open={isViewerOpen}
-                                      previewimg={previewimg}
                                       onClose={closeImageViewer}
-                                      allImages={previewAllImages}
+                                      allImages={version}
+                                      currentImage={index}
                                     />
                                   )}
                                 </div>

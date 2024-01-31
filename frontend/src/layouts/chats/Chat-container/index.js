@@ -61,13 +61,14 @@ const ChatsContainer = ({
                     },
                 }}
             >
+                <h1 className='h1-style'>CHAT</h1>
                 <Grid item xxl={12} xl={12} lg={12} width={"100%"}>
                     <Box className="chat" >
                         {msgArray?.length
                             ? msgArray.map((item, index, messages) => {
                                 return (
                                     <>
-                                        {/* {is500 ? (
+                                        {is500 ? (
                                             <prev key={index}
                                                 className={`message ${item.user === id ? "right" : "left"
                                                     }`}
@@ -159,7 +160,7 @@ const ChatsContainer = ({
                                                     </Box>
                                                 </Box>
                                             </Box>
-                                        </pre>)} */}
+                                        </pre>)}
                                     </>
                                 );
                             })
@@ -223,4 +224,5 @@ const nameStyle = {
     fontSize: "16px",
     color: mibananaColor.yellowTextColor,
 };
+
 export default ChatsContainer
