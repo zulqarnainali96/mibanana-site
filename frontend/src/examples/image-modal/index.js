@@ -44,7 +44,7 @@ const ImageViewModal = ({ open, onClose, allImages, currentImage }) => {
         </IconButton>
       </MDBox>
       <div className="image-slider">
-        <img src={allImages[currentIndex]?.image} alt={`Slide ${currentIndex + 1}`} loading="eager" />
+        <img src={allImages[currentIndex]?.image} alt={`Slide ${currentIndex + 1}`} loading="lazy" />
       </div>
     </Dialog>
   )

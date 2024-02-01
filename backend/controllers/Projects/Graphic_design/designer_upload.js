@@ -63,7 +63,8 @@ const getDesignerFiles = async (req, res) => {
                     obj.type = file.metadata.contentType,
                     obj.size = file.metadata.size,
                     obj.time = file.metadata.timeCreated,
-                    obj.upated_time = file.metadata.updated
+                    obj.upated_time = file.metadata.updated,
+                    obj.folder_name = prefix
                 return obj
             })
             // console.log(filesInfo)
@@ -105,8 +106,6 @@ const designerUploadsOnVersion = async (req, res) => {
                 blob.createWriteStream(options).on('error', (err) => { throw err }).end(file.buffer)
             }))
                 .then(async () => {
-                    console.log('async')
-
                     if (currentProject?.version?.length > 0) {
                         const isCheck = currentProject.version?.includes(versionNo)
                         if(!isCheck){
@@ -154,7 +153,8 @@ const getFilesOnVersionBasis = async (req, res) => {
                     obj.type = file.metadata.contentType,
                     obj.size = file.metadata.size,
                     obj.time = file.metadata.timeCreated,
-                    obj.upated_time = file.metadata.updated
+                    obj.upated_time = file.metadata.updated,
+                    obj.folder_name = prefix
                 return obj
             })
             if (filesInfo.length > 0) {
@@ -263,7 +263,6 @@ const deleteDesignerFiles = async (req, res) => {
 }
 const deleteDesigners = async (req, res) => {
     const { user, project_id } = req.body
-    // console.log(user, project_id)
     if (!project_id) {
         return res.status(400).send({ message: 'ID not found' })
     }
@@ -273,6 +272,8 @@ const deleteDesigners = async (req, res) => {
             const findProject = await Projects.findById(project_id)
             const filterTeamMembers = findProject?.team_members.filter(item => item._id !== user)
             findProject.team_members = filterTeamMembers
+            findProject.status = 'Project manager'
+            findProject.is_active = false
             findProject.save()
             return res.status(200).send({ message: "Team member removed" })
         } else {

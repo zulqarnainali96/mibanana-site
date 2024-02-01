@@ -19,8 +19,9 @@ const projectModel = mongoose.Schema({
         required: true
     },
     brand: {
-        type: String,
-        required: true
+        type: Object,
+        required: true,
+        default : {}
     },
     project_title: {
         type: String,

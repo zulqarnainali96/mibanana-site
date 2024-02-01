@@ -268,47 +268,22 @@ const CreateProject1 = ({
                                     margin: 0,
                                 }
                             })}>
-                                {brandOption.length === 0 ? (
-                                    <> <InputLabel htmlFor="brand_label">Select Brand *</InputLabel>
-                                        <Select
-                                            labelId='brand_label'
-                                            name="brand"
-                                            required
-                                            IconComponent={() => <CloseSharp onClick={() => onRemoveChange('brand')} fontSize='small' sx={{ marginRight: 1, cursor: "pointer" }} />}
-                                            onChange={handleChange}
-                                            input={<OutlinedInput label="Select Brand" />}
-                                        >
-                                            {reduxState?.customerBrand?.length ? reduxState?.customerBrand?.map((item, i) => (
-                                                <MenuItem
-                                                    key={i}
-                                                    value={item?.brand_name}
-                                                >
-                                                    {item?.brand_name}
-                                                </MenuItem>
-                                            )) : <MenuItem value={''} onClick={moveToBrandPage}><button
-                                                style={{
-                                                    paddingBlock: '7px',
-                                                    borderRadius: '5px',
-                                                    background: '#ccc',
-                                                }}>Create Brand</button></MenuItem>}
-                                        </Select>
-                                    </>) : (
-                                    <Autocomplete
-                                        value={formValue.brand}
-                                        onChange={(event, newValue) => {
-                                            setFormValue({
-                                                ...formValue,
-                                                brand: newValue
-                                            })
-                                        }}
-                                        onClick={moveToBrandPage}
-                                        id="select-brand-demo"
-                                        options={brandOption}
-                                        sx={{ width: '100%' }}
-                                        renderInput={(params) => <TextField required {...params} label="Select Brand" />}
+                                <Autocomplete
+                                    value={formValue.brand}
+                                    onChange={(event, newValue) => {
+                                        setFormValue({
+                                            ...formValue,
+                                            brand: newValue
+                                        })
+                                    }}
+                                    onClick={moveToBrandPage}
+                                    id="select-brand-demo"
+                                    getOptionLabel={option => option.brand_name ? option.brand_name : ''}
+                                    options={brandOption}
+                                    sx={{ width: '100%' }}
+                                    renderInput={(params) => <TextField required {...params} label="Select Brand" />}
 
-                                    />
-                                )}
+                                />
                             </FormControl>
                             <MDTypography
                                 variant="a"
@@ -518,7 +493,7 @@ const CreateProject1 = ({
                             </MDBox>
                             <MDTypography
                                 component="h5"
-                                sx={{ color: '#b19d9db5', fontWeight: '300', fontSize: '12px',paddingTop : '10px' }}
+                                sx={{ color: '#b19d9db5', fontWeight: '300', fontSize: '12px', paddingTop: '10px' }}
                             >
                                 Note : Only .png, .pdf, .jpg, .jpeg,<br />  .ai, .zip, .psd, .eps
                                 formats are allowed <br />  Max Select 7

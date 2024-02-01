@@ -326,19 +326,11 @@ const BrandData = () => {
       ),
     };
   });
-  // const rows = [
-  //     {
-  //         logo: 'Logo', brand_name: 'Nike', brand_description: 'brand_description', files: 'files',
-  //         action: <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
-  //             <Action />
-  //         </MDTypography>
-  //     }
-  // ]
   return {
     rows: customerBrand?.length > 0 ? rows : [],
     small_rows: customerBrand?.length > 0 ? small_rows : [],
     columns: [
-      { Header: "Logo", accessor: "logo", align: "left" },
+      { Header: "Logo", accessor: "logo", align: "left", cells : (props) => console.log('props', props) },
       { Header: "Brand name", accessor: "brand_name" },
       { Header: "Brand Description", accessor: "brand_description", align: "center" },
       { Header: "Files", accessor: "files", align: "center" },

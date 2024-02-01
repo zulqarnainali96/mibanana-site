@@ -67,7 +67,7 @@ router.get("/assign-graphic-project/:id", getAssignGraphicProject)
 router.get("/api/get-designer-list/:id", getDesignerList)
 router.delete("/api/del-designer-files/:id/:filename", deleteDesignerFiles)
 router.delete("/api/del-customer-files/:id/:filename", deleteCustomerFiles)
-router.post('/delete-designer', deleteDesigners)
+router.put('/api/delete-designer', deleteDesigners)
 
 
 

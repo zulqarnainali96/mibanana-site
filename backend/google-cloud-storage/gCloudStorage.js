@@ -6,7 +6,6 @@ const gCloudStorage = new Storage({
     // keyFilename: path.join(__dirname, 'mibanana-app-1bcac3255187.json'),
     projectId: 'mi-banana-401205',
     keyFilename: path.join(__dirname, 'mibanana.json'),
-
 })
 // const new = 'mibanana-app-1bcac3255187.json'
 // const old = 'mibanana.json'
@@ -77,7 +76,8 @@ const getFiles = async (req, res) => {
                 obj.type = file.metadata.contentType,
                 obj.size = file.metadata.size,
                 obj.time = file.metadata.timeCreated,
-                obj.upated_time = file.metadata.updated
+                obj.upated_time = file.metadata.updated,
+                obj.folder_name = prefix
             return obj
         })
         const findProject = await graphicProjectsModel.findById({ _id: project_id }).exec()

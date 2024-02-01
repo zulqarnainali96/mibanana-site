@@ -76,14 +76,14 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const openErrorSB = () => setErrorSB(true);
-  const brandOption = reduxState.customerBrand?.map((item) => item.brand_name);
+  const brandOption = reduxState.customerBrand;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { list } = useRightSideList();
   const [formValue, setFormValue] = useState({
     project_category: "",
     design_type: "",
-    brand: "",
+    brand: {},
     project_title: "",
     project_description: "",
     describe_audience: "",
@@ -681,7 +681,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         handleClose={handleClose}
         handleChange={handleChange}
         openSuccessSB={openSuccessSB}
-        openErrorSB={openErrorSB}
+        openErrorSB={openErrorSB} 
         setRespMessage={setRespMessage}
         selectedOption={selectedOption}
         setSelectedOption={setSelectedOption}

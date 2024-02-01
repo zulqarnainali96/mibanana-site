@@ -206,6 +206,7 @@ function NewProjectsTable({
                 <TableBody {...getTableBodyProps()} sx={{ backgroundColor: mibananaColor.headerColor }}>
                     {page.map((row, key) => {
                         prepareRow(row);
+                        console.log(row)
                         return (
                             <TableRow key={key} {...row.getRowProps()}
                                 ref={reff}

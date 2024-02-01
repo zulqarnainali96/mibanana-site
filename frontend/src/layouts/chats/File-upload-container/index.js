@@ -1,22 +1,16 @@
 import {
   Grid,
   Box,
-  MenuItem,
-  Select,
-  OutlinedInput,
-  Button,
-  InputLabel,
-  FormControl,
   Typography,
   Autocomplete,
   TextField,
   IconButton,
 } from "@mui/material";
-import { UploadIcon } from "assets/mi-banana-icons/upload-icon";
+// import { UploadIcon } from "assets/mi-banana-icons/upload-icon";
 import CircularProgress from "@mui/material/CircularProgress";
 import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
-import ImageViewer from "react-simple-image-viewer";
-import SelectMembers from "../team-members/select-members";
+// import ImageViewer from "react-simple-image-viewer";
+// import SelectMembers from "../team-members/select-members";
 import pdffile from "assets/images/pdffile.svg";
 import xls from "assets/images/xls.svg";
 import eps from "assets/images/eps.svg";
@@ -25,7 +19,7 @@ import ai_logo from "assets/mi-banana-icons/ai-logo.png"
 
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
-import MDInput from "components/MDInput";
+// import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import { useDropzone } from "react-dropzone";
 import React from "react";
@@ -35,21 +29,21 @@ import SuccessModal from "components/SuccessBox/SuccessModal";
 import ShowFiles from "./show-files/ShowFiles";
 import adminImg from "assets/images/admin.svg";
 import designerImg from "assets/images/d1.svg";
-import UserImg from "assets/images/u1.svg";
+// import UserImg from "assets/images/u1.svg";
 import pdfImg from "assets/images/pdf1.svg";
-import tickImg from "assets/images/t1.svg";
+// import tickImg from "assets/images/t1.svg";
 import { useState, useCallback } from "react";
-import ImageContainer from "./image-container/ImageContainer";
+// import ImageContainer from "./image-container/ImageContainer";
 import { useEffect } from "react";
-import UploadFile from "components/File upload button/FileUpload";
+// import UploadFile from "components/File upload button/FileUpload";
 import { useRef } from "react";
 import { currentUserRole } from "redux/global/global-functions";
 import reduxContainer from "redux/containers/containers";
 import apiClient from "api/apiClient";
 import { Link, useParams } from "react-router-dom";
-import SelectFolder from "./select-folder/SelectFolder";
-import { Jpeg, Jpg, Png, Svg } from "redux/global/file-formats";
-import FileUpload from "./file-upload-container/File-upload";
+// import SelectFolder from "./select-folder/SelectFolder";
+// import { Jpeg, Jpg, Png, Svg } from "redux/global/file-formats";
+// import FileUpload from "./file-upload-container/File-upload";
 import { MoonLoader } from "react-spinners";
 import { getProjectData } from "redux/global/global-functions";
 import { mibananaColor } from "assets/new-images/colors";
@@ -57,7 +51,7 @@ import { fontsFamily } from "assets/font-family";
 import { useSelector } from "react-redux";
 import ImageViewModal from "examples/image-modal";
 import "./file-upload.css"
-import { Close } from "@mui/icons-material";
+import { Close, CloseRounded } from "@mui/icons-material";
 
 const uploadBtn = {
   backgroundColor: "#98e225",
@@ -81,7 +75,7 @@ const FileUploadContainer = ({
   const person_id = useSelector((state) => state.userDetails?.id);
   const projects = reduxState?.project_list?.CustomerProjects;
   const classes = useStyles();
-  const [previewAllImages, setPreviewAllImages] = useState([])
+  // const [previewAllImages, setPreviewAllImages] = useState([])
 
   const [selectedFileType, setSelectedFileType] = useState("");
   const [selectedFilePeople, setSelectedFilePeople] = useState("");
@@ -108,6 +102,10 @@ const FileUploadContainer = ({
   const [designerList, setDesignerList] = useState([]);
   const [successOpen, setsuccessOpen] = useState(false);
   const [successMessage, setsuccessMessage] = useState("");
+  const [currentImage, setCurrentImage] = useState(0)
+
+  const [designerLoading, setDesignerLoading] = useState(false)
+  const [teamMembers, setTeamMembers] = useState(project?.team_members)
 
 
   const toggleShowMore = () => {
@@ -116,8 +114,9 @@ const FileUploadContainer = ({
 
   const truncatedDescription = project?.project_description?.substring(0, 240);
 
-  const openImage = useCallback(() => {
+  const openImage = useCallback((index) => {
     setIsViewerOpen(true)
+    setCurrentImage(index)
   }, [isViewerOpen])
 
   const handleChange = (event) => {
@@ -255,34 +254,34 @@ const FileUploadContainer = ({
         }
       });
   };
-  const deleteCustomerFiles = async (filename) => {
-    await apiClient
-      .delete(`/api/del-customer-files/${id}/${filename}`)
-      .then(({ data }) => {
-        const { message } = data;
-        setRespMessage(message);
-        setTimeout(() => {
-          openSuccessSB();
-          clientFiles();
-        }, 1000);
-      })
-      .catch((err) => {
-        if (err.response) {
-          const { message } = err.response.data;
-          setRespMessage(message);
-          setVersion([]);
-          setTimeout(() => {
-            openErrorSB();
-          }, 1000);
-        } else {
-          setVersion([]);
-          setRespMessage(err.message);
-          setTimeout(() => {
-            openErrorSB();
-          }, 1000);
-        }
-      });
-  };
+  // const deleteCustomerFiles = async (filename) => {
+  //   await apiClient
+  //     .delete(`/api/del-customer-files/${id}/${filename}`)
+  //     .then(({ data }) => {
+  //       const { message } = data;
+  //       setRespMessage(message);
+  //       setTimeout(() => {
+  //         openSuccessSB();
+  //         clientFiles();
+  //       }, 1000);
+  //     })
+  //     .catch((err) => {
+  //       if (err.response) {
+  //         const { message } = err.response.data;
+  //         setRespMessage(message);
+  //         setVersion([]);
+  //         setTimeout(() => {
+  //           openErrorSB();
+  //         }, 1000);
+  //       } else {
+  //         setVersion([]);
+  //         setRespMessage(err.message);
+  //         setTimeout(() => {
+  //           openErrorSB();
+  //         }, 1000);
+  //       }
+  //     });
+  // };
   const deleteFile = async (filename) => {
     if (role?.projectManager || role?.designer || role?.admin) {
       deleteDesignerFiles(filename)
@@ -439,7 +438,6 @@ const FileUploadContainer = ({
       if (currentVersion) {
         versionUploads(fileType);
         console.log('version upload')
-        console.log(isDragActive)
       } else {
         console.log('designer upload ' + currentVersion)
         managerUploadFiles(fileType);
@@ -448,6 +446,46 @@ const FileUploadContainer = ({
       customerUploadFiles(fileType);
     }
   };
+  const deleteDesigner = (val) => {
+    console.log(val)
+    setDesignerLoading(true)
+    const formdata = {
+      user: val?._id,
+      project_id: id
+    }
+    apiClient.put(`/api/delete-designer`, formdata)
+      .then(({ data }) => {
+        setDesignerLoading(false);
+        getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject);
+        if (data.message) {
+          // setRespMessage(data.message)
+          setsuccessMessage(data.message)
+          setTimeout(() => {
+            setTeamMembers([])
+            setsuccessOpen(true)
+            // openSuccessSB()
+          }, 500)
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          const { message } = err.response.data
+          setRespMessage(message)
+          setDesignerLoading(false)
+          setTimeout(() => {
+            openErrorSB()
+          }, 500)
+        } else {
+          setDesignerLoading(false)
+          setRespMessage(err.message)
+          setTimeout(() => {
+            openErrorSB()
+          }, 500)
+        }
+      })
+
+  }
+
   const DownloadFile = (downloadfileName) => {
     if (!downloadfileName) return alert("Please select file");
     window.open(downloadfileName, "_blank");
@@ -583,11 +621,12 @@ const FileUploadContainer = ({
     }
   };
   const getAllDesignersList = async () => {
-    apiClient.get("/api/get-designer-list/" + person_id)
+    await apiClient.get("/api/get-designer-list/" + person_id)
       .then(({ data }) => {
-        setDesignerObj(data?.designerlist)
+        setDesignerList(data?.designerlist)
       })
       .catch((e) => {
+
       });
   }
 
@@ -606,11 +645,12 @@ const FileUploadContainer = ({
       return {};
     }
   };
-  const SubmitProject = async (e) => {
-    setMemberName(e.target.value);
-    if (role?.projectManager && e.target.value) {
+  const SubmitProject = async (value) => {
+    setMemberName(value);
+    if (value) {
+      setDesignerLoading(true);
       let project = personProject();
-      project.team_members = [e.target.value];
+      project.team_members = [value];
       project.status = "Assigned";
       project.is_active = true;
 
@@ -618,21 +658,21 @@ const FileUploadContainer = ({
         project_id: personProject()?._id,
         project_data: project,
       };
-      setLoading(true);
-      await apiClient
-        .patch("/graphic-project", data)
+      await apiClient.patch("/graphic-project", data)
         .then(({ data }) => {
           const { save } = data;
+          setTeamMembers(save?.team_members)
           setsuccessMessage(data?.message);
           setsuccessOpen(true);
-          setLoading(false);
+          setDesignerLoading(false)
         })
         .catch((e) => {
-          setLoading(false);
+          setDesignerLoading(false)
           console.error("Error assgin project => ", e?.response?.data?.message);
         });
     }
   };
+
   const deleteVersion = async (version) => {
     setLoading(true)
     apiClient.delete(`/api/del-version-uploads/${version}/${id}`)
@@ -676,11 +716,8 @@ const FileUploadContainer = ({
   };
   const handleClose = () => setsuccessOpen(false);
   useEffect(() => {
-    console.log('testing')
-    console.log(currentVersion)
-  }, [])
 
-  console.log(isViewerOpen)
+  }, [teamMembers])
 
   return (
     <MDBox className="chat-2" sx={{ height: '100%', backgroundColor: mibananaColor.headerColor }}>
@@ -696,8 +733,8 @@ const FileUploadContainer = ({
           open={successOpen}
           msg={successMessage}
           onClose={handleClose}
-          width="30%"
-          color="#288e28"
+          width="35%"
+          color="#333"
           title="SUCCESS"
           sideRadius={false}
         />
@@ -809,17 +846,9 @@ const FileUploadContainer = ({
                                   <ShowFiles
                                     src={ver?.image}
                                     altname={ver?.name}
-                                    onClick={openImage}
+                                    onClick={() => openImage(index)}
                                   />
                                   {/* <img src={ver?.image} click={openImage} className="fileImg1" /> */}
-                                  {isViewerOpen && (
-                                    <ImageViewModal
-                                      open={isViewerOpen}
-                                      onClose={closeImageViewer}
-                                      allImages={version}
-                                      currentImage={index}
-                                    />
-                                  )}
                                 </div>
                                 <p className={classes.fileDiv2p}>{ver?.name?.substring(0, 4)}</p>
                               </div>
@@ -906,38 +935,37 @@ const FileUploadContainer = ({
             <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Team Member</h2>
               <div className="adminDiv2">
-                {project?.team_members.length > 0 ? (
+                {designerLoading ? <MoonLoader className="designer-loading" loading={designerLoading} size={24} color='#121212' /> : (
                   <>
-                    {" "}
-                    <img src={designerImg} className="adminImg1" />
-                    <div>
-                      {project?.team_members.map((item) => (
-                        <h3 className={classes.adminDiv2h3}>{item.name}</h3>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {" "}
-                    {role?.projectManager ? (
-                      <Select
-                        value={memberName}
-                        onChange={SubmitProject}
-                        displayEmpty
-                        className={`selectType2 ${activebtn === "folder" && "activeClass"}`}
-                      >
-                        <MenuItem value="" className="">
-                          Select team member
-                        </MenuItem>
-                        {designerList?.length &&
-                          designerList.map((item) => (
-                            <MenuItem value={item} key={item._id} className="">
-                              {item.name}
-                            </MenuItem>
-                          ))}
-                      </Select>
+                    {teamMembers.length > 0 ? (
+                      <>
+                        <img src={designerImg} className="adminImg1" />
+                        {teamMembers.map((item, i) => (
+                          <div key={i}>
+                            {role?.projectManager && (<IconButton className="remove-designer" onClick={() => deleteDesigner(item)}>
+                              <CloseRounded fontSize="small" />
+                            </IconButton>)}
+                            <h3 className={classes.adminDiv2h3}>{item?.name}</h3>
+                          </div>
+                        ))}
+                      </>
                     ) : (
-                      <p className="notassign">Not Assigned</p>
+                      <>
+                        {role?.projectManager ? (
+                          <Autocomplete
+                            value={memberName}
+                            onChange={(event, newValue) => {
+                              SubmitProject(newValue)
+                            }}
+                            options={designerList}
+                            getOptionLabel={(option) => option.name ? option.name : ''}
+                            sx={{ width: '95%' }}
+                            renderInput={(params) => <TextField required {...params} placeholder="Select Designer" />}
+                          />
+                        ) : (
+                          <p className="notassign">Not Assigned</p>
+                        )}
+                      </>
                     )}
                   </>
                 )}
@@ -1009,6 +1037,14 @@ const FileUploadContainer = ({
             )}
           </div>
         </div>
+        {isViewerOpen && (
+          <ImageViewModal
+            open={isViewerOpen}
+            onClose={closeImageViewer}
+            allImages={version}
+            currentImage={currentImage}
+          />
+        )}
       </MDBox>
     </MDBox>
   );

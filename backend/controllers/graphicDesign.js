@@ -47,7 +47,7 @@ const createGraphicDesign = asyncHandler(async (req, res) => {
                 sizes,
                 specific_software_names,
                 is_active,
-                version : ["1"],
+                version: ["1"],
                 status: 'Project manager',
 
                 // resources,
@@ -75,15 +75,16 @@ const upadteProject = asyncHandler(async (req, res) => {
     if (project_id) {
         const findingProj = await graphicDesignModel.findById(project_id)
         if (findingProj) {
-            if (findingProj.team_members.length) {
-                findingProj.team_members = [...findingProj.team_members, ...team_members]
+            if (findingProj.team_members.length > 0) {
+                // findingProj.team_members = [...findingProj.team_members, ...team_members]
+                return res.status(201).send({ message: 'Already Assigned to Designer', })
             } else {
                 findingProj.team_members = team_members
+                findingProj.status = status
+                findingProj.is_active = is_active
+                const save = await findingProj.save()
+                return res.status(201).send({ message: 'Project Updated', save })
             }
-            findingProj.status = status
-            findingProj.is_active = is_active
-            const save = await findingProj.save()
-            return res.status(201).send({ message: 'Project Updated', save })
         }
     }
     res.status(404).send({ message: "No Project Found" })
@@ -170,7 +171,7 @@ const deleteCustomerFiles = async (req, res) => {
                     throw error
                 }
             })).then(() => {
-                return res.status(200).send({ message: 'File Deleted',files })
+                return res.status(200).send({ message: 'File Deleted', files })
             }).catch((err) => {
                 return res.status(500).send({ message: 'Found error try again' })
             })
@@ -251,11 +252,12 @@ const getCustomerFiles = async (req, res) => {
                 obj.id = uniqID(),
                     obj.name = path.basename(file.name),
                     obj.url = encodeURI(file.storage.apiEndpoint + '/' + file.bucket.name + '/' + file.name),
-                    obj.download_link = file.metadata.mediaLink,
-                    obj.type = file.metadata.contentType,
-                    obj.size = file.metadata.size,
-                    obj.time = file.metadata.timeCreated,
-                    obj.upated_time = file.metadata.updated
+                    obj.download_link = file.metadata.mediaLink
+                obj.type = file.metadata.contentType
+                obj.size = file.metadata.size
+                obj.time = file.metadata.timeCreated
+                obj.upated_time = file.metadata.updated
+                obj.folder_name = prefix
                 return obj
             })
             // console.log(filesInfo)
@@ -285,7 +287,7 @@ const duplicateProject = async (req, res) => {
 
             const obj = {
                 user, name, project_category, project_title, design_type, brand, project_description, file_formats,
-                sizes, specific_software_names, is_active: false, version : ["1"], status: 'Project manager', team_members: []
+                sizes, specific_software_names, is_active: false, version: ["1"], status: 'Project manager', team_members: []
             }
             // console.log(obj)
             const creatingNewProject = await graphicDesignModel.create(obj)

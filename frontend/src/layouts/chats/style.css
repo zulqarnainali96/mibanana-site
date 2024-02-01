@@ -456,16 +456,36 @@ h6,
 }
 .project-details .project-details-div {
   font-family: var(--fonts-family);
+  position: relative;
   width: 98%;
   padding: 5px;
   margin: 5px;
+}
+
+.project-details .project-details-div .notassign {
+  font-family: var(--fonts-family);
+  font-weight: 700;
+  font-size: 13px;
+}
+.project-details .project-details-div .remove-designer {
+  position: absolute;
+  top: 30px;
+  left: -3px;
+  padding: 2px;
+  background: #ccc;
+}
+
+.project-details .project-details-div .adminDiv2 .designer-loading {
+  position: absolute !important;
+  top: 52%;
+  left: 20%;
 }
 
 .h1-style {
   font-family: var(--fonts-family);
   position: absolute;
   display: block;
-  width: 104%;
+  width: 100%;
   text-align: center;
   top: 40%;
   font-size: 5rem;
@@ -554,6 +574,18 @@ h6,
   }
   .h1-style {
     font-size: 4rem;
+  }
+}
+
+@media screen and (max-height: 740px) {
+  .chat {
+    padding-block-end: 46px;
+  }
+}
+
+@media screen and (max-height: 550px) {
+  .chat {
+    padding-block-end: 65px;
   }
 }
 
