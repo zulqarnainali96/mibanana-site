@@ -3,11 +3,11 @@ import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import ProjectDataTable from "examples/projectsTable";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import authorsTableData from "layouts/ProjectsTable/data/authorsTableData";
-import ProjectStatus from "examples/Statuses";
+import ProjectStatus from "examples/Statuses/project-status-filter";
+import CategoryFilter from "examples/Statuses/project-category";
+import BrandFilter from "examples/Statuses/project-brand-filter";
 import reduxContainer from "redux/containers/containers";
 import { Action } from "./data/authorsTableData";
 import MDBadge from "components/MDBadge";
@@ -15,11 +15,7 @@ import { getProjectData } from "redux/global/global-functions";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import MDSnackbar from "components/MDSnackbar";
-import { setAlert } from "redux/actions/actions";
-import { useDispatch } from "react-redux";
-// import CreateProjectButton from 'examples/Navbars/Create-project-button'
 import { socketIO } from "layouts/sockets";
-import apiClient from "api/apiClient";
 import { currentUserRole } from "redux/global/global-functions";
 import NewProjectsTable from "examples/new-table";
 import { mibananaColor } from "assets/new-images/colors";
@@ -34,11 +30,13 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   const role = currentUserRole(reduxState);
   const [errorSB, setErrorSB] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
-  const projectList = useSelector((state) => state.project_list.CustomerProjects);
+  const [projectList, setProjectList] = useState(reduxState.project_list.CustomerProjects);
   const user = useSelector((state) => state.userDetails);
-  const isDesigner = reduxState.userDetails.roles?.includes("Graphic-Designer") ? true : false;
-  const [personName, setPersonName] = React.useState("");
-  const [copyProjectList, setCopyProjectList] = useState({});
+  const [status, setStatus] = React.useState("");
+  const [brand, setBrand] = React.useState("");
+  const [category, setCategory] = React.useState("");
+
+  const [copyProjectList, setCopyProjectList] = useState(reduxState.project_list.CustomerProjects);
 
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
@@ -46,57 +44,23 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   const closeErrorSB = () => setErrorSB(false);
   const isLg = useMediaQuery("(max-width:768px)")
   const is500 = useMediaQuery("(max-width:500px)")
-  const dispatch = useDispatch();
 
-  // const [open, setOpen] = useState(false)
-  // const [formValue, setFormValue] = useState({
-  //     project_category: '',
-  //     design_type: '',
-  //     brand: '',
-  //     project_title: '',
-  //     project_description: '',
-  //     describe_audience: '',
-  //     sizes: '',
-  //     resources: '',
-  //     reference_example: '',
-  //     add_files: [],
-  //     specific_software_names: '',
-  // })
-  // const handleChange = (event) => {
-  //     // event.stopPropagation();
-  //     const { name, value } = event.target
-  //     setFormValue({
-  //         ...formValue,
-  //         [name]: value
-  //     })
-  // }
-
-  // const handleClose = () => {
-  //     setOpen(false)
-  // }
-
-  // const handleClickOpen = () => {
-  //     setOpen(true)
-  // }
-
-  const handleOpen = () => {
-    dispatch(setAlert(true));
-  };
-  function projectActiveorNot(id) {
+  function openProjectChat(id) {
+    console.log(id)
     reduxActions.getID(id);
-    let projectID = projectList[id]._id;
+    navigate("/chat/" + id);
+    // let projectID = projectList[id]._id;
 
-    if (
-      user.roles?.includes("Project-Manager") ||
-      user?.roles?.includes("Graphic-Designer") ||
-      user?.roles?.includes("Admin")
-    ) {
-      navigate("/chat/" + projectID);
-      return;
-    } else {
-      navigate("/chat/" + projectID);
-      // projectList[id]?.is_active ? navigate("/chat/" + projectID) : handleOpen()
-    }
+    // if (
+    //   user.roles?.includes("Project-Manager") ||
+    //   user?.roles?.includes("Graphic-Designer") ||
+    //   user?.roles?.includes("Admin")
+    // ) {
+    //   navigate("/chat/" + projectID);
+    //   return;
+    // } else {
+    //   navigate("/chat/" + projectID);
+    // }
   }
   function projectStatus(status) {
     switch (status) {
@@ -118,56 +82,11 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
         return "End";
     }
   }
-  function getStatusStyle(status) {
-    switch (status) {
-      case "Project manager":
-        return "#c5495d";
-      case "Completed":
-        return "#E7F7EF";
-      // return "#0FAF62"
-      case "Ongoing":
-        return "#FFE135";
-      case "HeadsUp":
-        return "#FFE135";
-      case "Attend":
-        return "#0b7b0da1";
-      case "Submitted":
-        return "#242924a1";
-      default:
-        return "#c5495d";
-    }
-  }
-  function getStatusColor(status) {
-    switch (status) {
-      case "Project manager":
-        return "white";
-      case "Completed":
-        return "#0FAF62";
-      case "Ongoing":
-        return "#191B1C";
-      case "HeadsUp":
-        return "#FFE135";
-      case "Attend":
-        return "white";
-      case "Submitted":
-        return "white";
-      default:
-        return "#c5495d";
-    }
-  }
-
-  // useEffect(() => {
-  //     socketIO.on("message", (message) => {
-  //         reduxActions.getUserNewChatMessage(message)
-  //     })
-
-  // }, [socketIO])
-
-  const rows = project_list?.CustomerProjects?.length
-    ? project_list.CustomerProjects.map((item, i) => {
+  const rows = projectList?.length
+    ? projectList?.map((item, i) => {
       const date = new Date(item.createdAt);
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-indexed
+      const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
       let hours = date.getHours();
       const minutes = String(date.getMinutes()).padStart(2, "0");
@@ -183,49 +102,29 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
       }
       hours = String(hours).padStart(2, "0");
       const readableTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
-
-      const projectid = project_list.CustomerProjects.indexOf(item);
-
-      const getUserNotifcations = async () => {
-        await apiClient
-          .get("/chat-message/" + projectid)
-          .then(({ data }) => {
-            if (data?.chat?.chat_msg.length > 0) {
-              const messages = data?.chat?.chat_msg;
-              const filterData = messages.filter(
-                (item) => item.user !== reduxState?.userDetails?.id
-              );
-              reduxActions.getUserNewChatMessage(filterData);
-            }
-          })
-          .catch((err) => console.log(err));
-      };
-      socketIO.emit("room-message", "", projectid);
-      // getUserNotifcations()
+      // const projectid = project_list.CustomerProjects.indexOf(item);
 
       return {
-        project_title: (
-          <MDBox lineHeight={1}>
-            <MDTypography
-              display={"block"}
-              sx={{ textDecoration: "underline !important" }}
-              variant="button"
-              fontWeight="medium"
+        project_title: <MDBox lineHeight={1}>
+          <MDTypography
+            display={"block"}
+            sx={{ textDecoration: "underline !important" }}
+            variant="button"
+            fontWeight="medium"
+          >
+            <MDBox
+              sx={{
+                "&:hover": { color: "blue" },
+                fontFamily: fontsFamily.poppins,
+                fontWeight: "400  !important",
+                color: mibananaColor.yellowTextColor,
+              }}
+              onClick={() => openProjectChat(item?._id)}
             >
-              <MDBox
-                sx={{
-                  "&:hover": { color: "blue" },
-                  fontFamily: fontsFamily.poppins,
-                  fontWeight: "400  !important",
-                  color: mibananaColor.yellowTextColor,
-                }}
-                onClick={() => projectActiveorNot(projectid)}
-              >
-                {item?.project_title}
-              </MDBox>
-            </MDTypography>
-          </MDBox>
-        ),
+              {item?.project_title}
+            </MDBox>
+          </MDTypography>
+        </MDBox>,
         name: (
           <MDTypography
             variant="h6"
@@ -342,8 +241,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
       };
     })
     : [];
-  const small_rows = project_list?.CustomerProjects?.length
-    ? project_list.CustomerProjects.map((item, i) => {
+  const small_rows = projectList?.length
+    ? projectList?.map((item, i) => {
       const date = new Date(item.createdAt);
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-indexed
@@ -378,11 +277,11 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                 sx={{
                   "&:hover": { color: "blue" },
                   fontFamily: fontsFamily.poppins,
-                  fontSize : isLg && '12px', 
+                  fontSize: isLg && '12px',
                   fontWeight: "400  !important",
                   color: mibananaColor.yellowTextColor,
                 }}
-                onClick={() => projectActiveorNot(projectid)}
+                onClick={() => openProjectChat(item?._id)}
               >
                 {item?.project_title}
               </MDBox>
@@ -423,44 +322,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
       };
     })
     : [];
-
-    // const small_rows = project_list?.CustomerProjects?.length > 0 ? project_list?.CustomerProjects?.map((item, i) => {
-    //   const date = new Date(item.createdAt);
-    //   let hours = date.getHours();
-    //   let ampm = "AM";
-  
-    //   if (hours >= 12) {
-    //     ampm = "PM";
-    //     if (hours > 12) {
-    //       hours -= 12;
-    //     }
-    //   }
-    //   hours = String(hours).padStart(2, "0");
-    //   const projectid = project_list.indexOf(item)
-    //   socketIO.emit("room-message", '', projectid)
-  
-    //   return {
-    //     project_title: (
-    //       <MDBox lineHeight={1}>
-    //         <MDTypography display={"block"} sx={{ textDecoration: 'underline !important' }} variant="button" fontWeight="medium">
-    //           <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor,fontSize : isLg && '12px' }} onClick={() => projectActiveorNot(projectid)}>
-    //             {item?.project_title}
-    //           </MDBox>
-    //         </MDTypography>
-    //       </MDBox>),
-    //     status: <MDBox ml={-1}>
-    //       <MDBadge badgeContent={projectStatus(item?.status)}
-    //         sx={{
-    //           "& .MuiBadge-badge":
-    //             { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: isLg ? "12px" : ".9rem", borderRadius: '0px', fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }
-    //         }} circular="true" size="lg" />
-    //     </MDBox>,
-    //     action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //       <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} />
-    //     </MDTypography>
-  
-    //   }
-    // }) : []
 
   useEffect(() => {
     const id = reduxState?.userDetails?.id;
@@ -507,57 +368,57 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   ];
   const filterBrand = reduxState?.customerBrand?.map((item) => item.brand_name);
 
-  const handleStatusChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setCopyProjectList(reduxState.project_list);
+  const handleStatusChange = useCallback((value) => {
     if (value) {
-      const filterAccordingtoStatus = reduxState?.project_list?.CustomerProjects?.filter((item) => {
+      const filterAccordingtoStatus = projectList?.filter((item) => {
         return item.status === value;
       });
-      reduxActions.getCustomerProject({ CustomerProjects: filterAccordingtoStatus });
+      setProjectList(filterAccordingtoStatus)
+      // reduxActions.getCustomerProject({ `CustomerProjects: filterAccordingtoStatus });
+      if (value === "All") {
+        setProjectList(copyProjectList)
+      }
     }
-    if (value === "All") {
-      reduxActions.getCustomerProject(copyProjectList);
+    else if (!value) {
+      // reduxActions.getCustomerProject(copyProjectList);
+      setProjectList(copyProjectList)
     }
-    setPersonName(value);
-  };
-  const handleCategoryChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setCopyProjectList(reduxState.project_list);
+    setStatus(value);
+  }, [status])
+
+  const handleCategoryChange = useCallback((value) => {
     if (value) {
-      const filterAccordingtoStatus = reduxState?.project_list?.CustomerProjects?.filter((item) => {
+      const filterAccordingtoStatus = projectList?.filter((item) => {
         return item.project_category === value;
       });
-      reduxActions.getCustomerProject({ CustomerProjects: filterAccordingtoStatus });
+      setProjectList(filterAccordingtoStatus)
+      // reduxActions.getCustomerProject({ CustomerProjects: filterAccordingtoStatus });
     }
-    setPersonName(value);
-  };
-  const handleBrandChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setCopyProjectList(reduxState.project_list);
+    else if (!value) {
+      setProjectList(copyProjectList)
+      // reduxActions.getCustomerProject(copyProjectList);
+    }
+    setCategory(value);
+  }, [category])
+
+  const handleBrandChange = useCallback((value) => {
     if (value) {
-      const filterAccordingtoStatus = reduxState?.project_list?.CustomerProjects?.filter((item) => {
+      const filterAccordingtoStatus = projectList?.filter((item) => {
         return item.brand === value;
       });
-      reduxActions.getCustomerProject({ CustomerProjects: filterAccordingtoStatus });
-    }
-    setPersonName(value);
-  };
+      // reduxActions.getCustomerProject({ CustomerProjects: filterAccordingtoStatus });
+      setProjectList(filterAccordingtoStatus)
 
-  const clearValue = () => {
-    setPersonName("");
-    reduxActions.getCustomerProject(copyProjectList);
-  };
+    } else if (!value) {
+      // reduxActions.getCustomerProject(copyProjectList);
+      setProjectList(copyProjectList)
+    }
+    setBrand(value);
+  }, [brand])
+
 
   return (
     <DashboardLayout>
-      {/* <DashboardNavbar /> */}
       <MDBox
         p={"24px 12px"}
         sx={({ breakpoints }) => ({ [breakpoints.only("xs")]: { padding: "24px 24px" } })}
@@ -565,48 +426,53 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
       >
         <Grid container spacing={6}>
           <Grid item xs={12} pt={0}>
-            <MDTypography pl={"15px"} sx={{...titleStyles,fontSize : is500 ? '2rem' : '3rem' }}>
+            <MDTypography pl={"15px"} sx={{ ...titleStyles, fontSize: is500 ? '2rem' : '3rem' }}>
               miProjects
             </MDTypography>
-            <Grid container justifyContent={"space-between"} alignItems={"center"} width={"100%"}>
+            <Grid container justifyContent={"space-between"} paddingInlineStart={"17px"} alignItems={"center"} width={"100%"}>
               <Grid item xxl={8} xl={12} lg={12} md={12} xs={12} display={"flex"}>
-                <Grid container rowSpacing={2}>
+                <Grid container spacing={2} >
                   <Grid item xl={3} lg={3} md={3} xs={12}>
                     <ProjectStatus
                       data={statuses}
-                      personName={personName}
+                      personName={status}
+                      projectList={projectList}
                       handleChange={handleStatusChange}
+                      setProjectList={setProjectList}
                       status={"STATUS"}
-                      clearValue={clearValue}
+                    // clearValue={clearValue}
                     />
                   </Grid>
                   <Grid item xl={3} lg={3} md={3} xs={12}>
-                    <ProjectStatus
+                    <CategoryFilter
+                      projectList={projectList}
+                      setProjectList={setProjectList}
                       data={reduxState.category}
-                      personName={personName}
+                      personName={category}
                       handleChange={handleCategoryChange}
-                      clearValue={clearValue}
                       status={"CATEGORY"}
+                    // clearValue={clearValue}
                     />
                   </Grid>
                   <Grid item xl={3} lg={3} md={3} xs={12}>
-                    <ProjectStatus
+                    <BrandFilter
+                      setProjectList={setProjectList}
+                      projectList={projectList}
                       data={filterBrand}
-                      personName={personName}
+                      personName={brand}
                       handleChange={handleBrandChange}
                       status={"BRAND"}
-                      clearValue={clearValue}
+                    // clearValue={clearValue}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xxl={4} xl={4} textAlign={"right"}></Grid>
             </Grid>
 
             <Card sx={cardStyles}>
               <MDBox>
                 <NewProjectsTable
-                  table={{ columns : isLg ? small_columns : columns, rows : isLg ? small_rows : rows }}
+                  table={{ columns: isLg ? small_columns : columns, rows: isLg ? small_rows : rows }}
                   entriesPerPage={{ defaultValue: 5 }}
                   showTotalEntries={true}
                   pagination={{ variant: "contained", color: "warning" }}

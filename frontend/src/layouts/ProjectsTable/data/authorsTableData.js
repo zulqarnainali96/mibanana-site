@@ -38,7 +38,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const [loading4, setLoading4] = useState(false)
   const [loading5, setLoading5] = useState(false)
   const [loading6, setLoading6] = useState(false)
-  
+
 
   const handleMenuOpen = (event) => {
     event.preventDefault()
@@ -355,7 +355,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
 function data() {
   return {
     columns: [
-      { Header: "project title", accessor: "project_title", align: "left", },
+      {Header: "project title", accessor: "project_title", align: "left"},
       { Header: "author", accessor: "name", align: "center", },
       { Header: "Team Member", accessor: "team_members", align: "center" },
       { Header: "status", accessor: "status", align: "center" },
@@ -364,7 +364,7 @@ function data() {
       { Header: "Submitted on", accessor: "createdAt", align: "center" },
       { Header: "Action", accessor: "action", align: "center" },
     ],
-    
+
     small_columns: [
       { Header: "project title", accessor: "project_title", align: "left", },
       { Header: "status", accessor: "status", align: "center" },

@@ -254,40 +254,40 @@ const FileUploadContainer = ({
         }
       });
   };
-  // const deleteCustomerFiles = async (filename) => {
-  //   await apiClient
-  //     .delete(`/api/del-customer-files/${id}/${filename}`)
-  //     .then(({ data }) => {
-  //       const { message } = data;
-  //       setRespMessage(message);
-  //       setTimeout(() => {
-  //         openSuccessSB();
-  //         clientFiles();
-  //       }, 1000);
-  //     })
-  //     .catch((err) => {
-  //       if (err.response) {
-  //         const { message } = err.response.data;
-  //         setRespMessage(message);
-  //         setVersion([]);
-  //         setTimeout(() => {
-  //           openErrorSB();
-  //         }, 1000);
-  //       } else {
-  //         setVersion([]);
-  //         setRespMessage(err.message);
-  //         setTimeout(() => {
-  //           openErrorSB();
-  //         }, 1000);
-  //       }
-  //     });
-  // };
-  const deleteFile = async (filename) => {
-    if (role?.projectManager || role?.designer || role?.admin) {
-      deleteDesignerFiles(filename)
+  
+  const deleteFile = async (fileData) => {
+    const formdata = {
+      file_name : fileData?.name,
+      folder_name : fileData?.folder_name
     }
-
+    await apiClient.post(`/api/delete-file`,formdata)
+    .then( ({data}) => {
+      if(data?.message){
+        const filterData = version?.filter(item => item?.id !== fileData?.id)
+        console.log(filterData)
+        setVersion(filterData)
+        setRespMessage(data.message)
+        setTimeout( () => {
+          openSuccessSB()
+        },500)
+      }
+    })
+    .catch((err) => {
+      if (err.response) {
+        const { message } = err.response.data
+        setRespMessage(message)
+        setTimeout(() => {
+          openErrorSB()
+        }, 500)
+      } else {
+        setRespMessage(err.message)
+        setTimeout(() => {
+          openErrorSB()
+        }, 500)
+      }
+    })
   };
+
   const getListThroughVersion = (e) => {
     if (e.target.value) {
       setSelectVersion(e.target.value);
@@ -390,7 +390,6 @@ const FileUploadContainer = ({
   };
   const versionUploads = async (filType) => {
     if (!currentVersion) {
-      console.log(currentVersion)
       alert("please select version first")
       return
     }
@@ -437,9 +436,7 @@ const FileUploadContainer = ({
     if (role?.designer || role?.projectManager || role?.admin) {
       if (currentVersion) {
         versionUploads(fileType);
-        console.log('version upload')
       } else {
-        console.log('designer upload ' + currentVersion)
         managerUploadFiles(fileType);
       }
     } else {
@@ -447,7 +444,6 @@ const FileUploadContainer = ({
     }
   };
   const deleteDesigner = (val) => {
-    console.log(val)
     setDesignerLoading(true)
     const formdata = {
       user: val?._id,
@@ -548,7 +544,6 @@ const FileUploadContainer = ({
         if (allversionfiles.length > 0) {
           const files = [...allversionfiles, ...data?.filesInfo]
           allversionfiles = files
-          console.log(files)
         } else {
           allversionfiles = data?.filesInfo
         }
@@ -592,7 +587,6 @@ const FileUploadContainer = ({
     const designerFiles = await designerFilesforAll();
     const get_all_version_Files = await getAllVersionFiles()
     const combinedData = [...clientFilesData, ...designerFiles, ...get_all_version_Files];
-    console.log(combinedData)
     // setVersion(combinedData);
     handlePreviewImages(combinedData)
     setLoading(false);
@@ -832,7 +826,7 @@ const FileUploadContainer = ({
                           <Grid item xxl={3} xl={3} lg={3} md={3} xs={6} className="file-grid-item" height={version?.length < 5 ? "147px" : undefined}>
                             <div className={`upload-file-main ${classes.uploadedfileMainDiv}`}>
                               {(role?.projectManager || role?.designer || role?.admin) && (
-                                <IconButton onClick={() => deleteFile(ver?.name)} className="deleteIcon">
+                                <IconButton onClick={() => deleteFile(ver)} className="deleteIcon">
                                   <Close fontSize="small" />
                                 </IconButton>
                               )}

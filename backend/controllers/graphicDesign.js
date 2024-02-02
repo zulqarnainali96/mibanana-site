@@ -146,39 +146,23 @@ const deleteGraphicProject = async (req, res) => {
         res.status(500).send({ message: 'Internal Server error' })
     }
 }
-const deleteCustomerFiles = async (req, res) => {
-    const _id = req.params.id
-    const fileName = req.params.filename
-    console.log(req.params.id, 'file name => ', req.params.filename)
-    if (!_id) {
-        return res.status(400).send({ message: 'ID not found try again' })
+const deleteFile = async (req, res) => {
+    let filePath = ''
+    if (req?.body?.folder_name.endsWith("/")) {
+        filePath = req.body.folder_name + req.body.file_name
+    } else {
+        filePath = req.body.folder_name + '/' + req.body.file_name
     }
     try {
-        const currentProject = await Projects.findById(_id)
-        if (currentProject) {
-            let { user, name, project_title } = currentProject
-            project_title = project_title.replace(/\s/g, '')
-            name = name.replace(/\s/g, '')
-            const prefix = `${name}-${user}/${project_title}-${_id}/customer-upload/`
-            const [files] = await bucket.getFiles({ prefix })
-            await Promise.all(files?.map(file => {
-                try {
-                    const filePath = path.basename(file.name)
-                    if (filePath === fileName) {
-                        file.delete()
-                    }
-                } catch (error) {
-                    throw error
-                }
-            })).then(() => {
-                return res.status(200).send({ message: 'File Deleted', files })
-            }).catch((err) => {
-                return res.status(500).send({ message: 'Found error try again' })
-            })
-        } else {
-            return res.status(404).send({ message: 'Project not found Try again' })
-        }
-    } catch (error) {
+        const file = bucket.file(filePath)
+        await file.delete().then(() => {
+            return res.status(200).send({ message: 'File Deleted Successfully', })
+        }).catch((err) => {
+            console.log(err)
+            return res.status(500).send({ message: 'Found error try again' })
+        })
+    }
+    catch (error) {
         console.log(error.message)
         res.status(500).send({ message: 'Internal Server error' })
     }
@@ -406,4 +390,4 @@ const projectSubmitted = async (req, res) => {
     }
 }
 
-module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectSubmitted, deleteCustomerFiles, projectOngoing }
+module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectSubmitted, deleteFile, projectOngoing }

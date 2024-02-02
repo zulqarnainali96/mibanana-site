@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const parser = require("../storage_service/cloudinary")
-const { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectSubmitted, deleteCustomerFiles, projectOngoing } = require('../controllers/graphicDesign')
+const { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectSubmitted, deleteFile, projectOngoing } = require('../controllers/graphicDesign')
 const { postCompanyDetails,
     updateProfile,
     getCompanyDetails,
@@ -56,7 +56,6 @@ router.route("/graphic-project")
     .patch(upadteProject)
 
 // router.get("/authentication/sign-in", graphicCategory)
-
 // Route for Assigning project to Graphic getDesignerList
 
 router.post("/assign-graphic-project", createGraphicProject)
@@ -66,7 +65,7 @@ router.get("/assign-graphic-project/:id", getAssignGraphicProject)
 // get Designer List ===> project manager route
 router.get("/api/get-designer-list/:id", getDesignerList)
 router.delete("/api/del-designer-files/:id/:filename", deleteDesignerFiles)
-router.delete("/api/del-customer-files/:id/:filename", deleteCustomerFiles)
+router.post("/api/delete-file", deleteFile)
 router.put('/api/delete-designer', deleteDesigners)
 
 
