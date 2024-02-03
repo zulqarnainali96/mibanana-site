@@ -9,13 +9,13 @@ const postCompanyDetails = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Please Provide ID" })
     }
     if (company_name || contact_person || company_size || primary_email || primary_phone || time_zone || company_address) {
-        const comProfile = await CompanyDetaitls.findOne({user : id}).exec()
-        const user = await User.findByid(id)
-        if(user) {
+        const comProfile = await CompanyDetaitls.findOne({ user: id }).exec()
+        const user = await User.findById({ _id: id })
+        if (user) {
             user.company_profile = company_name
         }
         const saving = await user.save()
-        if(comProfile !== null){
+        if (comProfile !== null) {
             comProfile.user = id
             comProfile.company_name = saving.company_profile
             comProfile.company_address = company_address
@@ -25,13 +25,13 @@ const postCompanyDetails = asyncHandler(async (req, res) => {
             comProfile.primary_phone = primary_phone
             comProfile.time_zone = time_zone
             const save = await comProfile.save()
-            if(save!==null) return res.status(201).json({message:"Company Profile Upadted"})
+            if (save !== null) return res.status(201).json({ message: "Company Profile Upadted" })
 
         }
-        const obj = { user: id, company_name : saving.company_profile, contact_person, company_size, primary_email, primary_phone, time_zone, company_address, }
+        const obj = { user: id, company_name: saving.company_profile, contact_person, company_size, primary_email, primary_phone, time_zone, company_address, }
         const save = await CompanyDetaitls.create(obj)
         if (save) {
-            return res.status(200).json({ message: 'Company Details Added'})
+            return res.status(200).json({ message: 'Company Details Added' })
         } else {
             return res.status(400).json({ message: 'Invalid user data' })
         }
@@ -46,8 +46,8 @@ const updateProfile = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Please Provide ID" })
     }
     const findingProfile = await CompanyDetaitls.findById(id)
-    const user = await User.findById(id)
-    if(user) {
+    const user = await User.findById({ _id: id })
+    if (user) {
         user.company_profile = company_name
     }
     const saving = await user.save()

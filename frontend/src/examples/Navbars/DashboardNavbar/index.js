@@ -8,7 +8,6 @@ import Menu from "@mui/material/Menu";
 import Icon from "@mui/material/Icon";
 import Notepencil from 'assets/mi-banana-icons/NotePencil.png'
 import MDBox from "components/MDBox";
-import Breadcrumbs from "examples/Breadcrumbs";
 import NotificationItem from "examples/Items/NotificationItem";
 import MDSnackbar from 'components/MDSnackbar';
 import SuccessModal from 'components/SuccessBox/SuccessModal'
@@ -543,7 +542,6 @@ function DashboardNavbar({ absolute, light, isMini, reduxActions, reduxState, ch
 
         <Toolbar sx={(theme) => navbarContainer(theme)}>
           <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-            {/* <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} /> */}
             <MDBox>
               <img src={miBananaLogo} loading="lazy" width={"35%"} />
             </MDBox>

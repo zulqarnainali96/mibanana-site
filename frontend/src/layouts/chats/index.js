@@ -273,8 +273,9 @@ const Chating = ({ reduxState, reduxActions }) => {
         open={open}
         msg={respMessage}
         onClose={handleClose}
-        width="30%"
+        width="35%"
         title="SUCCESS"
+        color="#333"
         sideRadius={false}
       />
       <Grid

@@ -1,23 +1,15 @@
 import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import reduxContainer from "redux/containers/containers";
 import { useNavigate } from "react-router-dom";
 import MDTypography from "components/MDTypography";
 import { Action } from 'layouts/ProjectsTable/data/authorsTableData'
 import MDBadge from "components/MDBadge";
-import ProjectDataTable from "examples/projectsTable";
 import { Card, useMediaQuery } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MDSnackbar from "components/MDSnackbar";
-import RightSideDrawer from "components/RightSideDrawer";
-import useRightSideList from 'layouts/Right-side-drawer-list/useRightSideList'
-import apiClient from "api/apiClient";
 import { socketIO } from "layouts/sockets";
-import NewNavbar from 'examples/Navbars/NewDesign/NewNavbar'
-import { useStyles } from "./dashboardStyle";
 import { checkIcon } from "assets/new-images/dashboard/fi_check-circle (1)";
 import { bananaIcon } from "assets/new-images/dashboard/Vector";
 import { clockIcon } from "assets/new-images/dashboard/Group42";
@@ -49,77 +41,23 @@ function Dashboard({ reduxActions, reduxState }) {
     return item.status === 'Project manager'
   })
   const sumbitAndOngoing = () => {
-    const Ongoing = project_list?.filter(item => item.status === 'Ongoing')
-    const isSubmitted = project_list?.filter(item => item.status === 'Submitted')
-    if (Ongoing?.length > 0 && isSubmitted?.length === 0) return Ongoing?.length
-    else if (isSubmitted?.length > 0 && Ongoing?.length === 0) return isSubmitted?.length
-    else if (isSubmitted?.length > 0 && Ongoing?.length > 0) return isSubmitted?.length + Ongoing?.length
-    else { return 0 }
-  }
-  const projectCompleted = project_list?.filter(item => item.status === 'Completed')
+    // const assigned = project_list?.filter(item => item.status === 'Assigned')
+    // const Ongoing = project_list?.filter(item => item.status === 'Ongoing')
+    // const isSubmitted = project_list?.filter(item => item.status === 'Submitted')
 
-  // const activeProject = project_list?.filter(item => {
-  //   return item.status === 'Ongoing'
-  // })
+    // if (Ongoing?.length > 0 && isSubmitted?.length === 0) return Ongoing?.length
+    // else if (isSubmitted?.length > 0 && Ongoing?.length === 0) return isSubmitted?.length
+    // else if (isSubmitted?.length > 0 && Ongoing?.length > 0) return isSubmitted?.length + Ongoing?.length
+    // else { return 0 }
+    const filterStatus  =  project_list?.filter(item => item.status === 'Assigned' || item.status === 'Ongoing' || item.status === 'Submitted')
+    return filterStatus?.length
+  }
+
+  const projectCompleted = project_list?.filter(item => item.status === 'Completed')
 
   const navigate = useNavigate()
 
-  const handleOpen = () => {
-    reduxActions.setAlert(true)
-  }
-
-  const getUserRole = () => {
-    let val = reduxState.userDetails?.roles
-    if (val.includes("Graphic-Designer")) {
-      return "(GRAPHIC DESIGNER)"
-    } else if (val.includes("Project-Manager")) {
-      return "(PROJECT MANAGER)"
-    } else if (val.includes("Admin")) {
-      return "(ADMIN)"
-    } else {
-      return "(CUSTOMER)"
-    }
-  }
-
-  async function getAllProjectsID() {
-    let Projects = reduxState.project_list?.CustomerProjects
-    let filterIDS = Projects?.map(item => item._id)
-    const data = {
-      user: reduxState.userDetails?.id,
-      arrayofIDS: filterIDS
-    }
-    await apiClient.post("/api/all-projects-ids", data).then((resp) => {
-      console.log(resp)
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
-
-  // const getAllNotificationsMsg = () => {
-  //   const id = reduxState?.userDetails?.id
-  //   apiClient.get("/api/get-notifications/" + id).then(({ data }) => {
-  //     console.log(data)
-  //     localStorage.setItem('user_details', JSON.stringify({
-  //       ...reduxState?.userDetails,
-  //       ...data.userDetails,
-  //     }))
-  //     reduxActions.getUserDetails({
-  //       ...reduxState?.userDetails,
-  //       ...data.userDetails,
-  //     })  
-  //     reduxActions.getUserNewChatMessage(data.userDetails?.notifications)
-  //   }).catch((err) => {
-  //     console.log(err)
-  //   })
-  // }
-  // console.log(reduxState)
-  useEffect(() => {
-    // getAllProjectsID()
-    // getAllNotificationsMsg()
-  }, [])
-
   function projectActiveorNot(id) {
-    // console.log('ID =>', id)
     reduxActions.getID(id)
     let projectID = project_list[id].hasOwnProperty("_id") ? project_list[id]?._id : project_list[id]?.id
     if (user?.roles?.includes("Project-Manager") || user?.roles?.includes("Graphic-Designer") || user?.roles?.includes("Admin")) {
@@ -127,7 +65,6 @@ function Dashboard({ reduxActions, reduxState }) {
       return
     } else {
       navigate("/chat/" + projectID)
-      // project_list[id]?.is_active ? navigate("/chat/" + projectID) : handleOpen()
     }
   }
 
@@ -151,43 +88,7 @@ function Dashboard({ reduxActions, reduxState }) {
         return "End"
     }
   }
-  function getStatusStyle(status) {
-    switch (status) {
-      case 'Project manager':
-        return "#c5495d"
-      case 'Completed':
-        return "#E7F7EF"
-      // return "#0FAF62"
-      case 'Ongoing':
-        return "#FFE135"
-      case 'HeadsUp':
-        return "#FFE135"
-      case 'Attend':
-        return "#0b7b0da1"
-      case 'Submitted':
-        return "#242924a1"
-      default:
-        return "#c5495d"
-    }
-  }
-  function getStatusColor(status) {
-    switch (status) {
-      case 'Project manager':
-        return "white"
-      case 'Completed':
-        return "#0FAF62"
-      case 'Ongoing':
-        return "#191B1C"
-      case 'HeadsUp':
-        return "#FFE135"
-      case 'Attend':
-        return "white"
-      case 'Submitted':
-        return "white"
-      default:
-        return "#c5495d"
-    }
-  }
+
   const renderErrorSB = (
     <MDSnackbar
       color="error"
@@ -237,18 +138,7 @@ function Dashboard({ reduxActions, reduxState }) {
 
     const projectid = project_list.indexOf(item)
 
-    // const getUserNotifcations = async () => {
-    //   await apiClient.get("/chat-message/" + projectid).then(({ data }) => {
-    //     if (data?.chat?.chat_msg.length > 0) {
-    //       const messages = data?.chat?.chat_msg
-    //       const filterData = messages.filter((item) => item.user !== reduxState?.userDetails?.id)
-    //       reduxActions.getUserNewChatMessage(filterData)
-    //     }
-
-    //   }).catch((err) => console.log(err))
-    // }
     socketIO.emit("room-message", '', projectid)
-    // getUserNotifcations()
 
     return {
       project_title: (
@@ -392,7 +282,7 @@ function Dashboard({ reduxActions, reduxState }) {
               <MDBox>
                 <NewProjectsTable
                   table={{ columns : isLg ? small_columns : columns , rows : isLg ? small_rows : rows  }}
-                  entriesPerPage={{ defaultValue: 5 }}
+                  entriesPerPage={{ defaultValue: 15 }}
                   showTotalEntries={true}
                   pagination={{ variant: 'contained', color: "warning" }}
                   noEndBorder={false}

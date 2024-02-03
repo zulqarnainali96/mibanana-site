@@ -63,12 +63,10 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
 
   const handleSignIn = async (event) => {
     event.preventDefault();
-
     const data = {
       email,
       password,
     };
-    console.log("data", data);
     setLoading(true);
 
     await apiClient

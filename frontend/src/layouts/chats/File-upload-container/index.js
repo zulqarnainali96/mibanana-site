@@ -264,7 +264,6 @@ const FileUploadContainer = ({
     .then( ({data}) => {
       if(data?.message){
         const filterData = version?.filter(item => item?.id !== fileData?.id)
-        console.log(filterData)
         setVersion(filterData)
         setRespMessage(data.message)
         setTimeout( () => {
@@ -968,7 +967,7 @@ const FileUploadContainer = ({
             <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Brand</h2>
               <div className="adminDiv2">
-                <h3 className={classes.adminDiv2h3}>{project?.brand}</h3>
+                <h3 className={classes.adminDiv2h3}>{project?.brand?.brand_name}</h3>
               </div>
             </div>
             <div className="project-details-div">

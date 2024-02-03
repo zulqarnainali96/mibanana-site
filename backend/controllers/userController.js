@@ -211,7 +211,6 @@ const deleteCurrentCustomer = async (req, res) => {
             if (findCompanydetails) {
                 await User.findByIdAndRemove(_id)
                 await CompanyDetaitls.findByIdAndRemove(findCompanydetails?._id)
-                console.log("delete")
                 return res.status(200).send({ message: 'User Deleted' })
             }
         } else {

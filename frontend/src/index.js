@@ -6,7 +6,6 @@ import { MaterialUIControllerProvider } from "context";
 import { Provider } from "react-redux";
 import { store, persister } from "redux/store";
 import { PersistGate } from "redux-persist/integration/react";
-import { DragDropContext } from 'react-beautiful-dnd'
 const container = document.getElementById("app");
 const root = createRoot(container);
 
@@ -16,7 +15,7 @@ root.render(
       <PersistGate loading={null} persistor={persister}>
         <MaterialUIControllerProvider>
           {/* <StrictMode> */}
-          <App />
+            <App />
           {/* </StrictMode> */}
         </MaterialUIControllerProvider>
       </PersistGate>

@@ -86,24 +86,17 @@ const EditProfile = ({ reduxState, reduxActions }) => {
             .then(({ data }) => {
                 const { message, profileData } = data
                 setRespMessage(message)
-                const { avatar } = profileData
                 setProfileData({ ...profileData })
 
-                const update = {
-                    name: profileData.fullname,
-                    email: profileData.email,
-                    phone_no: profileData.phone,
-                    avatar
-                }
                 localStorage.setItem('user_details', JSON.stringify({
                     ...reduxState.userDetails,
-                    ...update,
+                    ...profileData,
                 }))
                 reduxActions.getUserDetails({
                     ...reduxState.userDetails,
-                    ...update
+                    ...profileData
                 })
-                setImageUrl(avatar)
+                setImageUrl(profileData?.avatar)
                 setLoading(false)
                 setProfileImage([])
                 setProfileData()
@@ -141,18 +134,13 @@ const EditProfile = ({ reduxState, reduxActions }) => {
             .then(({ data }) => {
                 const { message, profileData } = data
                 setRespMessage(message)
-                const update = {
-                    name: profileData.fullname,
-                    email: profileData.email,
-                    phone_no: profileData.phone,
-                }
                 localStorage.setItem('user_details', JSON.stringify({
                     ...reduxState.userDetails,
-                    ...update,
+                    ...profileData,
                 }))
                 reduxActions.getUserDetails({
                     ...reduxState.userDetails,
-                    ...update
+                    ...profileData,
                 })
                 setLoading(false)
                 setTimeout(() => {

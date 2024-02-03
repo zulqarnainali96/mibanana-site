@@ -5,7 +5,6 @@ import MDButton from 'components/MDButton'
 import MDInput from 'components/MDInput'
 import MDTypography from 'components/MDTypography'
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
-import DashboardNavbar from 'examples/Navbars/DashboardNavbar'
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import React, { useState } from 'react'
@@ -49,9 +48,7 @@ const ChangePassword = () => {
             ...changePassword,
             [name]: value
         })
-        // console.log(value)
     }
-    // console.log(changePassword)
     const handleSignUp = (event) => {
         event.preventDefault()
         setLoading(true)

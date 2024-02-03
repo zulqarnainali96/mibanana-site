@@ -5,17 +5,14 @@ import MDButton from 'components/MDButton'
 import MDInput from 'components/MDInput'
 import MDTypography from 'components/MDTypography'
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
-import DashboardNavbar from 'examples/Navbars/DashboardNavbar'
 import MoonLoader from 'react-spinners/MoonLoader'
 import React, { useState } from 'react'
-import apiClient from 'api/apiClient'
-import { useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import MDSnackbar from 'components/MDSnackbar'
 import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
 import PhoneInput from 'react-phone-input-2'
 import { makeStyles } from '@mui/styles'
+import { useCompanyProfileData } from './useCompanyProfileData'
 
 const useStyles = makeStyles({
     Container: {
@@ -23,7 +20,6 @@ const useStyles = makeStyles({
     },
     inputStyles: {
         width: '100% !important',
-        borderRadius: '5px',
         height: '46px !important',
         borderRadius: 8
     }
@@ -31,73 +27,15 @@ const useStyles = makeStyles({
 
 const CompanyProfile = () => {
     const classes = useStyles()
-    const [companyData, setCompanyData] = useState({
-        company_name: '', contact_person: '', company_size: '', primary_email: '', primary_phone: '',
-        time_zone: '', company_address: ''
-    })
-    const [respMessage, setRespMessage] = useState("")
     const [errorSB, setErrorSB] = useState(false);
     const [successSB, setSuccessSB] = useState(false);
-    const [loading, setLoading] = useState(false)
-    const id = useSelector(state => state.userDetails?.id)
-    const companyName = useSelector(state => state.userDetails.company_profile)
     const openSuccessSB = () => setSuccessSB(true);
     const closeSuccessSB = () => setSuccessSB(false);
-
     const openErrorSB = () => setErrorSB(true);
     const closeErrorSB = () => setErrorSB(false);
+    // const { openSuccessSB, openErrorSB } = useToasterHook()
 
-    const handleChange = (event) => {
-        const { name, value } = event.target
-        setCompanyData({
-            ...companyData,
-            [name]: value
-        })
-    }
-    const handleSignUp = (event) => {
-        event.preventDefault()
-        setLoading(true)
-        let data = companyData
-        data.id = id
-        apiClient.post("/settings/company-profile", data)
-            .then(resp => {
-                if (resp.status === 200 || resp.status === 201) {
-                    setRespMessage(resp.data?.message)
-                    setLoading(false)
-                    setTimeout(() => {
-                        openSuccessSB()
-                    }, 400)
-                } else {
-                    setRespMessage(resp.data?.message)
-                    setLoading(false)
-                    setTimeout(() => {
-                        openErrorSB()
-                    }, 400)
-                }
-            })
-            .catch(e => {
-                setLoading(false)
-                setRespMessage(e.response?.data?.message)
-                setTimeout(() => {
-                    openErrorSB()
-                }, 400)
-            })
-
-    }
-    const getProfileDetails = async () => {
-        await apiClient.get("/settings/company-profile/" + id)
-            .then(resp => {
-                setCompanyData({ ...resp?.data?.company_data })
-            })
-            .catch(e => {
-            })
-    }
-    const handlePhoneChange1 = (phone) => {
-        companyData({
-            ...companyData,
-            primary_phone: phone
-        })
-    }
+    const { handleChange, handleSignUp, loading, handlePhoneChange1, companyData, respMessage } = useCompanyProfileData({ openSuccessSB, openErrorSB  })
 
     const renderErrorSB = (
         <MDSnackbar
@@ -126,18 +64,9 @@ const CompanyProfile = () => {
             bgWhite
         />
     );
-    useEffect(() => {
-        getProfileDetails()
-        setCompanyData({
-            ...companyData,
-            company_name: companyName ? companyName : ''
-        })
-    }, [])
-    console.log(companyData)
 
     return (
         <DashboardLayout>
-            {/* <DashboardNavbar /> */}
             <MDBox pt={3} ml={1.5} pb={3}
                 sx={({ breakpoints }) => ({
                     [breakpoints.down('md')]: {

@@ -107,43 +107,11 @@ const getBrandList = async (req, res) => {
     try {
         const brands = await brand_model.find({ user: user }).lean().exec()
         const [users] = await User.find({ _id: user })
-        if (users?.roles.includes("Admin") || users?.roles.includes("Project-Manager")) {
+        if (users?.roles.includes("Admin") || users?.roles.includes("Project-Manager") || users?.roles.includes("Graphic-Designer")) {
             const allBrands = await brand_model.find()
             return res.status(200).send({ message: 'All List Found', brandList: allBrands })
 
-        } else if (users?.roles.includes("Graphic-Designer")) {
-            const projects = await graphicDesignModel.find()
-            const filteredProjects = projects.filter(item =>
-                item.team_members.some(member => member._id === user)
-            );
-            if (filteredProjects?.length > 0) {
-                const allBrands = await brand_model.find()
-                let list = []
-                for (let v = 0; v < filteredProjects?.length; v++) {
-                    const currentProject = filteredProjects[v]
-                    if (typeof currentProject.brand === "object") {
-                        const filterbrand = allBrands?.filter(list => list?.brand_name === currentProject.brand?.brand_name)
-                        if (list?.length > 0) {
-                            list += [...list, ...filterbrand]
-                        } else {
-                            list = filterbrand
-                        }
-                    }
-                    else {
-                        const filterbrand = allBrands?.filter(list => list?.brand_name === currentProject.brand)
-                        if (list?.length > 0) {
-                            list = [...list, ...filterbrand]
-                        } else {
-                            list = filterbrand
-                        }
-
-                    }
-                }
-                return res.status(200).send({ message: 'List Found', brandList: list })
-            }
-            return res.status(404).send({ message: 'No brand found' })
-
-        }
+        } 
         else {
             if (brands !== null) {
                 return res.status(200).send({ message: 'List Found', brandList: brands })

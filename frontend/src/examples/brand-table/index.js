@@ -337,7 +337,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                         <Card sx={{ width: "98%", mt: '20px' }}>
                             <NewProjectsTable
                                 table={{ columns: is768 ? small_columns : columns, rows: is768 ? small_rows : rows }}
-                                entriesPerPage={{ defaultValue: 5 }}
+                                entriesPerPage={{ defaultValue: 15 }}
                                 showTotalEntries={true}
                                 pagination={{ variant: 'contained', color: "warning" }}
                                 noEndBorder={false}

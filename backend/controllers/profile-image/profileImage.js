@@ -5,19 +5,14 @@ const path = require('path')
 
 
 const UploadProfileImage = async (req, res) => {
-
     const id = req.params.id
-    const { fullname, email, phone_no } = req.body
 
     if (!id) {
         return res.status(400).json({ message: "id not provided Try Login again" })
     }
-    if (!email) {
+    if (!req.body.email) {
         return res.status(402).json({ message: "Email is required" })
     }
-    // if (req.file) {
-    //     console.log(req.file)
-    // }
     try {
         const user = await User.findById(id)
         if (!user) return res.status(404).send({ message: 'User not Found try login again' })
@@ -38,14 +33,13 @@ const UploadProfileImage = async (req, res) => {
             }
         }
 
-        user.name = fullname
-        user.email = email
-        user.phone_no = phone_no
+        user.name = req.body.fullname
+        user.email = req.body.email
+        user.phone_no = req.body.phone_no
         let name = user.name.replace(/\s/g, '')
         const prefix = `${name}-${user._id}/profile-image/`
         const blob = bucket.file(prefix + req.file.originalname)
         blob.createWriteStream({ resumable: false }).on('finish', async () => {
-            // console.log('file uploaded')
             const [file] = await bucket.getFiles({ prefix })
             if (file.length > 0) {
                 let filesInfo = file?.map((file) => {
@@ -61,12 +55,13 @@ const UploadProfileImage = async (req, res) => {
                     const profileData = await user.save()
 
                     if (profileData) {
+                        const {name, email,phone_no, avatar} = profileData
                         return res.status(201).send({
                             message: 'Profile Updated', profileData: {
-                                fullname: profileData.name,
-                                email: profileData.email,
-                                phone: profileData.phone_no,
-                                avatar: profileData.avatar,
+                                name,
+                                email,
+                                phone_no,
+                                avatar,
                             }
                         })
                     } else {
@@ -89,25 +84,25 @@ const UploadProfileImage = async (req, res) => {
 
 const UploadWithoutProfileImage = async (req, res) => {
     const id = req.params.id
-    const { fullname, email, phone_no } = req.body
-
     if (!id) {
         return res.status(400).json({ message: "id not provided Try Login again" })
     }
-    if (!email) {
+    if (!req.body.email) {
         return res.status(402).json({ message: "Email is required" })
     }
     try {
         const user = await User.findById(id)
         if (!user) return res.status(404).send({ message: 'User not Found try login again' })
 
-        user.name = fullname
-        user.email = email
-        user.phone_no = phone_no
+        user.name = req.body.fullname
+        user.email = req.body.email
+        user.phone_no = req.body.phone_no
+
         const profileData = await user.save()
         if (profileData) {
+            const { phone_no, email, name } = profileData
             return res.status(201).send({
-                message: 'Profile Updated', profileData
+                message: 'Profile Updated', profileData: { name, email, phone_no }
             })
         } else {
             return res.status(400).send({ message: 'Found error try again!' })

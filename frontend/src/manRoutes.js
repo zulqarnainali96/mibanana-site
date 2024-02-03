@@ -1,14 +1,19 @@
+import { lazy } from "react";
 import Dashboard from "layouts/dashboard";
 import Icon from "@mui/material/Icon";
-import MIBrandTable from "examples/brand-table";
 import ProjectTable from "layouts/ProjectsTable";
 import EditProfile from "layouts/settings/edit-profile";
 import CompanyProfile from "layouts/settings/company-profile/company-profile";
 import ChangePassword from "layouts/settings/change-password";
-import Chating from "layouts/chats";
-import Navbar from "examples/Navbars/MyNavbar/Navbar";
 import ViewBrand from "examples/brand-table/view-brand/view-brand";
 import MibananTeam from "layouts/mibanana-team";
+import MIBrandTable from "examples/brand-table";
+import Chating from "layouts/chats";
+
+
+// const Chating = lazy( () => import("layouts/chats"))
+// const MIBrandTable = lazy( () => import("examples/brand-table"))
+
 
 const routes = [
   {

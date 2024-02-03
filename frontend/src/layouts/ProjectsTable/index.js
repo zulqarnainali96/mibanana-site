@@ -473,7 +473,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
               <MDBox>
                 <NewProjectsTable
                   table={{ columns: isLg ? small_columns : columns, rows: isLg ? small_rows : rows }}
-                  entriesPerPage={{ defaultValue: 5 }}
+                  entriesPerPage={{ defaultValue: 15 }}
                   showTotalEntries={true}
                   pagination={{ variant: "contained", color: "warning" }}
                   noEndBorder={false}
