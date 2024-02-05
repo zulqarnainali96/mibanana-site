@@ -1,6 +1,7 @@
 // GET PROJECT DATA THAT ARE CREATED BY CUSTOMER
 
 import apiClient from "api/apiClient"
+import { getDate } from "./table-date";
 
 const toggleDrawer = (anchor, open, setState, state) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -9,9 +10,31 @@ const toggleDrawer = (anchor, open, setState, state) => (event) => {
     setState({ ...state, [anchor]: open });
 };
 
+function convertCreatedAtToDate(createdAt) {
+    const [time, date] = createdAt.split(" ");
+    const [hours, minutes, seconds] = time.split(":");
+    const [day, month, year] = date.split("-");
+
+    // JavaScript months are 0-indexed, so subtract 1 from the month
+    const t = new Date(`${year}-${month - 1}-${day}T${hours}:${minutes}:${seconds}`)
+    return new Date(`${year}-${month - 1}-${day}T${hours}:${minutes}:${seconds}`);
+}
+
 const getProjectData = (id, callback) => {
     apiClient.get("/graphic-project/" + id).then(({ data }) => {
-        callback(data)
+        const filterProject = data?.CustomerProjects?.map(item => {
+            const getSubmittedDate = getDate(item?.createdAt).formatedDate
+            const getUpdatedDate = getDate(item?.updatedAt).formatedDate
+            let obj = {}
+            obj.createdAt = getSubmittedDate
+            obj.updatedAt = getUpdatedDate
+            return { ...item, ...obj }
+        }).reverse()
+        const project_data = {
+            message: data?.message,
+            CustomerProjects: filterProject
+        }
+        callback(project_data)
     }).catch(err => {
         console.error('err ===> ', err)
     })

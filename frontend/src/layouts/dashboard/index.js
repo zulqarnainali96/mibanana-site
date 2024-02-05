@@ -49,7 +49,7 @@ function Dashboard({ reduxActions, reduxState }) {
     // else if (isSubmitted?.length > 0 && Ongoing?.length === 0) return isSubmitted?.length
     // else if (isSubmitted?.length > 0 && Ongoing?.length > 0) return isSubmitted?.length + Ongoing?.length
     // else { return 0 }
-    const filterStatus  =  project_list?.filter(item => item.status === 'Assigned' || item.status === 'Ongoing' || item.status === 'Submitted')
+    const filterStatus = project_list?.filter(item => item.status === 'Assigned' || item.status === 'Ongoing' || item.status === 'Submitted')
     return filterStatus?.length
   }
 
@@ -80,10 +80,12 @@ function Dashboard({ reduxActions, reduxState }) {
         return "HeadsUp"
       case 'Assigned':
         return "Assigned"
+      case 'Cancel':
+        return "Cancel"
       case 'Submitted':
         return "Submitted"
-      case 'Attend' :
-        return 'Attend'  
+      case 'Attend':
+        return 'Attend'
       default:
         return "End"
     }
@@ -116,25 +118,6 @@ function Dashboard({ reduxActions, reduxState }) {
     />
   );
   const rows = project_list?.length > 0 ? project_list.map((item, i) => {
-
-    const date = new Date(item.createdAt);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-indexed
-    const day = String(date.getDate()).padStart(2, "0");
-    let hours = date.getHours();
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    const seconds = String(date.getSeconds()).padStart(2, "0");
-    let ampm = "AM";
-
-    // Convert to 12-hour format and set AM/PM
-    if (hours >= 12) {
-      ampm = "PM";
-      if (hours > 12) {
-        hours -= 12;
-      }
-    }
-    hours = String(hours).padStart(2, "0");
-    const readableTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
 
     const projectid = project_list.indexOf(item)
 
@@ -176,9 +159,9 @@ function Dashboard({ reduxActions, reduxState }) {
         {item.project_category}
       </MDTypography>,
       active: <MDTypography variant="p" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>
-        {!item.is_active ? "Not Active" : item.updatedAt}
+        {!item.is_active ? "Not Active" : item.updatedAt?.map(d => <p>{d}</p>)}
       </MDTypography>,
-      createdAt: <MDTypography variant="p" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>{readableTimestamp}</MDTypography>,
+      createdAt: <MDTypography variant="p" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>{item?.createdAt?.map(d => <p>{d}</p>)}</MDTypography>,
       action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
         <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} />
       </MDTypography>
@@ -206,7 +189,7 @@ function Dashboard({ reduxActions, reduxState }) {
       project_title: (
         <MDBox lineHeight={1}>
           <MDTypography display={"block"} sx={{ textDecoration: 'underline !important' }} variant="button" fontWeight="medium">
-            <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor,fontSize : isLg && '12px' }} onClick={() => projectActiveorNot(projectid)}>
+            <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor, fontSize: isLg && '12px' }} onClick={() => projectActiveorNot(projectid)}>
               {item?.project_title}
             </MDBox>
           </MDTypography>
@@ -281,7 +264,7 @@ function Dashboard({ reduxActions, reduxState }) {
             <Card sx={cardStyles}>
               <MDBox>
                 <NewProjectsTable
-                  table={{ columns : isLg ? small_columns : columns , rows : isLg ? small_rows : rows  }}
+                  table={{ columns: isLg ? small_columns : columns, rows: isLg ? small_rows : rows }}
                   entriesPerPage={{ defaultValue: 15 }}
                   showTotalEntries={true}
                   pagination={{ variant: 'contained', color: "warning" }}

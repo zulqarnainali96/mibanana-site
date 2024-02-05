@@ -1,23 +1,18 @@
 import { ArrowForward } from '@mui/icons-material'
-import { Grid, Stack, useMediaQuery } from '@mui/material'
+import { Grid, useMediaQuery } from '@mui/material'
 import MDBox from 'components/MDBox'
 import MDButton from 'components/MDButton'
 import MDInput from 'components/MDInput'
 import MDTypography from 'components/MDTypography'
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
-import DashboardNavbar from 'examples/Navbars/DashboardNavbar'
 import React, { useState } from 'react'
-import defaultImage from "assets/mi-banana-icons/default-profile.png"
-import apiClient from 'api/apiClient'
-import { useSelector } from 'react-redux'
-import { useEffect } from 'react'
 import reduxContainer from 'redux/containers/containers'
 import { MoonLoader } from 'react-spinners'
-import MDSnackbar from 'components/MDSnackbar'
 import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
 import PhoneInput from 'react-phone-input-2'
 import { makeStyles } from '@mui/styles'
+import useEditProfile from './useEditProfile'
 
 
 const useStyles = makeStyles({
@@ -33,199 +28,36 @@ const useStyles = makeStyles({
 })
 
 const EditProfile = ({ reduxState, reduxActions }) => {
-    const [imageUrl, setImageUrl] = useState(defaultImage);
-    const [loading, setLoading] = useState(false)
-    const [profileData, setProfileData] = useState({
-        fullName: '', email: '', phone: '', user_avatar: ''
-    })
-    const [profileImage, setProfileImage] = useState([])
-    const userID = useSelector(state => state.userDetails)
-    const ID = userID?.hasOwnProperty("_id") ? userID?._id : userID?.id
     const is991 = useMediaQuery("(min-width:990px)")
     const classes = useStyles()
-    const [respMessage, setRespMessage] = useState("")
+    
     const [errorSB, setErrorSB] = useState(false);
     const [successSB, setSuccessSB] = useState(false);
-
     const openSuccessSB = () => setSuccessSB(true);
     const closeSuccessSB = () => setSuccessSB(false);
-
     const openErrorSB = () => setErrorSB(true);
     const closeErrorSB = () => setErrorSB(false);
 
-    const handleChange = (event) => {
-        const { name, value } = event.target
-        setProfileData({
-            ...profileData,
-            [name]: value
-        })
-    }
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setProfileImage([file])
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                setImageUrl(reader.result);
-            };
-            reader.readAsDataURL(file);
-        } else {
-        }
-    };
-    async function uploadWithProfile() {
-        setLoading(true)
-        const formData = new FormData
-        formData.append('email', profileData.email)
-        formData.append('phone_no', profileData.phone)
-        formData.append('fullname', profileData.fullName)
-        formData.append('file', profileImage[0])
-
-        const id = reduxState.userDetails.id
-        await apiClient.post('/api/user/profile/' + id, formData)
-            .then(({ data }) => {
-                const { message, profileData } = data
-                setRespMessage(message)
-                setProfileData({ ...profileData })
-
-                localStorage.setItem('user_details', JSON.stringify({
-                    ...reduxState.userDetails,
-                    ...profileData,
-                }))
-                reduxActions.getUserDetails({
-                    ...reduxState.userDetails,
-                    ...profileData
-                })
-                setImageUrl(profileData?.avatar)
-                setLoading(false)
-                setProfileImage([])
-                setProfileData()
-                setTimeout(() => {
-                    openSuccessSB()
-                }, 800)
-            })
-            .catch(err => {
-                if (err.response) {
-                    const { message } = err.response.data
-                    setRespMessage(message)
-                    setLoading(false)
-                    setTimeout(() => {
-                        openErrorSB()
-                    }, 800)
-                    return
-                }
-                setRespMessage(err.message)
-                setLoading(false)
-                setTimeout(() => {
-                    openErrorSB()
-                }, 800)
-            })
-
-    }
-    async function uploadWithoutProfile() {
-        setLoading(true)
-        const data = {
-            email: profileData.email,
-            phone_no: profileData.phone,
-            fullname: profileData.fullName
-        }
-        const id = reduxState.userDetails.id
-        await apiClient.post('/api/user/no-profile/' + id, data)
-            .then(({ data }) => {
-                const { message, profileData } = data
-                setRespMessage(message)
-                localStorage.setItem('user_details', JSON.stringify({
-                    ...reduxState.userDetails,
-                    ...profileData,
-                }))
-                reduxActions.getUserDetails({
-                    ...reduxState.userDetails,
-                    ...profileData,
-                })
-                setLoading(false)
-                setTimeout(() => {
-                    openSuccessSB()
-                }, 800)
-            })
-            .catch(err => {
-                if (err.response) {
-                    const { message } = err.response.data
-                    setRespMessage(message)
-                    setLoading(false)
-                    setTimeout(() => {
-                        openErrorSB()
-                    }, 800)
-                    return
-                }
-                setRespMessage(err.message)
-                setLoading(false)
-                setTimeout(() => {
-                    openErrorSB()
-                }, 800)
-            })
-
-    }
-    async function UpdateProfile(event) {
-        event.preventDefault()
-        if (profileImage.length) {
-            uploadWithProfile()
-        } else {
-            uploadWithoutProfile()
-        }
-    }
-    const handlePhoneChange1 = (phone) => {
-        setProfileData({
-            ...profileData,
-            phone: phone
-        })
-    }
-    useEffect(() => {
-        function getProfile() {
-            const { email, name: fullName, phone_no: phone, avatar: user_avatar } = reduxState.userDetails
-            setProfileData({ email, fullName, phone, user_avatar })
-            if (user_avatar?.length) {
-                setImageUrl(user_avatar)
-            }
-        }
-        getProfile()
-    }, [])
-    const renderErrorSB = (
-        <MDSnackbar
-            color="error"
-            icon="warning"
-            title="Error"
-            content={respMessage}
-            dateTime={new Date().toLocaleTimeString('pk')}
-            open={errorSB}
-            onClose={closeErrorSB}
-            close={closeErrorSB}
-            bgWhite
-        />
-    );
-
-    const renderSuccessSB = (
-        <MDSnackbar
-            color="success"
-            icon="check"
-            title="SUCCESS"
-            content={respMessage}
-            dateTime={new Date().toLocaleTimeString('pk')}
-            open={successSB}
-            onClose={closeSuccessSB}
-            close={closeSuccessSB}
-            bgWhite
-        />
-    );
+    const { 
+        respMessage, 
+        profileData, 
+        loading, 
+        imageUrl, 
+        handleChange, 
+        handleFileUpload, 
+        handlePhoneChange1, 
+        UpdateProfile } = 
+        useEditProfile({ openSuccessSB, openErrorSB, reduxActions, reduxState })
+    
+    const props = { respMessage, closeErrorSB, closeSuccessSB, successSB, errorSB }
 
     const Styles = {
         fontWeight: "bold",
         fontSize: "15px",
         marginLeft: 4
     }
-
     return (
-        <DashboardLayout>
-            {/* <DashboardNavbar /> */}
+        <DashboardLayout {...props}>
             <MDBox pt={6} pb={3}>
                 <Grid container >
                     <Grid item xxl={12} xl={12} lg={12} md={12} xs={12} sx={{ background: 'white', boxShadow: "4px 3px 7px -2px #cccccc0d" }}>
@@ -323,8 +155,8 @@ const EditProfile = ({ reduxState, reduxActions }) => {
                                     </MDButton>
                                 </MDBox>
                             </MDBox>
-                            {renderErrorSB}
-                            {renderSuccessSB}
+                            {/* {renderErrorSB}
+                            {renderSuccessSB} */}
                         </MDBox>
                     </Grid>
                 </Grid>

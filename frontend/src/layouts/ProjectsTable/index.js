@@ -46,22 +46,12 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   const is500 = useMediaQuery("(max-width:500px)")
 
   function openProjectChat(id) {
-    console.log(id)
     reduxActions.getID(id);
-    navigate("/chat/" + id);
-    // let projectID = projectList[id]._id;
-
-    // if (
-    //   user.roles?.includes("Project-Manager") ||
-    //   user?.roles?.includes("Graphic-Designer") ||
-    //   user?.roles?.includes("Admin")
-    // ) {
-    //   navigate("/chat/" + projectID);
-    //   return;
-    // } else {
-    //   navigate("/chat/" + projectID);
-    // }
+    setTimeout(() => {
+      navigate("/chat/" + id);
+    }, 400)
   }
+
   function projectStatus(status) {
     switch (status) {
       case "Project manager":
@@ -74,6 +64,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
         return "HeadsUp";
       case 'Assigned':
         return "Assigned"
+      case 'Cancel':
+        return "Cancel"
       case "Attend":
         return "Attend";
       case "Submitted":
@@ -84,25 +76,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   }
   const rows = projectList?.length
     ? projectList?.map((item, i) => {
-      const date = new Date(item.createdAt);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      let hours = date.getHours();
-      const minutes = String(date.getMinutes()).padStart(2, "0");
-      const seconds = String(date.getSeconds()).padStart(2, "0");
-      let ampm = "AM";
-
-      // Convert to 12-hour format and set AM/PM
-      if (hours >= 12) {
-        ampm = "PM";
-        if (hours > 12) {
-          hours -= 12;
-        }
-      }
-      hours = String(hours).padStart(2, "0");
-      const readableTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
-      // const projectid = project_list.CustomerProjects.indexOf(item);
 
       return {
         project_title: <MDBox lineHeight={1}>
@@ -212,7 +185,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
               color: mibananaColor.yellowTextColor,
             }}
           >
-            {!item.is_active ? "Not Active" : item.updatedAt}
+            {!item.is_active ? "Not Active" : item.updatedAt?.map(d => <p>{d}</p>)}
           </MDTypography>
         ),
         createdAt: (
@@ -224,7 +197,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
               color: mibananaColor.yellowTextColor,
             }}
           >
-            {readableTimestamp}
+            {item?.createdAt?.map(d => <p>{d}</p>)}
           </MDTypography>
         ),
         action: (

@@ -172,7 +172,6 @@ export default function App() {
         </>
       )}
       <MDBox>
-         
         {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar routes={getallRoutes()} />}
         <Routes>
           {user !== null ? (

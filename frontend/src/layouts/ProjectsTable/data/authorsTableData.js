@@ -95,6 +95,43 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
         }, 900)
       })
   }
+  const projectCancel = async () => {
+    setLoading4(true)
+    if (!item._id) {
+      setRespMessage('ID not provided')
+      setLoading4(false)
+      setTimeout(() => {
+        openErrorSB()
+      }, 1000)
+      return
+    }
+    const id = item._id
+    await apiClient.get('/api/cancel-project/' + id)
+      .then(({ data }) => {
+        if (data.message) resonseMessage(data.message)
+        setLoading4(false)
+        setTimeout(() => {
+          getProjectData(userid, func)
+          successSBNot()
+        }, 900)
+      })
+      .catch((err) => {
+        if (err.response) {
+          setLoading4(false)
+          const { message } = err.response.data
+          resonseMessage(message)
+          setTimeout(() => {
+            errorSBNot()
+          }, 900)
+          return
+        }
+        setLoading4(false)
+        resonseMessage(err.message)
+        setTimeout(() => {
+          errorSBNot()
+        }, 900)
+      })
+  }
   const duplicateProject = async () => {
     setLoading2(true)
     if (!item._id) {
@@ -337,7 +374,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
             horizontal: "center"
           }}
         >
-          {role?.customer ? <MenuItemDropdown loading={loading1} onClick={deleteProject} title={"Cancel"} /> : null}
+          {role?.customer ? <MenuItemDropdown loading={loading1} onClick={projectCancel} title={"Cancel"} /> : null}
           {role?.customer ? <MenuItemDropdown loading={loading2} onClick={duplicateProject} title={"Duplicate"} /> : (
             <MenuItemDropdown loading={loading5} onClick={projectAttend} title={"Attend"} />
           )}

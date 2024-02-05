@@ -44,7 +44,6 @@ import EditProfile from "layouts/settings/edit-profile";
 import CompanyProfile from "layouts/settings/company-profile/company-profile";
 import ChangePassword from "layouts/settings/change-password";
 import Chating from "layouts/chats";
-import Navbar from "examples/Navbars/MyNavbar/Navbar";
 import MibananTeam from "layouts/mibanana-team";
 const routes = [
   {

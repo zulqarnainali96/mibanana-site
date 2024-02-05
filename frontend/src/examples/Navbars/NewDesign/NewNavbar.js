@@ -702,9 +702,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         msg={respMessage}
         open={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
-        width="30%"
-        color="#288e28"
-        // title="SUCCESS"
+        width="35%"
+        color="#333333"
         sideRadius={false}
       />
       <Grid container className="grid-container">

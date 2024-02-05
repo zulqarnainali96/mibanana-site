@@ -298,9 +298,8 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                 msg={respMessage}
                 open={showSuccessModal}
                 onClose={() => setShowSuccessModal(false)}
-                width="30%"
-                color="#288e28"
-                // title="SUCCESS"
+                width="35%"
+                color="#333"
                 sideRadius={false}
             />
             <MDBox ml={4} pt={2} pb={3}>
