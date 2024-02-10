@@ -338,6 +338,7 @@ const Chating = ({ reduxState, reduxActions }) => {
           />
         </Grid>
         {renderSuccessSB}
+        {renderErrorSB}
       </Grid>
     </DashboardLayout>
   );

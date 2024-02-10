@@ -168,6 +168,7 @@ h6,
   display: flex;
   align-items: center;
   height: 100%;
+  padding-block-end: 10px;
 }
 
 .userName1 {
@@ -188,7 +189,8 @@ h6,
   font-size: 12px !important;
   font-family: "Poppins", sans-serif;
   font-weight: 400;
-  padding-inline: 17px;
+  padding-inline: 4px;
+  padding-block: 6px;
 }
 .desc1 > * {
   font-size: 12px !important;
@@ -451,6 +453,10 @@ h6,
   width: 100%;
   background-color: var(--header-color);
 }
+
+.project-details-2 {
+  grid-template-columns: repeat(5, 1fr);
+}
 .project-details-3 {
   grid-template-columns: repeat(1, 1fr);
 }
@@ -469,8 +475,9 @@ h6,
 }
 .project-details .project-details-div .remove-designer {
   position: absolute;
-  top: 30px;
-  left: -3px;
+  top: 3px;
+  left: -21px;
+  scale: 0.8;
   padding: 2px;
   background: #ccc;
 }
@@ -533,6 +540,9 @@ h6,
   .project-details {
     grid-template-columns: repeat(4, 1fr);
   }
+  .project-details-2 {
+    grid-template-columns: repeat(5, 1fr);
+  }
   .project-details .adminImg1 {
     width: 40%;
     padding: 5px;
@@ -561,6 +571,9 @@ h6,
   }
   .project-details {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .project-details-2 {
+    grid-template-columns: repeat(3, 1fr);
   }
   .project-details .adminImg1 {
     width: 25%;
@@ -634,12 +647,18 @@ h6,
   .project-details {
     grid-template-columns: repeat(1, 1fr);
   }
+  .project-details-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
   .h1-style {
     font-size: 2.5rem;
     left: -10px;
   }
 }
 @media screen and (max-width: 350px) {
+  .project-details-2 {
+    grid-template-columns: repeat(1, 1fr);
+  }
   .filesGrid .nofilefoundDiv h1 {
     font-size: 14px;
   }

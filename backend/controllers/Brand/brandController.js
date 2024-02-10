@@ -54,6 +54,8 @@ const createBrand = async (req, res) => {
                             f.size = file.metadata.size,
                             f.time = file.metadata.timeCreated,
                             f.upated_time = file.metadata.updated
+                            f.folder_name = prefix
+                            
                         return f
                     })
                     // console.log(filesInfo)

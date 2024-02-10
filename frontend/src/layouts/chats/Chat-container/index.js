@@ -208,7 +208,7 @@ const ChatsContainer = ({
                         position: "absolute",
                         right: 20,
                         top: 54,
-                        fill: mibananaColor.tableHeaderColor,
+                        fill: 'rgba(0,0,0,0.7',
                         cursor: "pointer",
                     }}
                     onClick={onSendMessage}

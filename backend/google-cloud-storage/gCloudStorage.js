@@ -78,6 +78,7 @@ const getFiles = async (req, res) => {
                 obj.time = file.metadata.timeCreated,
                 obj.upated_time = file.metadata.updated,
                 obj.folder_name = prefix
+                obj.folder_dir = "Customer"
             return obj
         })
         const findProject = await graphicProjectsModel.findById({ _id: project_id }).exec()

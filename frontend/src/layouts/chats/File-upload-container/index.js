@@ -27,10 +27,10 @@ import { useStyles } from "./styles";
 import SuccessModal from "components/SuccessBox/SuccessModal";
 
 import ShowFiles from "./show-files/ShowFiles";
-import adminImg from "assets/images/admin.svg";
-import designerImg from "assets/images/d1.svg";
+// import adminImg from "assets/images/admin.svg";
+// import designerImg from "assets/images/d1.svg";
 // import UserImg from "assets/images/u1.svg";
-import pdfImg from "assets/images/pdf1.svg";
+// import pdfImg from "assets/images/pdf1.svg";
 // import tickImg from "assets/images/t1.svg";
 import { useState, useCallback } from "react";
 // import ImageContainer from "./image-container/ImageContainer";
@@ -52,6 +52,7 @@ import { useSelector } from "react-redux";
 import ImageViewModal from "examples/image-modal";
 import "./file-upload.css"
 import { Close, CloseRounded } from "@mui/icons-material";
+import ProjectFilesFolder from "./project-filter-button/project-files-folder";
 
 const uploadBtn = {
   backgroundColor: "#98e225",
@@ -98,7 +99,6 @@ const FileUploadContainer = ({
   const [previewimg, setpreviewimg] = useState("");
   const [currentVersion, setSelectVersion] = useState("");
   const [fileVersion, setFileVersionList] = useState(project?.version);
-  const [designerObj, setDesignerObj] = useState([]);
   const [designerList, setDesignerList] = useState([]);
   const [successOpen, setsuccessOpen] = useState(false);
   const [successMessage, setsuccessMessage] = useState("");
@@ -119,10 +119,6 @@ const FileUploadContainer = ({
     setCurrentImage(index)
   }, [isViewerOpen])
 
-  const handleChange = (event) => {
-    setMemberName(event.target.value);
-  };
-
   const closeImageViewer = () => {
     setIsViewerOpen(false);
   };
@@ -134,16 +130,41 @@ const FileUploadContainer = ({
     setSelectedFileType(event.target.value); // Update selected file type on change
   };
   const handleFilePeopleChange = (event) => {
+    const value = event.target.value
+    // console.log(value)
+    if (!value) {
+      setSelectedFilePeople(value)
+      return
+    }
     setActiveBtn("folder");
-    setSelectedFilePeople(event.target.value); // Update selected file type on change
+    if (value === "designer") {
+      console.log(value, fileVersion?.length)
+      // const selectedVersion = project.version?.length - 1
+      getFilesOnVerion(fileVersion?.length)
+    } else if (value === "customer") {
+      clientFiles()
+    } else {
+      getFilesOnVerion(value)
+    }
+    setSelectedFilePeople(value); // Update selected file type on change
   };
   const addFileVerion = () => {
     if (fileVersion?.length === 0) {
       setFileVersionList(["1"]);
+      setRespMessage("Version Added Successfully")
+      setTimeout(() => {
+        openSuccessSB();
+      }, 300)
+      // clearTimeout(tt);
     } else {
       const lastNumber = parseInt(fileVersion[fileVersion?.length - 1]);
       const newNumber = (lastNumber + 1).toString();
       setFileVersionList((prev) => [...prev, newNumber]);
+      setRespMessage("Version Added Successfully")
+      setTimeout(() => {
+        openSuccessSB();
+      }, 300)
+      // clearTimeout(tt);
     }
   };
 
@@ -217,9 +238,6 @@ const FileUploadContainer = ({
   const onDrop = async (acceptedFiles) => {
     // Do something with dropped files
     await handleSubmit(acceptedFiles);
-
-    // You can handle the dropped files here or trigger your existing file upload logic
-    // For example, you can upload the dropped files by iterating through acceptedFiles and processing them
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -254,46 +272,47 @@ const FileUploadContainer = ({
         }
       });
   };
-  
+
   const deleteFile = async (fileData) => {
     const formdata = {
-      file_name : fileData?.name,
-      folder_name : fileData?.folder_name
+      file_name: fileData?.name,
+      folder_name: fileData?.folder_name
     }
-    await apiClient.post(`/api/delete-file`,formdata)
-    .then( ({data}) => {
-      if(data?.message){
-        const filterData = version?.filter(item => item?.id !== fileData?.id)
-        setVersion(filterData)
-        setRespMessage(data.message)
-        setTimeout( () => {
-          openSuccessSB()
-        },500)
-      }
-    })
-    .catch((err) => {
-      if (err.response) {
-        const { message } = err.response.data
-        setRespMessage(message)
-        setTimeout(() => {
-          openErrorSB()
-        }, 500)
-      } else {
-        setRespMessage(err.message)
-        setTimeout(() => {
-          openErrorSB()
-        }, 500)
-      }
-    })
+    await apiClient.post(`/api/delete-file`, formdata)
+      .then(({ data }) => {
+        if (data?.message) {
+          const filterData = version?.filter(item => item?.id !== fileData?.id)
+          setVersion(filterData)
+          setRespMessage(data.message)
+          setTimeout(() => {
+            openSuccessSB()
+          }, 500)
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          const { message } = err.response.data
+          setRespMessage(message)
+          setTimeout(() => {
+            openErrorSB()
+          }, 500)
+        } else {
+          setRespMessage(err.message)
+          setTimeout(() => {
+            openErrorSB()
+          }, 500)
+        }
+      })
   };
 
   const getListThroughVersion = (e) => {
     if (e.target.value) {
-      setSelectVersion(e.target.value);
+      // setSelectVersion(e.target.value);
       getFilesOnVerion(e.target.value);
-    } else {
-      setSelectVersion("")
     }
+    // else {
+    //   setSelectVersion("")
+    // }
   };
   const managerUploadFiles = useCallback(async (filType) => {
     setLoading(true);
@@ -387,8 +406,8 @@ const FileUploadContainer = ({
         }, 400)
       })
   };
-  const versionUploads = async (filType) => {
-    if (!currentVersion) {
+  const versionUploads = async (filType, current_version) => {
+    if (!current_version) {
       alert("please select version first")
       return
     }
@@ -398,14 +417,14 @@ const FileUploadContainer = ({
       formdata.append("files", filType[i]);
     }
     await apiClient
-      .post(`/api/version-uploads/${currentVersion}/${id}`, formdata)
+      .post(`/api/version-uploads/${current_version}/${id}`, formdata)
       .then(async ({ data }) => {
         setLoading(false);
         setFiles([]);
         setFilesType([]);
         await getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject);
         setTimeout(() => {
-          getFilesOnVerion(currentVersion)
+          getFilesOnVerion(current_version)
         }, 700)
         if (data.message) {
           setRespMessage(data.message)
@@ -433,13 +452,29 @@ const FileUploadContainer = ({
   };
   const handleSubmit = async (fileType) => {
     if (role?.designer || role?.projectManager || role?.admin) {
-      if (currentVersion) {
-        versionUploads(fileType);
-      } else {
-        managerUploadFiles(fileType);
+      if (selectedFilePeople === "customer") {
+        setRespMessage("You cannot upload in customer folder")
+        setTimeout(() => {
+          openErrorSB()
+        }, 400)
+        return
+      } else if (selectedFilePeople === "designer") {
+        const current_version = fileVersion?.length
+        versionUploads(fileType, current_version)
+      }
+      else {
+        versionUploads(fileType, selectedFilePeople)
       }
     } else {
-      customerUploadFiles(fileType);
+      if (selectedFilePeople !== "customer") {
+        setRespMessage("You can only upload in customer folder")
+        setTimeout(() => {
+          openErrorSB()
+        }, 400)
+        return
+      } else {
+        customerUploadFiles(fileType);
+      }
     }
   };
   const deleteDesigner = (val) => {
@@ -494,21 +529,18 @@ const FileUploadContainer = ({
   }, []);
 
   useEffect(() => {
-    setFileVersionList(project?.version)
-  }, [project?.version])
-
-  useEffect(() => {
     getfiles();
   }, [selectedFilePeople]);
 
   const getfiles = () => {
-    if (selectedFilePeople == "designer") {
-      designerFiles();
-    } else if (selectedFilePeople == "customer") {
-      clientFiles();
-    } else {
-      role?.projectManager || role?.designer || role?.admin ? designerFiles() : clientFiles();
-    }
+    // if (selectedFilePeople == "designer") {
+    //   // designerFiles();
+    //   getListThroughVersion()
+    // } else if (selectedFilePeople == "customer") {
+    //   clientFiles();
+    // } else {
+    //   role?.projectManager || role?.designer || role?.admin ? designerFiles() : clientFiles();
+    // }
   };
 
   // ---------- Version Files for All
@@ -625,7 +657,7 @@ const FileUploadContainer = ({
 
   useEffect(() => {
     getAllDesignersList()
-    getAllfiles()
+    // getAllfiles()
   }, []);
 
   const personProject = () => {
@@ -697,20 +729,47 @@ const FileUploadContainer = ({
       })
   };
   const versionHandler = async () => {
-    if (!currentVersion.length) {
-      let message = "Type version no that you want to delete";
-      const val = parseInt(prompt(message));
-      if (val) {
-        await deleteVersion(val)
-      }
-    } else {
-      await deleteVersion(currentVersion)
-    }
+    // if (!currentVersion.length) {
+    //   let message = "Type version no that you want to delete";
+    //   const val = parseInt(prompt(message));
+    //   if (val) {
+    //     await deleteVersion(val)
+    //   }
+    // } else {
+    //   await deleteVersion(currentVersion)
+    // }
   };
   const handleClose = () => setsuccessOpen(false);
-  useEffect(() => {
 
+  useEffect(() => {
   }, [teamMembers])
+
+  function getFullFolderArray() {
+    let arr = [];
+    if (fileVersion.length > 0) {
+      // version = version.slice(0, -1)
+      const t = fileVersion?.slice(0, -1)
+      arr = [...t, "designer", "customer"].reverse()
+      // setFileVersionList([...t, "designer"].reverse())
+    } else {
+      // setFileVersionList(["customer", "designer empty"])
+      arr = ['customer', 'designer empty']
+    }
+    return arr
+  }
+  function checkVersionEmpty(value) {
+    const version = project?.version
+    if (version.length > 0) {
+      return false
+    } else if (value === "designer empty") {
+      return true
+    }
+  }
+
+  const filesFolderProps = {
+    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion
+    , getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, project
+  }
 
   return (
     <MDBox className="chat-2" sx={{ height: '100%', backgroundColor: mibananaColor.headerColor }}>
@@ -748,71 +807,7 @@ const FileUploadContainer = ({
           </MDTypography>
         </Grid>
         <Box sx={{ background: "#fff", mt: 1, pt: 1 }}>
-          <Grid>
-            <>
-              <button
-                className={`uploadbtn ${activebtn == "files" && "activeClass"}`}
-                onClick={() => {
-                  setActiveBtn("files");
-                  getAllfiles();
-                }}
-              >
-                Files
-              </button>
-              <select
-                value={selectedFilePeople}
-                onChange={handleFilePeopleChange}
-                className={`selectType1 ${activebtn == "folder" && "activeClass"}`}
-              >
-                <option value="">Folders</option>
-                <option value="customer">Customer</option>
-                <option value="designer">Designer</option>
-              </select>
-              <select
-                value={selectedFileType}
-                onChange={handleFileTypeChange}
-                className={`selectType1 ${activebtn == "type" && "activeClass"}`}
-              >
-                <option value="">Type</option>
-                <option value="svg">SVG</option>
-                <option value="png">PNG</option>
-                <option value="jpg">JPG</option>
-                <option value="pdf">PDF</option>
-              </select>
-              <select
-                className="selectType1"
-                value={currentVersion}
-                onChange={getListThroughVersion}
-              >
-                <option value="">Not Selected</option>
-                {fileVersion?.length > 0 ? (
-                  fileVersion.map((item) => (
-                    <>
-                      <option value={item}>{`version ${item}`}</option>
-                    </>
-                  ))
-                ) : (
-                  <>
-                    <option value="">no options</option>
-                  </>
-                )}
-              </select>
-              {role?.projectManager || role?.designer || role?.admin ? (
-                <button
-                  className="selectType1 addnewversion"
-                  onClick={addFileVerion}
-                  style={addVersionStyle}
-                >
-                  Add new version
-                </button>
-              ) : null}
-              {role?.projectManager || role?.designer || role?.admin ? (
-                <button className="selectType1 addnewversion" onClick={versionHandler} style={addVersionStyle}>
-                  Delete version
-                </button>
-              ) : null}
-            </>
-          </Grid>
+          <ProjectFilesFolder {...filesFolderProps} />
           {!loading ? (
             <Grid container className="filesGrid" display={"grid"} position={"relative"}>
               <>
@@ -919,7 +914,7 @@ const FileUploadContainer = ({
             <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Author</h2>
               <div className="adminDiv2">
-                <img src={adminImg} className="adminImg1" />
+                {/* <img src={adminImg} className="adminImg1" /> */}
                 <div>
                   <h3 className={classes.adminDiv2h3}>{project?.name}</h3>
                 </div>
@@ -932,10 +927,10 @@ const FileUploadContainer = ({
                   <>
                     {teamMembers.length > 0 ? (
                       <>
-                        <img src={designerImg} className="adminImg1" />
+                        {/* <img src={designerImg} className="adminImg1" /> */}
                         {teamMembers.map((item, i) => (
                           <div key={i}>
-                            {role?.projectManager && (<IconButton className="remove-designer" onClick={() => deleteDesigner(item)}>
+                            {role?.projectManager && (<IconButton size="small" className="remove-designer" onClick={() => deleteDesigner(item)}>
                               <CloseRounded fontSize="small" />
                             </IconButton>)}
                             <h3 className={classes.adminDiv2h3}>{item?.name}</h3>
@@ -967,7 +962,7 @@ const FileUploadContainer = ({
             <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Brand</h2>
               <div className="adminDiv2">
-                <h3 className={classes.adminDiv2h3}>{project?.brand?.brand_name}</h3>
+                <h3 className={classes.adminDiv2h3}>{(typeof project?.brand === 'string' ? project?.brand : project?.brand?.brand_name)}</h3>
               </div>
             </div>
             <div className="project-details-div">
@@ -975,9 +970,6 @@ const FileUploadContainer = ({
               <div className="adminDiv2">
                 <h3 className={classes.adminDiv2h3}>{project?.project_category}</h3>
               </div>
-              {/* <Typography variant="h6">
-                  {project?.project_category}
-                </Typography> */}
             </div>
           </div>
           <hr />
@@ -985,7 +977,7 @@ const FileUploadContainer = ({
             <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Project Title</h2>
               <Typography variant="h6" className="desc1">
-                {project?.project_title?.length > 10 ? project?.project_title?.substring(0, 10) + '...' : project?.project_title}
+                {project?.project_title?.length > 10 ? project?.project_title?.substring(0, 11) + '...' : project?.project_title}
               </Typography>
             </div>
             <div className="project-details-div">
@@ -993,6 +985,11 @@ const FileUploadContainer = ({
               <Typography variant="h6" className="desc1">
                 {project?.design_type}
               </Typography>
+            </div>
+            <div className="project-details-div">
+              <h2 className={classes.adminDiv1h2}>File Formats</h2>
+              {project?.file_formats?.map(item => <Typography sx={{ display: 'inline' }} variant="h6" className="desc1">{item},</Typography>)}
+              <Typography sx={{ display: 'inline' }} variant="h6" className="desc1">{project?.specific_software_names}</Typography>
             </div>
 
             <div className="project-details-div">
@@ -1002,9 +999,9 @@ const FileUploadContainer = ({
               </Typography>
             </div>
             <div className="project-details-div">
-              <h2 className={classes.adminDiv1h2}>Details</h2>
+              <h2 className={classes.adminDiv1h2}>Status</h2>
               <Typography variant="h6" className="desc1">
-                {project?.is_Active ? "Active" : "Not Active"}
+                {project?.is_active ? "Active" : "Not Active"}
               </Typography>
             </div>
           </div>
@@ -1036,6 +1033,7 @@ const FileUploadContainer = ({
             onClose={closeImageViewer}
             allImages={version}
             currentImage={currentImage}
+            onOpen={() => setIsViewerOpen(true)}
           />
         )}
       </MDBox>

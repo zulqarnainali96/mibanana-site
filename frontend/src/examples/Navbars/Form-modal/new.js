@@ -121,6 +121,7 @@ const designType = [
     "Book Cover",
     "Brand Guidelines",
     "Business Card",
+    "Moodboard",
     "Business Form",
     "eVook Cover",
     "Editing",
@@ -255,6 +256,7 @@ const CreateProject1 = ({
                                             design_type: newValue
                                         })
                                     }}
+                                    freeSolo
                                     id="select-design-demo"
                                     options={designType}
                                     sx={{ width: '100%' }}

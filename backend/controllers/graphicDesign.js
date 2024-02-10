@@ -242,6 +242,7 @@ const getCustomerFiles = async (req, res) => {
                 obj.time = file.metadata.timeCreated
                 obj.upated_time = file.metadata.updated
                 obj.folder_name = prefix
+                obj.folder_dir = "Customer"
                 return obj
             })
             // console.log(filesInfo)

@@ -20,9 +20,25 @@ function convertCreatedAtToDate(createdAt) {
     return new Date(`${year}-${month - 1}-${day}T${hours}:${minutes}:${seconds}`);
 }
 
+const orderOfStatus = ['Project manager','Assigned', 'Ongoing', 'Submitted', 'Completed'];
+
+function sortByStatus(arr) {
+    return arr.sort((a, b) => {
+      const statusA = a.status;
+      const statusB = b.status;
+  
+      // Get the index of each status in the orderOfStatus array
+      const indexA = orderOfStatus.indexOf(statusA);
+      const indexB = orderOfStatus.indexOf(statusB);
+  
+      // Compare the indexes to determine the sort order
+      return indexA - indexB;
+    });
+  }
+
 const getProjectData = (id, callback) => {
     apiClient.get("/graphic-project/" + id).then(({ data }) => {
-        const filterProject = data?.CustomerProjects?.map(item => {
+        let filterProject = data?.CustomerProjects?.map(item => {
             const getSubmittedDate = getDate(item?.createdAt).formatedDate
             const getUpdatedDate = getDate(item?.updatedAt).formatedDate
             let obj = {}
@@ -30,6 +46,7 @@ const getProjectData = (id, callback) => {
             obj.updatedAt = getUpdatedDate
             return { ...item, ...obj }
         }).reverse()
+        filterProject = sortByStatus(filterProject) 
         const project_data = {
             message: data?.message,
             CustomerProjects: filterProject

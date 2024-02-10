@@ -10,7 +10,6 @@ import React, { useState } from 'react'
 
 const ImageViewModal = ({ open, onClose, allImages, currentImage }) => {
   const [currentIndex, setCurrentIndex] = useState(currentImage);
-  console.log(currentImage)
   const goToNextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % allImages.length);
     // swiper.slideNext()

@@ -40,7 +40,7 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
 
     const statusColor = () => {
         let statusColor = ''
-        if (item?.status === 'Ongoing' || item?.status === 'Submitted') {
+        if (item?.status === 'Ongoing' || item?.status === 'Submitted' || item?.status === 'Assigned') {
             statusColor = mibananaColor.greenShade2
         }
         else if (item?.status === 'Completed') {
@@ -69,6 +69,8 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
     }
     const titleStyle = {
         fontSize: "16px",
+        whiteSpace : 'normal',
+        wordBreak  : "auto-phrase",
         fontsFamily: fontsFamily.poppins,
         fontWeight: '400',
         color: mibananaColor.yellowTextColor
@@ -120,10 +122,10 @@ export default () => {
     const render_chat = useSelector(state => state.re_render_chat)
     const setIndex = (payload) => dispatch(setCurrentIndex(payload))
     const setChatRender = (payload) => dispatch(reRenderChatComponent(payload))
-    const projects = useSelector(state => state.project_list.CustomerProjects)
+    let projects = useSelector(state => state.project_list.CustomerProjects)
+    projects = projects?.filter(item => item.status !== 'Completed')
     const setState = (payload) => dispatch(setRightSideBar(payload))
     const rightSideDrawer = useSelector(state => state.rightSideDrawer)
-    const notification = useSelector(state => state.userDetails.notifications)
 
     function showProjects(id, index) {
         setIndex(index)
