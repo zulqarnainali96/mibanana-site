@@ -45,9 +45,9 @@ export const Action = ({ item }) => {
   };
 
   const func = (value) => dispatch(getCustomerBrand(value));
+
   async function deleteBrandList() {
     setLoading(true);
-    console.log(item);
     if (!item._id) {
       setRespMessage("ID not provided");
       setLoading(false);
@@ -56,8 +56,7 @@ export const Action = ({ item }) => {
       }, 1000);
       return;
     }
-    await apiClient
-      .delete("/api/brand/" + item._id)
+    await apiClient.delete("/api/brand/" + item._id)
       .then(({ data }) => {
         if (data.message) setRespMessage(data.message);
         setLoading(false);
@@ -228,6 +227,7 @@ const BrandData = () => {
     color: mibananaColor.yellowTextColor,
   };
   const rows = customerBrand?.map((item) => {
+
     const arr = { url: "" };
     function getBrandLogo() {
       if (item.files?.length > 0) {
@@ -237,20 +237,21 @@ const BrandData = () => {
     }
     let brandDescription = item.brand_description?.substring(0, 50) + '...'
     getBrandLogo();
+
     return {
       logo: (
         <>
           {role?.customer ? (
             <img
               src={arr?.url}
-              style={{ maxWidth: 70, maxHeight: 70, width: 50, height: "auto" }}
+              style={{ maxWidth: 80, maxHeight: 80, width: 80, height: "auto" }}
               alt="brand-logo"
             />
           ) : (
             <Link to={`/brand/${item?._id}`}>
               <img
                 src={arr?.url}
-                style={{ maxWidth: 70, maxHeight: 70, width: 50, height: "auto" }}
+                style={{ maxWidth: 80, maxHeight: 80, width: 80, height: "auto" }}
               />
             </Link>
           )}

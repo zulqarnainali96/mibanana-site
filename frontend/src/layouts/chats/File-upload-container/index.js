@@ -51,7 +51,9 @@ import { fontsFamily } from "assets/font-family";
 import { useSelector } from "react-redux";
 import ImageViewModal from "examples/image-modal";
 import "./file-upload.css"
-import { Close, CloseRounded } from "@mui/icons-material";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import CloseIcon from "@mui/icons-material/Close";
+import CachedIcon from "@mui/icons-material/Cached";
 import ProjectFilesFolder from "./project-filter-button/project-files-folder";
 
 const uploadBtn = {
@@ -71,7 +73,8 @@ const FileUploadContainer = ({
   respMessage,
   reduxActions,
   showMore,
-  setShowMore
+  setShowMore,
+  getChatMessage,
 }) => {
   const person_id = useSelector((state) => state.userDetails?.id);
   const projects = reduxState?.project_list?.CustomerProjects;
@@ -131,19 +134,21 @@ const FileUploadContainer = ({
   };
   const handleFilePeopleChange = (event) => {
     const value = event.target.value
-    // console.log(value)
     if (!value) {
       setSelectedFilePeople(value)
       return
     }
     setActiveBtn("folder");
-    if (value === "designer") {
-      console.log(value, fileVersion?.length)
-      // const selectedVersion = project.version?.length - 1
+    if (value === "All Files") {
+      getAllfiles()
+    }
+    else if (value === "designer") {
       getFilesOnVerion(fileVersion?.length)
-    } else if (value === "customer") {
+    }
+    else if (value === "customer") {
       clientFiles()
-    } else {
+    }
+    else {
       getFilesOnVerion(value)
     }
     setSelectedFilePeople(value); // Update selected file type on change
@@ -314,44 +319,44 @@ const FileUploadContainer = ({
     //   setSelectVersion("")
     // }
   };
-  const managerUploadFiles = useCallback(async (filType) => {
-    setLoading(true);
-    const formdata = new FormData();
-    for (let i = 0; i < filType.length; i++) {
-      formdata.append("files", filType[i]);
-    }
-    await apiClient
-      .post("/api/designer-uploads/" + id, formdata)
-      .then(({ data }) => {
-        setLoading(false);
-        if (data?.message) {
-          setRespMessage(data.message)
-          setTimeout(() => {
-            openSuccessSB()
-          }, 400)
-        }
-        setFiles([]);
-        setFilesType([]);
-        designerFiles();
-      })
-      .catch((err) => {
-        if (err.response) {
-          const { message } = err.response.data
-          setRespMessage(message)
-          setLoading(false)
-          setTimeout(() => {
-            openErrorSB()
-          }, 400)
-        } else {
+  // const managerUploadFiles = useCallback(async (filType) => {
+  //   setLoading(true);
+  //   const formdata = new FormData();
+  //   for (let i = 0; i < filType.length; i++) {
+  //     formdata.append("files", filType[i]);
+  //   }
+  //   await apiClient
+  //     .post("/api/designer-uploads/" + id, formdata)
+  //     .then(({ data }) => {
+  //       setLoading(false);
+  //       if (data?.message) {
+  //         setRespMessage(data.message)
+  //         setTimeout(() => {
+  //           openSuccessSB()
+  //         }, 400)
+  //       }
+  //       setFiles([]);
+  //       setFilesType([]);
+  //       designerFiles();
+  //     })
+  //     .catch((err) => {
+  //       if (err.response) {
+  //         const { message } = err.response.data
+  //         setRespMessage(message)
+  //         setLoading(false)
+  //         setTimeout(() => {
+  //           openErrorSB()
+  //         }, 400)
+  //       } else {
 
-          setLoading(false)
-          setRespMessage(err.message)
-          setTimeout(() => {
-            openErrorSB()
-          }, 400)
-        }
-      })
-  }, [loading, respMessage, files, filesType])
+  //         setLoading(false)
+  //         setRespMessage(err.message)
+  //         setTimeout(() => {
+  //           openErrorSB()
+  //         }, 400)
+  //       }
+  //     })
+  // }, [loading, respMessage, files, filesType])
 
   const customerUploadFiles = async (filType) => {
     setLoading(true);
@@ -416,8 +421,7 @@ const FileUploadContainer = ({
     for (let i = 0; i < filType.length; i++) {
       formdata.append("files", filType[i]);
     }
-    await apiClient
-      .post(`/api/version-uploads/${current_version}/${id}`, formdata)
+    await apiClient.post(`/api/version-uploads/${current_version}/${id}`, formdata)
       .then(async ({ data }) => {
         setLoading(false);
         setFiles([]);
@@ -450,33 +454,32 @@ const FileUploadContainer = ({
         }
       })
   };
-  const handleSubmit = async (fileType) => {
+  const handleSubmit = (fileType) => {
     if (role?.designer || role?.projectManager || role?.admin) {
-      if (selectedFilePeople === "customer") {
-        setRespMessage("You cannot upload in customer folder")
+      if (selectedFilePeople === "customer" || selectedFilePeople === "All Files" || selectedFilePeople === "") {
+        setRespMessage("Please select version in which you want to upload files")
         setTimeout(() => {
           openErrorSB()
         }, 400)
         return
-      } else if (selectedFilePeople === "designer") {
+      }
+      else if (selectedFilePeople === "designer") {
         const current_version = fileVersion?.length
+        // console.log('designer' + current_version)
         versionUploads(fileType, current_version)
       }
       else {
         versionUploads(fileType, selectedFilePeople)
-      }
-    } else {
-      if (selectedFilePeople !== "customer") {
-        setRespMessage("You can only upload in customer folder")
-        setTimeout(() => {
-          openErrorSB()
-        }, 400)
-        return
-      } else {
-        customerUploadFiles(fileType);
+        // console.log('version')
+
       }
     }
+    else if (role?.customer) {
+      setSelectedFilePeople("customer")
+      customerUploadFiles(fileType);
+    }
   };
+
   const deleteDesigner = (val) => {
     setDesignerLoading(true)
     const formdata = {
@@ -525,23 +528,9 @@ const FileUploadContainer = ({
     setFilesType([]);
   };
   useEffect(() => {
+    setSelectedFilePeople("All Files")
     getAllfiles();
   }, []);
-
-  useEffect(() => {
-    getfiles();
-  }, [selectedFilePeople]);
-
-  const getfiles = () => {
-    // if (selectedFilePeople == "designer") {
-    //   // designerFiles();
-    //   getListThroughVersion()
-    // } else if (selectedFilePeople == "customer") {
-    //   clientFiles();
-    // } else {
-    //   role?.projectManager || role?.designer || role?.admin ? designerFiles() : clientFiles();
-    // }
-  };
 
   // ---------- Version Files for All
 
@@ -612,25 +601,53 @@ const FileUploadContainer = ({
     setVersion(arr)
   }
 
+  // const getAllfiles = async () => {
+  //   setLoading(true);
+    
+  //   const clientFilesData = await clientFilesforAll();
+  //   const designerFiles = await designerFilesforAll();
+  //   const get_all_version_Files = await getAllVersionFiles()
+  //   const combinedData = [...clientFilesData, ...designerFiles, ...get_all_version_Files];
+  //   // setVersion(combinedData);
+  //   handlePreviewImages(combinedData)
+  //   setLoading(false);
+  // };
   const getAllfiles = async () => {
     setLoading(true);
-    const clientFilesData = await clientFilesforAll();
-    const designerFiles = await designerFilesforAll();
-    const get_all_version_Files = await getAllVersionFiles()
-    const combinedData = [...clientFilesData, ...designerFiles, ...get_all_version_Files];
-    // setVersion(combinedData);
-    handlePreviewImages(combinedData)
-    setLoading(false);
-  };
-  const dateFun = (timestamp) => {
-    const date = new Date(timestamp);
 
-    const day = date.getDate();
-    const month = date.toLocaleString("default", { month: "short" });
+    if (!navigator.onLine) {
+      // Handle offline state
+      setRespMessage("You are currently offline. Please check your internet connection.");
+      setTimeout( () => {
+        openErrorSB()
+      },300)
+      setLoading(false);
+      return;
+    }
 
-    const formattedDate = `${day}-${month}`;
-    return formattedDate;
+    try {
+      const clientFilesData = await clientFilesforAll();
+      const designerFiles = await designerFilesforAll();
+      const get_all_version_Files = await getAllVersionFiles();
+      const combinedData = [...clientFilesData, ...designerFiles, ...get_all_version_Files];
+      handlePreviewImages(combinedData);
+    } catch (error) {
+      // Handle API call errors
+      console.error("Error fetching files:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // const dateFun = (timestamp) => {
+  //   const date = new Date(timestamp);
+
+  //   const day = date.getDate();
+  //   const month = date.toLocaleString("default", { month: "short" });
+
+  //   const formattedDate = `${day}-${month}`;
+  //   return formattedDate;
+  // };
   const filterFunction = (files) => {
     if (selectedFileType) {
       const filterFiles = files.filter((file) => {
@@ -649,6 +666,7 @@ const FileUploadContainer = ({
     await apiClient.get("/api/get-designer-list/" + person_id)
       .then(({ data }) => {
         setDesignerList(data?.designerlist)
+
       })
       .catch((e) => {
 
@@ -657,7 +675,6 @@ const FileUploadContainer = ({
 
   useEffect(() => {
     getAllDesignersList()
-    // getAllfiles()
   }, []);
 
   const personProject = () => {
@@ -703,8 +720,10 @@ const FileUploadContainer = ({
     apiClient.delete(`/api/del-version-uploads/${version}/${id}`)
       .then(({ data }) => {
         setLoading(false);
-        getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject)
+        // getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject)
         setVersion([])
+        setFileVersionList(data.version)
+        setSelectedFilePeople("")
         if (data?.message) {
           setRespMessage(data.message)
           setTimeout(() => {
@@ -729,15 +748,15 @@ const FileUploadContainer = ({
       })
   };
   const versionHandler = async () => {
-    // if (!currentVersion.length) {
-    //   let message = "Type version no that you want to delete";
-    //   const val = parseInt(prompt(message));
-    //   if (val) {
-    //     await deleteVersion(val)
-    //   }
-    // } else {
-    //   await deleteVersion(currentVersion)
-    // }
+    if (selectedFilePeople === "" || selectedFilePeople === "All Files" || selectedFilePeople === "customer") {
+      alert("Please select version no that you want to delete");
+      return
+    } else if (selectedFilePeople === "designer") {
+      const version_no = project?.version?.length
+      await deleteVersion(version_no)
+    } else {
+      await deleteVersion(selectedFilePeople)
+    }
   };
   const handleClose = () => setsuccessOpen(false);
 
@@ -749,21 +768,27 @@ const FileUploadContainer = ({
     if (fileVersion.length > 0) {
       // version = version.slice(0, -1)
       const t = fileVersion?.slice(0, -1)
-      arr = [...t, "designer", "customer"].reverse()
+      arr = [...t, "designer", "customer", "All Files"].reverse()
       // setFileVersionList([...t, "designer"].reverse())
     } else {
-      // setFileVersionList(["customer", "designer empty"])
-      arr = ['customer', 'designer empty']
+      // setFileVersionList(["customer", "designer empty"]) 
+      arr = ['All Files', 'customer', 'version empty']
     }
     return arr
   }
   function checkVersionEmpty(value) {
-    const version = project?.version
-    if (version.length > 0) {
+    if (fileVersion?.length > 0) {
       return false
-    } else if (value === "designer empty") {
+    } else if (value === "version empty") {
       return true
     }
+  }
+
+  async function reloadAllData() {
+    getChatMessage()
+    getAllDesignersList()
+    getProjectData(reduxState.userDetails.id, reduxActions.getCustomerProject);
+    await getAllfiles()
   }
 
   const filesFolderProps = {
@@ -790,21 +815,27 @@ const FileUploadContainer = ({
           title="SUCCESS"
           sideRadius={false}
         />
-        <Grid>
-          <MDTypography
-            sx={({ palette: { primary } }) => ({
-              fontFamily: fontsFamily.poppins,
-              color: mibananaColor.tableHeaderColor,
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "10px 0",
-              borderBottom: `2px solid ${mibananaColor.tableHeaderColor}`,
-            })}
-            variant="h4"
-            pb={1}
-          >
-            DRIVE
-          </MDTypography>
+        <Grid container justifyContent="space-arround" alignItems="center" sx={{ borderBottom: `2px solid ${mibananaColor.tableHeaderColor}` }}>
+          <Grid item xs={6} md={6} lg={6} xl={6}>
+            <MDTypography
+              sx={({ palette: { primary } }) => ({
+                fontFamily: fontsFamily.poppins,
+                color: mibananaColor.tableHeaderColor,
+                fontWeight: "bold",
+                fontSize: "16px",
+                padding: "10px 0"
+              })}
+              variant="h4"
+              pb={1}
+            >
+              DRIVE
+            </MDTypography>
+          </Grid>
+          <Grid item xs={6} md={6} lg={6} xl={6} textAlign={"right"}>
+            <IconButton onClick={reloadAllData}>
+              <CachedIcon size="medium" />
+            </IconButton>
+          </Grid>
         </Grid>
         <Box sx={{ background: "#fff", mt: 1, pt: 1 }}>
           <ProjectFilesFolder {...filesFolderProps} />
@@ -821,7 +852,7 @@ const FileUploadContainer = ({
                             <div className={`upload-file-main ${classes.uploadedfileMainDiv}`}>
                               {(role?.projectManager || role?.designer || role?.admin) && (
                                 <IconButton onClick={() => deleteFile(ver)} className="deleteIcon">
-                                  <Close fontSize="small" />
+                                  <CloseIcon fontSize="small" />
                                 </IconButton>
                               )}
 
@@ -839,6 +870,7 @@ const FileUploadContainer = ({
                                   {/* <img src={ver?.image} click={openImage} className="fileImg1" /> */}
                                 </div>
                                 <p className={classes.fileDiv2p}>{ver?.name?.substring(0, 4)}</p>
+                                <p className="folder-dir">{ver?.folder_dir}</p>
                               </div>
 
                             </div>
@@ -931,7 +963,7 @@ const FileUploadContainer = ({
                         {teamMembers.map((item, i) => (
                           <div key={i}>
                             {role?.projectManager && (<IconButton size="small" className="remove-designer" onClick={() => deleteDesigner(item)}>
-                              <CloseRounded fontSize="small" />
+                              <CloseRoundedIcon fontSize="small" />
                             </IconButton>)}
                             <h3 className={classes.adminDiv2h3}>{item?.name}</h3>
                           </div>
@@ -962,7 +994,9 @@ const FileUploadContainer = ({
             <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Brand</h2>
               <div className="adminDiv2">
-                <h3 className={classes.adminDiv2h3}>{(typeof project?.brand === 'string' ? project?.brand : project?.brand?.brand_name)}</h3>
+                <Link to="/mi-brands">
+                  <h3 className={classes.adminDiv2h3} style={{ textDecoration: 'underline', color: '#344767' }} >{(typeof project?.brand === 'string' ? project?.brand : project?.brand?.brand_name)}</h3>
+                </Link>
               </div>
             </div>
             <div className="project-details-div">

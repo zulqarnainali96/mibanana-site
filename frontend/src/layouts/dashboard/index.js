@@ -7,7 +7,7 @@ import MDTypography from "components/MDTypography";
 import { Action } from 'layouts/ProjectsTable/data/authorsTableData'
 import MDBadge from "components/MDBadge";
 import { Card, useMediaQuery } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MDSnackbar from "components/MDSnackbar";
 import { socketIO } from "layouts/sockets";
 import { checkIcon } from "assets/new-images/dashboard/fi_check-circle (1)";
@@ -22,7 +22,7 @@ import { currentUserRole } from "redux/global/global-functions";
 import "./status-box/status-style.css"
 
 function Dashboard({ reduxActions, reduxState }) {
-  const project_list = reduxState.project_list?.CustomerProjects
+  const [project_list, setProject_List] = useState(reduxState.project_list?.CustomerProjects)
   const role = currentUserRole(reduxState)
   const user = reduxState?.userDetails
   const [errorSB, setErrorSB] = useState(false);
@@ -223,6 +223,11 @@ function Dashboard({ reduxActions, reduxState }) {
     { Header: "status", accessor: "status", align: "center" },
     { Header: "Action", accessor: "action", align: "center" },
   ]
+
+  useEffect(() => {
+    setProject_List(reduxState.project_list.CustomerProjects)
+  }, [reduxState.project_list])
+
   return (
     <DashboardLayout>
       <MDBox p={"10px 12px"} mt={'0px'} sx={{ backgroundColor: 'white !important' }}>

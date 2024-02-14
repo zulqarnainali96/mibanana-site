@@ -134,7 +134,7 @@ const CompanyProfile = () => {
                                                     onChange={phone => handlePhoneChange1(phone)}
                                                     placeholder='Primary Phone '
                                                     inputProps={{
-                                                        name: 'phone',
+                                                        name: 'primary_phone',
                                                         required: true,
                                                         autoFocus: true,
                                                     }}

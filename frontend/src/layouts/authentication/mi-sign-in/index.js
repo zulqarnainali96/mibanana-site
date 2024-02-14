@@ -18,6 +18,7 @@ import reduxContainer from "redux/containers/containers";
 import MoonLoader from "react-spinners/MoonLoader";
 import ModalLayout from "examples/ModalLayout";
 import RequiredForm from "./Form";
+import { getProjectData } from "redux/global/global-functions";
 
 const MiSignIn = ({ reduxActions, reduxState }) => {
   const [email, setEmail] = useState("");
@@ -81,31 +82,10 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           reduxActions.getUserDetails(resp?.data?.userDetails);
           const { notifications } = resp.data?.userDetails;
           reduxActions.getUserNewChatMessage(notifications);
-          // const id = resp?.data?.userDetails?.id
+          getProjectData(resp?.data?.userDetails?.id, reduxActions.getCustomerProject);
           openSuccessSB();
           setLoading(false);
           navigate("/dashboard");
-          // const isAdmin = resp?.data.userDetails?.roles.includes("Admin")
-          // if (!isAdmin) {
-          //     await apiClient.get("/api/get-req-fields/" + id).then(({ data }) => {
-          //         console.log('Req fields data ', data.userData)
-          //         const { phone, primary_email, contact_person } = data?.userData
-          //         if (phone && primary_email && contact_person) {
-          //             localStorage.setItem('user_details', JSON.stringify(resp?.data?.userDetails))
-          //             navigate("/dashboard")
-          //         } else {
-          //             // setLocalStorageData(resp?.data?.userDetails)
-          //             handleOpen()
-          //         }
-          //     }).catch(err => {
-          //         setLoading(false)
-          //         throw err
-          //     })
-          // }
-          // if (isAdmin) {
-          //     navigate("/dashboard")
-          //     localStorage.setItem('user_details', JSON.stringify(resp?.data?.userDetails))
-          // }
         } else {
           setLoading(false);
           throw Error;

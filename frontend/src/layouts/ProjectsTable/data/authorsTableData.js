@@ -9,9 +9,10 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getCustomerProject } from "redux/actions/actions";
 import { getProjectData } from "redux/global/global-functions";
-import MenuItemDropdown from "./MenuItem";
+// import MenuItemDropdown from "./MenuItem";
 import { actionIcon } from "assets/new-images/projects-table/Group43";
 import "./../../../examples/new-table/table-style.css"
+import OptionsList from "./options-list";
 
 export const Author = ({ name, }) => (
   <MDBox lineHeight={1}>
@@ -96,10 +97,10 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
       })
   }
   const projectCancel = async () => {
-    setLoading4(true)
+    setLoading1(true)
     if (!item._id) {
       setRespMessage('ID not provided')
-      setLoading4(false)
+      setLoading1(false)
       setTimeout(() => {
         openErrorSB()
       }, 1000)
@@ -109,7 +110,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     await apiClient.get('/api/cancel-project/' + id)
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
-        setLoading4(false)
+        setLoading1(false)
         setTimeout(() => {
           getProjectData(userid, func)
           successSBNot()
@@ -117,7 +118,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
       })
       .catch((err) => {
         if (err.response) {
-          setLoading4(false)
+          setLoading1(false)
           const { message } = err.response.data
           resonseMessage(message)
           setTimeout(() => {
@@ -125,7 +126,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
           }, 900)
           return
         }
-        setLoading4(false)
+        setLoading1(false)
         resonseMessage(err.message)
         setTimeout(() => {
           errorSBNot()
@@ -358,41 +359,17 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  const options_props = {item, children, handleMenuOpen, handleMenuClose, anchorEl, role, loading1, loading2, loading3, loading4, loading5, renderErrorSB, renderSuccessSB, projectSubmitted, projectCompleted, duplicateProject, projectCancel, projectAttend, };
   return (
     <MDBox>
-      <div onClick={handleMenuOpen}>
-        <svg xmlns="http://www.w3.org/2000/svg" className="active-svg" width="27" height="27" fill="none"><path stroke="inherit" stroke-linecap="round" stroke-linejoin="round" d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" /></svg>
-      </div>
-      {children ? children :
-        <Menu
-          id="dropdown-menu"
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "center"
-          }}
-        >
-          {role?.customer ? <MenuItemDropdown loading={loading1} onClick={projectCancel} title={"Cancel"} /> : null}
-          {role?.customer ? <MenuItemDropdown loading={loading2} onClick={duplicateProject} title={"Duplicate"} /> : (
-            <MenuItemDropdown loading={loading5} onClick={projectAttend} title={"Attend"} />
-          )}
-          {/* {!role?.customer && <MenuItemDropdown loading={loading6} onClick={projectOngoing} title={"Ongoing"} />} */}
-          {role?.customer ? <MenuItemDropdown loading={loading3} onClick={projectCompleted} title={"Completed"} /> : (
-            <MenuItemDropdown loading={loading4} onClick={projectSubmitted} title={"Submitted"} />
-          )}
-          {renderSuccessSB}
-          {renderErrorSB}
-        </Menu>
-      }
+      <OptionsList {...options_props} />
     </MDBox >
   )
 }
 function data() {
   return {
     columns: [
-      {Header: "project title", accessor: "project_title", align: "left"},
+      { Header: "project title", accessor: "project_title", align: "left" },
       { Header: "author", accessor: "name", align: "center", },
       { Header: "Team Member", accessor: "team_members", align: "center" },
       { Header: "status", accessor: "status", align: "center" },

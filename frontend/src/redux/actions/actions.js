@@ -75,7 +75,7 @@ export const openEditBrandModal = (payload) => ({
 export const getCurrentBrandID = (payload) => ({
     type : CURRENT_BRAND_ID,
     payload : payload
-})
+}) 
 
 export const openBrandModalFunc = (payload) => ({
     type : OPEN_BRAND_MODAL,

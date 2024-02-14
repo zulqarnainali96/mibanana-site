@@ -81,6 +81,10 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
         padding: '10px',
         textOverflow: 'ellipsis',
         whiteSpace: "break-spaces",
+        "> p, span h1, ul li, b ,i" : {
+            wordBreak: "break-word",
+            whiteSpace: "normal",
+        }
 
     }
     // const shrinkText = () => {

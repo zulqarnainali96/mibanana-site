@@ -234,6 +234,9 @@ h6,
   .addnewversion {
     padding: 4px 7px !important;
   }
+  .filesGrid .folder-dir {
+    bottom: -17px;
+  }
 }
 
 .addnewversion {
@@ -332,15 +335,6 @@ h6,
   right: 11px;
   scale: 1.7;
 }
-/* .downloadicon {
-  position: relative;
-  left: 70px;
-  bottom: 23px;
-  cursor: pointer;
-  width: 15% !important;
-  height: 23px !important;
-} */
-
 .filesGrid {
   max-height: 41vh;
   height: 30vh;
@@ -445,6 +439,14 @@ h6,
   max-width: 100%;
 }
 
+.folder-dir {
+  position: absolute;
+  font-size: 11px;
+  bottom: -3px;
+  right: -3px;
+  background: var(--header-color);
+  padding-inline: 9px;
+}
 /* --- New CSS */
 
 .project-details {
@@ -550,6 +552,9 @@ h6,
   .filesGrid {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
+  .filesGrid .folder-dir {
+    bottom: -17px;
+  }
   .filesGrid .nofilefoundDiv h1 {
     font-size: 28px;
   }
@@ -569,6 +574,7 @@ h6,
   .filesGrid {
     grid-template-columns: 1fr 1fr 1fr;
   }
+  
   .project-details {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -644,6 +650,7 @@ h6,
     width: 30px;
     height: 30px;
   }
+  
   .project-details {
     grid-template-columns: repeat(1, 1fr);
   }

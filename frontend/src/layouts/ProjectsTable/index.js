@@ -389,7 +389,10 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     setBrand(value);
   }, [brand])
 
-
+  useEffect(() => {
+    setProjectList(reduxState.project_list.CustomerProjects)
+  }, [reduxState.project_list])
+  
   return (
     <DashboardLayout>
       <MDBox

@@ -14,9 +14,11 @@
   font-family: var(--font-family);
 }
 .person-image {
-  display: block;
-  width: 61px;
-  height: 61px;
+  max-width : 55px;
+  max-height : 55px;
+  /* display: block; */
+  width: 50px;
+  height: auto;
 }
 
 .person-role {
@@ -137,7 +139,6 @@
   }
   .person-image {
     width: 45px;
-    height: auto;
   }
   .hello-text-container .hello-text {
     font-size: 15px !important;

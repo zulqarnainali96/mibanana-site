@@ -61,9 +61,30 @@ const getDesignerList = asyncHandler(async (req, res) => {
         // console.log(isManager)
         if (isManager[0] !== null && isManager[0].roles.includes("Project-Manager")) {
             const designerList = await User.find().select('-password').lean().exec()
-            const filterDesigner = designerList.filter(item => {
-                return item.roles.includes("Graphic-Designer")
-            })
+
+            // const filterDesigner = designerList.filter(item => {
+            //     let obj = {}
+            //     if (item.roles.includes("Graphic-Designer")) {
+            //             obj._id = item._id
+            //             obj.name = item.name
+            //             obj.email = item.email
+            //             obj.roles = item.roles
+            //             obj.avatar = item.avatar
+            //         }
+            //     return obj
+            //     // return item.roles.includes("Graphic-Designer")
+            // })
+            const filterDesigner = designerList.filter(item => 
+                item.roles.includes("Graphic-Designer")
+              ).map(item => {
+                return {
+                  _id: item._id,
+                  name: item.name, 
+                  email: item.email,
+                  roles: item.roles,
+                  avatar: item.avatar
+                };
+              });
             return res.status(200).send({ designerlist: filterDesigner })
         }
         else {

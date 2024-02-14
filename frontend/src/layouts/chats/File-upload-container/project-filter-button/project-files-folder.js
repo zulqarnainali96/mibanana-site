@@ -1,34 +1,14 @@
 import { Grid } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 const ProjectFilesFolder = (props) => {
-    
+
     const { selectedFilePeople, handleFilePeopleChange, activebtn, currentVersion, getListThroughVersion,
         fileVersion, role, addFileVerion, addVersionStyle, versionHandler, project, getFullFolderArray, checkVersionEmpty } = props
 
-        console.log(fileVersion)
-    // function getFullFolderArray() {
-    //     let arr = []
-    //     let version = project.version
-    //     console.log(version)
-    //     if (version.length > 0) {
-    //         version = version.slice(0, -1)
-    //         version = [...version, "designer"].reverse()
-    //         arr = ["customer",...version]
-    //     } else {
-    //         arr = ['customer', 'designer empty']
-    //     }
-    //     return arr
-    // }
-
-    // function checkVersionEmpty(value) {
-    //     const version = project?.version
-    //     if (version.length > 0) {
-    //         return false
-    //     } else if(value === "designer empty") {
-    //         return true
-    //     }
-    // }
+    useEffect(() => {
+        // console.log(selectedFilePeople)
+    }, [selectedFilePeople])
 
     return (
         <Grid>
@@ -37,7 +17,7 @@ const ProjectFilesFolder = (props) => {
                 className={`uploadbtn ${activebtn == "files" && "activeClass"}`}
                 onClick={() => {
                   setActiveBtn("files");
-                  getAllfiles();
+                //   getAllfiles();
                 }}
               >
                 Files
@@ -50,7 +30,7 @@ const ProjectFilesFolder = (props) => {
                 >
                     <option value="">Folders</option>
                     {getFullFolderArray().map((item, i) => (
-                        <option key={i} value={item} disabled={checkVersionEmpty(item)} >{i === 0 || i === 1 ? item : `version ${item}`}</option>
+                        <option key={i} value={item} disabled={checkVersionEmpty(item)} >{i === 0 || i === 1 || i === 2 ? item : `version ${item}`}</option>
                     ))
                     }
                 </select>

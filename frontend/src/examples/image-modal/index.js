@@ -3,13 +3,15 @@ import { IconButton, useMediaQuery } from '@mui/material'
 import Dialog from '@mui/material/Dialog'
 import MDBox from 'components/MDBox'
 import "./image-modal.css"
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 // import Slider from 'react-slick'
 // import "slick-carousel/slick/slick.css"; 
 // import "slick-carousel/slick/slick-theme.css";
 
 const ImageViewModal = ({ open, onClose, allImages, currentImage }) => {
   const [currentIndex, setCurrentIndex] = useState(currentImage);
+  const modalRef = useRef();
+
   const goToNextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % allImages.length);
     // swiper.slideNext()
@@ -20,14 +22,7 @@ const ImageViewModal = ({ open, onClose, allImages, currentImage }) => {
     );
     // swiper.slidePrev()
   };
-  // const settings = {
-  //   speed: 500,
-  //   infinite: true,
-  //   slidesToScroll: 1,
-  //   slidesToShow: 1,
-  //   prevArrow:true,
-  //   nextArrow:true,
-  // }
+
 
   return (
     <Dialog open={open} sx={viewStyles}>

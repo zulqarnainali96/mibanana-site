@@ -150,7 +150,7 @@ const EditBrand = ({
 
     function downloadImage(url) {
         window.open(url, '_blank')
-    } 
+    }
 
     function handleDeleteFiles(name) {
         setDeleteFiles(prev => [...prev, name])
@@ -160,12 +160,13 @@ const EditBrand = ({
     }
 
     useEffect(() => {
-        if (iseditBrand && currentid) {
-            const filterBrand = customerBrand?.find(item => item._id === currentid)
-            setFormValue({ ...filterBrand })
-        }
+        const filterBrand = customerBrand?.find(item => item._id === currentid)
+        console.log(filterBrand)
+        setFormValue({ ...filterBrand })
 
-    }, [iseditBrand, currentid])
+    }, [])
+
+    console.log(iseditBrand, " ", currentid, " ", formValue)
     return (
         <BrandModal open={open} sx={{ width: '100% !important' }} >
             <DialogTitle display={"flex"} position={"relative"} width={'100%'} justifyContent={"space-between"} alignItems={"center"}>

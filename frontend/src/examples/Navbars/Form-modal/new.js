@@ -511,10 +511,8 @@ const CreateProject1 = ({
                                     <CloseIcon fontSize='medium' onClick={() => removeSingleFile(img)} sx={deleteImageSvgIcon} />
                                     <img
                                         src={img?.url}
-                                        alt={"image"}
-                                        width={100}
-                                        loading={"lazy"}
-                                        height={100}
+                                        alt="upload-image"
+                                        loading="lazy"
                                         style={uploadImageStyles}
                                     />
                                 </div>
@@ -598,10 +596,14 @@ const Styles = {
     marginLeft: 4
 }
 const uploadImageStyles = {
-    // border: '1px dashed blue',
     padding: 3,
     marginRight: '8px',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    border: '1px solid #333',
+    maxWidth: '100px',
+    maxHeight: '100px',
+    width: '100px',
+    height: 'auto',
 }
 const closeIconStyles = {
     verticalAlign: 'middle', marginLeft: '8px',

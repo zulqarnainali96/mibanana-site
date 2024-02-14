@@ -65,7 +65,7 @@ const getDesignerFiles = async (req, res) => {
                     obj.time = file.metadata.timeCreated,
                     obj.upated_time = file.metadata.updated,
                     obj.folder_name = prefix
-                    obj.folder_dir = "Designer"
+                obj.folder_dir = "Designer"
                 return obj
             })
             // console.log(filesInfo)
@@ -109,12 +109,12 @@ const designerUploadsOnVersion = async (req, res) => {
                 .then(async () => {
                     if (currentProject?.version?.length > 0) {
                         const isCheck = currentProject.version?.includes(versionNo)
-                        if(!isCheck){
+                        if (!isCheck) {
                             const versions = currentProject.version
                             currentProject.version = [...versions, versionNo]
                             await currentProject.save()
                             return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
-                        } 
+                        }
                         else {
                             return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
                         }
@@ -156,7 +156,7 @@ const getFilesOnVersionBasis = async (req, res) => {
                     obj.time = file.metadata.timeCreated,
                     obj.upated_time = file.metadata.updated,
                     obj.folder_name = prefix
-                    obj.folder_dir = "version-" + versionNo
+                obj.folder_dir = "version-" + versionNo
                 return obj
             })
             if (filesInfo.length > 0) {
@@ -206,7 +206,8 @@ const deleteFileOnVersionBasis = async (req, res) => {
                     currentProject.version = result
                     const deleting = await currentProject.save()
                     if (deleting) {
-                        return res.status(200).send({ message: 'Version Deleted' })
+                        const { version } = await Projects.findById(_id)
+                        return res.status(200).send({ message: 'Version Deleted', version })
                     } else {
                         return res.status(200).send({ message: 'Failed to delete version no' })
                     }

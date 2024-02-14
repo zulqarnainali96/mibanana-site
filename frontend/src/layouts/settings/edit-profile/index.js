@@ -97,8 +97,8 @@ const EditProfile = ({ reduxState, reduxActions }) => {
                                         }}
                                         >
                                             {imageUrl && <img src={imageUrl} loading='lazy' alt="Uploaded Image" height="180px" width={"180px"} style={{
-                                                backgroundSize: 'contain',
                                                 borderRadius: '110px',
+                                                objectFit: 'cover',
                                             }} />}
                                             <label htmlFor="upload-image">
                                                 <MDButton variant="contained" color="info" component="span">

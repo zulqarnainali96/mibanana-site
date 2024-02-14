@@ -38,16 +38,16 @@ const Chating = ({ reduxState, reduxActions }) => {
   const formattedTime = currentTime.toLocaleTimeString();
   const formattedDate = currentTime.toLocaleDateString();
   const [msgArray, setMsgArray] = useState([]);
-  const [limit, setLimit] = useState(15);
+  // const [limit, setLimit] = useState(15);
   const [message, sendMessage] = useState("");
   const chatContainerRef = useRef(null);
   const [modalState, setModalState] = useState(false);
   const [hideChatBox, setHideChatBox] = useState(false);
   const [memberName, setMemberName] = useState([]);
-  const [IsComingMsg, setIsComingMsg] = useState(false);
-  const [is_member, setIsMember] = useState(false);
+  // const [IsComingMsg, setIsComingMsg] = useState(false);
+  // const [is_member, setIsMember] = useState(false);
   const re_render_chat = useSelector((state) => state.re_render_chat);
-  const userNewChatMessage = useSelector((state) => state.userNewChatMessage);
+  // const userNewChatMessage = useSelector((state) => state.userNewChatMessage);
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -98,8 +98,10 @@ const Chating = ({ reduxState, reduxActions }) => {
   //   }
   // };
   const onSendMessage = async (event) => {
+    const user_message = message
+    sendMessage("") 
     event.preventDefault();
-    if (message === "") {
+    if (user_message === "") {
       return;
     }
     const data = {
@@ -112,7 +114,7 @@ const Chating = ({ reduxState, reduxActions }) => {
         avatar: avatar ? avatar : ImageAvatar,
         time_data: formattedTime,
         date: formattedDate,
-        message: message,
+        message: user_message,
         role: getUserRoles(),
         view: true,
       },
@@ -139,7 +141,7 @@ const Chating = ({ reduxState, reduxActions }) => {
         avatar: avatar ? avatar : ImageAvatar,
         time_data: formattedTime,
         date: formattedDate,
-        message: message,
+        message: user_message,
         role: getUserRoles(),
         view: true,
       },
@@ -150,7 +152,7 @@ const Chating = ({ reduxState, reduxActions }) => {
         console.log(data);
       })
       .catch((e) => console.log("Update chat notifications error ", e?.response));
-    sendMessage("");
+    // sendMessage("");
   };
   function joinChatRoom() {
     setHideChatBox(true);
@@ -242,6 +244,7 @@ const Chating = ({ reduxState, reduxActions }) => {
       open={successSB}
       onClose={closeSuccessSB}
       close={closeSuccessSB}
+      delay={3000}
       bgWhite
     />
   );
@@ -255,6 +258,7 @@ const Chating = ({ reduxState, reduxActions }) => {
       open={errorSB}
       onClose={closeErrorSB}
       close={closeErrorSB}
+      delay={3000}
       bgWhite
     />
   );
@@ -335,6 +339,7 @@ const Chating = ({ reduxState, reduxActions }) => {
             openErrorSB={openErrorSB}
             showMore={showMore}
             setShowMore={setShowMore}
+            getChatMessage={getChatMessage}
           />
         </Grid>
         {renderSuccessSB}

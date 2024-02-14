@@ -46,7 +46,7 @@ import { chatIcon } from 'assets/new-images/navbars/chats-icon';
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
-  
+
   const navbarStyles = useStyles();
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
@@ -98,10 +98,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     specific_software_names: '',
   })
   const [showAccountsbtn, setShowAccountsBtn] = useState(false)
-  const is768 = useMediaQuery("(max-width:768px)")
   const is1040 = useMediaQuery("(max-width:1040px)")
-  const islg = useMediaQuery("(min-width:911px)")
-
+  const [reloadProject,setReloadProjects] = useState(false)
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -175,12 +173,13 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       });
     getToTheProject(item?.project_id);
   }
+
   async function updateAllChatMessage() {
     const id = reduxState.userDetails?.id
     if (getMessageNotification()) {
       await apiClient.get(`/api/udpate-all-notifications/${id}`)
         .then(({ data }) => {
-          console.log('updated chat data =>', data)
+          // console.log('updated chat data =>', data)
           reduxActions.getUserNewChatMessage(data?.msgArray)
         }).catch((err) => {
           console.error(err.message)
@@ -197,10 +196,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     if (role?.customer) return "(Customer)";
   }
   function showRoles() {
-    if (role?.projectManager) return "Manager";
-    if (role?.admin) return "Admin";
-    if (role?.designer) return "Designer";
-    if (role?.customer) return "Customer";
+    const { name } = reduxState.userDetails
+    return name
   }
   const removeSingleFile = (img) => {
     const result = add_files.filter((item) => item?.url !== img?.url);
@@ -225,7 +222,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       return;
     }
     const files = event.target.files;
-    const newFiles = [];
+    // const newFiles = [];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       setUploadFiles((prev) => [...prev, file]);
@@ -311,14 +308,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       file_formats: formValue.file_formats,
       is_active: false,
     };
-    console.log("data  ", data, "form value  ", formValue);
-    await apiClient
-      .post("/graphic-project", data)
+    await apiClient.post("/graphic-project", data)
       .then((resp) => {
         if (resp?.status === 201) {
           const { message } = resp?.data;
-          console.log(resp?.data);
-          setRespMessage(message);
+          setRespMessage("Project Created Successfully");
           reduxActions.getNew_Brand(!reduxState.new_brand);
           let param = [
             reduxState.userDetails?.id,
@@ -329,6 +323,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           if (add_files.length > 0 && upload_files.length > 0) {
             uploadFile(...param);
           }
+          getProjectData(reduxState.userDetails?.id, reduxActions.getCustomerProject);
           setOpen(false);
           setTimeout(() => {
             // openSuccessSB()
@@ -337,6 +332,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           }, 300);
         }
         setLoading(false);
+        setReloadProjects(true)
       })
       .catch((error) => {
         setLoading(false);
@@ -491,11 +487,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     setInComingMsg(true);
   }, [userNewChatMessage]);
 
-  useEffect(() => {
-    const id = reduxState?.userDetails?.id;
-    getProjectData(id, reduxActions.getCustomerProject);
-    getBrandData(id, reduxActions.getCustomerBrand);
-  }, [reduxState.new_brand]);
+  // useEffect(() => {
+  //   const id = reduxState.userDetails?.id;
+  //   getProjectData(id, reduxActions.getCustomerProject);
+  //   // getBrandData(id, reduxActions.getCustomerBrand);
+  // }, [reloadProject]);
 
   const ProjectButton = styled(Button)(({ theme: { palette } }) => {
     const { primary } = palette;
@@ -520,9 +516,9 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       backgroundColor: primary.main,
       fontFamily: fontsFamily.poppins,
       fontWeight: "400",
-      paddingInline : is1040 ? '13px !important' : '12px !important',
-      fontSize : is1040 ? '10px !important' : '13px !important',
-      padding : is1040 ? '4px !important' : '12px',
+      paddingInline: is1040 ? '13px !important' : '12px !important',
+      fontSize: is1040 ? '10px !important' : '13px !important',
+      padding: is1040 ? '4px !important' : '12px',
       paddingBlock: "0.9rem",
       borderRadius: 0,
       height: "100%",
@@ -534,14 +530,14 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       },
     };
   });
-  const gridItemResponsive = ({ breakpoints }) => ({
-    [breakpoints.up("xs")]: {
-      padding: "11.4px",
-    },
-    [breakpoints.down("xs")]: {
-      padding: "0px !important",
-    },
-  })
+  // const gridItemResponsive = ({ breakpoints }) => ({
+  //   [breakpoints.up("xs")]: {
+  //     padding: "11.4px",
+  //   },
+  //   [breakpoints.down("xs")]: {
+  //     padding: "0px !important",
+  //   },
+  // })
   const responsiveStyle = ({ breakpoints }) => ({
     [breakpoints.up('lg')]: {
       fontSize: '18px !important',
@@ -558,21 +554,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       fontSize: '15px !important',
     },
   })
-  // const imgResponsive = () => {
-  //   let width = "";
-  //   let height = "";
-  //   if (!is800) {
-  //     width = "50px";
-  //     height = "50px";
-  //   } else if (!is600) {
-  //     width = "45px";
-  //     height = "45px";
-  //   }
-  //   return {
-  //     width,
-  //     height,
-  //   };
-  // };
   const getMessageNotification = () => {
     const isnotifications = userNewChatMessage?.some(item => item?.view === true)
     return isnotifications
@@ -580,6 +561,10 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   // console.log('get notifications ', getMessageNotification())
   useEffect(() => {
     getAllNotificationsMsg();
+
+    return () => {
+      setReloadProjects(false)
+    }
   }, []);
   const renderRoutes = routes?.map(
     ({ type, name, icon, title, noCollapse, collapse, key, href, route }) => {
@@ -681,7 +666,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         handleClose={handleClose}
         handleChange={handleChange}
         openSuccessSB={openSuccessSB}
-        openErrorSB={openErrorSB} 
+        openErrorSB={openErrorSB}
         setRespMessage={setRespMessage}
         selectedOption={selectedOption}
         setSelectedOption={setSelectedOption}

@@ -58,10 +58,11 @@ export const useCompanyProfileData = ({ openSuccessSB, openErrorSB }) => {
                 setCompanyData({ ...resp?.data?.company_data })
             })
             .catch(e => {
+                console.error("Error Found =>", e)
             })
     }
     const handlePhoneChange1 = (phone) => {
-        companyData({
+        setCompanyData({
             ...companyData,
             primary_phone: phone
         })
