@@ -26,9 +26,11 @@ import ViewBrand from "examples/brand-table/view-brand/view-brand";
 import "react-quill/dist/quill.snow.css";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useMediaQuery } from "@mui/material";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
+  const is1200 = useMediaQuery("(max-width:1199px)")
   const {
     miniSidenav,
     direction,
@@ -37,7 +39,7 @@ export default function App() {
     sidenavColor,
     transparentSidenav,
     whiteSidenav,
-    darkMode, 
+    darkMode,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const state = useSelector((state) => state);
@@ -153,7 +155,7 @@ export default function App() {
         <>
           {user !== null ? (
             <>
-              <Sidenav
+              {is1200 ? null : <Sidenav
                 color={sidenavColor}
                 brand={
                   (transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo
@@ -166,7 +168,7 @@ export default function App() {
                 }
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
-              />
+              />}
             </>
           ) : null}
         </>

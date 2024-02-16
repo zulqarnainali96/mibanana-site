@@ -65,7 +65,7 @@ const getDesignerFiles = async (req, res) => {
                     obj.time = file.metadata.timeCreated,
                     obj.upated_time = file.metadata.updated,
                     obj.folder_name = prefix
-                obj.folder_dir = "Designer"
+                    obj.folder_dir = "Designer"
                 return obj
             })
             // console.log(filesInfo)
@@ -156,7 +156,7 @@ const getFilesOnVersionBasis = async (req, res) => {
                     obj.time = file.metadata.timeCreated,
                     obj.upated_time = file.metadata.updated,
                     obj.folder_name = prefix
-                obj.folder_dir = "version-" + versionNo
+                    obj.folder_dir = "version-" + versionNo
                 return obj
             })
             if (filesInfo.length > 0) {

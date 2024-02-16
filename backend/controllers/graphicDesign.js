@@ -5,7 +5,6 @@ const { bucket } = require('../google-cloud-storage/gCloudStorage')
 const Projects = require('../models/graphic-design-model')
 const { v4: uniqID } = require('uuid')
 const path = require('path')
-// const graphicDesignerProjects = require("../models/team_members/graphic_model")
 
 const createGraphicDesign = asyncHandler(async (req, res) => {
     const {
@@ -269,9 +268,9 @@ const duplicateProject = async (req, res) => {
         const findproject = await graphicDesignModel.findById(id)
         if (findproject) {
             const { project_category, name, project_title, design_type, brand, project_description, sizes, specific_software_names, file_formats } = findproject
-
+            const copy_project_title = project_title + " Copy"
             const obj = {
-                user, name, project_category, project_title, design_type, brand, project_description, file_formats,
+                user, name, project_category, project_title:copy_project_title, design_type, brand, project_description, file_formats,
                 sizes, specific_software_names, is_active: false, version: ["1"], status: 'Project manager', team_members: []
             }
             // console.log(obj)
@@ -390,7 +389,7 @@ const projectCancel = async (req, res) => {
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
-const projectSubmitted = async (req, res) => {
+const projectForReview = async (req, res) => {
     const id = req.params.id
     if (!id) {
         return res.status(400).send({ message: 'ID not found' })
@@ -398,9 +397,9 @@ const projectSubmitted = async (req, res) => {
     try {
         const findproject = await graphicDesignModel.findById(id)
         if (findproject) {
-            const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'Submitted' })
+            const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'For Review' })
             if (updatingStatus) {
-                return res.status(201).send({ message: 'Project Submitted' })
+                return res.status(201).send({ message: 'Project send for Review' })
             }
             else {
                 return res.status(400).send({ message: 'Found error while Updating Project' })
@@ -415,4 +414,4 @@ const projectSubmitted = async (req, res) => {
     }
 }
 
-module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectSubmitted, deleteFile, projectOngoing, projectCancel }
+module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectForReview, deleteFile, projectOngoing, projectCancel }

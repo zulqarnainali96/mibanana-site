@@ -253,7 +253,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
         }, 900)
       })
   }
-  const projectSubmitted = async () => {
+  const projectForReview = async () => {
     setLoading4(true)
     if (!item._id) {
       setRespMessage('ID not provided')
@@ -267,7 +267,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     const data = {
       user: item.user
     }
-    await apiClient.get('/api/submitted-project/' + id, data)
+    await apiClient.get('/api/for-review-project/' + id, data)
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
         setLoading4(false)
@@ -359,7 +359,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const options_props = {item, children, handleMenuOpen, handleMenuClose, anchorEl, role, loading1, loading2, loading3, loading4, loading5, renderErrorSB, renderSuccessSB, projectSubmitted, projectCompleted, duplicateProject, projectCancel, projectAttend, };
+  const options_props = {item, children, handleMenuOpen, handleMenuClose, anchorEl, role, loading1, loading2, loading3, loading4, loading5, renderErrorSB, renderSuccessSB, projectForReview, projectCompleted, duplicateProject, projectCancel, projectAttend, };
   return (
     <MDBox>
       <OptionsList {...options_props} />

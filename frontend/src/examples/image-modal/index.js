@@ -1,12 +1,9 @@
-import { ArrowBack, ArrowBackIos, ArrowForwardIos, Close } from '@mui/icons-material'
-import { IconButton, useMediaQuery } from '@mui/material'
+import { ArrowBackIos, ArrowForwardIos, Close } from '@mui/icons-material'
+import { IconButton } from '@mui/material'
 import Dialog from '@mui/material/Dialog'
 import MDBox from 'components/MDBox'
 import "./image-modal.css"
 import React, { useState, useRef } from 'react'
-// import Slider from 'react-slick'
-// import "slick-carousel/slick/slick.css"; 
-// import "slick-carousel/slick/slick-theme.css";
 
 const ImageViewModal = ({ open, onClose, allImages, currentImage }) => {
   const [currentIndex, setCurrentIndex] = useState(currentImage);
@@ -20,7 +17,6 @@ const ImageViewModal = ({ open, onClose, allImages, currentImage }) => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? allImages.length - 1 : prevIndex - 1
     );
-    // swiper.slidePrev()
   };
 
 

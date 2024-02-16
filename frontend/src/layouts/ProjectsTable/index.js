@@ -21,6 +21,7 @@ import NewProjectsTable from "examples/new-table";
 import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
 import { useMediaQuery } from "@mui/material";
+import { getBrandData, projectStatus } from "redux/global/global-functions";
 
 const ProjectTable = ({ reduxState, reduxActions }) => {
   const { columns, small_columns } = authorsTableData();
@@ -52,28 +53,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     }, 400)
   }
 
-  function projectStatus(status) {
-    switch (status) {
-      case "Project manager":
-        return "Project manager";
-      case "Completed":
-        return "Completed";
-      case "Ongoing":
-        return "Ongoing";
-      case "HeadsUp":
-        return "HeadsUp";
-      case 'Assigned':
-        return "Assigned"
-      case 'Cancel':
-        return "Cancel"
-      case "Attend":
-        return "Attend";
-      case "Submitted":
-        return "Submitted";
-      default:
-        return "End";
-    }
-  }
   const rows = projectList?.length
     ? projectList?.map((item, i) => {
 
@@ -299,6 +278,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   useEffect(() => {
     const id = reduxState?.userDetails?.id;
     getProjectData(id, reduxActions.getCustomerProject);
+    getBrandData(id, reduxActions.getCustomerBrand);
   }, []);
 
   const renderErrorSB = (
@@ -331,7 +311,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     "All",
     "Archived",
     "Assigned",
-    "Cancelled",
+    "Cancel",
     "Project manager",
     "Completed",
     "Ongoing",
@@ -344,7 +324,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   const handleStatusChange = useCallback((value) => {
     if (value) {
       const filterAccordingtoStatus = projectList?.filter((item) => {
-        return item.status === value;
+          return item.status === value
       });
       setProjectList(filterAccordingtoStatus)
       // reduxActions.getCustomerProject({ `CustomerProjects: filterAccordingtoStatus });
@@ -377,7 +357,12 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   const handleBrandChange = useCallback((value) => {
     if (value) {
       const filterAccordingtoStatus = projectList?.filter((item) => {
-        return item.brand === value;
+        if (typeof item.brand === "string") {
+          return item.brand === value;
+        }
+        else {
+          return item.brand?.brand_name === value;
+        }
       });
       // reduxActions.getCustomerProject({ CustomerProjects: filterAccordingtoStatus });
       setProjectList(filterAccordingtoStatus)
@@ -392,7 +377,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   useEffect(() => {
     setProjectList(reduxState.project_list.CustomerProjects)
   }, [reduxState.project_list])
-  
+
   return (
     <DashboardLayout>
       <MDBox

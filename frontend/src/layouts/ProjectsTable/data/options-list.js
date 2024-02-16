@@ -3,12 +3,12 @@ import React from 'react'
 import MenuItemDropdown from './MenuItem'
 
 const AuthMembersList = (props) => {
-    const {item, loading4, loading5, projectAttend, projectSubmitted } = props
+    const {item, loading4, loading5, projectAttend, projectForReview } = props
     
     return (
         <React.Fragment>
-            <MenuItemDropdown loading={loading5} disabled={loading5} onClick={projectAttend} title="Attend" />
-            <MenuItemDropdown loading={loading4} disabled={loading4} onClick={projectSubmitted} title="Submitted" />
+            <MenuItemDropdown loading={loading5} disabled={loading5} onClick={projectAttend} title="Ongoing" />
+            <MenuItemDropdown loading={loading4} disabled={loading4} onClick={projectForReview} title="For Review" />
         </React.Fragment>
     )
 }
@@ -18,10 +18,10 @@ const CustomerList = (props) => {
     const getActionsDisabled = () => {
         let result = false
         if(item.status === 'Project manager') result = true
-        else if(item.status === 'Ongoing') result = true
-        else if(item.status === 'Assigned') result = true
-        else if(item.status === 'Completed') result = true
-        else if(item.status === 'Cancel') result = true
+        // else if(item.status === 'Ongoing') result = true
+        // else if(item.status === 'Assigned') result = true
+        // else if(item.status === 'Completed') result = true
+        // else if(item.status === 'Cancel') result = true
         return result 
     }
     const getCancelDisabled = () => {
@@ -33,7 +33,7 @@ const CustomerList = (props) => {
     }
     return (
         <React.Fragment>
-            <MenuItemDropdown loading={loading3} disabled={loading3} onClick={projectCompleted} title="Completed" />
+            <MenuItemDropdown loading={loading3} disabled={loading3 || getActionsDisabled}  onClick={projectCompleted} title="Completed" />
             <MenuItemDropdown loading={loading2} disabled={loading2} onClick={duplicateProject} title="Duplicate" />
             <MenuItemDropdown loading={loading1} disabled={loading1} onClick={projectCancel} title="Cancel" />
         </React.Fragment>
@@ -42,10 +42,10 @@ const CustomerList = (props) => {
 
 
 const OptionsList = (props) => {
-    const {item, children, handleMenuOpen, anchorEl, handleMenuClose, role, loading1, loading2, loading3, loading4, loading5, projectAttend, projectCancel, duplicateProject, projectCompleted, projectSubmitted, renderErrorSB, renderSuccessSB, } = props
+    const {item, children, handleMenuOpen, anchorEl, handleMenuClose, role, loading1, loading2, loading3, loading4, loading5, projectAttend, projectCancel, duplicateProject, projectCompleted, projectForReview, renderErrorSB, renderSuccessSB, } = props
 
     const customer_props = {item, loading1, loading2, loading3, projectCancel, duplicateProject, projectCompleted }
-    const auth_member_list = {item, loading4, loading5, projectAttend, projectSubmitted }
+    const auth_member_list = {item, loading4, loading5, projectAttend, projectForReview }
 
     return (
         <React.Fragment>

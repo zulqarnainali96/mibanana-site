@@ -181,7 +181,7 @@ const FileUploadContainer = ({
     await apiClient
       .get("/get-customer-files/" + id)
       .then(({ data }) => {
-        // setVersion(data.filesInfo);
+        setVersion(data.filesInfo);
         handlePreviewImages(data?.filesInfo)
         setFileMsg("");
         setLoading(false);
@@ -456,7 +456,7 @@ const FileUploadContainer = ({
   };
   const handleSubmit = (fileType) => {
     if (role?.designer || role?.projectManager || role?.admin) {
-      if (selectedFilePeople === "customer" || selectedFilePeople === "All Files" || selectedFilePeople === "") {
+      if (selectedFilePeople === "All Files" || selectedFilePeople === "") {
         setRespMessage("Please select version in which you want to upload files")
         setTimeout(() => {
           openErrorSB()
@@ -626,10 +626,10 @@ const FileUploadContainer = ({
     }
 
     try {
-      const clientFilesData = await clientFilesforAll();
+      // const clientFilesData = await clientFilesforAll();
       const designerFiles = await designerFilesforAll();
       const get_all_version_Files = await getAllVersionFiles();
-      const combinedData = [...clientFilesData, ...designerFiles, ...get_all_version_Files];
+      const combinedData = [...designerFiles, ...get_all_version_Files];
       handlePreviewImages(combinedData);
     } catch (error) {
       // Handle API call errors
@@ -767,12 +767,12 @@ const FileUploadContainer = ({
     let arr = [];
     if (fileVersion.length > 0) {
       // version = version.slice(0, -1)
-      const t = fileVersion?.slice(0, -1)
-      arr = [...t, "designer", "customer", "All Files"].reverse()
+      const t = fileVersion?.slice(0, -1).reverse()
+      arr = ["designer", "All Files",...t]
       // setFileVersionList([...t, "designer"].reverse())
     } else {
       // setFileVersionList(["customer", "designer empty"]) 
-      arr = ['All Files', 'customer', 'version empty']
+      arr = ['All Files','version empty']
     }
     return arr
   }
@@ -792,8 +792,7 @@ const FileUploadContainer = ({
   }
 
   const filesFolderProps = {
-    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion
-    , getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, project
+    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, project
   }
 
   return (
@@ -1011,7 +1010,8 @@ const FileUploadContainer = ({
             <div className="project-details-div">
               <h2 className={classes.adminDiv1h2}>Project Title</h2>
               <Typography variant="h6" className="desc1">
-                {project?.project_title?.length > 10 ? project?.project_title?.substring(0, 11) + '...' : project?.project_title}
+                {/* {project?.project_title?.length > 10 ? project?.project_title?.substring(0, -1) + '...' : project?.project_title} */}
+                {project?.project_title}
               </Typography>
             </div>
             <div className="project-details-div">

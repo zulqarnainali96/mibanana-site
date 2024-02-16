@@ -234,9 +234,6 @@ h6,
   .addnewversion {
     padding: 4px 7px !important;
   }
-  .filesGrid .folder-dir {
-    bottom: -17px;
-  }
 }
 
 .addnewversion {
@@ -553,7 +550,7 @@ h6,
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
   .filesGrid .folder-dir {
-    bottom: -17px;
+    bottom: -3px;
   }
   .filesGrid .nofilefoundDiv h1 {
     font-size: 28px;

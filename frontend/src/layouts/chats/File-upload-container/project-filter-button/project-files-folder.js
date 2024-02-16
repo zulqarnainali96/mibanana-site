@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 
 const ProjectFilesFolder = (props) => {
 
-    const { selectedFilePeople, handleFilePeopleChange, activebtn, currentVersion, getListThroughVersion,
+    const { selectedFilePeople, handleFilePeopleChange, activebtn, currentVersion, getListThroughVersion, clientFiles,
         fileVersion, role, addFileVerion, addVersionStyle, versionHandler, project, getFullFolderArray, checkVersionEmpty } = props
 
     useEffect(() => {
@@ -30,7 +30,7 @@ const ProjectFilesFolder = (props) => {
                 >
                     <option value="">Folders</option>
                     {getFullFolderArray().map((item, i) => (
-                        <option key={i} value={item} disabled={checkVersionEmpty(item)} >{i === 0 || i === 1 || i === 2 ? item : `version ${item}`}</option>
+                        <option key={i} value={item} disabled={checkVersionEmpty(item)} >{i === 0 || i === 1 ? item : `version ${item}`}</option>
                     ))
                     }
                 </select>
@@ -63,6 +63,13 @@ const ProjectFilesFolder = (props) => {
                         </>
                     )}
                 </select> */}
+                <button
+                    className="selectType1 addnewversion"
+                    onClick={clientFiles}
+                    style={addVersionStyle}
+                >
+                    Customer Files
+                </button>
                 {role?.projectManager || role?.designer || role?.admin ? (
                     <button
                         className="selectType1 addnewversion"
@@ -73,7 +80,7 @@ const ProjectFilesFolder = (props) => {
                     </button>
                 ) : null}
                 {role?.projectManager || role?.designer || role?.admin ? (
-                    <button className="selectType1 addnewversion" onClick={versionHandler} style={addVersionStyle}>
+                    <button className="selectType1 addnewversion" onClick={versionHandler} style={addVersionStyle} >
                         Delete version
                     </button>
                 ) : null}

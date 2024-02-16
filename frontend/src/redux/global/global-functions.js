@@ -20,7 +20,7 @@ function convertCreatedAtToDate(createdAt) {
     return new Date(`${year}-${month - 1}-${day}T${hours}:${minutes}:${seconds}`);
 }
 
-const orderOfStatus = ['Project manager','Assigned', 'Ongoing', 'Submitted', 'Completed','Cancel'];
+const orderOfStatus = ['Project manager','Assigned', 'Ongoing', 'For Review', 'Completed','Cancel'];
 
 function sortByStatus(arr) {
     return arr.sort((a, b) => {
@@ -115,5 +115,27 @@ const currentUserRole = (state) => {
     }
 }
 
+const projectStatus = (status) => {
+    switch (status) {
+      case "Project manager":
+        return "Project manager";
+      case "Completed":
+        return "Completed";
+      case "Ongoing":
+        return "Ongoing";
+      case "HeadsUp":
+        return "HeadsUp";
+      case 'Assigned':
+        return "Assigned"
+      case 'Cancel':
+        return "Cancel"
+      case "For Review":
+        return "For Review";
+      case "Submitted":
+        return "Submitted";
+      default:
+        return "End";
+    }
+  }
 
-export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole }
+export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus }

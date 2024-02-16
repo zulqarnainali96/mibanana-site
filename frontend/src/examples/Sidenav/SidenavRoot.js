@@ -48,12 +48,12 @@ export default styled(Drawer)(({ theme, ownerState }) => {
 
   // styles for the sidenav when miniSidenav={true}
   const drawerCloseStyles = () => ({
-    background: backgroundValue,
+    // background: backgroundValue,
     transform: `translateX(${pxToRem(-320)})`,
-    transition: transitions.create("transform", {
-      easing: transitions.easing.sharp,
-      duration: transitions.duration.shorter,
-    }),
+    // transition: transitions.create("transform", {
+    //   easing: transitions.easing.sharp,
+    //   duration: transitions.duration.shorter,
+    // }),
 
     [breakpoints.up("xl")]: {
       // boxShadow: transparentSidenav ? "none" : xxl,
@@ -77,6 +77,7 @@ export default styled(Drawer)(({ theme, ownerState }) => {
       marginTop: "125px !important",
       position: "absolute !important",
       border: "none",
+      // ...(drawerCloseStyles()),
       ...(miniSidenav ? drawerCloseStyles() : drawerOpenStyles()),
     },
   };

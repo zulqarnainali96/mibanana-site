@@ -18,7 +18,7 @@ import NewProjectsTable from "examples/new-table";
 import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
 import "./status-box/status-style.css"
-import { currentUserRole } from "redux/global/global-functions";
+import { currentUserRole, projectStatus } from "redux/global/global-functions";
 import "./status-box/status-style.css"
 
 function Dashboard({ reduxActions, reduxState }) {
@@ -68,28 +68,28 @@ function Dashboard({ reduxActions, reduxState }) {
     }
   }
 
-  function projectStatus(status) {
-    switch (status) {
-      case 'Project manager':
-        return "Project manager"
-      case 'Completed':
-        return "Completed"
-      case 'Ongoing':
-        return "Ongoing"
-      case 'HeadsUp':
-        return "HeadsUp"
-      case 'Assigned':
-        return "Assigned"
-      case 'Cancel':
-        return "Cancel"
-      case 'Submitted':
-        return "Submitted"
-      case 'Attend':
-        return 'Attend'
-      default:
-        return "End"
-    }
-  }
+  // function projectStatus(status) {
+  //   switch (status) {
+  //     case 'Project manager':
+  //       return "Project manager"
+  //     case 'Completed':
+  //       return "Completed"
+  //     case 'Ongoing':
+  //       return "Ongoing"
+  //     case 'HeadsUp':
+  //       return "HeadsUp"
+  //     case 'Assigned':
+  //       return "Assigned"
+  //     case 'Cancel':
+  //       return "Cancel"
+  //     case 'Submitted':
+  //       return "Submitted"
+  //     case 'Attend':
+  //       return 'Attend'
+  //     default:
+  //       return "End"
+  //   }
+  // }
 
   const renderErrorSB = (
     <MDSnackbar
