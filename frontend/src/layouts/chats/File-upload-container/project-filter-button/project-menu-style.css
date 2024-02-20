@@ -1,0 +1,59 @@
+.drive-input-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    gap: 2px;
+}
+.drive-input-container input {
+  border-radius: 7px 0px 0px 7px;
+  border: 1px solid #ccc;
+  padding-inline: 13px;
+  padding-block: 16px;
+  width: 90%;
+  margin-top: 36px;
+  font-family: var(--fonts-family);
+}
+
+.drive-input-container .update-drive-button {
+    font-family: var(--fonts-family);
+    border-radius: 0px 7px 7px 0px;
+    background-color: #120d0e94;
+    margin-top: 36px;
+    height : 54px;
+}
+.drive-container {
+  display: inline;
+  position: relative;
+}
+.drive-container button {
+  font-family: var(--fonts-family);
+}
+.drive-option-container {
+  width: 120px;
+  list-style: none;
+  left: 6px;
+  position: absolute;
+  height: 80px;
+  background-color: #f6f6e8;
+  padding: 12px;
+  border-radius: 5px;
+  font-size: 13px;
+  box-shadow: 2px 2px 6px -4px #444;
+  z-index: 99;
+}
+.drive-option-container li:first-of-type {
+  border-bottom: 1px solid #ccc;
+}
+.drive-option-container li {
+  cursor: pointer !important;
+  font-family: var(--fonts-family);
+  padding-inline: 2px;
+  transition: 0.2s background-color ease-in;
+  padding-block: 2px;
+  border-radius: 5px;
+}
+
+.drive-option-container li:hover {
+  background-color: #ebebd8;
+}

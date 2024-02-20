@@ -80,6 +80,11 @@ const projectModel = mongoose.Schema({
         required : false,
         default : ["1"]
     }],
+    drive_link : {
+        type : String,
+        required : false,
+        default : ""
+    },
     status: {
         type: String,
         required: false

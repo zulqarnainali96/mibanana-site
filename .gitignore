@@ -14,6 +14,9 @@ backend/google-cloud-storage/mibanana-app-1bcac3255187.json
 backend/google-cloud-storage/mibanana.json
 
 # testing
+
+test.js
+
 backend/.env
 backend/logs
 

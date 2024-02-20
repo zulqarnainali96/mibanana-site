@@ -15,14 +15,15 @@ export const useStyles = makeStyles({
     //     color: 'black !important'
 
     // },
-    notificationPoint : {
-        position: 'absolute', 
-        padding: '6px',
-        top:6,
-        right:6, 
-        borderRadius: '30px',
-        backgroundColor:mibananaColor.yellowColor
-    },
+    // notificationPoint : {
+    //     position: 'absolute', 
+    //     padding: '6px',
+    //     top:6,
+    //     right:6, 
+    //     borderRadius: '30px',
+    //     backgroundColor:mibananaColor.yellowColor
+        
+    // },
     btnContainer: {
         backgroundColor: mibananaColor.yellowTextColor,
         padding: '4px',

@@ -19,9 +19,17 @@ const ImageViewModal = ({ open, onClose, allImages, currentImage }) => {
     );
   };
 
+  const handleClose = (event) => {
+    console.log(event,' happen')
+    // Check if the click occurred inside the image container
+    if (!event.target.closest('.image-slider')) {
+      onClose();
+      console.log(event,' close')
+    }
+  };
 
   return (
-    <Dialog open={open} sx={viewStyles}>
+    <Dialog open={open} sx={viewStyles} onClose={handleClose}>
       <IconButton className="close-btn" onClick={onClose}>
         <Close className="icon-btn-color" fontSize='medium' />
       </IconButton>
@@ -33,8 +41,8 @@ const ImageViewModal = ({ open, onClose, allImages, currentImage }) => {
           <ArrowForwardIos className="icon-btn-color" fontSize='large' />
         </IconButton>
       </MDBox>
-      <div className="image-slider">
-        <img src={allImages[currentIndex]?.image} alt={`Slide ${currentIndex + 1}`} loading="lazy" />
+      <div className="image-slider" >
+        <img src={allImages[currentIndex]?.image} className='image-setting' alt={`Slide ${currentIndex + 1}`} loading="lazy" />
       </div>
     </Dialog>
   )
@@ -51,13 +59,11 @@ const viewStyles = {
     alignItems: 'center',
     maxWidth: '100%',
     width: '100%',
-    height: '100%',
+    height: '60%',
     backgroundColor: 'transparent !important',
     margin: 0,
     borderRadius: 0,
   }
 }
-
-
 
 export default ImageViewModal

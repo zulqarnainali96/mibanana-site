@@ -32,9 +32,6 @@ function NewProjectsTable({
 
     // My State 
     const navigate = useNavigate()
-    const projectList = useSelector(state => state.project_list.CustomerProjects)
-    const getid = useSelector(state => state.project_ID)
-
 
     const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
     const entries = entriesPerPage.entries

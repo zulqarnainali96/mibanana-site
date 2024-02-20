@@ -528,8 +528,8 @@ const FileUploadContainer = ({
     setFilesType([]);
   };
   useEffect(() => {
-    setSelectedFilePeople("All Files")
-    getAllfiles();
+    setSelectedFilePeople("designer")
+    getFilesOnVerion(fileVersion?.length)
   }, []);
 
   // ---------- Version Files for All
@@ -639,15 +639,6 @@ const FileUploadContainer = ({
     }
   };
 
-  // const dateFun = (timestamp) => {
-  //   const date = new Date(timestamp);
-
-  //   const day = date.getDate();
-  //   const month = date.toLocaleString("default", { month: "short" });
-
-  //   const formattedDate = `${day}-${month}`;
-  //   return formattedDate;
-  // };
   const filterFunction = (files) => {
     if (selectedFileType) {
       const filterFiles = files.filter((file) => {
@@ -669,7 +660,6 @@ const FileUploadContainer = ({
 
       })
       .catch((e) => {
-
       });
   }
 
@@ -765,7 +755,7 @@ const FileUploadContainer = ({
 
   function getFullFolderArray() {
     let arr = [];
-    if (fileVersion.length > 0) {
+    if (fileVersion?.length > 0) {
       // version = version.slice(0, -1)
       const t = fileVersion?.slice(0, -1).reverse()
       arr = ["designer", "All Files",...t]
@@ -792,8 +782,7 @@ const FileUploadContainer = ({
   }
 
   const filesFolderProps = {
-    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, project
-  }
+    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage }
 
   return (
     <MDBox className="chat-2" sx={{ height: '100%', backgroundColor: mibananaColor.headerColor }}>
@@ -956,7 +945,7 @@ const FileUploadContainer = ({
               <div className="adminDiv2">
                 {designerLoading ? <MoonLoader className="designer-loading" loading={designerLoading} size={24} color='#121212' /> : (
                   <>
-                    {teamMembers.length > 0 ? (
+                    {teamMembers?.length > 0 ? (
                       <>
                         {/* <img src={designerImg} className="adminImg1" /> */}
                         {teamMembers.map((item, i) => (

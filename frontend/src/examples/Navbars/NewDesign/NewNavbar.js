@@ -729,15 +729,13 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
                 Create Project
               </ProjectButton>
             )}
-
-
           </MDBox>
         </Grid>
         <Grid className="grid-3" item style={{ display: showAccountsbtn ? 'flex' : 'none' }}>
           <div className="btn-container" onClick={updateAllChatMessage}>
 
             {getMessageNotification() ? (
-              <span className={navbarStyles.notificationPoint}></span>
+              <span className="notifications-point"></span>
             ) : null}
             <RightSideDrawer list={list} />
           </div>

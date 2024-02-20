@@ -147,7 +147,6 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         })
     }
     const editAddMoreImages = () => {
-        // setOther(other + 1)
         // setEditMoreImages(prev => [...prev, {
         //     name: `image_${other}`,
         //     value: ''
@@ -206,7 +205,6 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                 }
                 setLoading(false)
             })
-        console.log(filesArray)
     }
     const renderErrorSB = (
         <MDSnackbar

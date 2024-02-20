@@ -1,0 +1,57 @@
+.image-container {
+  position: relative;
+  background-color: transparent;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  aspect-ratio: 1.6;
+}
+
+.close-button {
+  position: absolute !important;
+  background-color: #fff !important;
+  top: 0px;
+  display: none;
+  right: 78px;
+}
+
+.left-arrow,
+.right-arrow {
+  position: absolute !important;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+}
+
+.left-arrow svg,
+.right-arrow svg {
+  scale: 2.3;
+  fill: white;
+}
+
+.left-arrow {
+  left: 8px;
+}
+
+.right-arrow {
+  right: 8px;
+}
+
+@media screen and (max-width: 991px) {
+  .close-button {
+    right: 43px;
+    width: 25px;
+    height: 25px;
+  }
+  .close-button svg {
+    scale: 0.8;
+  }
+
+  .left-arrow svg,
+  .right-arrow svg {
+    scale: 1.3;
+  }
+}
