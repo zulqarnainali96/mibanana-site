@@ -2,7 +2,7 @@
   position: absolute;
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   z-index: 99;
 }
@@ -23,7 +23,7 @@
 .image-slider {
   position: relative;
   width: 100%;
-  max-width: 45%;
+  max-width: 100%;
   margin: 0 auto;
   overflow: hidden;
 }

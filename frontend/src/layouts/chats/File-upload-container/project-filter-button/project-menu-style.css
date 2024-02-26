@@ -1,9 +1,9 @@
 .drive-input-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    align-items: center;
-    gap: 2px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  gap: 2px;
 }
 .drive-input-container input {
   border-radius: 7px 0px 0px 7px;
@@ -16,11 +16,11 @@
 }
 
 .drive-input-container .update-drive-button {
-    font-family: var(--fonts-family);
-    border-radius: 0px 7px 7px 0px;
-    background-color: #120d0e94;
-    margin-top: 36px;
-    height : 54px;
+  font-family: var(--fonts-family);
+  border-radius: 0px 7px 7px 0px;
+  background-color: #120d0e94;
+  margin-top: 36px;
+  height: 54px;
 }
 .drive-container {
   display: inline;
@@ -56,4 +56,13 @@
 
 .drive-option-container li:hover {
   background-color: #ebebd8;
+}
+
+@media screen and (max-width: 768px) {
+  .drive-option-container {
+    width: 100px;
+    height: 66px;
+    font-size: 11px;
+    padding: 10px;
+  }
 }

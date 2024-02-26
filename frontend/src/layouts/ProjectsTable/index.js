@@ -321,62 +321,78 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   ];
   const filterBrand = reduxState?.customerBrand?.map((item) => item.brand_name);
 
+  // const handleStatusChange = useCallback((value) => {
+  //   if (value) {
+  //     // const filterAccordingtoStatus = projectList?.filter((item) => {
+  //     //   return item.status === value
+  //     // });
+  //     const filterAccordingtoStatus = projectList.map(item => {
+  //       if (item.status === value) {
+  //         return item; 
+  //       }
+  //     }).filter(item => item); 
+
+  //     setProjectList(filterAccordingtoStatus)
+  //     if (value === "All") {
+  //       setProjectList(copyProjectList)
+  //     }
+  //   }
+  //   else {
+  //     setProjectList(copyProjectList)
+  //   }
+  //   setStatus(value);
+  // }, [copyProjectList, setProjectList, projectList]);
+
   const handleStatusChange = useCallback((value) => {
-    if (value) {
-      const filterAccordingtoStatus = projectList?.filter((item) => {
-          return item.status === value
+    if (value === "All" || value === "" || value === null) {
+      console.log(status)
+      setProjectList(copyProjectList);
+    } else {
+      setProjectList(copyProjectList);
+      setProjectList(prevList => {
+        return prevList.filter(item => item.status === value);
       });
-      setProjectList(filterAccordingtoStatus)
-      // reduxActions.getCustomerProject({ `CustomerProjects: filterAccordingtoStatus });
-      if (value === "All") {
-        setProjectList(copyProjectList)
-      }
     }
-    else if (!value) {
-      // reduxActions.getCustomerProject(copyProjectList);
-      setProjectList(copyProjectList)
-    }
+
     setStatus(value);
-  }, [status])
+  },
+    [copyProjectList]);
+
 
   const handleCategoryChange = useCallback((value) => {
-    if (value) {
-      const filterAccordingtoStatus = projectList?.filter((item) => {
-        return item.project_category === value;
-      });
-      setProjectList(filterAccordingtoStatus)
-      // reduxActions.getCustomerProject({ CustomerProjects: filterAccordingtoStatus });
-    }
-    else if (!value) {
+    if (value === "" || value === null) {
       setProjectList(copyProjectList)
-      // reduxActions.getCustomerProject(copyProjectList);
+    }
+    else {
+      setProjectList(copyProjectList);
+      setProjectList(prevList => {
+        return prevList.filter(item => item.project_category === value);
+      });
     }
     setCategory(value);
-  }, [category])
+  }, [copyProjectList])
 
   const handleBrandChange = useCallback((value) => {
-    if (value) {
-      const filterAccordingtoStatus = projectList?.filter((item) => {
-        if (typeof item.brand === "string") {
-          return item.brand === value;
-        }
-        else {
-          return item.brand?.brand_name === value;
-        }
-      });
-      // reduxActions.getCustomerProject({ CustomerProjects: filterAccordingtoStatus });
-      setProjectList(filterAccordingtoStatus)
-
-    } else if (!value) {
-      // reduxActions.getCustomerProject(copyProjectList);
+    if (value === "" || value === null) {
       setProjectList(copyProjectList)
+    } 
+    else {
+      setProjectList(copyProjectList)
+      setProjectList(prevList => {
+        if(typeof prevList.brand === "string") {
+          return prevList.filter(item => item.brand === value);
+        } else {
+          return prevList.filter(item => item.brand?.brand_name === value);
+        }
+      })
     }
     setBrand(value);
-  }, [brand])
+  }, [copyProjectList])
 
   useEffect(() => {
     setProjectList(reduxState.project_list.CustomerProjects)
   }, [reduxState.project_list])
+
 
   return (
     <DashboardLayout>
@@ -396,12 +412,10 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                   <Grid item xl={3} lg={3} md={3} xs={12}>
                     <ProjectStatus
                       data={statuses}
-                      personName={status}
-                      projectList={projectList}
-                      handleChange={handleStatusChange}
-                      setProjectList={setProjectList}
+                      value={status}
                       status={"STATUS"}
-                    // clearValue={clearValue}
+                      handleChange={handleStatusChange}
+                      copyProjectList={copyProjectList}
                     />
                   </Grid>
                   <Grid item xl={3} lg={3} md={3} xs={12}>

@@ -15,8 +15,35 @@ import { toggleDrawer } from 'redux/global/global-functions';
 import { fontsFamily } from 'assets/font-family';
 import { mibananaColor } from 'assets/new-images/colors';
 
+const titleStyle = {
+    fontSize: "16px",
+    whiteSpace: 'normal',
+    wordBreak: "auto-phrase",
+    fontsFamily: fontsFamily.poppins,
+    fontWeight: '400',
+    color: mibananaColor.yellowTextColor
+}
+const chatMsg = {
+    fontSize: "13px",
+    color: mibananaColor.tableHeaderColor,
+    padding: '10px',
+    textOverflow: 'ellipsis',
+    whiteSpace: "break-spaces",
+    "> p, span h1, ul li, b ,i": {
+        wordBreak: "break-word",
+        whiteSpace: "normal",
+    }
+
+}
+
+const projectBoxStyles = {
+    paddingInlineStart: '5px',
+}
+
 const ProjectList = ({ item, index, currentIndex, showProjects }) => {
     const [msg, setMsgArr] = useState("")
+
+    // const truncatedDescription = project?.project_description?.substring(0, 240);
 
     useEffect(() => {
         async function getChatMessage() {
@@ -31,7 +58,6 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
                 }
             } catch (error) {
                 setMsgArr("")
-                console.log(error)
             }
         }
         getChatMessage()
@@ -67,33 +93,15 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
             color: mibananaColor.greenShade2
         }
     }
-    const titleStyle = {
-        fontSize: "16px",
-        whiteSpace : 'normal',
-        wordBreak  : "auto-phrase",
-        fontsFamily: fontsFamily.poppins,
-        fontWeight: '400',
-        color: mibananaColor.yellowTextColor
-    }
-    const chatMsg = {
-        fontSize: "13px",
-        color: mibananaColor.tableHeaderColor,
-        padding: '10px',
-        textOverflow: 'ellipsis',
-        whiteSpace: "break-spaces",
-        "> p, span h1, ul li, b ,i" : {
-            wordBreak: "break-word",
-            whiteSpace: "normal",
-        }
 
+    const shrinkText = () => {
+        let shrinkText = msg.substring(0, 80)
+        if(msg?.length > 80){
+            shrinkText += "...."
+        }
+        return shrinkText
     }
-    // const shrinkText = () => {
-    //     let shrinkText = msg.substring(0, 80)
-    //     if(msg?.length > 80){
-    //         shrinkText += "....."
-    //     }
-    //     return shrinkText
-    // }
+
     return (
         <MDBox
             display="flex"
@@ -115,7 +123,7 @@ const ProjectList = ({ item, index, currentIndex, showProjects }) => {
                     <span style={statusStyle()}>{item?.status}</span>
                 </MDBox>
             </MDBox>
-            <MDBox sx={chatMsg} dangerouslySetInnerHTML={{ __html: msg }}></MDBox>
+            <MDBox sx={chatMsg} dangerouslySetInnerHTML={{ __html: shrinkText() }}></MDBox>
         </MDBox >
     )
 }
@@ -147,7 +155,7 @@ export default () => {
         // onKeyDown={toggleDrawer(anchor, false)}
         >
             <East fontSize='medium' sx={{ position: 'absolute', top: 10, left: 10, cursor: 'pointer', }} onClick={toggleDrawer("right", false, setState, rightSideDrawer)} />
-            <List>
+            <List sx={projectBoxStyles}>
                 <MDTypography variant="h5" pt={3} pb={1} textAlign="left" sx={{ fontFamily: fontsFamily.poppins, fontWeight: 'bold', color: mibananaColor.yellowTextColor }}>&nbsp;&nbsp;Projects</MDTypography>
                 {projects?.map((item, index) => {
                     return (

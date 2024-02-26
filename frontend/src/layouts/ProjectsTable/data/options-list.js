@@ -18,10 +18,8 @@ const CustomerList = (props) => {
     const getActionsDisabled = () => {
         let result = false
         if(item.status === 'Project manager') result = true
-        // else if(item.status === 'Ongoing') result = true
-        // else if(item.status === 'Assigned') result = true
-        // else if(item.status === 'Completed') result = true
-        // else if(item.status === 'Cancel') result = true
+        if(item.status === 'Assigned') result = true
+        if(item.status === 'Completed') result = true
         return result 
     }
     const getCancelDisabled = () => {
@@ -33,7 +31,7 @@ const CustomerList = (props) => {
     }
     return (
         <React.Fragment>
-            <MenuItemDropdown loading={loading3} disabled={loading3 || getActionsDisabled}  onClick={projectCompleted} title="Completed" />
+            <MenuItemDropdown loading={loading3} disabled={loading3 || getActionsDisabled()}  onClick={projectCompleted} title="Completed" />
             <MenuItemDropdown loading={loading2} disabled={loading2} onClick={duplicateProject} title="Duplicate" />
             <MenuItemDropdown loading={loading1} disabled={loading1} onClick={projectCancel} title="Cancel" />
         </React.Fragment>

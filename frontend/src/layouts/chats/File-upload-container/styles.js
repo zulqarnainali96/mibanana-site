@@ -219,6 +219,10 @@ export const useStyles = makeStyles({
   },
   descriptiondiv : {
     width: "100%",
+    paddingInline : '10px',
+    "& > p, ol, ul " : {
+      paddingInline : '14px',
+    }
   },
   adminDiv2h3: {
     fontSize: "13px",

@@ -115,6 +115,20 @@ const currentUserRole = (state) => {
     }
 }
 
+const getProjectById = (id,callback, setFileVersionList) => {
+    apiClient.get("/api/get-project-by/" + id)
+        .then(({ data }) => {
+            callback(data.project)
+            setFileVersionList(data.project?.version)
+        })
+        .catch(err => {
+            if (err.response) {
+                let { message } = err.response.data
+                console.log('Message =>', message)
+            }
+        })
+}
+
 const projectStatus = (status) => {
     switch (status) {
       case "Project manager":
@@ -136,6 +150,6 @@ const projectStatus = (status) => {
       default:
         return "End";
     }
-  }
+}
 
-export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus }
+export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus, getProjectById }

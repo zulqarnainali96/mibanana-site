@@ -55,6 +55,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import CloseIcon from "@mui/icons-material/Close";
 import CachedIcon from "@mui/icons-material/Cached";
 import ProjectFilesFolder from "./project-filter-button/project-files-folder";
+import { getProjectById } from "redux/global/global-functions";
 
 const uploadBtn = {
   backgroundColor: "#98e225",
@@ -89,7 +90,8 @@ const FileUploadContainer = ({
   const [loading, setLoading] = useState(true);
   const [activebtn, setActiveBtn] = useState("");
 
-  const project = projects?.find((item) => item._id === id);
+  const [project, setProject] = useState(projects?.find((item) => item._id === id))
+  const [reloadState,setReloadState] = useState(false)
   const version1 = project?.add_files[0]?.version1;
   const [version, setVersion] = useState(version1);
   const [memberName, setMemberName] = useState([]);
@@ -142,8 +144,9 @@ const FileUploadContainer = ({
     if (value === "All Files") {
       getAllfiles()
     }
-    else if (value === "designer") {
-      getFilesOnVerion(fileVersion?.length)
+    else if (value === "Latest design") {
+      let lastIndex = [...fileVersion]?.pop()
+      getFilesOnVerion(lastIndex)
     }
     else if (value === "customer") {
       clientFiles()
@@ -223,6 +226,7 @@ const FileUploadContainer = ({
         handlePreviewImages(data?.filesInfo)
         setFileMsg("");
         setLoading(false);
+        console.log(data.filesInfo)
       })
       .catch((err) => {
         setFileMsg("No Files Found");
@@ -315,48 +319,7 @@ const FileUploadContainer = ({
       // setSelectVersion(e.target.value);
       getFilesOnVerion(e.target.value);
     }
-    // else {
-    //   setSelectVersion("")
-    // }
   };
-  // const managerUploadFiles = useCallback(async (filType) => {
-  //   setLoading(true);
-  //   const formdata = new FormData();
-  //   for (let i = 0; i < filType.length; i++) {
-  //     formdata.append("files", filType[i]);
-  //   }
-  //   await apiClient
-  //     .post("/api/designer-uploads/" + id, formdata)
-  //     .then(({ data }) => {
-  //       setLoading(false);
-  //       if (data?.message) {
-  //         setRespMessage(data.message)
-  //         setTimeout(() => {
-  //           openSuccessSB()
-  //         }, 400)
-  //       }
-  //       setFiles([]);
-  //       setFilesType([]);
-  //       designerFiles();
-  //     })
-  //     .catch((err) => {
-  //       if (err.response) {
-  //         const { message } = err.response.data
-  //         setRespMessage(message)
-  //         setLoading(false)
-  //         setTimeout(() => {
-  //           openErrorSB()
-  //         }, 400)
-  //       } else {
-
-  //         setLoading(false)
-  //         setRespMessage(err.message)
-  //         setTimeout(() => {
-  //           openErrorSB()
-  //         }, 400)
-  //       }
-  //     })
-  // }, [loading, respMessage, files, filesType])
 
   const customerUploadFiles = async (filType) => {
     setLoading(true);
@@ -463,10 +426,9 @@ const FileUploadContainer = ({
         }, 400)
         return
       }
-      else if (selectedFilePeople === "designer") {
-        const current_version = fileVersion?.length
-        // console.log('designer' + current_version)
-        versionUploads(fileType, current_version)
+      else if (selectedFilePeople === "Latest design") {
+        const latest_version = [...fileVersion]?.pop()
+        versionUploads(fileType, latest_version)
       }
       else {
         versionUploads(fileType, selectedFilePeople)
@@ -528,8 +490,9 @@ const FileUploadContainer = ({
     setFilesType([]);
   };
   useEffect(() => {
-    setSelectedFilePeople("designer")
-    getFilesOnVerion(fileVersion?.length)
+    setSelectedFilePeople("Latest design")
+    let lastIndex = [...fileVersion]?.pop()
+    getFilesOnVerion(lastIndex)
   }, []);
 
   // ---------- Version Files for All
@@ -601,26 +564,15 @@ const FileUploadContainer = ({
     setVersion(arr)
   }
 
-  // const getAllfiles = async () => {
-  //   setLoading(true);
-    
-  //   const clientFilesData = await clientFilesforAll();
-  //   const designerFiles = await designerFilesforAll();
-  //   const get_all_version_Files = await getAllVersionFiles()
-  //   const combinedData = [...clientFilesData, ...designerFiles, ...get_all_version_Files];
-  //   // setVersion(combinedData);
-  //   handlePreviewImages(combinedData)
-  //   setLoading(false);
-  // };
   const getAllfiles = async () => {
     setLoading(true);
 
     if (!navigator.onLine) {
       // Handle offline state
       setRespMessage("You are currently offline. Please check your internet connection.");
-      setTimeout( () => {
+      setTimeout(() => {
         openErrorSB()
-      },300)
+      }, 300)
       setLoading(false);
       return;
     }
@@ -631,6 +583,7 @@ const FileUploadContainer = ({
       const get_all_version_Files = await getAllVersionFiles();
       const combinedData = [...designerFiles, ...get_all_version_Files];
       handlePreviewImages(combinedData);
+      console.log(combinedData)
     } catch (error) {
       // Handle API call errors
       console.error("Error fetching files:", error);
@@ -758,11 +711,11 @@ const FileUploadContainer = ({
     if (fileVersion?.length > 0) {
       // version = version.slice(0, -1)
       const t = fileVersion?.slice(0, -1).reverse()
-      arr = ["designer", "All Files",...t]
+      arr = ["Latest design", "All Files", ...t]
       // setFileVersionList([...t, "designer"].reverse())
     } else {
       // setFileVersionList(["customer", "designer empty"]) 
-      arr = ['All Files','version empty']
+      arr = ['All Files', 'version empty']
     }
     return arr
   }
@@ -775,14 +728,21 @@ const FileUploadContainer = ({
   }
 
   async function reloadAllData() {
+    setReloadState(prev=>!prev)
     getChatMessage()
     getAllDesignersList()
-    getProjectData(reduxState.userDetails.id, reduxActions.getCustomerProject);
+    setSelectedFilePeople("All Files")
+    getProjectById(id, setProject, setFileVersionList)
     await getAllfiles()
   }
 
+  useEffect( () => {
+    setFileVersionList(project.version)
+  },[reloadState])
+  
   const filesFolderProps = {
-    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage }
+    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState
+  }
 
   return (
     <MDBox className="chat-2" sx={{ height: '100%', backgroundColor: mibananaColor.headerColor }}>
