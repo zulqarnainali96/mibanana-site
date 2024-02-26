@@ -85,6 +85,11 @@ const projectModel = mongoose.Schema({
         required : false,
         default : ""
     },
+    figma_link : {
+        type : String,
+        required : false,
+        default : ""
+    },
     status: {
         type: String,
         required: false

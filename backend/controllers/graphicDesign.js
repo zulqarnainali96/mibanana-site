@@ -47,7 +47,7 @@ const createGraphicDesign = asyncHandler(async (req, res) => {
                 specific_software_names,
                 is_active,
                 version: ["1"],
-                drive_link : "",
+                drive_link: "",
                 status: 'Project manager',
 
                 // resources,
@@ -271,7 +271,7 @@ const duplicateProject = async (req, res) => {
             const { project_category, name, project_title, design_type, brand, project_description, sizes, specific_software_names, file_formats } = findproject
             const copy_project_title = project_title + " Copy"
             const obj = {
-                user, name, project_category, project_title:copy_project_title, design_type, brand, project_description, file_formats,
+                user, name, project_category, project_title: copy_project_title, design_type, brand, project_description, file_formats,
                 sizes, specific_software_names, is_active: false, version: ["1"], status: 'Project manager', team_members: []
             }
             // console.log(obj)
@@ -425,7 +425,8 @@ const updateDriveLink = async (req, res) => {
         if (findproject) {
             const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { drive_link })
             if (updatingStatus) {
-                return res.status(201).send({ message: 'Drive Link Updated' })
+                const link = await graphicDesignModel.findById(id)
+                return res.status(201).send({ message: 'Drive Link Updated', drive_link: link.drive_link })
             }
             else {
                 return res.status(400).send({ message: 'Found error while Updating Drive Link' })
@@ -439,5 +440,31 @@ const updateDriveLink = async (req, res) => {
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
+const updateFigmaLink = async (req, res) => {
+    const id = req.body.id
+    const figma_link = req.body.figma_link
+    if (!id) {
+        return res.status(400).send({ message: 'ID not found' })
+    }
+    try {
+        const findproject = await graphicDesignModel.findById(id)
+        if (findproject) {
+            const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { figma_link })
+            if (updatingStatus) {
+                const link = await graphicDesignModel.findById(id)
+                return res.status(201).send({ message: 'Figma Link Updated', figma_link: link.figma_link })
+            }
+            else {
+                return res.status(400).send({ message: 'Found error while Updating Figma Link' })
 
-module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectForReview, deleteFile, projectOngoing, projectCancel, updateDriveLink }
+            }
+        } else {
+            return res.status(404).send({ messsage: 'Project Not Found' })
+        }
+
+    } catch (err) {
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+}
+
+module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectForReview, deleteFile, projectOngoing, projectCancel, updateDriveLink, updateFigmaLink }
