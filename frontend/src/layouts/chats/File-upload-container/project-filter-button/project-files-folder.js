@@ -7,36 +7,14 @@ import SuccessModal from 'components/SuccessBox/SuccessModal';
 import apiClient from 'api/apiClient';
 import { getProjectData } from 'redux/global/global-functions';
 import { TroubleshootSharp } from '@mui/icons-material';
+import { MoonLoader } from 'react-spinners';
+import MDButton from 'components/MDButton';
 
-const DriveOption = ({ anchorEl, handleMenuClose }) => {
-    return (
-        <Menu
-            id="raw-dropdown-menu"
-            sx={{
-                '& .MuiMenu-paper': {
-                    position: 'absolute',
-                    top: '245px !important',
-                    right: '115px !important',
-                    left: 'initial !important',
-                }
-            }}
-            anchorEl={anchorEl}
-            open={anchorEl}
-            onClose={handleMenuClose}
-            transformOrigin={{
-                vertical: "top",
-                horizontal: "center"
-            }}
-        >
-            <MenuItemDropdown loading={false} title="Open Drive" />
-            <MenuItemDropdown loading={false} title="Edit" />
-        </Menu>
-    )
-}
 
 const ProjectFilesFolder = (props) => {
-    const { selectedFilePeople, handleFilePeopleChange, activebtn, clientFiles, role, addFileVerion, addVersionStyle, versionHandler, getFullFolderArray, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState } = props
+    const { selectedFilePeople, handleFilePeopleChange, activebtn, clientFiles, role, addFileVerion, addVersionStyle, versionHandler, getFullFolderArray, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState, getLatestDesign } = props
 
+    const [loading, setLoading] = useState(false)
     const [editModal, setEditModal] = useState(null);
     const [showMenu, setShowMenu] = useState(false)
     const [drive_link, setDriveLink] = useState(project?.drive_link)
@@ -59,7 +37,7 @@ const ProjectFilesFolder = (props) => {
 
     useEffect(() => {
     }, [reloadState])
-    
+
 
     const driveFiles = () => {
         if (role?.customer) {
@@ -139,8 +117,10 @@ const ProjectFilesFolder = (props) => {
             drive_link,
             id: project._id
         }
+        setLoading(true)
         apiClient.post('/api/updating-drive-link', driveLink)
             .then(({ data }) => {
+                setLoading(false)
                 if (data.message) {
                     setRespMessage(data.message)
                     setDriveLink(data.drive_link)
@@ -154,12 +134,14 @@ const ProjectFilesFolder = (props) => {
             })
             .catch((err) => {
                 if (err.response) {
+                    setLoading(false)
                     const { message } = err.response.data
                     setRespMessage(message)
                     setTimeout(() => {
                         openErrorSB()
                     }, 400)
                 } else {
+                    setLoading(false)
                     setRespMessage(err.message)
                     setTimeout(() => {
                         openErrorSB()
@@ -172,8 +154,10 @@ const ProjectFilesFolder = (props) => {
             figma_link,
             id: project._id
         }
+        setLoading(true)
         apiClient.post('/api/updating-figma-link', figmaLink)
             .then(({ data }) => {
+                setLoading(false)
                 if (data.message) {
                     setRespMessage(data.message)
                     setFigmaLink(data.figma_link)
@@ -187,11 +171,13 @@ const ProjectFilesFolder = (props) => {
             .catch((err) => {
                 if (err.response) {
                     const { message } = err.response.data
+                    setLoading(false)
                     setRespMessage(message)
                     setTimeout(() => {
                         openErrorSB()
                     }, 400)
                 } else {
+                    setLoading(false)
                     setRespMessage(err.message)
                     setTimeout(() => {
                         openErrorSB()
@@ -246,25 +232,72 @@ const ProjectFilesFolder = (props) => {
     return (
         <Grid position="relative" >
             <SuccessModal
-                width={450}
+                width={620}
                 open={editModal}
                 onClose={closeEditModal} >
                 <div className="drive-input-container">
                     <input type="text" value={drive_link} onChange={handleDriveLink} name="drive_link" placeholder='Drive Link' />
-                    <button className='update-drive-button' onClick={updateDriveLink}>Update</button>
+                    <MDButton
+                        type="button"
+                        onClick={updateDriveLink}
+                        color="warning"
+                        disabled={loading}
+                        circular={true}
+                        endIcon={
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <MoonLoader loading={loading} size={18} color="#121212" />
+                            </div>}
+                        sx={{
+                            color: "#333 !important",
+                            marginTop: '36px',
+                            fontSize: 14,
+                            textTransform: "capitalize",
+                            borderRadius: '0px !important',
+                            width: '195px',
+                            height: '56px'
+                        }}
+                    >
+                        Update link
+                        &nbsp;
+                    </MDButton>
                 </div>
             </SuccessModal>
             <SuccessModal
-                width={450}
+                width={620}
                 open={openFigma}
                 onClose={closeFigmaModal} >
                 <div className="drive-input-container">
-                    <input type="text" value={figma_link} onChange={handleFigmaLink } name="figma_link" placeholder='Figma Link' />
-                    <button className='update-drive-button' onClick={updateFigmaLink}>Update</button>
+                    <input type="text" value={figma_link} onChange={handleFigmaLink} name="figma_link" placeholder='Figma Link' />
+                    {/* <button className='update-drive-button' onClick={updateFigmaLink}>Update Link
+                        <MoonLoader loading={true} size={20} color="#121212" />
+                    </button> */}
+                    <MDButton
+                        type="button"
+                        color="warning"
+                        onClick={updateFigmaLink}
+                        disabled={loading}
+                        circular={true}
+                        endIcon={
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <MoonLoader loading={loading} size={18} color="#121212" />
+                            </div>}
+                        sx={{
+                            color: "#333 !important",
+                            marginTop: '36px',
+                            fontSize: 14,
+                            textTransform: "capitalize",
+                            borderRadius: '0px !important',
+                            width: '195px',
+                            height: '56px'
+                        }}
+                    >
+                        Update link
+                        &nbsp;
+                    </MDButton>
                 </div>
             </SuccessModal>
             <>
-                <select
+                {/* <select
                     value={selectedFilePeople}
                     onChange={handleFilePeopleChange}
                     className={`selectType1 ${activebtn == "folder" && "activeClass"}`}
@@ -274,7 +307,14 @@ const ProjectFilesFolder = (props) => {
                         <option key={i} value={item} disabled={checkVersionEmpty(item)} >{i === 0 || i === 1 ? item : `pre version ${item}`}</option>
                     ))
                     }
-                </select>
+                </select> */}
+                <button
+                    className="selectType1 addnewversion"
+                    onClick={getLatestDesign}
+                    style={addVersionStyle}
+                >
+                    Latest Design
+                </button>
                 <button
                     className="selectType1 addnewversion"
                     onClick={clientFiles}

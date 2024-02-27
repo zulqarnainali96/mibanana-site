@@ -226,7 +226,6 @@ const FileUploadContainer = ({
         handlePreviewImages(data?.filesInfo)
         setFileMsg("");
         setLoading(false);
-        console.log(data.filesInfo)
       })
       .catch((err) => {
         setFileMsg("No Files Found");
@@ -419,22 +418,24 @@ const FileUploadContainer = ({
   };
   const handleSubmit = (fileType) => {
     if (role?.designer || role?.projectManager || role?.admin) {
-      if (selectedFilePeople === "All Files" || selectedFilePeople === "") {
-        setRespMessage("Please select version in which you want to upload files")
-        setTimeout(() => {
-          openErrorSB()
-        }, 400)
-        return
-      }
-      else if (selectedFilePeople === "Latest design") {
-        const latest_version = [...fileVersion]?.pop()
-        versionUploads(fileType, latest_version)
-      }
-      else {
-        versionUploads(fileType, selectedFilePeople)
-        // console.log('version')
+      const latest_version = [...fileVersion]?.pop()
+      versionUploads(fileType, latest_version)
+      // if (selectedFilePeople === "All Files" || selectedFilePeople === "") {
+      //   setRespMessage("Please select version in which you want to upload files")
+      //   setTimeout(() => {
+      //     openErrorSB()
+      //   }, 400)
+      //   return
+      // }
+      // else if (selectedFilePeople === "Latest design") {
+      //   const latest_version = [...fileVersion]?.pop()
+      //   versionUploads(fileType, latest_version)
+      // }
+      // else {
+      //   versionUploads(fileType, selectedFilePeople)
+      //   // console.log('version')
 
-      }
+      // }
     }
     else if (role?.customer) {
       setSelectedFilePeople("customer")
@@ -701,21 +702,31 @@ const FileUploadContainer = ({
       await deleteVersion(selectedFilePeople)
     }
   };
+
+  // ------------------New Changes-----------------------------------
+  // ----------------------------------------------------------------
+  // ----------------------------------------------------------------
+
+  const getLatestDesign = () => {
+    const latestDesign = [...fileVersion].pop()
+    getFilesOnVerion(latestDesign)
+  }
+
   const handleClose = () => setsuccessOpen(false);
 
   useEffect(() => {
   }, [teamMembers])
 
-  // function getFullFolderArray() {
-  //   let arr = [];
-  //   if (fileVersion?.length > 0) {
-  //     const t = fileVersion?.slice(0, -1).reverse()
-  //     arr = ["Latest design", "All Files", ...t]
-  //   } else {
-  //     arr = ['All Files', 'version empty']
-  //   }
-  //   return arr
-  // }
+  function getFullFolderArray() {
+    let arr = [];
+    if (fileVersion?.length > 0) {
+      const t = fileVersion?.slice(0, -1).reverse()
+      arr = ["Latest design", "All Files", ...t]
+    } else {
+      arr = ['All Files', 'version empty']
+    }
+    return arr
+  }
   function checkVersionEmpty(value) {
     if (fileVersion?.length > 0) {
       return false
@@ -738,8 +749,24 @@ const FileUploadContainer = ({
   }, [reloadState])
 
   const filesFolderProps = {
-    selectedFilePeople, 
-    handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState,
+    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState, getLatestDesign
+  }
+
+  function getDate(localDate) {
+    const date = new Date(localDate);
+    const year = date.getFullYear().toString().slice(-2);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    let ampm = "AM";
+    if (hours >= 12) {
+      ampm = "PM";
+      hours = hours % 12;
+    }
+    hours = String(hours).padStart(2, "0");
+    let formattedDate = `${hours}:${minutes} ${ampm} ${day}-${month}-${year}`;
+    return { formattedDate };
   }
 
   return (
@@ -815,8 +842,9 @@ const FileUploadContainer = ({
                                   />
                                   {/* <img src={ver?.image} click={openImage} className="fileImg1" /> */}
                                 </div>
-                                <p className={classes.fileDiv2p}>{ver?.name?.substring(0, 4)}</p>
-                                <p className="folder-dir">{ver?.folder_dir}</p>
+                                <p className={classes.fileDiv2p}>{ver?.name?.substring(0, 10)}</p>
+                                <p className="folder-dir">{getDate(ver?.time).formattedDate}</p>
+                                {/* <p className="folder-dir">{ver?.time.date}</p> */}
                               </div>
 
                             </div>
