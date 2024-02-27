@@ -706,16 +706,16 @@ const FileUploadContainer = ({
   useEffect(() => {
   }, [teamMembers])
 
-  function getFullFolderArray() {
-    let arr = [];
-    if (fileVersion?.length > 0) {
-      const t = fileVersion?.slice(0, -1).reverse()
-      arr = ["Latest design", "All Files", ...t]
-    } else {
-      arr = ['All Files', 'version empty']
-    }
-    return arr
-  }
+  // function getFullFolderArray() {
+  //   let arr = [];
+  //   if (fileVersion?.length > 0) {
+  //     const t = fileVersion?.slice(0, -1).reverse()
+  //     arr = ["Latest design", "All Files", ...t]
+  //   } else {
+  //     arr = ['All Files', 'version empty']
+  //   }
+  //   return arr
+  // }
   function checkVersionEmpty(value) {
     if (fileVersion?.length > 0) {
       return false
@@ -738,7 +738,8 @@ const FileUploadContainer = ({
   }, [reloadState])
 
   const filesFolderProps = {
-    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState
+    selectedFilePeople, 
+    handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState,
   }
 
   return (
