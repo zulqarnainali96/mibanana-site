@@ -194,27 +194,26 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     })
     : [];
   const small_rows = projectList?.length
-    ? projectList?.map((item, i) => {
-      const date = new Date(item.createdAt);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-indexed
-      const day = String(date.getDate()).padStart(2, "0");
-      let hours = date.getHours();
-      const minutes = String(date.getMinutes()).padStart(2, "0");
-      const seconds = String(date.getSeconds()).padStart(2, "0");
-      let ampm = "AM";
+    ? projectList?.map((item) => {
+      // const date = new Date(item.createdAt);
+      // const year = date.getFullYear();
+      // const month = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-indexed
+      // const day = String(date.getDate()).padStart(2, "0");
+      // let hours = date.getHours();
+      // const minutes = String(date.getMinutes()).padStart(2, "0");
+      // const seconds = String(date.getSeconds()).padStart(2, "0");
+      // let ampm = "AM";
 
       // Convert to 12-hour format and set AM/PM
-      if (hours >= 12) {
-        ampm = "PM";
-        if (hours > 12) {
-          hours -= 12;
-        }
-      }
-      hours = String(hours).padStart(2, "0");
-      const readableTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
-      const projectid = project_list.CustomerProjects.indexOf(item);
-      socketIO.emit("room-message", "", projectid);
+      // if (hours >= 12) {
+      //   ampm = "PM";
+      //   if (hours > 12) {
+      //     hours -= 12;
+      //   }
+      // }
+      // hours = String(hours).padStart(2, "0");
+      // const projectid = project_list.CustomerProjects.indexOf(item);
+      // socketIO.emit("room-message", "", projectid);
 
       return {
         project_title: (
@@ -320,28 +319,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     "Heads Up!",
   ];
   const filterBrand = reduxState?.customerBrand?.map((item) => item.brand_name);
-
-  // const handleStatusChange = useCallback((value) => {
-  //   if (value) {
-  //     // const filterAccordingtoStatus = projectList?.filter((item) => {
-  //     //   return item.status === value
-  //     // });
-  //     const filterAccordingtoStatus = projectList.map(item => {
-  //       if (item.status === value) {
-  //         return item; 
-  //       }
-  //     }).filter(item => item); 
-
-  //     setProjectList(filterAccordingtoStatus)
-  //     if (value === "All") {
-  //       setProjectList(copyProjectList)
-  //     }
-  //   }
-  //   else {
-  //     setProjectList(copyProjectList)
-  //   }
-  //   setStatus(value);
-  // }, [copyProjectList, setProjectList, projectList]);
 
   const handleStatusChange = useCallback((value) => {
     if (value === "All" || value === "" || value === null) {

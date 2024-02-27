@@ -16,9 +16,8 @@ import { ArrowForward } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 import reduxContainer from "redux/containers/containers";
 import MoonLoader from "react-spinners/MoonLoader";
-import ModalLayout from "examples/ModalLayout";
-import RequiredForm from "./Form";
 import { getProjectData } from "redux/global/global-functions";
+import { socketIO } from "layouts/sockets";
 
 const MiSignIn = ({ reduxActions, reduxState }) => {
   const [email, setEmail] = useState("");
@@ -85,7 +84,14 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           getProjectData(resp?.data?.userDetails?.id, reduxActions.getCustomerProject);
           openSuccessSB();
           setLoading(false);
-          navigate("/dashboard");
+          navigate("/board");
+          // setTimeout(() => {
+          //   socketIO.emit('user_online_status', {
+          //     status: true,
+          //     id: reduxState?.userDetails?.id,
+          //     role: reduxState?.userDetails?.roles
+          //   });
+          // }, 1000);
         } else {
           setLoading(false);
           throw Error;

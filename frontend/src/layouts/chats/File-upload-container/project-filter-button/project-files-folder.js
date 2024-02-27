@@ -282,7 +282,7 @@ const ProjectFilesFolder = (props) => {
                 >
                     Customer Folder
                 </button>
-                {role?.projectManager || role?.designer || role?.admin ? (
+                {/* {role?.projectManager || role?.designer || role?.admin ? (
                     <button
                         className="selectType1 addnewversion"
                         onClick={addFileVerion}
@@ -290,12 +290,12 @@ const ProjectFilesFolder = (props) => {
                     >
                         Add new version
                     </button>
-                ) : null}
-                {role?.projectManager || role?.designer || role?.admin ? (
+                ) : null} */}
+                {/* {role?.projectManager || role?.designer || role?.admin ? (
                     <button className="selectType1 addnewversion" onClick={versionHandler} style={addVersionStyle} >
                         Delete version
                     </button>
-                ) : null}
+                ) : null} */}
                 {showGoogleDriveButton() ? (
                     <div className="drive-container">
                         <button className="selectType1 addnewversion" style={addVersionStyle} onClick={driveFiles}>

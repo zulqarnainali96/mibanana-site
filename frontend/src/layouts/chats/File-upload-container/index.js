@@ -91,7 +91,7 @@ const FileUploadContainer = ({
   const [activebtn, setActiveBtn] = useState("");
 
   const [project, setProject] = useState(projects?.find((item) => item._id === id))
-  const [reloadState,setReloadState] = useState(false)
+  const [reloadState, setReloadState] = useState(false)
   const version1 = project?.add_files[0]?.version1;
   const [version, setVersion] = useState(version1);
   const [memberName, setMemberName] = useState([]);
@@ -691,11 +691,11 @@ const FileUploadContainer = ({
       })
   };
   const versionHandler = async () => {
-    if (selectedFilePeople === "" || selectedFilePeople === "All Files" || selectedFilePeople === "customer") {
+    if (selectedFilePeople === "" || selectedFilePeople === "All Files") {
       alert("Please select version no that you want to delete");
       return
-    } else if (selectedFilePeople === "designer") {
-      const version_no = project?.version?.length
+    } else if (selectedFilePeople === "Latest design") {
+      const version_no = [...project?.version]?.pop()
       await deleteVersion(version_no)
     } else {
       await deleteVersion(selectedFilePeople)
@@ -709,12 +709,9 @@ const FileUploadContainer = ({
   function getFullFolderArray() {
     let arr = [];
     if (fileVersion?.length > 0) {
-      // version = version.slice(0, -1)
       const t = fileVersion?.slice(0, -1).reverse()
       arr = ["Latest design", "All Files", ...t]
-      // setFileVersionList([...t, "designer"].reverse())
     } else {
-      // setFileVersionList(["customer", "designer empty"]) 
       arr = ['All Files', 'version empty']
     }
     return arr
@@ -728,7 +725,7 @@ const FileUploadContainer = ({
   }
 
   async function reloadAllData() {
-    setReloadState(prev=>!prev)
+    setReloadState(prev => !prev)
     getChatMessage()
     getAllDesignersList()
     setSelectedFilePeople("All Files")
@@ -736,10 +733,10 @@ const FileUploadContainer = ({
     await getAllfiles()
   }
 
-  useEffect( () => {
+  useEffect(() => {
     setFileVersionList(project.version)
-  },[reloadState])
-  
+  }, [reloadState])
+
   const filesFolderProps = {
     selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState
   }
