@@ -29,7 +29,6 @@ function Dashboard({ reduxActions, reduxState }) {
   const [successSB, setSuccessSB] = useState(false);
   const isLg = useMediaQuery("(max-width:768px)")
 
-
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
 
@@ -52,6 +51,18 @@ function Dashboard({ reduxActions, reduxState }) {
     const filterStatus = project_list?.filter(item => item.status === 'Assigned' || item.status === 'Ongoing' || item.status === 'Submitted')
     return filterStatus?.length
   }
+
+
+  useEffect(() => {
+    socketIO.emit('user_online', {
+      status: true,
+      id: reduxState?.userDetails?.id,
+      role: reduxState?.userDetails?.roles
+    });
+    socketIO.on('active_users', (data) => {
+      console.log(data)
+    })
+  }, [])
 
   const projectCompleted = project_list?.filter(item => item.status === 'Completed')
 
