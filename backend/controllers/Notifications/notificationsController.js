@@ -179,7 +179,7 @@ const updateAllChatMessage = async (req, res) => {
             if (updateChat) {
                 const user2 = await User.findById(_id)
                 return res.status(200).send({ msgArray: user2.notifications, message: 'Chats Updated' })
-            } 
+            }
         } else {
             return res.status(404).send({ message: 'No user found' })
         }
@@ -208,4 +208,51 @@ const getUserNotifications = async (req, res) => {
     }
 }
 
-module.exports = { postMessageToOtherMembers, getUserNotifications, updateChatMessage, updateAllChatMessage }
+const getProjectNotifications = async (req, res) => {
+    const _id = req.params.id
+    if (!_id) {
+        return res.status(402).send({ message: 'ID not found' })
+    }
+    try {
+        const user = await User.findById(_id).lean()
+        if (user) {
+            console.log(user.project_notifications)
+            const { project_notifications } = user
+            if (project_notifications?.length > 0) {
+                return res.status(200).send({ project_notifications })
+            }
+            else {
+                return res.status(200).send({ project_notifications: [] })
+            }
+        } else {
+            return res.status(404).send({ message: 'No user found' })
+        }
+    } catch (error) {
+        return res.status(500).send({ message: "Internal Server Error" });
+    }
+}
+
+const getProjectStatusNotifications = async (req, res) => {
+    const _id = req.params.id
+    if (!_id) {
+        return res.status(402).send({ message: 'ID not found' })
+    }
+    try {
+        const user = await User.findById(_id).lean()
+        if (user) {
+            const { status_notifications } = user
+            if (status_notifications?.length > 0) {
+                return res.status(200).send({ status_notifications })
+            }
+            else {
+                return res.status(200).send({ status_notifications: [] })
+            }
+        } else {
+            return res.status(404).send({ message: 'No user found' })
+        }
+    } catch (error) {
+        return res.status(500).send({ message: "Internal Server Error" });
+    }
+}
+
+module.exports = { postMessageToOtherMembers, getUserNotifications, updateChatMessage, updateAllChatMessage, getProjectNotifications, getProjectStatusNotifications }
