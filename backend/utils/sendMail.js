@@ -48,4 +48,25 @@ const sendConfirmAccountMail = async (email, msg) => {
     </table>`
     })
 }
-module.exports = { sendMailToUser, sendConfirmAccountMail }
+
+const sendStatusChangeMailtoCustomer = async (project_name, email, msg, status) => {
+    sendgrid.send({
+        to: email,
+        from: process.env.SENDER,
+        subject: `Your <b>${project_name}</b> project update from Mibanana.com. Designer change project status to ${status}`,
+        html: `<table style="width: 100%;background-color: #F6F6E8">
+        <tr>
+            <td align="center">
+                <img src="https://storage.googleapis.com/mi-banana-401205.appspot.com/mibanana-logo/mibanana-logo.png" style="margin-block:30px;"  width='30%' />
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <h3 style="color: #333">${msg}</h2>
+            </td>
+        </tr>
+    </table>`
+    })
+
+}
+module.exports = { sendMailToUser, sendConfirmAccountMail, sendStatusChangeMailtoCustomer }
