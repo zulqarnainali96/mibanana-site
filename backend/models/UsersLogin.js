@@ -35,15 +35,25 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: false
     },
-    notifications : [{
-        type : Object,
-        required : false,
+    notifications: [{
+        type: Object,
+        required: false,
 
     }],
     avatar: {
         type: String,
         required: false
     },
+    project_notifications: [{
+        type: Object,
+        required: false,
+        default: []
+    }],
+    status_notifications: [{
+        type: Object,
+        required: false,
+        default: []
+    }],
     created_at: {
         type: String,
         required: false
