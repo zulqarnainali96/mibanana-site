@@ -1,5 +1,5 @@
 import apiClient from "api/apiClient";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import nikeLogo from "../../assets/mi-banana-icons/nike.webp";
 import MDTypography from "components/MDTypography";
@@ -213,12 +213,12 @@ const BrandData = () => {
   const customerBrand = useSelector((state) => state.customerBrand);
   const dispatch = useDispatch();
   const role = currentUserRole(reduxState);
-  const func = (value) => dispatch(getCustomerBrand(value));
+  const func = useCallback((value) => dispatch(getCustomerBrand(value)), [dispatch]);
   const is768 = useMediaQuery("(max-width:768px)")
 
   useEffect(() => {
     getBrandData(userID, func);
-  }, [new_brand]);
+  }, [new_brand,func, userID]);
 
   const textStyles = {
     fontFamily: fontsFamily.poppins,

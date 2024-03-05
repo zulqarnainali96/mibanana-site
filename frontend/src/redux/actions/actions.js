@@ -79,8 +79,9 @@ export const getCurrentBrandID = (payload) => ({
 
 export const openBrandModalFunc = (payload) => ({
     type : OPEN_BRAND_MODAL,
-    payload : payload
+    payload : payload,
 })
+
 export const setRightSideBar = (payload) => ({
     type : RIGHTSIDEDRAWER,
     payload : payload

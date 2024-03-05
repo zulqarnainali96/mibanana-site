@@ -79,7 +79,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         // setOpen(true)
         reduxActions.openBrandModalFunc(true)
     }
-
+    
     const handleClose = () => {
         // setOpen(false)
         reduxActions.openBrandModalFunc(false)
@@ -135,16 +135,20 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         setEditMoreImages(result)
     }
     const addMore = () => {
-        setOther(other + 1)
-        setAddMore(prev => [...prev, {
-            name: `others_${other}`,
-            value: ''
-
-        }])
-        setImage({
-            ...image,
-            [`others_${other}`]: []
-        })
+        if(addMoreField.length < 3){
+            setOther(other + 1)
+            setAddMore(prev => [...prev, {
+                name: `others_${other}`,
+                value: ''
+    
+            }])
+            setImage({
+                ...image,
+                [`others_${other}`]: []
+            })
+        }else{
+            console.log("You can not add more fields.")
+        }
     }
     const editAddMoreImages = () => {
         // setEditMoreImages(prev => [...prev, {
@@ -155,15 +159,15 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
     }
     const onSubmit = async () => {
         setLoading(true)
-        let formData = new FormData
-        formData.append('brand_name', formValue.brand_name)
-        formData.append('brand_description', formValue.brand_description)
-        formData.append('web_url', formValue.web_url)
-        formData.append('facebook_url', formValue.facebook_url)
-        formData.append('instagram_url', formValue.instagram_url)
-        formData.append('twitter_url', formValue.twitter_url)
-        formData.append('linkedin_url', formValue.linkedin_url)
-        formData.append('tiktok_url', formValue.tiktok_url)
+        let formData = new FormData()
+        formData.append('brand_name',formValue? formValue.brand_name : "")
+        formData.append('brand_description', formValue? formValue.brand_description : "")
+        formData.append('web_url',formValue? formValue.web_url :"")
+        formData.append('facebook_url',formValue? formValue.facebook_url : "")
+        formData.append('instagram_url',formValue? formValue.instagram_url : "")
+        formData.append('twitter_url',formValue? formValue.twitter_url :"")
+        formData.append('linkedin_url', formValue?formValue.linkedin_url : "")
+        formData.append('tiktok_url', formValue?formValue.tiktok_url : "")
         formData.append('user', reduxState.userDetails?.id)
         formData.append('name', reduxState.userDetails?.name)
 

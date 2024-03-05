@@ -507,6 +507,7 @@ const BrandForm = ({
                                     onClick={addMore}
                                     type="button"
                                     sx={{ ...buttonStyles, color: "#fff", width: 'auto' }}
+                                    disabled={addMoreField.length >= 3}
                                 >
                                     Add More
                                 </MDButton>
