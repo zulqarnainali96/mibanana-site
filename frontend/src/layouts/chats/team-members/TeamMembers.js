@@ -2,7 +2,6 @@ import Avatar from '@mui/material/Avatar'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
-import ImageIcon from '@mui/icons-material/Image';
 import ListItemText from '@mui/material/ListItemText';
 import profileAvatar from 'assets/mi-banana-icons/Profile.png'
 import { ListItemIcon } from '@mui/material';

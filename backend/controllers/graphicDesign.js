@@ -349,12 +349,12 @@ const projectAttend = async (req, res) => {
             const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'Ongoing' })
             if (updatingStatus) {
                 const project_user = await User.findById({ _id: updatingStatus.user })
-                // if (project_user) {
-                //     const { email } = project_user
-                //     const { project_title } = updatingStatus
-                //     const msg = `Designer change project status to <b>Ongoing</b>`
-                //     await sendStatusChangeMailtoCustomer(project_title, email, msg, 'Ongoing')
-                // }
+                if (project_user) {
+                    const { email } = project_user
+                    const { project_title } = updatingStatus
+                    const msg = `Designer change project status to <b>Ongoing</b>`
+                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'Ongoing')
+                }
                 return res.status(201).send({ message: 'Project Attended' })
             }
             else {
@@ -428,12 +428,12 @@ const projectForReview = async (req, res) => {
             const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'For Review' })
             if (updatingStatus) {
                 const project_user = await User.findById({ _id: updatingStatus.user })
-                // if (project_user) {
-                //     const { email } = project_user
-                //     const { project_title } = updatingStatus
-                //     const msg = `Designer change project status to <b>For Review</b>`
-                //     await sendStatusChangeMailtoCustomer(project_title, email, msg, 'For Review')
-                // }
+                if (project_user) {
+                    const { email } = project_user
+                    const { project_title } = updatingStatus
+                    const msg = `Designer change project status to <b>For Review</b>`
+                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'For Review')
+                }
                 return res.status(201).send({ message: 'Project send for Review' })
             }
             else {

@@ -16,8 +16,7 @@ import { ArrowForward } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 import reduxContainer from "redux/containers/containers";
 import MoonLoader from "react-spinners/MoonLoader";
-import { getProjectData } from "redux/global/global-functions";
-import { socketIO } from "layouts/sockets";
+
 
 const MiSignIn = ({ reduxActions, reduxState }) => {
   const [email, setEmail] = useState("");
@@ -81,7 +80,6 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           reduxActions.getUserDetails(resp?.data?.userDetails);
           const { notifications } = resp.data?.userDetails;
           reduxActions.getUserNewChatMessage(notifications);
-          getProjectData(resp?.data?.userDetails?.id, reduxActions.getCustomerProject);
           openSuccessSB();
           setLoading(false);
           navigate("/board");

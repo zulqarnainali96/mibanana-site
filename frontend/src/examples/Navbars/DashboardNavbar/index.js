@@ -39,7 +39,6 @@ import reduxContainer from "redux/containers/containers";
 import CreateProject1 from "../Form-modal/new";
 // import CreateProjectButton from "../Create-project-button";
 import apiClient from "api/apiClient";
-import { getProjectData } from "redux/global/global-functions";
 import { getBrandData } from "redux/global/global-functions";
 import { Chat } from "@mui/icons-material";
 import RightSideDrawer from "components/RightSideDrawer";
@@ -48,7 +47,6 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { reRenderChatComponent } from "redux/actions/actions";
 import MDButton from "components/MDButton";
-import { socketIO } from "layouts/sockets";
 import miBananaLogo from 'assets/mi-banana-icons/mibanana-logo-1-color 1.png'
 
 let image = "image/"
@@ -481,11 +479,10 @@ function DashboardNavbar({ absolute, light, isMini, reduxActions, reduxState, ch
     setInComingMsg(true)
   }, [userNewChatMessage])
 
-  useEffect(() => {
-    const id = reduxState?.userDetails?.id
-    getProjectData(id, reduxActions.getCustomerProject)
-    getBrandData(id, reduxActions.getCustomerBrand)
-  }, [reduxState.new_brand])
+  // useEffect(() => {
+  //   const id = reduxState?.userDetails?.id
+  //   getBrandData(id, reduxActions.getCustomerBrand)
+  // }, [reduxState.new_brand])
 
   const brandOption = reduxState.customerBrand?.map(item => item.brand_name)
   // useEffect( () => {

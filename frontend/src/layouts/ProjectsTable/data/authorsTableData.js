@@ -1,18 +1,18 @@
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { useState } from "react";
-import { Menu, useMediaQuery } from "@mui/material";
+import { useContext, useRef, useState } from "react";
 import apiClient from "api/apiClient";
 import MDSnackbar from "components/MDSnackbar";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getCustomerProject } from "redux/actions/actions";
 import { getProjectData } from "redux/global/global-functions";
-// import MenuItemDropdown from "./MenuItem";
-import { actionIcon } from "assets/new-images/projects-table/Group43";
 import "./../../../examples/new-table/table-style.css"
 import OptionsList from "./options-list";
+// import { useSocket } from "sockets";
+import { sendingStatusNotification } from "socket-events/socket-event";
+import { customerSendingNotification } from "socket-events/socket-event";
+import { SocketContext } from "sockets";
 
 export const Author = ({ name, }) => (
   <MDBox lineHeight={1}>
@@ -39,6 +39,8 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const [loading4, setLoading4] = useState(false)
   const [loading5, setLoading5] = useState(false)
   const [loading6, setLoading6] = useState(false)
+  // const socketIO = useRef(useSocket())
+  const socketIO = useRef(useContext(SocketContext));
 
 
   const handleMenuOpen = (event) => {
@@ -46,7 +48,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     setAnchorEl(event.currentTarget);
   };
 
-  const new_brand = useSelector(state => state.new_brand)
+  // const new_brand = useSelector(state => state.new_brand)
   const userid = useSelector(state => state.userDetails.id)
   const dispatch = useDispatch()
 
@@ -61,11 +63,11 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const func = (value) => dispatch(getCustomerProject(value))
 
   const deleteProject = async () => {
-    setLoading1(true)
+    setLoading6(true)
     if (!item._id) {
       setRespMessage('ID not provided')
       setTimeout(() => {
-        setLoading1(false)
+        setLoading6(false)
         openErrorSB()
       }, 1000)
       return
@@ -73,9 +75,9 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     await apiClient.delete('/graphic-project/' + item._id)
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
-        setLoading1(false)
-        getProjectData(userid, func)
+        setLoading6(false)
         setTimeout(() => {
+          getProjectData(userid, func)
           successSBNot()
         }, 900)
       })
@@ -83,13 +85,13 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
         if (err.response) {
           const { message } = err.response.data
           resonseMessage(message)
-          setLoading1(false)
+          setLoading6(false)
           setTimeout(() => {
             errorSBNot()
           }, 900)
           return
         }
-        setLoading1(false)
+        setLoading6(false)
         resonseMessage(err.message)
         setTimeout(() => {
           errorSBNot()
@@ -111,6 +113,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
         setLoading1(false)
+        customerSendingNotification(socketIO, item, 'Customer', 'Cancel')
         setTimeout(() => {
           getProjectData(userid, func)
           successSBNot()
@@ -191,6 +194,9 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
         setLoading5(false)
+
+        sendingStatusNotification(socketIO, role, item, userid, 'Ongoing')
+
         setTimeout(() => {
           getProjectData(userid, func)
           successSBNot()
@@ -207,46 +213,6 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
           return
         }
         setLoading5(false)
-        resonseMessage(err.message)
-        setTimeout(() => {
-          errorSBNot()
-        }, 900)
-      })
-  }
-  const projectOngoing = async () => {
-    setLoading6(true)
-    if (!item._id) {
-      setRespMessage('ID not provided')
-      setLoading6(false)
-      setTimeout(() => {
-        openErrorSB()
-      }, 1000)
-      return
-    }
-    const id = item._id
-    const data = {
-      user: item.user
-    }
-    await apiClient.get('/api/ongoing-project/' + id, data)
-      .then(({ data }) => {
-        if (data.message) resonseMessage(data.message)
-        setLoading6(false)
-        setTimeout(() => {
-          getProjectData(userid, func)
-          successSBNot()
-        }, 900)
-      })
-      .catch((err) => {
-        if (err.response) {
-          setLoading6(false)
-          const { message } = err.response.data
-          resonseMessage(message)
-          setTimeout(() => {
-            errorSBNot()
-          }, 900)
-          return
-        }
-        setLoading6(false)
         resonseMessage(err.message)
         setTimeout(() => {
           errorSBNot()
@@ -271,6 +237,9 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
         setLoading4(false)
+
+        sendingStatusNotification(socketIO, role, item, userid, 'For Review')
+
         setTimeout(() => {
           getProjectData(userid, func)
           successSBNot()
@@ -308,6 +277,9 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
         setLoading3(false)
+
+        customerSendingNotification(socketIO, item, 'Customer', 'Completed')
+
         setTimeout(() => {
           getProjectData(userid, func)
           successSBNot()
@@ -359,7 +331,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const options_props = {item, children, handleMenuOpen, handleMenuClose, anchorEl, role, loading1, loading2, loading3, loading4, loading5, renderErrorSB, renderSuccessSB, projectForReview, projectCompleted, duplicateProject, projectCancel, projectAttend, };
+  const options_props = { item, children, handleMenuOpen, handleMenuClose, anchorEl, role, loading1, loading2, loading3, loading4, loading5, renderErrorSB, renderSuccessSB, projectForReview, projectCompleted, duplicateProject, projectCancel, projectAttend, deleteProject, loading6 };
   return (
     <MDBox>
       <OptionsList {...options_props} />

@@ -17,6 +17,9 @@ export const RE_RENDER_CHAT = 'RE_RENDER_CHAT'
 export const USER_CHAT_MESSAGE = 'USER_CHAT_MESSAGE' 
 export const TRIGER_NOTIFICATIONS = 'TRIGER_NOTIFICATIONS' 
 export const NON_ACTIVE_CUSTOMER = 'NON_ACTIVE_CUSTOMER' 
+export const TOGGLE_CHATS = 'TOGGLE_CHATS' 
+export const PROJECT_NOTIFICATIONS = 'PROJECT_NOTIFICATIONS' 
+export const STATUS_NOTIFICATIONS = 'STATUS_NOTIFICATIONS' 
 
 export const getUserDetails = (payload) => ({
     type : USER_DETAILS,
@@ -110,6 +113,22 @@ export const getNonActiveCustomerData = (payload) => ({
     type : NON_ACTIVE_CUSTOMER,
     payload : payload
 })
+export const ToogleChatsAction = (payload) => ({
+    type : TOGGLE_CHATS,
+    payload : payload
+})
+
+export const handleProject_notifications = (payload) => ({
+    type : PROJECT_NOTIFICATIONS,
+    payload : payload
+})
+
+export const handleStatusProject_notifications = (payload) => ({
+    type : STATUS_NOTIFICATIONS,
+    payload : payload
+})
+
+
 export const reduxFunctions = {
     getUserDetails,
     showModal,
@@ -130,5 +149,8 @@ export const reduxFunctions = {
     getUserNewChatMessage,
     trigeringNotifications,
     getNonActiveCustomerData,
+    ToogleChatsAction,
+    handleProject_notifications,
+    handleStatusProject_notifications
 } 
 

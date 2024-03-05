@@ -27,23 +27,13 @@ import { useStyles } from "./styles";
 import SuccessModal from "components/SuccessBox/SuccessModal";
 
 import ShowFiles from "./show-files/ShowFiles";
-// import adminImg from "assets/images/admin.svg";
-// import designerImg from "assets/images/d1.svg";
-// import UserImg from "assets/images/u1.svg";
-// import pdfImg from "assets/images/pdf1.svg";
-// import tickImg from "assets/images/t1.svg";
 import { useState, useCallback } from "react";
-// import ImageContainer from "./image-container/ImageContainer";
 import { useEffect } from "react";
-// import UploadFile from "components/File upload button/FileUpload";
 import { useRef } from "react";
 import { currentUserRole } from "redux/global/global-functions";
 import reduxContainer from "redux/containers/containers";
 import apiClient from "api/apiClient";
 import { Link, useParams } from "react-router-dom";
-// import SelectFolder from "./select-folder/SelectFolder";
-// import { Jpeg, Jpg, Png, Svg } from "redux/global/file-formats";
-// import FileUpload from "./file-upload-container/File-upload";
 import { MoonLoader } from "react-spinners";
 import { getProjectData } from "redux/global/global-functions";
 import { mibananaColor } from "assets/new-images/colors";
@@ -103,7 +93,7 @@ const FileUploadContainer = ({
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [previewimg, setpreviewimg] = useState("");
   const [currentVersion, setSelectVersion] = useState("");
-  const [fileVersion, setFileVersionList] = useState(project?.version);
+  const [fileVersion, setFileVersionList] = useState(project?.version.length > 0 ? project?.version : []);
   const [designerList, setDesignerList] = useState([]);
   const [successOpen, setsuccessOpen] = useState(false);
   const [successMessage, setsuccessMessage] = useState("");
@@ -163,7 +153,6 @@ const FileUploadContainer = ({
       setTimeout(() => {
         openSuccessSB();
       }, 300)
-      // clearTimeout(tt);
     } else {
       const lastNumber = parseInt(fileVersion[fileVersion?.length - 1]);
       const newNumber = (lastNumber + 1).toString();
@@ -388,7 +377,6 @@ const FileUploadContainer = ({
         setLoading(false);
         setFiles([]);
         setFilesType([]);
-        await getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject);
         setTimeout(() => {
           getFilesOnVerion(current_version)
         }, 700)
@@ -620,6 +608,15 @@ const FileUploadContainer = ({
   useEffect(() => {
     getAllDesignersList()
   }, []);
+  
+  useEffect(() => {
+    getAllDesignersList()
+    setSelectedFilePeople("Latest design")
+    let lastIndex = [...fileVersion]?.pop()
+    getFilesOnVerion(lastIndex)
+    getProjectById(id, setProject, setFileVersionList)
+  }, [id]);
+
 
   const personProject = () => {
     if (reduxState.project_list?.CustomerProjects) {
@@ -664,7 +661,6 @@ const FileUploadContainer = ({
     apiClient.delete(`/api/del-version-uploads/${version}/${id}`)
       .then(({ data }) => {
         setLoading(false);
-        // getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject)
         setVersion([])
         setFileVersionList(data.version)
         setSelectedFilePeople("")
@@ -745,7 +741,7 @@ const FileUploadContainer = ({
   }
 
   useEffect(() => {
-    setFileVersionList(project.version)
+    setFileVersionList(project?.version)
   }, [reloadState])
 
   const filesFolderProps = {

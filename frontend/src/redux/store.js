@@ -6,7 +6,7 @@ import storage from 'redux-persist/lib/storage'
 const persistConfig = {
     key: 'root',
     storage,
-    // blacklist : ['customerBrand', 'project_list']
+    blacklist : ['project_notifications','rightSideDrawer']
 }
 const persistedReducers = persistReducer(persistConfig, UserReducers)
 

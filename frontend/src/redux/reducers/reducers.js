@@ -1,6 +1,8 @@
 import { TRIGER_NOTIFICATIONS } from "redux/actions/actions"
+import { STATUS_NOTIFICATIONS } from "redux/actions/actions"
+import { PROJECT_NOTIFICATIONS } from "redux/actions/actions"
 import { USER_CHAT_MESSAGE } from "redux/actions/actions"
-import { USER_DETAILS, SHOW_MODAL, PROJECT_CATEGORY, CUSTOMER_BRAND, NEW_BRAND, STATUS, IS_ALERT, CUSTOMER_PROJECTS, USER_AVATAR_URL, PROJECT_ID, IS_EDIT_BRAND, CURRENT_BRAND_ID, OPEN_BRAND_MODAL, RIGHTSIDEDRAWER, CURRENT_INDEX, RE_RENDER_CHAT, NON_ACTIVE_CUSTOMER } from "redux/actions/actions"
+import { USER_DETAILS, SHOW_MODAL, PROJECT_CATEGORY, CUSTOMER_BRAND, NEW_BRAND, STATUS, IS_ALERT, CUSTOMER_PROJECTS, USER_AVATAR_URL, PROJECT_ID, IS_EDIT_BRAND, CURRENT_BRAND_ID, OPEN_BRAND_MODAL, RIGHTSIDEDRAWER, CURRENT_INDEX, RE_RENDER_CHAT, NON_ACTIVE_CUSTOMER, TOGGLE_CHATS } from "redux/actions/actions"
 
 const initialState = {
     userDetails: {},
@@ -48,7 +50,11 @@ const initialState = {
     re_render_chat: false,
     userNewChatMessage: [],
     trigerNotifcations: false,
-    non_active_customer_data : []
+    non_active_customer_data: [],
+    toogle_chats: false,
+    project_notifications: [],
+    status_notifications: [],
+
 }
 const UserReducers = (state = initialState, action) => {
     const { type, payload } = action
@@ -164,6 +170,34 @@ const UserReducers = (state = initialState, action) => {
             return {
                 ...state,
                 non_active_customer_data: payload
+            }
+        }
+        case TOGGLE_CHATS: {
+            return {
+                ...state,
+                toogle_chats: payload
+            }
+        }
+        case PROJECT_NOTIFICATIONS: {
+            if (Array.isArray(payload)) {
+                // API call returns array
+                return {
+                    ...state,
+                    project_notifications: [...payload]
+                }
+
+            } else {
+                // Socket returns single object 
+                return {
+                    ...state,
+                    project_notifications: [payload, ...state.project_notifications]
+                }
+            }
+        }
+        case STATUS_NOTIFICATIONS: {
+            return {
+                ...state,
+                status_notifications: payload
             }
         }
         default:

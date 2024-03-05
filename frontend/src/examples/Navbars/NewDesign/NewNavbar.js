@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 import MDBox from "components/MDBox";
 import {
   Button,
@@ -9,9 +9,8 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import MibananaIcon from "assets/new-images/navbars/mibanana-logo.png";
-import { useStyles } from "./new-navbar-style";
 import MDTypography from "components/MDTypography";
-import { useLocation, NavLink, Navigate, useNavigate, Link } from "react-router-dom";
+import { useLocation, NavLink, useNavigate, Link } from "react-router-dom";
 import { AccountCircle } from "@mui/icons-material";
 import { useState } from "react";
 import { persistStore } from "redux-persist";
@@ -42,15 +41,18 @@ import List from "@mui/material/List";
 import { setMiniSidenav } from 'context'
 import "./navbar-style.css"
 import MenuIcon from "@mui/icons-material/Menu"
-import { chatIcon } from 'assets/new-images/navbars/chats-icon';
+// import { useSocket } from 'sockets';
+import { projectNotifications } from "redux/global/global-functions";
+import discordSound from 'assets/sound/discord.mp3'
+import notif from 'assets/sound/notif.wav'
+import { SocketContext } from "sockets";
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
-
-  const navbarStyles = useStyles();
+  // const socketIO = useRef(useSocket())
+  const socketIO = useRef(useContext(SocketContext));
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
-  const isLarge = useMediaQuery("(min-width:800px)");
   const [userMenu, setUserMenu] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [inComingMsg, setInComingMsg] = useState(false);
@@ -99,7 +101,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   })
   const [showAccountsbtn, setShowAccountsBtn] = useState(false)
   const is1040 = useMediaQuery("(max-width:1040px)")
-  const [reloadProject,setReloadProjects] = useState(false)
+  const [reloadProject, setReloadProjects] = useState(false)
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -128,6 +130,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       persistStore(store).purge();
       localStorage.removeItem("user_details");
       navigate("/authentication/mi-sign-in");
+      // socketIO.current.disconnect()
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -312,6 +315,13 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       .then((resp) => {
         if (resp?.status === 201) {
           const { message } = resp?.data;
+          const projectData = {
+            ...data,
+            brand: formValue.brand.brand_name,
+            user: reduxState.userDetails?.id,
+            project_id: resp.data?.project._id,
+          };
+          socketIO.current.emit('new-project', projectData)
           setRespMessage("Project Created Successfully");
           reduxActions.getNew_Brand(!reduxState.new_brand);
           let param = [
@@ -483,15 +493,75 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       )}
     </Menu>
   );
+
+  const notificationSound = () => {
+    const audio = new Audio(notif);
+    audio.play();
+  }
+
+  const showNotification = () => {
+    if (Notification.permission === 'granted') {
+      new Notification('Upcoming Event', {
+        body: `Allow app to play notifications sound`,
+      });
+
+      // Play the notification sound
+      notificationSound();
+    } else if (Notification.permission !== 'denied') {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          new Notification('Upcoming Event', {
+            body: `Allow app to play notifications sound!`,
+          });
+          notificationSound();
+        }
+      });
+    }
+  };
+
+
   useEffect(() => {
     setInComingMsg(true);
   }, [userNewChatMessage]);
 
-  // useEffect(() => {
-  //   const id = reduxState.userDetails?.id;
-  //   getProjectData(id, reduxActions.getCustomerProject);
-  //   // getBrandData(id, reduxActions.getCustomerBrand);
-  // }, [reloadProject]);
+  useEffect(() => {
+    if (role?.projectManager) {
+      socketIO.current.on('new-project-notification', project_data => {
+        // showNotification()
+        notificationSound()
+        reduxActions.handleProject_notifications(project_data)
+      })
+    }
+    if (role?.customer) {
+      socketIO.current.on('status-change-notification', project_data => {
+        // notificationSound()
+        // console.log('Customer', project_data)
+        reduxActions.handleProject_notifications(project_data)
+      })
+    } if (role?.projectManager || role?.designer) {
+      socketIO.current.on('getting-customer-notifications', project_data => {
+        // notificationSound()
+        // console.log('Designer or Manager', project_data)
+        // const arr = [project_data]
+        reduxActions.handleProject_notifications(project_data)
+      })
+    }
+  }, [socketIO.current])
+
+  useEffect(() => {
+    const id = reduxState.userDetails?.id;
+    getProjectData(id, reduxActions.getCustomerProject);
+    getBrandData(id, reduxActions.getCustomerBrand);
+  }, [reloadProject]);
+
+  
+  useEffect(() => {
+    const id = reduxState.userDetails?.id;
+    getProjectData(id, reduxActions.getCustomerProject);
+    getBrandData(id, reduxActions.getCustomerBrand);
+  }, []);
+
+
 
   const ProjectButton = styled(Button)(({ theme: { palette } }) => {
     const { primary } = palette;
@@ -530,14 +600,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       },
     };
   });
-  // const gridItemResponsive = ({ breakpoints }) => ({
-  //   [breakpoints.up("xs")]: {
-  //     padding: "11.4px",
-  //   },
-  //   [breakpoints.down("xs")]: {
-  //     padding: "0px !important",
-  //   },
-  // })
   const responsiveStyle = ({ breakpoints }) => ({
     [breakpoints.up('lg')]: {
       fontSize: '18px !important',
@@ -556,12 +618,16 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   })
   const getMessageNotification = () => {
     const isnotifications = userNewChatMessage?.some(item => item?.view === true)
-    return isnotifications
+    const is_project_notifications = reduxState.project_notifications?.some(item => item?.view === true)
+    if (is_project_notifications || isnotifications) {
+      return true
+    } else {
+      return false
+    }
+    // return isnotifications
   }
-  // console.log('get notifications ', getMessageNotification())
   useEffect(() => {
     getAllNotificationsMsg();
-
     return () => {
       setReloadProjects(false)
     }
@@ -655,6 +721,26 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const handleMobileNav = useCallback(() => {
     setShowAccountsBtn(prev => !prev)
   }, [showAccountsbtn])
+
+  // const projectNotifications = async () => {
+  //   const id = reduxState?.userDetails?.id;
+  //   await apiClient
+  //     .get("/api/project-notifications/" + id)
+  //     .then(({ data }) => {
+  //       const reverseArray = data.project_notifications?.reverse()
+  //       reduxActions.handleProject_notifications(reverseArray)
+  //     })
+  //     .catch((err) => {
+  //     });
+  // };
+
+  useEffect(() => {
+    socketIO.current.emit('user_online', true, reduxState?.userDetails?.id, reduxState?.userDetails?.roles)
+    // socketIO.on('active_users', (data) => {
+    // })
+    const id = reduxState?.userDetails?.id;
+    projectNotifications(id, reduxActions.handleProject_notifications)
+  }, [])
 
   return (
     <>

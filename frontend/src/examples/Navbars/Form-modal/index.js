@@ -1,28 +1,21 @@
-import React, { useState, memo, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-// import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Box, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
-import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import MDInput from 'components/MDInput';
-import { useTheme } from '@mui/material/styles';
 import CloseSharp from '@mui/icons-material/CloseSharp';
-import MDButton from 'components/MDButton';
 import apiClient from 'api/apiClient';
 import reduxContainer from 'redux/containers/containers';
 import { MoonLoader } from 'react-spinners'
-import { useEffect } from 'react';
-import { getProjectData } from 'redux/global/global-functions';
-import { getBrandData } from 'redux/global/global-functions';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import { ArticleOutlined, PictureAsPdf, PictureAsPdfOutlined } from '@mui/icons-material';
+import { ArticleOutlined, PictureAsPdf } from '@mui/icons-material';
 import UploadFile from 'components/File upload button/FileUpload';
 
 const category = [
@@ -100,12 +93,7 @@ function CreateProject({
     const design_typeRef = useRef(null)
     const brandRef = useRef(null)
     const project_titleRef = useRef(null)
-    const describe_audienceRef = useRef(null)
     const project_descriptionRef = useRef(null)
-    const sizesRef = useRef(null)
-    const resourcesRef = useRef(null)
-    const reference_exampleRef = useRef(null)
-    const files = useRef(null)
     const specific_software_namesRef = useRef(null)
     const [selectedOption, setSelectedOption] = useState(null)
 

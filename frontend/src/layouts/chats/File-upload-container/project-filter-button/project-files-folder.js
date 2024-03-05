@@ -1,12 +1,9 @@
-import { Grid, Menu } from '@mui/material'
-import MDBox from 'components/MDBox'
-import MenuItemDropdown from 'layouts/ProjectsTable/data/MenuItem'
+import { Grid } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import "./project-menu-style.css";
 import SuccessModal from 'components/SuccessBox/SuccessModal';
 import apiClient from 'api/apiClient';
-import { getProjectData } from 'redux/global/global-functions';
-import { TroubleshootSharp } from '@mui/icons-material';
+// import { getProjectData } from 'redux/global/global-functions';
 import { MoonLoader } from 'react-spinners';
 import MDButton from 'components/MDButton';
 
@@ -149,6 +146,7 @@ const ProjectFilesFolder = (props) => {
                 }
             })
     }
+    
     const updateFigmaLink = () => {
         const figmaLink = {
             figma_link,

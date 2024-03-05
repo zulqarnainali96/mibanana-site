@@ -1,17 +1,17 @@
-import { useState, useEffect, useMemo } from "react";
-import { Routes, Router, Route, Navigate, useLocation, redirect } from "react-router-dom";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import Sidenav from "examples/Sidenav";
-import Configurator from "examples/Configurator";
+// import Configurator from "examples/Configurator";
 import theme from "assets/theme";
-import themeRTL from "assets/theme/theme-rtl";
+// import themeRTL from "assets/theme/theme-rtl";
 import themeDark from "assets/theme-dark";
-import themeDarkRTL from "assets/theme-dark/theme-rtl";
+// import themeDarkRTL from "assets/theme-dark/theme-rtl";
 import rtlPlugin from "stylis-plugin-rtl";
-import { CacheProvider } from "@emotion/react";
+// import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import routes from "routes";
 import authRoutes from "authRoutes";
@@ -27,8 +27,18 @@ import "react-quill/dist/quill.snow.css";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useMediaQuery } from "@mui/material";
+import MainComponent from "main-comp";
+import { SocketContext } from "sockets";
+import { io } from 'socket.io-client';
 
 export default function App() {
+  const socket = useMemo(() => {
+    const socketO = io(process.env.REACT_APP_SOCKET_URL, {
+      withCredentials: true
+    });
+    return socketO
+  }, [])
+
   const [controller, dispatch] = useMaterialUIController();
   const is1200 = useMediaQuery("(max-width:1199px)")
   const {
@@ -149,51 +159,55 @@ export default function App() {
   );
 
   return (
-    <ThemeProvider theme={darkMode ? themeDark : theme}>
-      <CssBaseline />
-      {layout === "dashboard" && (
-        <>
-          {user !== null ? (
+    <SocketContext.Provider value={socket}>
+      <MainComponent >
+        <ThemeProvider theme={darkMode ? themeDark : theme}>
+          <CssBaseline />
+          {layout === "dashboard" && (
             <>
-              {is1200 ? null : <Sidenav
-                color={sidenavColor}
-                brand={
-                  (transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo
-                }
-                brandName="MiBanana"
-                routes={
-                  role?.admin
-                    ? AdminRoutes
-                    : [...routes, role?.projectManager || (role?.designer && manager_router)]
-                }
-                onMouseEnter={handleOnMouseEnter}
-                onMouseLeave={handleOnMouseLeave}
-              />}
+              {user !== null ? (
+                <>
+                  {is1200 ? null : <Sidenav
+                    color={sidenavColor}
+                    brand={
+                      (transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo
+                    }
+                    brandName="MiBanana"
+                    routes={
+                      role?.admin
+                        ? AdminRoutes
+                        : [...routes, role?.projectManager || (role?.designer && manager_router)]
+                    }
+                    onMouseEnter={handleOnMouseEnter}
+                    onMouseLeave={handleOnMouseLeave}
+                  />}
+                </>
+              ) : null}
             </>
-          ) : null}
-        </>
-      )}
-      <MDBox>
-        {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar routes={getallRoutes()} />}
-        <Routes>
-          {user !== null ? (
-            role?.admin ? getRoutes(AdminRoutes) :
-              role?.projectManager || role?.designer ? getRoutes(projectManager) :
-                getRoutes(routes)) :
-            getRoutes(authRoutes)
-          }
-          <Route
-            path="*"
-            element={
-              user !== null && user?.verified ? (
-                <Navigate to="/board" />
-              ) : (
-                <Navigate to="authentication/mi-sign-in" />
-              )
-            }
-          />
-        </Routes>
-      </MDBox>
-    </ThemeProvider>
+          )}
+          <MDBox>
+            {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar routes={getallRoutes()} />}
+            <Routes>
+              {user !== null ? (
+                role?.admin ? getRoutes(AdminRoutes) :
+                  role?.projectManager || role?.designer ? getRoutes(projectManager) :
+                    getRoutes(routes)) :
+                getRoutes(authRoutes)
+              }
+              <Route
+                path="*"
+                element={
+                  user !== null && user?.verified ? (
+                    <Navigate to="/board" />
+                  ) : (
+                    <Navigate to="authentication/mi-sign-in" />
+                  )
+                }
+              />
+            </Routes>
+          </MDBox>
+        </ThemeProvider>
+      </MainComponent>
+    </SocketContext.Provider>
   );
 }
