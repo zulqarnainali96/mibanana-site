@@ -7,9 +7,9 @@ import MDTypography from "components/MDTypography";
 import { Action } from 'layouts/ProjectsTable/data/authorsTableData'
 import MDBadge from "components/MDBadge";
 import { Card, useMediaQuery } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import MDSnackbar from "components/MDSnackbar";
-import { socketIO } from "layouts/sockets";
+// import { useSocket } from "sockets";
 import { checkIcon } from "assets/new-images/dashboard/fi_check-circle (1)";
 import { bananaIcon } from "assets/new-images/dashboard/Vector";
 import { clockIcon } from "assets/new-images/dashboard/Group42";
@@ -20,15 +20,17 @@ import { fontsFamily } from "assets/font-family";
 import "./status-box/status-style.css"
 import { currentUserRole, projectStatus } from "redux/global/global-functions";
 import "./status-box/status-style.css"
+import { SocketContext } from "sockets";
 
 function Dashboard({ reduxActions, reduxState }) {
   const [project_list, setProject_List] = useState(reduxState.project_list?.CustomerProjects)
+  // const socketIO = useRef(useSocket())
+  const socketIO = useRef(useContext(SocketContext));
   const role = currentUserRole(reduxState)
   const user = reduxState?.userDetails
   const [errorSB, setErrorSB] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
   const isLg = useMediaQuery("(max-width:768px)")
-
 
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
@@ -68,29 +70,6 @@ function Dashboard({ reduxActions, reduxState }) {
     }
   }
 
-  // function projectStatus(status) {
-  //   switch (status) {
-  //     case 'Project manager':
-  //       return "Project manager"
-  //     case 'Completed':
-  //       return "Completed"
-  //     case 'Ongoing':
-  //       return "Ongoing"
-  //     case 'HeadsUp':
-  //       return "HeadsUp"
-  //     case 'Assigned':
-  //       return "Assigned"
-  //     case 'Cancel':
-  //       return "Cancel"
-  //     case 'Submitted':
-  //       return "Submitted"
-  //     case 'Attend':
-  //       return 'Attend'
-  //     default:
-  //       return "End"
-  //   }
-  // }
-
   const renderErrorSB = (
     <MDSnackbar
       color="error"
@@ -121,7 +100,7 @@ function Dashboard({ reduxActions, reduxState }) {
 
     const projectid = project_list.indexOf(item)
 
-    socketIO.emit("room-message", '', projectid)
+    socketIO.current.emit("room-message", '', projectid)
 
     return {
       project_title: (
@@ -183,7 +162,7 @@ function Dashboard({ reduxActions, reduxState }) {
     }
     hours = String(hours).padStart(2, "0");
     const projectid = project_list.indexOf(item)
-    socketIO.emit("room-message", '', projectid)
+    socketIO.current.emit("room-message", '', projectid)
 
     return {
       project_title: (
@@ -224,6 +203,7 @@ function Dashboard({ reduxActions, reduxState }) {
     { Header: "Action", accessor: "action", align: "center" },
   ]
 
+  
   useEffect(() => {
     setProject_List(reduxState.project_list.CustomerProjects)
   }, [reduxState.project_list])

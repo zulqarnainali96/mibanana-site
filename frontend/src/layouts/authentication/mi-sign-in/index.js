@@ -16,9 +16,7 @@ import { ArrowForward } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 import reduxContainer from "redux/containers/containers";
 import MoonLoader from "react-spinners/MoonLoader";
-import ModalLayout from "examples/ModalLayout";
-import RequiredForm from "./Form";
-import { getProjectData } from "redux/global/global-functions";
+
 
 const MiSignIn = ({ reduxActions, reduxState }) => {
   const [email, setEmail] = useState("");
@@ -82,10 +80,9 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           reduxActions.getUserDetails(resp?.data?.userDetails);
           const { notifications } = resp.data?.userDetails;
           reduxActions.getUserNewChatMessage(notifications);
-          getProjectData(resp?.data?.userDetails?.id, reduxActions.getCustomerProject);
           openSuccessSB();
           setLoading(false);
-          navigate("/dashboard");
+          navigate("/board");
         } else {
           setLoading(false);
           throw Error;
@@ -367,19 +364,6 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           </Grid>
         )}
         <MDBox mt={3} mb={1} textAlign="center">
-          {/* <MDTypography variant="button" color="text">
-                        Don't have an account?{" "}
-                        <MDTypography
-                            component={Link}
-                            to="/authentication/mi-sign-up"
-                            variant="button"
-                            color="info"
-                            fontWeight="medium"
-                            textGradient
-                        >
-                            Create Account
-                        </MDTypography>
-                    </MDTypography> */}
           {renderErrorSB}
           {renderSuccessSB}
         </MDBox>
@@ -389,45 +373,3 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
 };
 
 export default reduxContainer(MiSignIn);
-
-// const handleSubmit = async (e) => {
-// e.preventDefault()
-// if(formValue.password !== formValue.confirm_password){
-//     alert("password must matched")
-//     return
-// }
-// console.log(formValue)
-// setLoading(true)
-// if (!localstorageData) return
-// const { id } = localstorageData
-// const formdata = {
-//     ...formValue,
-//     primary_phone: "+" + phone2,
-//     phone: "+" + phone,
-// }
-// console.log(formdata)
-// await apiClient.post('api/req-fields/' + id, formdata).then(({ data }) => {
-//     console.log(data)
-//     const finalData = {
-//         ...localstorageData,
-//         phone_no: data.userData.phone
-//     }
-//     reduxActions.getUserDetails(finalData)
-//     localStorage.setItem('user_details', JSON.stringify(finalData))
-//     navigate("/dashboard")
-//     setLoading(false)
-// }).catch(err => {
-//     if (err?.response) {
-//         setRespMessage(err.response.data.message)
-//         setError(err.response.data.message)
-//         setLoading(false)
-//         setTimeout(() => {
-//             openErrorSB()
-//         }, 800)
-//     }
-//     setLoading(false)
-//     setRespMessage(err.message)
-//     setTimeout(() => {
-//         openErrorSB()
-//     }, 800)
-// })

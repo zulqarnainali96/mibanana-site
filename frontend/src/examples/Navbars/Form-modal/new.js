@@ -32,6 +32,9 @@ import ReactQuil from "react-quill";
 import { formats } from 'assets/react-quill-settings/react-quill-settings';
 import { modules } from 'assets/react-quill-settings/react-quill-settings';
 import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings';
+// import { useSocket } from 'sockets';
+import { useContext, useRef } from 'react';
+import { SocketContext } from 'sockets';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -175,6 +178,8 @@ const CreateProject1 = ({
     const func = () => dispatch(openBrandModalFunc(true))
     const filter = createFilterOptions()
     const classes = reactQuillStyles()
+    // const socketIO = useRef(useSocket())
+    const socketIO = useRef(useContext(SocketContext));
 
     function moveToBrandPage() {
         handleClose()
@@ -182,8 +187,6 @@ const CreateProject1 = ({
         func()
     }
     const getOptionDisabled = (option, newValue) => {
-        console.log('option ', option, newValue)
-        console.log(formValue.file_formats)
         if (formValue.file_formats.length === 3) {
             const disable = !fileFormats.includes(formValue.file_formats.map(item => { return item }))
             return disable
@@ -205,6 +208,16 @@ const CreateProject1 = ({
             margin: '0px'
         }
     })
+    const sendTestMessage = () => {
+        const projectData = {
+            name : 'Zain',
+            project_title : 'Tesing 222',
+            user: 'asdasdasdasdadasd',
+            id: '6569f77ff3db027fe3b32b66',
+            project_id: '6569f77ff3db027fe3bcccd',
+          };
+        socketIO.current.emit('new-project',projectData)
+    }
 
     return (
         <BootstrapDialog open={open} sx={{ width: '100% !important' }} >
@@ -546,11 +559,13 @@ const CreateProject1 = ({
                             )}
                         </MDBox>
                         <Button onClick={handleClose} >Cancel</Button>
-                        <SubmitButton sx={{ color: 'white !important' }} disabled={loading} variant='contained' type='submit'
+                        
+                        <SubmitButton sx={{ color: 'white !important' }} disabled={loading} variant='contained' type='submit' 
                             endIcon={<MoonLoader loading={loading} size={18} color='#fff' />}
                         >
                             Submit &nbsp;&nbsp;
                         </SubmitButton>
+                        {/* <SubmitButton sx={{ color: 'white !important' }} onClick={sendTestMessage}></SubmitButton> */}
                     </DialogActions>
                 </Box>
             </DialogContent>

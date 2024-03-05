@@ -27,23 +27,13 @@ import { useStyles } from "./styles";
 import SuccessModal from "components/SuccessBox/SuccessModal";
 
 import ShowFiles from "./show-files/ShowFiles";
-// import adminImg from "assets/images/admin.svg";
-// import designerImg from "assets/images/d1.svg";
-// import UserImg from "assets/images/u1.svg";
-// import pdfImg from "assets/images/pdf1.svg";
-// import tickImg from "assets/images/t1.svg";
 import { useState, useCallback } from "react";
-// import ImageContainer from "./image-container/ImageContainer";
 import { useEffect } from "react";
-// import UploadFile from "components/File upload button/FileUpload";
 import { useRef } from "react";
 import { currentUserRole } from "redux/global/global-functions";
 import reduxContainer from "redux/containers/containers";
 import apiClient from "api/apiClient";
 import { Link, useParams } from "react-router-dom";
-// import SelectFolder from "./select-folder/SelectFolder";
-// import { Jpeg, Jpg, Png, Svg } from "redux/global/file-formats";
-// import FileUpload from "./file-upload-container/File-upload";
 import { MoonLoader } from "react-spinners";
 import { getProjectData } from "redux/global/global-functions";
 import { mibananaColor } from "assets/new-images/colors";
@@ -91,7 +81,7 @@ const FileUploadContainer = ({
   const [activebtn, setActiveBtn] = useState("");
 
   const [project, setProject] = useState(projects?.find((item) => item._id === id))
-  const [reloadState,setReloadState] = useState(false)
+  const [reloadState, setReloadState] = useState(false)
   const version1 = project?.add_files[0]?.version1;
   const [version, setVersion] = useState(version1);
   const [memberName, setMemberName] = useState([]);
@@ -103,7 +93,7 @@ const FileUploadContainer = ({
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [previewimg, setpreviewimg] = useState("");
   const [currentVersion, setSelectVersion] = useState("");
-  const [fileVersion, setFileVersionList] = useState(project?.version);
+  const [fileVersion, setFileVersionList] = useState(project?.version.length > 0 ? project?.version : []);
   const [designerList, setDesignerList] = useState([]);
   const [successOpen, setsuccessOpen] = useState(false);
   const [successMessage, setsuccessMessage] = useState("");
@@ -163,7 +153,6 @@ const FileUploadContainer = ({
       setTimeout(() => {
         openSuccessSB();
       }, 300)
-      // clearTimeout(tt);
     } else {
       const lastNumber = parseInt(fileVersion[fileVersion?.length - 1]);
       const newNumber = (lastNumber + 1).toString();
@@ -226,7 +215,6 @@ const FileUploadContainer = ({
         handlePreviewImages(data?.filesInfo)
         setFileMsg("");
         setLoading(false);
-        console.log(data.filesInfo)
       })
       .catch((err) => {
         setFileMsg("No Files Found");
@@ -389,7 +377,6 @@ const FileUploadContainer = ({
         setLoading(false);
         setFiles([]);
         setFilesType([]);
-        await getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject);
         setTimeout(() => {
           getFilesOnVerion(current_version)
         }, 700)
@@ -419,22 +406,24 @@ const FileUploadContainer = ({
   };
   const handleSubmit = (fileType) => {
     if (role?.designer || role?.projectManager || role?.admin) {
-      if (selectedFilePeople === "All Files" || selectedFilePeople === "") {
-        setRespMessage("Please select version in which you want to upload files")
-        setTimeout(() => {
-          openErrorSB()
-        }, 400)
-        return
-      }
-      else if (selectedFilePeople === "Latest design") {
-        const latest_version = [...fileVersion]?.pop()
-        versionUploads(fileType, latest_version)
-      }
-      else {
-        versionUploads(fileType, selectedFilePeople)
-        // console.log('version')
+      const latest_version = [...fileVersion]?.pop()
+      versionUploads(fileType, latest_version)
+      // if (selectedFilePeople === "All Files" || selectedFilePeople === "") {
+      //   setRespMessage("Please select version in which you want to upload files")
+      //   setTimeout(() => {
+      //     openErrorSB()
+      //   }, 400)
+      //   return
+      // }
+      // else if (selectedFilePeople === "Latest design") {
+      //   const latest_version = [...fileVersion]?.pop()
+      //   versionUploads(fileType, latest_version)
+      // }
+      // else {
+      //   versionUploads(fileType, selectedFilePeople)
+      //   // console.log('version')
 
-      }
+      // }
     }
     else if (role?.customer) {
       setSelectedFilePeople("customer")
@@ -619,6 +608,15 @@ const FileUploadContainer = ({
   useEffect(() => {
     getAllDesignersList()
   }, []);
+  
+  useEffect(() => {
+    getAllDesignersList()
+    setSelectedFilePeople("Latest design")
+    let lastIndex = [...fileVersion]?.pop()
+    getFilesOnVerion(lastIndex)
+    getProjectById(id, setProject, setFileVersionList)
+  }, [id]);
+
 
   const personProject = () => {
     if (reduxState.project_list?.CustomerProjects) {
@@ -663,7 +661,6 @@ const FileUploadContainer = ({
     apiClient.delete(`/api/del-version-uploads/${version}/${id}`)
       .then(({ data }) => {
         setLoading(false);
-        // getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject)
         setVersion([])
         setFileVersionList(data.version)
         setSelectedFilePeople("")
@@ -691,16 +688,26 @@ const FileUploadContainer = ({
       })
   };
   const versionHandler = async () => {
-    if (selectedFilePeople === "" || selectedFilePeople === "All Files" || selectedFilePeople === "customer") {
+    if (selectedFilePeople === "" || selectedFilePeople === "All Files") {
       alert("Please select version no that you want to delete");
       return
-    } else if (selectedFilePeople === "designer") {
-      const version_no = project?.version?.length
+    } else if (selectedFilePeople === "Latest design") {
+      const version_no = [...project?.version]?.pop()
       await deleteVersion(version_no)
     } else {
       await deleteVersion(selectedFilePeople)
     }
   };
+
+  // ------------------New Changes-----------------------------------
+  // ----------------------------------------------------------------
+  // ----------------------------------------------------------------
+
+  const getLatestDesign = () => {
+    const latestDesign = [...fileVersion].pop()
+    getFilesOnVerion(latestDesign)
+  }
+
   const handleClose = () => setsuccessOpen(false);
 
   useEffect(() => {
@@ -709,12 +716,9 @@ const FileUploadContainer = ({
   function getFullFolderArray() {
     let arr = [];
     if (fileVersion?.length > 0) {
-      // version = version.slice(0, -1)
       const t = fileVersion?.slice(0, -1).reverse()
       arr = ["Latest design", "All Files", ...t]
-      // setFileVersionList([...t, "designer"].reverse())
     } else {
-      // setFileVersionList(["customer", "designer empty"]) 
       arr = ['All Files', 'version empty']
     }
     return arr
@@ -728,7 +732,7 @@ const FileUploadContainer = ({
   }
 
   async function reloadAllData() {
-    setReloadState(prev=>!prev)
+    setReloadState(prev => !prev)
     getChatMessage()
     getAllDesignersList()
     setSelectedFilePeople("All Files")
@@ -736,12 +740,29 @@ const FileUploadContainer = ({
     await getAllfiles()
   }
 
-  useEffect( () => {
-    setFileVersionList(project.version)
-  },[reloadState])
-  
+  useEffect(() => {
+    setFileVersionList(project?.version)
+  }, [reloadState])
+
   const filesFolderProps = {
-    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState
+    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState, getLatestDesign
+  }
+
+  function getDate(localDate) {
+    const date = new Date(localDate);
+    const year = date.getFullYear().toString().slice(-2);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    let ampm = "AM";
+    if (hours >= 12) {
+      ampm = "PM";
+      hours = hours % 12;
+    }
+    hours = String(hours).padStart(2, "0");
+    let formattedDate = `${hours}:${minutes} ${ampm} ${day}-${month}-${year}`;
+    return { formattedDate };
   }
 
   return (
@@ -817,8 +838,9 @@ const FileUploadContainer = ({
                                   />
                                   {/* <img src={ver?.image} click={openImage} className="fileImg1" /> */}
                                 </div>
-                                <p className={classes.fileDiv2p}>{ver?.name?.substring(0, 4)}</p>
-                                <p className="folder-dir">{ver?.folder_dir}</p>
+                                <p className={classes.fileDiv2p}>{ver?.name?.substring(0, 10)}</p>
+                                <p className="folder-dir">{getDate(ver?.time).formattedDate}</p>
+                                {/* <p className="folder-dir">{ver?.time.date}</p> */}
                               </div>
 
                             </div>

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Grid from "@mui/material/Grid";
 import { useParams } from "react-router-dom";
@@ -12,46 +12,29 @@ import "./style.css";
 import MDSnackbar from "components/MDSnackbar";
 import FileModal from "./Files Modal/FileModal";
 import SuccessModal from "components/SuccessBox/SuccessModal";
-import { socketIO } from "layouts/sockets";
+// import { useSocket } from 'sockets';
 import FileUploadContainer from "./File-upload-container";
 import { currentUserRole } from "redux/global/global-functions";
 import ChatsContainer from "./Chat-container";
+import { SocketContext } from "sockets";
 // https://socket-dot-mi-banana-401205.uc.r.appspot.com
 // http://34.125.239.154
 
-// const socket = io.connect("http://localhost:5000", {
-//     withCredentials: true
-// })
-// const ITEM_HEIGHT = 48;
-// const ITEM_PADDING_TOP = 8;
-// const MenuProps = {
-//     PaperProps: {
-//         style: {
-//             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-//         },
-//     },
-// };
 const Chating = ({ reduxState, reduxActions }) => {
-  const c = console.log.bind(this);
+  // const socketIO = useSocket()
+  const socketIO = useRef(useContext(SocketContext));
   const role = currentUserRole(reduxState);
   const currentTime = new Date(); // Get the current date and time
   const formattedTime = currentTime.toLocaleTimeString();
   const formattedDate = currentTime.toLocaleDateString();
   const [msgArray, setMsgArray] = useState([]);
-  // const [limit, setLimit] = useState(15);
   const [message, sendMessage] = useState("");
   const chatContainerRef = useRef(null);
   const [modalState, setModalState] = useState(false);
   const [hideChatBox, setHideChatBox] = useState(false);
-  const [memberName, setMemberName] = useState([]);
-  // const [IsComingMsg, setIsComingMsg] = useState(false);
-  // const [is_member, setIsMember] = useState(false);
   const re_render_chat = useSelector((state) => state.re_render_chat);
-  // const userNewChatMessage = useSelector((state) => state.userNewChatMessage);
 
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [designerObj, setDesignerObj] = useState([]);
   const [respMessage, setRespMessage] = useState("");
   const [successSB, setSuccessSB] = useState(false);
   const [errorSB, setErrorSB] = useState(false);
@@ -65,7 +48,7 @@ const Chating = ({ reduxState, reduxActions }) => {
 
   const { id } = useParams();
   const { id: user, name } = reduxState?.userDetails;
-  const socketRef = useRef(socketIO);
+  const socketRef = socketIO
   let avatar = useSelector((state) => state.userDetails?.avatar);
 
 
@@ -86,17 +69,6 @@ const Chating = ({ reduxState, reduxActions }) => {
       return {};
     }
   };
-  const [isActive, setIsActive] = useState(personProject()?.is_active);
-  const handleChange = (event) => {
-    setMemberName(event.target.value);
-  };
-
-  // const handleCheckbox = useCallback(() => setIsActive((prev) => !prev), [isActive]);
-
-  // const handleKeyPress = (event) => {
-  //   if (event.key === "Enter") {
-  //   }
-  // };
   const onSendMessage = async (event) => {
     const user_message = message
     sendMessage("") 
@@ -173,44 +145,6 @@ const Chating = ({ reduxState, reduxActions }) => {
       });
   };
 
-  // const SubmitProject = async () => {
-  //   if (memberName.length === 0) {
-  //     alert("Select team members");
-  //     return;
-  //   }
-  //   if (role?.projectManager && memberName.length > 0) {
-  //     let project = personProject();
-  //     project.team_members = memberName;
-  //     project.status = "Ongoing";
-  //     project.is_active = isActive;
-
-  //     let data = {
-  //       project_id: personProject()?._id,
-  //       project_data: project,
-  //     };
-  //     setLoading(true);
-  //     await apiClient
-  //       .patch("/graphic-project", data)
-  //       .then(({ data }) => {
-  //         const { save } = data;
-  //         // const updatedProjects = reduxState.project_list.CustomerProjects.filter( item => item._id !== save.id)
-  //         // const allProject = [...updatedProjects,save]
-  //         // reduxFunctions.getCustomerProjects(allProject)
-  //         setRespMessage(data?.message);
-  //         setIsMember((prev) => !prev);
-  //         setLoading(false);
-  //         setTimeout(() => {
-  //           handleOpen();
-  //           // openSuccessSB()
-  //         }, 600);
-  //       })
-  //       .catch((e) => {
-  //         setLoading(false);
-  //         console.error("Error assgin project => ", e?.response?.data?.message);
-  //       });
-  //   }
-  // };
-
   useEffect(() => {
     socketRef.current.on("message", (message) => {
       if (message !== "") {
@@ -263,12 +197,15 @@ const Chating = ({ reduxState, reduxActions }) => {
     />
   );
 
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
     joinChatRoom();
   }, []);
+
+  useEffect( () => {
+    getChatMessage();
+  }, [id])
 
   return (
     <DashboardLayout>

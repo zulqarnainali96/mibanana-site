@@ -14,9 +14,9 @@ root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persister}>
         <MaterialUIControllerProvider>
-          {/* <StrictMode> */}
+            {/* <StrictMode> */}
             <App />
-          {/* </StrictMode> */}
+            {/* </StrictMode> */}
         </MaterialUIControllerProvider>
       </PersistGate>
     </Provider>

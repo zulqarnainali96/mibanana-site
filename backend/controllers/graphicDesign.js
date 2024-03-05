@@ -5,6 +5,7 @@ const { bucket } = require('../google-cloud-storage/gCloudStorage')
 const Projects = require('../models/graphic-design-model')
 const { v4: uniqID } = require('uuid')
 const path = require('path')
+const { sendStatusChangeMailtoCustomer } = require("../utils/sendMail")
 
 const createGraphicDesign = asyncHandler(async (req, res) => {
     const {
@@ -347,6 +348,13 @@ const projectAttend = async (req, res) => {
         if (findproject) {
             const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'Ongoing' })
             if (updatingStatus) {
+                const project_user = await User.findById({ _id: updatingStatus.user })
+                if (project_user) {
+                    const { email } = project_user
+                    const { project_title } = updatingStatus
+                    const msg = `Designer change project status to <b>Ongoing</b>`
+                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'Ongoing')
+                }
                 return res.status(201).send({ message: 'Project Attended' })
             }
             else {
@@ -419,6 +427,13 @@ const projectForReview = async (req, res) => {
         if (findproject) {
             const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'For Review' })
             if (updatingStatus) {
+                const project_user = await User.findById({ _id: updatingStatus.user })
+                if (project_user) {
+                    const { email } = project_user
+                    const { project_title } = updatingStatus
+                    const msg = `Designer change project status to <b>For Review</b>`
+                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'For Review')
+                }
                 return res.status(201).send({ message: 'Project send for Review' })
             }
             else {

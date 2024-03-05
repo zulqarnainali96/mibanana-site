@@ -3,6 +3,7 @@ const Projects = require('../../../models/graphic-design-model')
 const { bucket } = require('../../../google-cloud-storage/gCloudStorage')
 const { v4: uniqID } = require('uuid')
 const path = require('path')
+const { designerUploadFilesMail } = require('../../../utils/sendMail')
 
 const designerUpload = async (req, res) => {
     const files = req.files
@@ -65,10 +66,9 @@ const getDesignerFiles = async (req, res) => {
                     obj.time = file.metadata.timeCreated,
                     obj.upated_time = file.metadata.updated,
                     obj.folder_name = prefix
-                    obj.folder_dir = "Designer"
+                obj.folder_dir = "Designer"
                 return obj
             })
-            // console.log(filesInfo)
             if (filesInfo.length > 0) {
                 return res.status(200).send({ message: 'Files fount', filesInfo })
             }
@@ -85,21 +85,17 @@ const designerUploadsOnVersion = async (req, res) => {
     const files = req.files
     const _id = req.params.id
     const versionNo = req.params.version
-    console.log(req.params)
-    console.log(req.files)
     if (!_id) {
         return res.status(400).send({ message: 'ID not found' })
     }
     try {
         const currentProject = await Projects.findById(_id)
         if (currentProject) {
-            console.log('current p ', currentProject)
             let { user, name, project_title } = currentProject
             project_title = project_title.replace(/\s/g, '')
             name = name.replace(/\s/g, '')
             const prefix = `${name}-${user}/${project_title}-${_id}/version-${versionNo}/`
             await Promise.all(files?.map(file => {
-                console.log('File ', file)
                 const options = {
                     resumable: false,
                 }
@@ -112,10 +108,24 @@ const designerUploadsOnVersion = async (req, res) => {
                         if (!isCheck) {
                             const versions = currentProject.version
                             currentProject.version = [...versions, versionNo]
-                            await currentProject.save()
+                            const save = await currentProject.save()
+                            if (save) {
+                                const project_creator = await User.findById({ _id: user })
+                                if (project_creator && project_creator?.email) {
+                                    const msg = `Designer uploded file in project ${project_title}`
+                                    await designerUploadFilesMail(project_title, project_creator.email, msg)
+                                }
+
+                            }
+
                             return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
                         }
                         else {
+                            const project_creator = await User.findById({ _id: user })
+                            if (project_creator && project_creator?.email) {
+                                const msg = `Designer uploded file in project ${project_title}`
+                                await designerUploadFilesMail(project_title, project_creator.email, msg)
+                            }
                             return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
                         }
                     } else {
@@ -153,10 +163,10 @@ const getFilesOnVersionBasis = async (req, res) => {
                     obj.download_link = file.metadata.mediaLink,
                     obj.type = file.metadata.contentType,
                     obj.size = file.metadata.size,
-                    obj.time = file.metadata.timeCreated,
-                    obj.upated_time = file.metadata.updated,
+                    obj.time = file.metadata.timeCreated
+                obj.upated_time = file.metadata.updated,
                     obj.folder_name = prefix
-                    obj.folder_dir = "version-" + versionNo
+                obj.folder_dir = "version-" + versionNo
                 return obj
             })
             if (filesInfo.length > 0) {

@@ -21,7 +21,9 @@ const mapStateToProps = (state) => ({
         userNewChatMessage: state.userNewChatMessage,
         re_render_chat: state.re_render_chat,
         trigerNotifcations: state.trigerNotifcations,
-        non_active_customer_data : state.non_active_customer_data
+        non_active_customer_data : state.non_active_customer_data,
+        project_notifications : state.project_notifications,
+        status_notifications : state.status_notifications
     }
 })
 
@@ -42,6 +44,10 @@ const mapDispatchToProps = (dispatch) => ({
         reRenderChatComponent: (payload) => dispatch(reduxFunctions.reRenderChatComponent(payload)),
         trigeringNotifications: (payload) => dispatch(reduxFunctions.trigeringNotifications(payload)),
         getNonActiveCustomerData: (payload) => dispatch(reduxFunctions.getNonActiveCustomerData(payload)),
+        
+        handleProject_notifications: (payload) => dispatch(reduxFunctions.handleProject_notifications(payload)),
+
+        handleStatusProject_notifications: (payload) => dispatch(reduxFunctions.handleStatusProject_notifications(payload)),
     }
 })
 

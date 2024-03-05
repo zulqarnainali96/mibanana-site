@@ -3,31 +3,43 @@
   justify-content: center;
   width: 100%;
   align-items: center;
-  gap: 2px;
+  gap: 5px;
 }
 .drive-input-container input {
-  border-radius: 7px 0px 0px 7px;
-  border: 1px solid #ccc;
+  /* border-radius: 7px 0px 0px 7px; */
+  border: 1px solid transparent;
   padding-inline: 13px;
   padding-block: 16px;
   width: 90%;
   margin-top: 36px;
   font-family: var(--fonts-family);
+  font-size: 14px;
+}
+.drive-input-container input::placeholder {
+  color : #cfcec9;
+  font-weight: 500;
 }
 
 .drive-input-container .update-drive-button {
   font-family: var(--fonts-family);
   border-radius: 0px 7px 7px 0px;
-  background-color: #120d0e94;
+  background-color: var(--yellow-color);
+  color: var(--yellow-text-color);
+  padding-inline: 32px;
   margin-top: 36px;
+  font-size: 15px;
+  font-weight: 500;
+  width: 175px;
   height: 54px;
 }
+
 .drive-container {
   display: inline;
   position: relative;
 }
 .drive-container button {
   font-family: var(--fonts-family);
+
 }
 .drive-option-container {
   width: 120px;

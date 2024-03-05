@@ -80,7 +80,7 @@ const EditProfile = ({ reduxState, reduxActions }) => {
                                     <Grid item xxl={9} xl={9} lg={9} xs={12} md={12}>
                                         <MDBox mb={2}>
                                             <label style={Styles} name="fullName" htmlFor='fullName'>Full Name *</label>
-                                            <MDInput type="text" value={profileData?.fullName} name="fullName" onChange={handleChange} placeholder="Company Name" required variant="outlined" fullWidth />
+                                            <MDInput type="text" value={profileData?.fullName} name="fullName" onChange={handleChange} disabled={true} placeholder="Company Name" required variant="outlined" fullWidth />
                                         </MDBox>
                                     </Grid>
                                     <Grid item xxl={9} xl={9} lg={9} xs={12} md={12}>

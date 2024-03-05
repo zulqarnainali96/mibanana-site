@@ -152,4 +152,27 @@ const projectStatus = (status) => {
     }
 }
 
-export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus, getProjectById }
+const projectNotifications = async (id, callback) => {
+    await apiClient.get("/api/project-notifications/" + id)
+      .then(({ data }) => {
+        const reverseArray = data.project_notifications?.reverse()
+        callback(reverseArray)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+const projecStatusNotifications = async (id, callback) => {
+    await apiClient.get("/project-status-notifications/" + id)
+      .then(({ data }) => {
+        const reverseArray = data.project_notifications?.reverse()
+        callback(reverseArray)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+
+export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus, getProjectById, projectNotifications, projecStatusNotifications }
