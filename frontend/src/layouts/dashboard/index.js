@@ -131,7 +131,7 @@ function Dashboard({ reduxActions, reduxState }) {
         <MDBadge badgeContent={projectStatus(item?.status)}
           sx={{
             "& .MuiBadge-badge":
-              { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: ".9rem", borderRadius: '0px', fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }
+              { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: ".9rem", borderRadius: '0px', fontFamily: fontsFamily.poppins, fontWeight: '400  !important', width: "10rem", maxWidth: '10rem' }
           }} circular="true" size="lg" />
       </MDBox>,
       project_category: <MDTypography variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>
@@ -177,7 +177,7 @@ function Dashboard({ reduxActions, reduxState }) {
         <MDBadge badgeContent={projectStatus(item?.status)}
           sx={{
             "& .MuiBadge-badge":
-              { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: isLg ? "12px" : ".9rem", borderRadius: '0px', fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }
+              { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: isLg ? "12px" : ".9rem", borderRadius: '0px', fontFamily: fontsFamily.poppins, fontWeight: '400  !important', width:"8rem", maxWidth: "8rem", }
           }} circular="true" size="lg" />
       </MDBox>,
       action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">

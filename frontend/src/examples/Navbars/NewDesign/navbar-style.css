@@ -14,11 +14,56 @@
   font-family: var(--font-family);
 }
 .person-image {
-  max-width : 55px;
-  max-height : 55px;
+  max-width: 55px;
+  max-height: 55px;
   /* display: block; */
   width: 50px;
-  height: auto;
+  /* height: auto; */
+}
+.css-1v6zmq-MuiAvatar-img {
+  height: 100% !important;
+}
+
+.grid-2-box.MuiBox-root.css-1ircn5c:nth-child(1) {
+  padding: 0.5rem;
+  cursor: pointer;
+  background-color: #fff;
+  border-radius: 10px;
+  /* box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px; */
+}
+
+/* @media (min-width: 1600px) {
+  .MuiPaper-root.MuiMenu-paper.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation8.MuiPopover-paper.css-af8kz-MuiPaper-root-MuiMenu-paper-MuiPopover-paper {
+    left: 1450px !important;
+  }
+} */
+@media (max-width: 1024px) {
+  .hello-text-container{
+    display: none;
+  }
+  .grid-2-box.MuiBox-root.css-1ircn5c:nth-child(1){
+    width: 60px;
+    background-color: unset;
+  }
+  .grid-2-box.MuiBox-root.css-1ircn5c:nth-child(1)::after{
+    content: "" !important;
+  }
+}
+.hello-text-container {
+  /* background-color: #fff; */
+  margin-left: -1rem;
+}
+
+.hello-text-container .hello-text {
+  font-size: 14px !important;
+}
+
+.hello-text-container .person-role {
+  font-size: 12px !important;
+}
+
+.grid-2-box.MuiBox-root.css-1ircn5c:nth-child(1)::after {
+  content: "⮟";
 }
 
 .person-role {
@@ -40,19 +85,19 @@
   cursor: pointer;
   text-align: center;
 }
-.grid-3 .btn-container, .grid-2 .btn-container {
-  position : relative;
+.grid-3 .btn-container,
+.grid-2 .btn-container {
+  position: relative;
 }
 
 .notifications-point {
   position: absolute;
   padding: 6px;
   top: 6px;
-  right : 5px;
+  right: 5px;
   border-radius: 30px;
   background-color: var(--yellow-color);
 }
-
 
 .btn-container svg {
   fill: var(--header-color);
@@ -107,7 +152,6 @@
   display: none;
 }
 
-
 /* new navbar design test */
 
 /* / Media Queries */
@@ -126,10 +170,11 @@
     gap: 12px;
     padding-right: 30px;
   }
-  .grid-2 .btn-container .notifications-point, .grid-3 .btn-container .notifications-point {
+  .grid-2 .btn-container .notifications-point,
+  .grid-3 .btn-container .notifications-point {
     padding: 5px;
-    top : 2px;
-    right : 2px;
+    top: 2px;
+    right: 2px;
   }
   .grid-2 .grid-2-box .btn-container,
   .grid-2 .grid-2-box .create-project-btn {
@@ -161,13 +206,13 @@
     height: 35px;
   }
   .btn-container svg {
-    scale: .8;
+    scale: 0.8;
   }
   .small-navbar-container ul a li div,
   .small-bar-icon-style li div {
     padding: 0rem 0.325rem;
   }
-  .small-navbar-container ul  {
+  .small-navbar-container ul {
     height: 33px;
   }
   .small-navbar-container .side-nav-text span {
@@ -239,8 +284,6 @@
     align-items: center;
   }
   /* new navbar design test */
-
- 
 }
 
 @media screen and (max-width: 500px) {

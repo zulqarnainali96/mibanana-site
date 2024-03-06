@@ -6,8 +6,6 @@ import ListItemText from "@mui/material/ListItemText";
 import Icon from "@mui/material/Icon";
 import { ArrowDropDownCircleOutlined } from "@mui/icons-material";
 
-
-
 import MDBox from "components/MDBox";
 // Custom styles for the SidenavCollapse
 import {
@@ -23,52 +21,51 @@ import { useMaterialUIController } from "context";
 function SidenavCollapse({ icon, name, active, ...rest }) {
   const [controller] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
-  let path = window.location.pathname
+  let path = window.location.pathname;
   return (
     <ListItem component="li">
-      <MDBox
-        style={{ margin: 0, borderRadius: 0, color: '#626C70', fontWeight: '500 !important' }}
-        {...rest}
-        sx={
-          (theme) =>
-            collapseItem(theme, {
-              active,
-              transparentSidenav,
-              whiteSidenav,
-              darkMode,
-              sidenavColor,
-            })
+    {
+      name === 'Settings' ? null :<MDBox
+      style={{ margin: 0, borderRadius: 0, color: "#626C70", fontWeight: "500 !important" }}
+      {...rest}
+      sx={(theme) =>
+        collapseItem(theme, {
+          active,
+          transparentSidenav,
+          whiteSidenav,
+          darkMode,
+          sidenavColor,
+        })
+      }
+    >
+      <ListItemIcon
+        className="side-nav-icon"
+        sx={(theme) =>
+          collapseIconBox(theme, { transparentSidenav, whiteSidenav, darkMode, active })
         }
       >
-        <ListItemIcon
-          className="side-nav-icon"
-          sx={
-            (theme) =>
-              collapseIconBox(theme, { transparentSidenav, whiteSidenav, darkMode, active })
-          }
-        >
-          {typeof icon === "string" ? (
-            <Icon sx={(theme) => collapseIcon(theme, { active })}>{icon}</Icon>
-          ) : (
-            icon
-          )}
-        </ListItemIcon>
+        {typeof icon === "string" ? (
+          <Icon sx={(theme) => collapseIcon(theme, { active })}>{icon}</Icon>
+        ) : (
+          icon
+        )}
+      </ListItemIcon>
 
-        <ListItemText
-          className="side-nav-text"
-          primary={name}
-          sx={
-            (theme) =>
-              collapseText(theme, {
-                miniSidenav,
-                transparentSidenav,
-                whiteSidenav,
-                active,
-              })
-          }
-        />
-        {name === 'Settings' && <Icon  className="side-nav-text" fontSize="small"><ArrowDropDownCircleOutlined /></Icon>}
-      </MDBox>
+      <ListItemText
+        className="side-nav-text"
+        primary={name}
+        sx={(theme) =>
+          collapseText(theme, {
+            miniSidenav,
+            transparentSidenav,
+            whiteSidenav,
+            active,
+          })
+        }
+      />
+      {/*{name === 'Settings' && <Icon  className="side-nav-text" fontSize="small"><ArrowDropDownCircleOutlined /></Icon>}*/}
+    </MDBox>
+    }
     </ListItem>
   );
 }

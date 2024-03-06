@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useRef } from "react";
 import MDBox from "components/MDBox";
 import {
+  Avatar,
   Button,
   Grid,
   Icon,
@@ -393,6 +394,9 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       <Link to="/settings/company-profile">
         <NotificationItem icon={<Icon>account_box</Icon>} title="Company Profile" />
       </Link>
+      <Link to="/settings/change-password">
+        <NotificationItem icon={<Icon>key</Icon>} title="Change Password" />
+      </Link>
       <NotificationItem icon={<Icon>logout</Icon>} onClick={handleLogout} title="Logout" />
     </Menu>
   );
@@ -782,8 +786,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           <img className='logo-image' src={MibananaIcon} loading='lazy' />
         </Grid>
         <Grid className="grid-2" item xxl={6} xl={7} lg={6} md={6} sm={6} xs={6}>
-          <MDBox className="grid-2-box">
-            <img className="person-image" src={personImage} />
+          <MDBox className="grid-2-box" onClick={handleUserProfileMenu}>
+            <Avatar className="person-image" src={personImage} />
             <div className='hello-text-container'>
               <MDTypography className="hello-text" sx={responsiveStyle}>Hello {showRoles()}!</MDTypography>
               <MDTypography className="person-role" sx={roleResponsive}>{showPersonRoles()}</MDTypography>
@@ -796,10 +800,10 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
               ) : null}
               <RightSideDrawer list={list} />
             </div>
-            <div className="btn-container"
+           {/* <div className="btn-container"
               onClick={handleUserProfileMenu}>
               <AccountCircle fontSize="large" />
-            </div>
+              </div>*/}
             <div className="btn-container menu-icon" onClick={handleMobileNav} >
               <MenuIcon fontSize="large" />
             </div>
@@ -825,10 +829,10 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             ) : null}
             <RightSideDrawer list={list} />
           </div>
-          <div className="btn-container"
+          {/*<div className="btn-container"
             onClick={handleUserProfileMenu}>
             <AccountCircle fontSize="large" />
-          </div>
+            </div>*/}
           {role?.customer && (
             <ProjectButton2
               variant="contained"

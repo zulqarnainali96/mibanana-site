@@ -135,6 +135,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                   borderRadius: "0px",
                   fontFamily: fontsFamily.poppins,
                   fontWeight: "400  !important",
+                  width: "10rem",
+                  maxWidth: "10rem",
                 },
               }}
               circular="true"
@@ -251,6 +253,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                   borderRadius: "0px",
                   fontFamily: fontsFamily.poppins,
                   fontWeight: "400  !important",
+                  width:"8rem",
+                  maxWidth:"8rem",
                 },
               }}
               circular="true"

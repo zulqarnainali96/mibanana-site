@@ -73,7 +73,7 @@ const routes = [
   {
     key: "chat",
     route: "/chat/:id",
-    component: <Chating />
+    component: <Chating />,
   },
   {
     type: "collapse",
@@ -81,7 +81,7 @@ const routes = [
     key: "mibanana-team",
     icon: <Icon fontSize="small">handshake_outlined</Icon>,
     route: "/mibanana-team",
-    component: <MibananTeam />
+    component: <MibananTeam />,
   },
   {
     type: "collapse-dropdown",
@@ -109,6 +109,5 @@ const routes = [
       },
     ],
   },
-
 ];
 export default routes;
