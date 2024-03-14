@@ -1,18 +1,14 @@
 import apiClient from "api/apiClient";
 import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
-import nikeLogo from "../../assets/mi-banana-icons/nike.webp";
 import MDTypography from "components/MDTypography";
 import { IconButton, Menu, MenuItem, useMediaQuery } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import MDBox from "components/MDBox";
 import { getBrandData } from "redux/global/global-functions";
 import { getCustomerBrand } from "redux/actions/actions";
-import { getNew_Brand } from "redux/actions/actions";
 import { useDispatch } from "react-redux";
 import MDSnackbar from "components/MDSnackbar";
 import { openEditBrandModal } from "redux/actions/actions";
-import { getCurrentBrandID } from "redux/actions/actions";
 import fileImage from "assets/mi-banana-icons/file-image.png";
 import { MoonLoader } from "react-spinners";
 import "../../examples/new-table/table-style.css";
@@ -22,12 +18,11 @@ import { ArrowDownward } from "@mui/icons-material";
 import { currentUserRole } from "redux/global/global-functions";
 import { Link } from "react-router-dom";
 
-export const Action = ({ item }) => {
+export const Action = ({ item, setFormValue }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
   const id = useSelector((state) => state.userDetails.id);
   const reduxState = useSelector((state) => state);
-  // const iseditBrand = useSelector((state) => state.iseditBrand);
   const [errorSB, setErrorSB] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
   const [respMessage, setRespMessage] = useState("");
@@ -83,9 +78,15 @@ export const Action = ({ item }) => {
       });
   }
   const openBrandModal = () => {
-    dispatch(getCurrentBrandID(item._id));
-    dispatch(openEditBrandModal(true));
+    // setCurrentOpenBrandID(item._id);
+    const filterBrand = reduxState.customerBrand?.find((brand) => brand._id === item._id);
+    if (filterBrand) {
+      console.log('filterBrand:', filterBrand);
+      setFormValue({ ...filterBrand });
+      dispatch(openEditBrandModal(true));
+    }
   };
+
   const renderErrorSB = (
     <MDSnackbar
       color="error"
@@ -144,7 +145,7 @@ export const Action = ({ item }) => {
         }}
       >
         {role?.customer ? (
-          <>
+          <div>
             <MenuItem onClick={openBrandModal}>Edit</MenuItem>
             <MenuItem sx={containerStyles} onClick={deleteBrandList}>
               <h6 style={{ fontWeight: "300", color: "inherit" }}>Delete</h6>
@@ -152,10 +153,10 @@ export const Action = ({ item }) => {
                 <MoonLoader size={20} loading={loading} />
               </IconButton>
             </MenuItem>
-          </>
+          </div>
         ) : role?.admin ? (
           <MenuItem sx={containerStyles} onClick={() => { }}>
-            <h6 style={{ fontWeight: "300", color: "inherit" }}>Delete</h6>
+            <h6 style={{ fontWeight: "300", color: "inherit" }} onClick={deleteBrandList}>Delete</h6>
             <IconButton>
               <MoonLoader size={20} loading={loading} />
             </IconButton>
@@ -189,8 +190,8 @@ const ShowFiles = ({ item }) => {
           {item.files?.map((file) => {
             const file_name = file.name?.split('.')?.shift()
             const extension = file.name?.split('.')?.pop()
-            const name = file_name?.length > 14 ? file_name?.substring(0,14) + '...' + extension : file?.name 
-            
+            const name = file_name?.length > 14 ? file_name?.substring(0, 14) + '...' + extension : file?.name
+
             return <MDTypography
               sx={{ color: "#000", fontWeight: "bold" }}
               key={file.id}
@@ -206,7 +207,7 @@ const ShowFiles = ({ item }) => {
   );
 };
 
-const BrandData = () => {
+const BrandData = (setFormValue) => {
   const userID = useSelector((state) => state.userDetails.id);
   const reduxState = useSelector((state) => state);
   const new_brand = useSelector((state) => state.new_brand);
@@ -218,7 +219,7 @@ const BrandData = () => {
 
   useEffect(() => {
     getBrandData(userID, func);
-  }, [new_brand,func, userID]);
+  }, [new_brand, func, userID]);
 
   const textStyles = {
     fontFamily: fontsFamily.poppins,
@@ -257,8 +258,6 @@ const BrandData = () => {
           )}
         </>
       ),
-
-
       brand_name: (
         <MDTypography variant="h4" sx={textStyles}>
           {item.brand_name}
@@ -281,7 +280,7 @@ const BrandData = () => {
       files: <ShowFiles item={item} />,
       action: (
         <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
-          <Action item={item} />
+          <Action item={item} setFormValue={setFormValue} />
         </MDTypography>
       ),
     };
@@ -322,7 +321,7 @@ const BrandData = () => {
       ),
       action: (
         <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
-          <Action item={item} />
+          <Action item={item} setFormValue={setFormValue} />
         </MDTypography>
       ),
     };
@@ -331,7 +330,7 @@ const BrandData = () => {
     rows: customerBrand?.length > 0 ? rows : [],
     small_rows: customerBrand?.length > 0 ? small_rows : [],
     columns: [
-      { Header: "Logo", accessor: "logo", align: "left", cells : (props) => console.log('props', props) },
+      { Header: "Logo", accessor: "logo", align: "left", cells: (props) => console.log('props', props) },
       { Header: "Brand name", accessor: "brand_name" },
       { Header: "Brand Description", accessor: "brand_description", align: "center" },
       { Header: "Files", accessor: "files", align: "center" },

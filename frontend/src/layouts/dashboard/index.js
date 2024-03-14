@@ -21,6 +21,11 @@ import "./status-box/status-style.css"
 import { currentUserRole, projectStatus } from "redux/global/global-functions";
 import "./status-box/status-style.css"
 import { SocketContext } from "sockets";
+import { Assigned } from "redux/global/status";
+import { ForReview } from "redux/global/status";
+import { Ongoing } from "redux/global/status";
+import { Project_manager } from "redux/global/status";
+import { Completed } from "redux/global/status";
 
 function Dashboard({ reduxActions, reduxState }) {
   const [project_list, setProject_List] = useState(reduxState.project_list?.CustomerProjects)
@@ -40,34 +45,19 @@ function Dashboard({ reduxActions, reduxState }) {
   const [respMessage, setRespMessage] = useState("")
 
   const projectQueue = project_list?.filter(item => {
-    return item.status === 'Project manager'
+    return item.status === Project_manager
   })
   const sumbitAndOngoing = () => {
-    // const assigned = project_list?.filter(item => item.status === 'Assigned')
-    // const Ongoing = project_list?.filter(item => item.status === 'Ongoing')
-    // const isSubmitted = project_list?.filter(item => item.status === 'Submitted')
-
-    // if (Ongoing?.length > 0 && isSubmitted?.length === 0) return Ongoing?.length
-    // else if (isSubmitted?.length > 0 && Ongoing?.length === 0) return isSubmitted?.length
-    // else if (isSubmitted?.length > 0 && Ongoing?.length > 0) return isSubmitted?.length + Ongoing?.length
-    // else { return 0 }
-    const filterStatus = project_list?.filter(item => item.status === 'Assigned' || item.status === 'Ongoing' || item.status === 'Submitted')
+    const filterStatus = project_list?.filter(item => item.status === Assigned || item.status === ForReview || item.status === Ongoing)
     return filterStatus?.length
   }
-
-  const projectCompleted = project_list?.filter(item => item.status === 'Completed')
+  const projectCompleted = project_list?.filter(item => item.status === Completed)
 
   const navigate = useNavigate()
-
   function projectActiveorNot(id) {
     reduxActions.getID(id)
     let projectID = project_list[id].hasOwnProperty("_id") ? project_list[id]?._id : project_list[id]?.id
-    if (user?.roles?.includes("Project-Manager") || user?.roles?.includes("Graphic-Designer") || user?.roles?.includes("Admin")) {
-      navigate("/chat/" + projectID)
-      return
-    } else {
-      navigate("/chat/" + projectID)
-    }
+    navigate("/chat/" + projectID)
   }
 
   const renderErrorSB = (
@@ -177,7 +167,7 @@ function Dashboard({ reduxActions, reduxState }) {
         <MDBadge badgeContent={projectStatus(item?.status)}
           sx={{
             "& .MuiBadge-badge":
-              { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: isLg ? "12px" : ".9rem", borderRadius: '0px', fontFamily: fontsFamily.poppins, fontWeight: '400  !important', width:"8rem", maxWidth: "8rem", }
+              { background: mibananaColor.yellowColor, color: mibananaColor.yellowTextColor, textTransform: 'capitalize', fontSize: isLg ? "12px" : ".9rem", borderRadius: '0px', fontFamily: fontsFamily.poppins, fontWeight: '400  !important', width: "8rem", maxWidth: "8rem", }
           }} circular="true" size="lg" />
       </MDBox>,
       action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
@@ -203,7 +193,7 @@ function Dashboard({ reduxActions, reduxState }) {
     { Header: "Action", accessor: "action", align: "center" },
   ]
 
-  
+
   useEffect(() => {
     setProject_List(reduxState.project_list.CustomerProjects)
   }, [reduxState.project_list])
@@ -250,7 +240,7 @@ function Dashboard({ reduxActions, reduxState }) {
               <MDBox>
                 <NewProjectsTable
                   table={{ columns: isLg ? small_columns : columns, rows: isLg ? small_rows : rows }}
-                  entriesPerPage={{ defaultValue: 15 }}
+                  entriesPerPage={{ defaultValue: '15' }}
                   showTotalEntries={true}
                   pagination={{ variant: 'contained', color: "warning" }}
                   noEndBorder={false}

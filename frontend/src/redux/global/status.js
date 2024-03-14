@@ -1,0 +1,6 @@
+export const Project_manager = 'Project manager'
+export const ForReview = 'For Review'
+export const Assigned = 'Assigned'
+export const Ongoing = 'Ongoing'
+export const Completed = 'Completed'
+export const Cancel = 'Cancel'

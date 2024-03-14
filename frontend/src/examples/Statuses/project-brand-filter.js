@@ -1,5 +1,5 @@
 import React from 'react'
-import { Autocomplete, TextField, useMediaQuery} from '@mui/material';
+import { Autocomplete, TextField, useMediaQuery } from '@mui/material';
 import { mibananaColor } from 'assets/new-images/colors';
 
 const BrandFilter = ({ data, status, handleChange, personName, clearValue }) => {
@@ -9,7 +9,7 @@ const BrandFilter = ({ data, status, handleChange, personName, clearValue }) => 
             sx={filterStyle}
             size={isLg ? 'small' : 'large'}
             options={data}
-            onChange={(event,newValue) => {
+            onChange={(event, newValue) => {
                 handleChange(newValue)
             }}
             value={personName}
@@ -20,12 +20,12 @@ const BrandFilter = ({ data, status, handleChange, personName, clearValue }) => 
 }
 
 const filterStyle = {
-    "&.MuiFormControl-root" : {
+    "&.MuiFormControl-root": {
         border: `1px solid ${mibananaColor.borderColor}`,
     },
-    "&:hover": {
-        borderColor: 'transparent',
-    },
+    // "&:hover": {
+    //     borderColor: 'transparent',
+    // },
 }
 
 export default BrandFilter

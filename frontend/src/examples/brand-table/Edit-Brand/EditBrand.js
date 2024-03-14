@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DialogContent from "@mui/material/DialogContent";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -10,7 +10,7 @@ import { styled } from "@mui/material/styles";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
-import { Grid } from "@mui/material";
+import { Grid, useMediaQuery } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDInput from "components/MDInput";
 import { useSelector } from "react-redux";
@@ -24,14 +24,12 @@ import fileImage from "assets/mi-banana-icons/file-image.png";
 import { modules } from "assets/react-quill-settings/react-quill-settings";
 import { reactQuillStyles } from "assets/react-quill-settings/react-quill-settings";
 import { formats } from "assets/react-quill-settings/react-quill-settings";
+import "../brand-table.css";
 
 const BrandModal = styled(Dialog)(({ theme }) => ({
-  // '& .MuiInputBase-root': {
-  //     paddingBlock: '15px'
+  // "& .MuiPaper-root": {
+  //   maxWidth: "45% !important",
   // },
-  "& .MuiPaper-root": {
-    maxWidth: "45% !important",
-  },
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
     width: "100% !important",
@@ -54,32 +52,34 @@ const AlignGrid = styled(Grid)(({ theme }) => ({
   cursor: "pointer",
 }));
 
-const EditBrand = ({
-  onChange,
-  onClose,
-  open,
-  setFormValue,
-  formValue,
-  openErrorSB,
-  openSuccessSB,
-  setRespMessage,
-  editAddMoreImages,
-  editMoreImage,
-  handleFileUploadEdit,
-  fileRef,
-  removeEditFiles,
-  setEditMoreImages,
-  getDescriptionText,
-}) => {
+const EditBrand = (props) => {
+
+  const {
+    onChange,
+    onClose,
+    open,
+    // setFormValue,
+    formValue,
+    openErrorSB,
+    openSuccessSB,
+    setRespMessage,
+    editAddMoreImages,
+    editMoreImage,
+    handleFileUploadEdit,
+    fileRef,
+    removeEditFiles,
+    setEditMoreImages,
+    getDescriptionText,
+  } = props
+
   const [loading, setLoading] = useState(false);
-  const currentid = useSelector((state) => state.currentBrandId);
-  const customerBrand = useSelector((state) => state.customerBrand);
-  const iseditBrand = useSelector((state) => state.iseditBrand);
   const [deleteFiles, setDeleteFiles] = useState([]);
   const name = useSelector((state) => state.userDetails.name);
   const dispatch = useDispatch();
   const new_brand = useSelector((state) => state.new_brand);
   const quillClasses = reactQuillStyles();
+  const smallScreen = useMediaQuery("(max-width:768px)");
+
 
   let Jpg = "image/jpg";
   let Jpeg = "image/jpeg";
@@ -158,21 +158,12 @@ const EditBrand = ({
   function removeDeleteFiles(item) {
     setDeleteFiles(deleteFiles.filter((name) => name !== item));
   }
-
-  useEffect(() => {
-    debugger
-    const filterBrand = customerBrand?.find((item) => item._id === currentid);
-    console.log('filterBrand id:', filterBrand?._id);
-    if (filterBrand) {
-      // alert("again changed")
-        setFormValue({...filterBrand});
-    }
-}, [currentid,  setFormValue]);
-
-
-  // console.log(iseditBrand, " ", currentid, " ", formValue);
   return (
-    <BrandModal open={open} sx={{ width: "100% !important" }}>
+    <BrandModal className="brand-modal-container" open={open}
+      sx={{
+           width: "100% !important", "& .MuiPaper-root":
+          { maxWidth: `${smallScreen ? "90%" : "45% !important"}` }
+      }}>
       <DialogTitle
         display={"flex"}
         position={"relative"}
@@ -370,9 +361,9 @@ const EditBrand = ({
                       position={"relative"}
                     >
                       {item?.type?.startsWith(Jpg) ||
-                      item?.type?.startsWith(Png) ||
-                      item?.type?.startsWith(Svg) ||
-                      item?.type?.startsWith(Jpeg) ? (
+                        item?.type?.startsWith(Png) ||
+                        item?.type?.startsWith(Svg) ||
+                        item?.type?.startsWith(Jpeg) ? (
                         <>
                           {deleteFiles?.includes(item.name) ? (
                             <RemoveCircle
@@ -626,14 +617,14 @@ const EditBrand = ({
             <MDBox display="flex" gap="10px" flexWrap={"wrap"}>
               {editMoreImage?.length > 0
                 ? editMoreImage.map((file) => (
-                    <MDBox
-                      sx={{ cursor: "pointer", transition: ".8s padding ease-in" }}
-                      {...addImagesFlexContainer}
-                    >
-                      <div>{file.name}</div>
-                      <Close fontSize="medium" onClick={() => removeEditFiles(file)} />
-                    </MDBox>
-                  ))
+                  <MDBox
+                    sx={{ cursor: "pointer", transition: ".8s padding ease-in" }}
+                    {...addImagesFlexContainer}
+                  >
+                    <div>{file.name}</div>
+                    <Close fontSize="medium" onClick={() => removeEditFiles(file)} />
+                  </MDBox>
+                ))
                 : null}
             </MDBox>
           </Grid>
@@ -698,10 +689,6 @@ const buttonStyles = {
   height: "0px",
   color: "gray",
   minHeight: "25px",
-  // "& label > .MuiButtonBase-root": {
-  //     borderTopleftRadius: '0px !important',
-  //     borderBottomleftRadius: '0px !important',
-  // }
 };
 
 const submitButton = {

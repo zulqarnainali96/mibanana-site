@@ -10,8 +10,8 @@ import axios from 'axios'
 // baseURL: 'https://test-vercel-amber-theta.vercel.app',
 
 const apiClient = axios.create({
-    // baseURL: process.env.REACT_APP_API_KEY,
-    baseURL: `https://api.mibanana.com`,
+    baseURL: process.env.REACT_APP_API_KEY,
+    // baseURL: `https://api.mibanana.com`,
     // baseURL: 'http://localhost:8000',
     headers: {
         'Accept': 'application/json',

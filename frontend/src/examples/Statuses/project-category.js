@@ -15,7 +15,6 @@ const CategoryFilter = ({ data, status, handleChange, personName, clearValue }) 
             getOptionDisabled={(options) => options !== 'Graphic Design'}
             value={personName}
             renderInput={(params) => <TextField {...params} label={status} />}
-
         />
     )
 }

@@ -2,7 +2,7 @@ import { TRIGER_NOTIFICATIONS } from "redux/actions/actions"
 import { STATUS_NOTIFICATIONS } from "redux/actions/actions"
 import { PROJECT_NOTIFICATIONS } from "redux/actions/actions"
 import { USER_CHAT_MESSAGE } from "redux/actions/actions"
-import { USER_DETAILS, SHOW_MODAL, PROJECT_CATEGORY, CUSTOMER_BRAND, NEW_BRAND, STATUS, IS_ALERT, CUSTOMER_PROJECTS, USER_AVATAR_URL, PROJECT_ID, IS_EDIT_BRAND, CURRENT_BRAND_ID, OPEN_BRAND_MODAL, RIGHTSIDEDRAWER, CURRENT_INDEX, RE_RENDER_CHAT, NON_ACTIVE_CUSTOMER, TOGGLE_CHATS } from "redux/actions/actions"
+import { USER_DETAILS, SHOW_MODAL, PROJECT_CATEGORY, CUSTOMER_BRAND, NEW_BRAND, STATUS, IS_ALERT, CUSTOMER_PROJECTS, USER_AVATAR_URL, PROJECT_ID, IS_EDIT_BRAND, OPEN_BRAND_MODAL, RIGHTSIDEDRAWER, CURRENT_INDEX, RE_RENDER_CHAT, NON_ACTIVE_CUSTOMER, TOGGLE_CHATS } from "redux/actions/actions"
 
 const initialState = {
     userDetails: {},
@@ -43,7 +43,6 @@ const initialState = {
     new_brand: false,
     customerBrand: [],
     iseditBrand: false,
-    currentBrandId: "",
     openBrandModel: false,
     rightSideDrawer: { right: false },
     currentIndex: null,
@@ -122,12 +121,6 @@ const UserReducers = (state = initialState, action) => {
             return {
                 ...state,
                 iseditBrand: payload
-            }
-        }
-        case CURRENT_BRAND_ID: {
-            return {
-                ...state,
-                currentBrandId: payload
             }
         }
         case OPEN_BRAND_MODAL: {

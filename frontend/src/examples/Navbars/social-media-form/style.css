@@ -1,0 +1,25 @@
+.grid-social-container {
+    display: flex;
+    justify-content: center;
+    justify-content: space-around;
+}
+.grid-social-container .social-head-title, .grid-social-container .social-head{
+    font-family: var(--font-family);
+    font-weight: 400; 
+}
+.grid-social-container .social-head-title {
+    font-size: 17px !important;
+    font-weight: 500 !important;
+}
+.grid-social-container .social-head {
+    font-size: 13px !important;
+}
+.grid-social-container .grid-social-item-1 .grid-social-item-1-inside{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.fontsStyle {
+    font-family: var(--font-family);
+    font-weight: 500;
+}

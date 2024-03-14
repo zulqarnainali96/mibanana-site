@@ -7,20 +7,15 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
 import Grid from '@mui/material/Grid'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import Select from '@mui/material/Select'
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import CloseIcon from '@mui/icons-material/Close';
 import styled from '@mui/material/styles/styled';
 import MDInput from 'components/MDInput';
-import CloseSharp from '@mui/icons-material/CloseSharp';
 import MDButton from 'components/MDButton';
 import { MoonLoader } from 'react-spinners'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import { ArticleOutlined, CloseOutlined, FolderZip, FolderZipOutlined, PictureAsPdf } from '@mui/icons-material';
+import { CloseOutlined, FolderZip, PictureAsPdf } from '@mui/icons-material';
 import UploadFile from 'components/File upload button/FileUpload';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';

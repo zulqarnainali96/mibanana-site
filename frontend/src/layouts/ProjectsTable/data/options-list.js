@@ -19,9 +19,9 @@ const CustomerList = (props) => {
 
     const getActionsDisabled = () => {
         let result = false
-        if (item.status === 'Project manager') result = true
+        if (item.status === 'Project manager') result = false
         if (item.status === 'Assigned') result = true
-        if (item.status === 'Completed') result = true
+        if (item.status === 'Completed') result = false
         return result
     }
     const getCancelDisabled = () => {

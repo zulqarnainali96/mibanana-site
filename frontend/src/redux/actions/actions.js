@@ -9,7 +9,6 @@ export const STATUS = 'STATUS'
 export const NEW_BRAND = 'NEW_BRAND'
 export const CUSTOMER_BRAND = 'CUSTOMER_BRAND'
 export const IS_EDIT_BRAND = 'IS_EDIT_BRAND'
-export const CURRENT_BRAND_ID = 'CURRENT_BRAND_ID'
 export const OPEN_BRAND_MODAL = 'OPEN_BRAND_MODAL' 
 export const RIGHTSIDEDRAWER = 'RIGHTSIDEDRAWER' 
 export const CURRENT_INDEX = 'CURRENT_INDEX' 
@@ -75,10 +74,6 @@ export const openEditBrandModal = (payload) => ({
     type : IS_EDIT_BRAND,
     payload : payload
 })
-export const getCurrentBrandID = (payload) => ({
-    type : CURRENT_BRAND_ID,
-    payload : payload
-}) 
 
 export const openBrandModalFunc = (payload) => ({
     type : OPEN_BRAND_MODAL,
@@ -141,7 +136,6 @@ export const reduxFunctions = {
     getNew_Brand,
     getCustomerBrand,
     openEditBrandModal,
-    getCurrentBrandID,
     getID,
     openBrandModalFunc,
     setRightSideBar,

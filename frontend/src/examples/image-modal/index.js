@@ -32,6 +32,7 @@ const ImageModalView = ({ allImages, currentImage, isOpen, onClose }) => {
       }}
       onCloseRequest={onClose}
       // onImageLoadError={onClose}
+      imageLoadErrorMessage={()=> <h1>Failed to load Image</h1>}
       animationDisabled={true}
       toolbarButtons={[]}
       zoomOutLabel="zoom out"

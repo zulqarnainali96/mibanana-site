@@ -2,7 +2,6 @@ import Card from '@mui/material/Card'
 import MDBox from 'components/MDBox'
 import React, { useEffect, useRef, useState } from 'react'
 import "./brand-table.css"
-import DashboardNavbar from 'examples/Navbars/DashboardNavbar'
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
 import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
@@ -10,7 +9,6 @@ import Add from '@mui/icons-material/Add'
 import BrandForm from './Add-brand-form'
 import apiClient from 'api/apiClient'
 import MDSnackbar from 'components/MDSnackbar'
-import ProjectDataTable from 'examples/projectsTable'
 import useBrandData from './brandData'
 import MDTypography from 'components/MDTypography'
 import { useDispatch } from 'react-redux'
@@ -56,12 +54,12 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         replace_brand_guidelines: [],
         upload_more: []
     })
-    const { rows, small_rows, columns, small_columns } = useBrandData()
     const [formValue, setFormValue] = useState({
         brand_name: '', brand_description: '', web_url: '',
         facebook_url: '', instagram_url: '', twitter_url: '',
         linkedin_url: '', tiktok_url: ''
     })
+    const { rows, small_rows, columns, small_columns } = useBrandData(setFormValue)
     const dispatch = useDispatch()
     const userID = reduxState.userDetails.id
     const [filesArray, setFilesArray] = useState([])
@@ -151,10 +149,6 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
         }
     }
     const editAddMoreImages = () => {
-        // setEditMoreImages(prev => [...prev, {
-        //     name: `image_${other}`,
-        //     value: ''
-        // }])
         fileRef.current.click()
     }
     const onSubmit = async () => {
@@ -276,7 +270,6 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                 setCheckState={setCheckState}
                 onChange={onhandleChange}
                 onClose={handleClose}
-
                 {...brandModelProps}
             />
             <EditBrand
@@ -329,7 +322,6 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                                             ADD Brand
                                         </BrandButton>
                                     </MDBox>
-
                                 </Grid>
                                 )}
                         </Grid>

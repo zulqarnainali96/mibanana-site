@@ -31,7 +31,10 @@ import MainComponent from "main-comp";
 import { SocketContext } from "sockets";
 import { io } from 'socket.io-client';
 
+
 export default function App() {
+  // process.env.REACT_APP_SOCKET_URL
+  // 'http://localhost:4000'
   const socket = useMemo(() => {
     const socketO = io(process.env.REACT_APP_SOCKET_URL, {
       withCredentials: true

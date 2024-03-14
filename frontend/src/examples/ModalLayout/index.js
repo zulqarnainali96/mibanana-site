@@ -125,7 +125,7 @@ const Modal = ({
                 }
                 <MDButton
                     onClick={onClose}
-                    sx={{ position: "absolute", right: isBorder ? 4 : 1, padding: '1rem !important', top: isBorder ? undefined : '4px',backgroundColor:'transparent' }} variant="filled">
+                    sx={{ position: "absolute", right: isBorder ? 4 : 1, padding: '1rem !important', top: isBorder ? undefined : '4px',backgroundColor:'transparent' }} variant="contained">
                     <CloseOutlined
                         sx={{ fill: '#444' }}
                         fontSize={"medium"}

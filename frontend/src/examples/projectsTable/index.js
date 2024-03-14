@@ -18,7 +18,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDPagination from "components/MDPagination";
-import StatusModal from "examples/project-status-modal";
+// import StatusModal from "examples/project-status-modal";
 import { DataTableHeadCell, DataTableBodyCell } from "./ProjectTableRoot";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";

@@ -5,7 +5,6 @@ import MDButton from 'components/MDButton'
 import MDInput from 'components/MDInput'
 import MDTypography from 'components/MDTypography'
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
-import DashboardNavbar from 'examples/Navbars/DashboardNavbar'
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import React, { useState } from 'react'
@@ -119,7 +118,6 @@ const CreateAccounts = () => {
     }
     return (
         <DashboardLayout>
-            {/* <DashboardNavbar /> */}
             <MDBox pt={6} pb={3} sx={({ breakpoints }) => ({
                 [breakpoints.down('md')]: {
                     width: '98%',

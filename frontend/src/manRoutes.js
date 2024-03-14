@@ -1,4 +1,3 @@
-import { lazy } from "react";
 import Dashboard from "layouts/dashboard";
 import Icon from "@mui/material/Icon";
 import ProjectTable from "layouts/ProjectsTable";
@@ -22,6 +21,7 @@ const routes = [
     key: "board",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/board",
+    // component: <div><h1>Hello</h1></div>,
     component: <Dashboard />,
   },
   {
@@ -30,6 +30,7 @@ const routes = [
     key: "mi-projects",
     icon: <Icon fontSize="small">event_note</Icon>,
     route: "/mi-projects",
+    // component: <div><h1>Hello</h1></div>,
     component: <ProjectTable />,
   },
   {
@@ -38,7 +39,9 @@ const routes = [
     key: "mi-brands",
     icon: <Icon fontSize="small">create_new_folder_rounded_icon</Icon>,
     route: "/mi-brands",
+    // component: <div><h1>Hello</h1></div>,
     component: <MIBrandTable />,
+    
   },
   {
     key: "chat",

@@ -12,6 +12,7 @@ import reduxContainer from "redux/containers/containers";
 import NewProjectsTable from "examples/new-table";
 import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
+import MDButton from "components/MDButton";
 
 const CreateCustomer = ({ reduxState, reduxActions }) => {
     const nonActiveCustomer = reduxState.non_active_customer_data
@@ -19,6 +20,7 @@ const CreateCustomer = ({ reduxState, reduxActions }) => {
     const user = useSelector(state => state.userDetails)
     const [customerList, setCustomerList] = useState([])
     const { rows, columns } = useCustomerTable(customerList)
+    const [showChangeTable, setShowChangeTable] = useState(false)
 
     useEffect(() => {
         const getCustomerAccounts = async () => {
@@ -42,20 +44,42 @@ const CreateCustomer = ({ reduxState, reduxActions }) => {
                 <MDTypography sx={titleStyles}>
                     All Accounts
                 </MDTypography>
-                <Card>
-                    <MDBox pt={3}>
-                        <NewProjectsTable
-                            table={{ columns, rows }}
-                            entriesPerPage={{ defaultValue: 6 }}
-                            showTotalEntries={true}
-                            pagination={{ variant: 'contained', color: "warning" }}
-                            noEndBorder={false}
-                            canSearch={false}
-                            isSorted={false}
-                        />
-                        {!rows.length ? <MDTypography textAlign="center" p={1} component="h4">No Customers Found</MDTypography> : null}
-                    </MDBox>
-                </Card>
+                <MDBox display="flex" pb={1} justifyContent="flex-start" gap={1}>
+                    <MDButton size="small" color="warning" sx={{ color: "#333" }}>User accounts</MDButton>
+                    <MDButton size="small" color="warning" sx={{ color: "#333" }}>Team members accounts</MDButton>
+                </MDBox>
+                {showChangeTable ? (
+                    <Card>
+                        <MDBox pt={3}>
+                            <NewProjectsTable
+                                table={{ columns, rows }}
+                                entriesPerPage={{ defaultValue: 6 }}
+                                showTotalEntries={true}
+                                pagination={{ variant: 'contained', color: "warning" }}
+                                noEndBorder={false}
+                                canSearch={false}
+                                isSorted={false}
+                            />
+                            {!rows.length ? <MDTypography textAlign="center" p={1} component="h4">No Customers Found</MDTypography> : null}
+                        </MDBox>
+                    </Card>
+
+                ) : (
+                    <Card>
+                        <MDBox pt={3}>
+                            <NewProjectsTable
+                                table={{ columns, rows }}
+                                entriesPerPage={{ defaultValue: 6 }}
+                                showTotalEntries={true}
+                                pagination={{ variant: 'contained', color: "warning" }}
+                                noEndBorder={false}
+                                canSearch={false}
+                                isSorted={false}
+                            />
+                            {!rows.length ? <MDTypography textAlign="center" p={1} component="h4">No Customers Found</MDTypography> : null}
+                        </MDBox>
+                    </Card>
+                )}
             </MDBox>
         </DashboardLayout>
     )

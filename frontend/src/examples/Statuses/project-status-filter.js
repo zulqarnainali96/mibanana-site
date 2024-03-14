@@ -13,7 +13,6 @@ const ProjectStatus = ({ data, status, handleChange, value, }) => {
             onChange={(event,newValue) => {
                 handleChange(newValue)
             }}
-            
             value={value}
             renderInput={(params) => <TextField {...params} label={status} />}
 
@@ -26,9 +25,9 @@ const filterStyle = {
     "&.MuiFormControl-root" : {
         border: `1px solid ${mibananaColor.borderColor}`,
     },
-    "&:hover": {
-        borderColor: 'transparent',
-    },
+    // "&:hover": {
+    //     borderColor: 'transparent',
+    // },
 }
 
 export default ProjectStatus

@@ -253,8 +253,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                   borderRadius: "0px",
                   fontFamily: fontsFamily.poppins,
                   fontWeight: "400  !important",
-                  width:"8rem",
-                  maxWidth:"8rem",
+                  width: "8rem",
+                  maxWidth: "8rem",
                 },
               }}
               circular="true"
@@ -355,11 +355,11 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   const handleBrandChange = useCallback((value) => {
     if (value === "" || value === null) {
       setProjectList(copyProjectList)
-    } 
+    }
     else {
       setProjectList(copyProjectList)
       setProjectList(prevList => {
-        if(typeof prevList.brand === "string") {
+        if (typeof prevList.brand === "string") {
           return prevList.filter(item => item.brand === value);
         } else {
           return prevList.filter(item => item.brand?.brand_name === value);
@@ -369,9 +369,9 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     setBrand(value);
   }, [copyProjectList])
 
-  useEffect(() => {
-    setProjectList(reduxState.project_list.CustomerProjects)
-  }, [reduxState.project_list])
+  // useEffect(() => {
+  //   setProjectList(reduxState.project_list.CustomerProjects)
+  // }, [reduxState.project_list])
 
 
   return (
@@ -432,8 +432,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                   showTotalEntries={true}
                   pagination={{ variant: "contained", color: "warning" }}
                   noEndBorder={false}
-                  canSearch={false}
-                  isSorted={false}
+                  canSearch={true}
+                  isSorted={true}
                 />
                 {!rows.length ? (
                   <MDTypography textAlign="center" p={1} component="h4">

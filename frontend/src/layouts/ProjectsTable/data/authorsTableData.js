@@ -1,6 +1,6 @@
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import apiClient from "api/apiClient";
 import MDSnackbar from "components/MDSnackbar";
 import { useSelector } from "react-redux";
@@ -48,7 +48,6 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     setAnchorEl(event.currentTarget);
   };
 
-  // const new_brand = useSelector(state => state.new_brand)
   const userid = useSelector(state => state.userDetails.id)
   const dispatch = useDispatch()
 

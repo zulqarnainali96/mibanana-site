@@ -1,6 +1,6 @@
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
-import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useSortBy } from "react-table";
+import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useSortBy, } from "react-table";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
@@ -12,7 +12,6 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDPagination from "components/MDPagination";
 import { DataTableHeadCell, DataTableBodyCell } from "./projectTableRoot";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setAlert } from "redux/actions/actions";
@@ -33,12 +32,13 @@ function NewProjectsTable({
     // My State 
     const navigate = useNavigate()
 
-    const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
-    const entries = entriesPerPage.entries
+    // const defaultValue = entriesPerPage && entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
+    const defaultValue = 15;
+    const entries = entriesPerPage && entriesPerPage.entries
         ? entriesPerPage.entries.map((el) => el.toString())
-        : ["5", "10", "15", "20", "25"];
-    const columns = useMemo(() => table.columns, [table]);
-    const data = useMemo(() => table.rows, [table]);
+        : ['5', '10', '15', '20', '25'];
+    const columns = useMemo(() => table.columns, [table.columns]);
+    const data = useMemo(() => table.rows, [table.rows]);
 
     const reff = useRef()
 
@@ -67,17 +67,14 @@ function NewProjectsTable({
         state: { pageIndex, pageSize, globalFilter },
     } = tableInstance;
 
-
     const dispatch = useDispatch()
-    const isAlert = useSelector(state => state.isAlert)
-
 
     const handleClose = () => {
         dispatch(setAlert(false))
     }
 
     // Set the default value for the entries per page when component mounts
-    useEffect(() => setPageSize(defaultValue || 10), [defaultValue]);
+    useEffect(() => setPageSize(defaultValue || 10), []);
 
     // Set the entries per page value based on the select value
     const setEntriesPerPage = (value) => setPageSize(value);
@@ -87,7 +84,7 @@ function NewProjectsTable({
         <MDPagination
             item
             key={option}
-            onClick={() => gotoPage(Number(option))}
+            onClick={() => gotoPage(option)}
             active={pageIndex === option}
         >
             {option + 1}
@@ -95,23 +92,32 @@ function NewProjectsTable({
     ));
 
     // Handler for the input to set the pagination index
-    const handleInputPagination = ({ target: { value } }) =>
-        value > pageOptions.length || value < 0 ? gotoPage(0) : gotoPage(Number(value));
+    // const handleInputPagination = ({ target: { value } }) =>
+    //     value > pageOptions.length || value < 0 ? gotoPage(0) : gotoPage(value);
+
+    // Handler for the input to set the pagination index
+    const handleInputPagination = ({ target: { value } }) => {
+        const pageNumber = parseInt(value, 10);
+        if (pageNumber >= 1 && pageNumber <= pageOptions.length) {
+            gotoPage(pageNumber - 1); // Adjust value to zero-based index
+        }
+    };
 
     // Customized page options starting from 1
     const customizedPageOptions = pageOptions.map((option) => option + 1);
 
     // Setting value for the pagination input
-    const handleInputPaginationValue = ({ target: value }) => gotoPage(Number(value.value - 1));
+    const handleInputPaginationValue = ({ target: value }) => gotoPage(value.value - 1);
 
     // Search input value state
     const [search, setSearch] = useState(globalFilter);
 
     // Search input state handle
     const onSearchChange = useAsyncDebounce((value) => {
-        setGlobalFilter(value || undefined);
+        setGlobalFilter(value);
     }, 100);
 
+    console.log(canNextPage, canPreviousPage, pageOptions);
     // A function that sets the sorted value for the table
     const setSortedValue = (column) => {
         let sortedValue;
@@ -133,6 +139,20 @@ function NewProjectsTable({
     // Setting the entries ending point
     let entriesEnd;
 
+    // const filterData = useCallback(() => {
+    //     if (globalFilter) {
+    //         return rows.filter((row) =>
+    //         Object.keys(row.values).some(key =>
+    //           String(row.values[key]).toLowerCase().includes(globalFilter)
+    //         )
+    //       )
+    //     } else {
+    //       return rows.slice(entriesStart - 1, entriesEnd)
+    //     }
+    // }, [globalFilter])
+
+    // console.log(filterData())
+
     if (pageIndex === 0) {
         entriesEnd = pageSize;
     } else if (pageIndex === pageOptions.length - 1) {
@@ -142,9 +162,9 @@ function NewProjectsTable({
     }
     return (
         <TableContainer sx={{ boxShadow: "none", borderRadius: '0px' }}>
-            {/* {entriesPerPage || canSearch ? ( */}
-                {/* // <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}> */}
-                    {/* {entriesPerPage && (
+            {/* {entriesPerPage || canSearch ? (
+                <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+                    {entriesPerPage && (
                         <MDBox display="flex" alignItems="center">
                             <Autocomplete
                                 disableClearable
@@ -153,6 +173,7 @@ function NewProjectsTable({
                                 onChange={(event, newValue) => {
                                     setEntriesPerPage(parseInt(newValue, 10));
                                 }}
+                                isOptionEqualToValue={(options) => options.toString() === pageSize.toString()}
                                 size="small"
                                 sx={{ width: "5rem" }}
                                 renderInput={(params) => <MDInput {...params} />}
@@ -161,23 +182,23 @@ function NewProjectsTable({
                                 &nbsp;&nbsp;entries per page
                             </MDTypography>
                         </MDBox>
-                    )} */}
-                    {/* {canSearch && (
-            <MDBox width="12rem" ml="auto">
-              <MDInput
-                placeholder="Search..."
-                value={search}
-                size="small"
-                fullWidth
-                onChange={({ currentTarget }) => {
-                  setSearch(search);
-                  onSearchChange(currentTarget.value);
-                }}
-              />
-            </MDBox>
-          )} */}
-                {/* </MDBox> */}
-            {/* ) : null} */}
+                    )}
+                    {canSearch && (
+                        <MDBox width="12rem" ml="auto">
+                            <MDInput
+                                placeholder="Search..."
+                                value={search}
+                                size="small"
+                                fullWidth
+                                onChange={({ currentTarget }) => {
+                                    setSearch(search);
+                                    onSearchChange(currentTarget.value);
+                                }}
+                            />
+                        </MDBox>
+                    )}
+                </MDBox>
+            ) : null} */}
 
             {/* <StatusModal open={isAlert} onClose={handleClose}
         project_id={projectList[getid]?._id}  />

@@ -7,12 +7,12 @@ import {
   Icon,
   Menu,
   MenuItem,
+  fabClasses,
   useMediaQuery,
 } from "@mui/material";
 import MibananaIcon from "assets/new-images/navbars/mibanana-logo.png";
 import MDTypography from "components/MDTypography";
 import { useLocation, NavLink, useNavigate, Link } from "react-router-dom";
-import { AccountCircle } from "@mui/icons-material";
 import { useState } from "react";
 import { persistStore } from "redux-persist";
 import NotificationItem from "examples/Items/NotificationItem";
@@ -42,11 +42,18 @@ import List from "@mui/material/List";
 import { setMiniSidenav } from 'context'
 import "./navbar-style.css"
 import MenuIcon from "@mui/icons-material/Menu"
+
 // import { useSocket } from 'sockets';
 import { projectNotifications } from "redux/global/global-functions";
-import discordSound from 'assets/sound/discord.mp3'
+// import discordSound from 'assets/sound/discord.mp3'
 import notif from 'assets/sound/notif.wav'
 import { SocketContext } from "sockets";
+import ProjectMenuOptions from "../create-project-poper/project-menu-poper";
+import CopyWritingForm from "../Copy-writing-form/copy-writing-form";
+import SocialMediaManager from "../social-media-form/social-media-manager";
+import WebsiteForm from "../website-form/website-form";
+import WebAppDevForm from "../web-app-form/web-app-dev-form";
+import MobileAppDevForm from "../mobile-app-dev-form/mobile-app-dev-form";
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
@@ -101,7 +108,16 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     specific_software_names: '',
   })
   const [showAccountsbtn, setShowAccountsBtn] = useState(false)
+
+  const [openCopyWriting, setOpenCopyWriting] = useState(false)
+  const [openSocialMediaForm, setOpenSocialMediaForm] = useState(false)
+  const [openWebsite, setOpenWebsite] = useState(false)
+  const [openWebApp, setOpenWebAppApp] = useState(false)
+  const [openMobileApp, setOpenMobileApp] = useState(false)
+
   const is1040 = useMediaQuery("(max-width:1040px)")
+
+
   const [reloadProject, setReloadProjects] = useState(false)
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -112,8 +128,14 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   } = controller;
   const [anchorEl, setAnchorEl] = useState(null);
 
-  let textColor = "white";
+  const [openProjectMenu, setOpenProjectMenu] = useState(false);
+  const anchorRef = useRef(null);
 
+  const handleToggle = useCallback(() => {
+    setOpenProjectMenu((prevOpen) => !prevOpen);
+  }, [openProjectMenu]);
+
+  let textColor = "white";
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -136,9 +158,42 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       console.error("Logout failed:", error);
     }
   };
+  const handleOpenCopyWriting = () => {
+    setOpenCopyWriting(true);
+  };
+
+  const handleOpenSocialMedia = () => {
+    setOpenSocialMediaForm(true);
+  };
+  const handleCloseSocialMedia = () => {
+    setOpenSocialMediaForm(false);
+  };
+  const handleWebsite = () => {
+    setOpenWebsite(true);
+  };
+  const handleCloseWebsite = () => {
+    setOpenWebsite(false);
+  };
+
+  const handleWebAppDev = () => {
+    setOpenWebAppApp(true);
+  };
+
+  const handleCloseWebAppDev = () => {
+    setOpenWebAppApp(false);
+  };
+  const handleMobileAppDev = () => {
+    setOpenMobileApp(true);
+  };
+  const handleCloseMobileAppDev = () => {
+    setOpenMobileApp(false);
+  };
+
   const handleClose = () => {
-    // reduxActions.showModal(false)
     setOpen(false);
+  };
+  const handleOpenCopyWritingClose = () => {
+    setOpenCopyWriting(false);
   };
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -400,6 +455,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       <NotificationItem icon={<Icon>logout</Icon>} onClick={handleLogout} title="Logout" />
     </Menu>
   );
+
   // Notifications Dropdown
   const renderMenu = () => (
     <Menu
@@ -457,16 +513,16 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
                 <img
                   src={newMsg?.avatar}
                   loading="lazy"
-                  width={40}
-                  height={40}
+                  width={'100%'}
+                  height={'100%'}
                   style={{ borderRadius: "20px" }}
                 />
               ) : (
                 <img
                   src={DefaultAvatar}
                   loading="lazy"
-                  width={40}
-                  height={40}
+                  width={'100%'}
+                  height={'100%'}
                   style={{ borderRadius: "20px" }}
                 />
               )}
@@ -543,10 +599,12 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         reduxActions.handleProject_notifications(project_data)
       })
     } if (role?.projectManager || role?.designer) {
-      socketIO.current.on('getting-customer-notifications', project_data => {
+      socketIO.current.on('getting-customer-notifications', (project_data, id, status) => {
         // notificationSound()
-        // console.log('Designer or Manager', project_data)
-        // const arr = [project_data]
+        const filterProject = reduxState.project_list.CustomerProjects?.map(project => {
+          return project._id === id ? { ...project, status: status } : project
+        })
+        reduxActions.getCustomerProject({ ...reduxState.projects_list, CustomerProjects: filterProject })
         reduxActions.handleProject_notifications(project_data)
       })
     }
@@ -558,14 +616,12 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     getBrandData(id, reduxActions.getCustomerBrand);
   }, [reloadProject]);
 
-  
+
   useEffect(() => {
     const id = reduxState.userDetails?.id;
     getProjectData(id, reduxActions.getCustomerProject);
     getBrandData(id, reduxActions.getCustomerBrand);
   }, []);
-
-
 
   const ProjectButton = styled(Button)(({ theme: { palette } }) => {
     const { primary } = palette;
@@ -584,6 +640,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       },
     };
   });
+
   const ProjectButton2 = styled(Button)(({ theme: { palette } }) => {
     const { primary } = palette;
     return {
@@ -746,6 +803,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     projectNotifications(id, reduxActions.handleProject_notifications)
   }, [])
 
+  console.log('Checking')
   return (
     <>
       <CreateProject1
@@ -771,8 +829,34 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         setShowSuccessModal={setShowSuccessModal}
         brandOption={brandOption}
         removeSingleFile={removeSingleFile}
-        deleteOtherSingleFile={deleteOtherSingleFile} s
+        deleteOtherSingleFile={deleteOtherSingleFile}
       />
+      <CopyWritingForm
+        open={openCopyWriting}
+        handleClose={handleOpenCopyWritingClose}
+      />
+
+      <SocialMediaManager
+        open={openSocialMediaForm}
+        handleClose={handleCloseSocialMedia}
+      />
+
+      <WebsiteForm
+        open={openWebsite}
+        handleClose={handleCloseWebsite}
+      />
+
+      <WebAppDevForm
+        open={openWebApp}
+        handleClose={handleCloseWebAppDev}
+      />
+
+      <MobileAppDevForm
+        open={openMobileApp}
+        handleClose={handleCloseMobileAppDev}
+      />
+
+
       <SuccessModal
         msg={respMessage}
         open={showSuccessModal}
@@ -800,7 +884,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
               ) : null}
               <RightSideDrawer list={list} />
             </div>
-           {/* <div className="btn-container"
+            {/* <div className="btn-container"
               onClick={handleUserProfileMenu}>
               <AccountCircle fontSize="large" />
               </div>*/}
@@ -808,17 +892,32 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
               <MenuIcon fontSize="large" />
             </div>
             {renderUserMenu()}
-            {role?.customer && (
+            {/* {role?.customer && (
               <ProjectButton
                 variant="contained"
                 size="medium"
                 className="create-project-btn"
                 startIcon={projectIcon}
-                onClick={handleClickOpen}
+                ref={anchorRef}
+                id="composition-button"
+                aria-controls={openProjectMenu ? 'composition-menu' : undefined}
+                aria-expanded={openProjectMenu ? 'true' : undefined}
+                aria-haspopup="true"
+                onClick={handleToggle}
+              // onClick={handleClickOpen}
               >
                 Create Project
               </ProjectButton>
-            )}
+            )} */}
+            {role?.customer && <ProjectMenuOptions
+              size="medium"
+              handleClickOpen={handleClickOpen}
+              handleCopyWriting={handleOpenCopyWriting}
+              handleSocialMedia={handleOpenSocialMedia}
+              handleWebsite={handleWebsite}
+              handleWebAppDev={handleWebAppDev}
+              handleMobileAppDev={handleMobileAppDev}
+            />}
           </MDBox>
         </Grid>
         <Grid className="grid-3" item style={{ display: showAccountsbtn ? 'flex' : 'none' }}>
@@ -834,14 +933,23 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             <AccountCircle fontSize="large" />
             </div>*/}
           {role?.customer && (
-            <ProjectButton2
-              variant="contained"
-              size="small"
-              startIcon={projectIcon}
-              onClick={handleClickOpen}
-            >
-              Create Project
-            </ProjectButton2>
+            // <ProjectButton2
+            //   variant="contained"
+            //   size="small"
+            //   startIcon={projectIcon}
+            //   onClick={handleClickOpen}
+            // >
+            //   Create Project
+            // </ProjectButton2>
+            <ProjectMenuOptions
+              size={"small"}
+              handleClickOpen={handleClickOpen}
+              handleCopyWriting={handleOpenCopyWriting}
+              handleSocialMedia={handleOpenSocialMedia}
+              handleWebsite={handleWebsite}
+              handleWebAppDev={handleWebAppDev}
+              handleMobileAppDev={handleMobileAppDev}
+            />
           )}
         </Grid>
       </Grid>
