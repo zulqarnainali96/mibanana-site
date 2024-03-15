@@ -21,8 +21,7 @@ const createUsers = asyncHandler(async (req, res) => {
         return res.status(409).json({ message: 'email already exists' })
     }
     const hashPassword = await bcrypt.hash(password, 10) // Salt Rounds
-    const created_at = new Date().toDateString() + " " + new Date().toLocaleTimeString()
-    const userObject = { email, 'password': hashPassword, name, created_at, is_active: true, roles, avatar: '', phone_no: '', company_profile }
+    const userObject = { email, 'password': hashPassword, name, is_active: true, roles, avatar: '', phone_no: '', company_profile }
     const user = await User.create(userObject)
     if (user) {
         const token = await new Token({
@@ -278,8 +277,7 @@ const updateCustomerDetails = async (req, res) => {
             return res.status(409).json({ message: 'email already exists' })
         }
         const hashPassword = await bcrypt.hash(password, 10) // Salt Rounds
-        const created_at = new Date().toDateString() + " " + new Date().toLocaleTimeString()
-        const userObject = { email, 'password': hashPassword, name, created_at, is_active: true, verified: true, roles: ['Customer'], avatar: '', phone_no: phone, company_profile: company_name }
+        const userObject = { email, 'password': hashPassword, name, is_active: true, verified: true, roles: ['Customer'], avatar: '', phone_no: phone, company_profile: company_name }
         const user = await User.create(userObject)
         if (user) {
             const saveCompanyDetails = await CompanyDetaitls.create({ user: user?._id, company_name, primary_email, contact_person, primary_phone, company_size: '', time_zone: '', company_address: '', })

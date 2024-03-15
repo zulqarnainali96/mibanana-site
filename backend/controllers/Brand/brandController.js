@@ -1,4 +1,3 @@
-const asyncHandler = require('express-async-handler')
 const brand_model = require("../../models/Brands/brandModel")
 const { bucket } = require("../../google-cloud-storage/gCloudStorage")
 const User = require("../../models/UsersLogin")
@@ -31,7 +30,7 @@ const createBrand = async (req, res) => {
         if (createNewBrand !== null) {
             let username = name.replace(/\s/g, '')
             let brandName = createNewBrand.brand_name.replace(/\s/g, '')
-            const prefix = `${username}-${user}/${brandName}-${createNewBrand._id}/`
+            const prefix = `${username}-${user}/brands/${brandName}-${createNewBrand._id}/`
             await Promise.all(files.map(file => {
                 const options = {
                     resumable: true,
@@ -46,15 +45,15 @@ const createBrand = async (req, res) => {
                     const [files] = await bucket.getFiles({ prefix })
                     let filesInfo = files?.map((file) => {
                         let f = {}
-                        f.id = uniqID(),
-                            f.name = path.basename(file.name),
-                            f.url = encodeURI(file.storage.apiEndpoint + '/' + file.bucket.name + '/' + file.name),
-                            f.download_link = file.metadata.mediaLink,
-                            f.type = file.metadata.contentType,
-                            f.size = file.metadata.size,
-                            f.time = file.metadata.timeCreated,
-                            f.upated_time = file.metadata.updated
-                            f.folder_name = prefix
+                            f.id = uniqID();
+                            f.name = path.basename(file.name);
+                            f.url = encodeURI(file.storage.apiEndpoint + '/' + file.bucket.name + '/' + file.name);
+                            f.download_link = file.metadata.mediaLink;
+                            f.type = file.metadata.contentType;
+                            f.size = file.metadata.size;
+                            f.time = file.metadata.timeCreated;
+                            f.upated_time = file.metadata.updated;
+                            f.folder_name = prefix;
                             
                         return f
                     })
@@ -113,7 +112,7 @@ const getBrandList = async (req, res) => {
             const allBrands = await brand_model.find()
             return res.status(200).send({ message: 'All List Found', brandList: allBrands })
 
-        } 
+        }
         else {
             if (brands !== null) {
                 return res.status(200).send({ message: 'List Found', brandList: brands })
@@ -141,7 +140,7 @@ const deleteBrandList = async (req, res) => {
                 let { name, _id } = findUser
                 brand_name = brand_name.replace(/\s/g, '')
                 name = name.replace(/\s/g, '')
-                const prefix = `${name}-${_id}/${brand_name}-${brand_id}/`
+                const prefix = `${name}-${_id}/brands/${brand_name}-${brand_id}/`
 
                 const [files] = await bucket.getFiles({ prefix })
                 await Promise.all(

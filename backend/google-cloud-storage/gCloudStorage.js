@@ -2,18 +2,16 @@ const { Storage } = require('@google-cloud/storage')
 const path = require('path')
 const uniqID = require('uuid').v4
 const gCloudStorage = new Storage({
-    // projectId: 'mibanana-app',
-    // keyFilename: path.join(__dirname, 'mibanana-app-1bcac3255187.json'),
-    projectId: 'mi-banana-401205',
-    keyFilename: path.join(__dirname, 'mibanana.json'),
+    projectId: 'mibanana-app',
+    keyFilename: path.join(__dirname, 'new-mibanana-key.json'),
+    // projectId: 'mi-banana-401205',
+    // keyFilename: path.join(__dirname, 'mibanana.json'),
 })
-// const new = 'mibanana-app-1bcac3255187.json'
-// const old = 'mibanana.json'
 const graphicProjectsModel = require('../models/graphic-design-model')
-const bucketName = `mi-banana-401205.appspot.com`
-// const bucketName2 = 'mibanana-files-bucket'
+// const bucketName = `mi-banana-401205.appspot.com`
+const bucketName2 = 'mibanana-files-bucket'
 
-const bucket = gCloudStorage.bucket(bucketName)
+const bucket = gCloudStorage.bucket(bucketName2)
 const fs = require('fs')
 
 const createFolder = async () => {
@@ -28,14 +26,13 @@ const createFolder = async () => {
     })
     return { path }
 }
-
 let generationMatchPreCondition = 0
 
 const uploadFile = async (req, res) => {
     let { user_id, name, project_id, project_title } = req.body
     project_title = project_title?.replace(/\s/g, '')
     name = name?.replace(/\s/g, '')
-    const prefix = `${name}-${user_id}/${project_title}-${project_id}/customer-upload/`
+    const prefix = `${name}-${user_id}/projects/${project_title}-${project_id}/customer-upload/`
     await Promise.all(req.files.map(file => {
         const options = {
             resumable: false,
