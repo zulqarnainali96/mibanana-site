@@ -9,7 +9,7 @@ import Add from '@mui/icons-material/Add'
 import BrandForm from './Add-brand-form'
 import apiClient from 'api/apiClient'
 import MDSnackbar from 'components/MDSnackbar'
-import useBrandData from './brandData'
+import brandData from './brandData'
 import MDTypography from 'components/MDTypography'
 import { useDispatch } from 'react-redux'
 import { getNew_Brand } from 'redux/actions/actions'
@@ -17,265 +17,90 @@ import { useSelector } from 'react-redux'
 import { getBrandData } from 'redux/global/global-functions'
 import reduxContainer from 'redux/containers/containers'
 import EditBrand from './Edit-Brand/EditBrand'
-import { openEditBrandModal } from 'redux/actions/actions'
+// import { openEditBrandModal } from 'redux/actions/actions'
 import SuccessModal from 'components/SuccessBox/SuccessModal'
 import NewProjectsTable from 'examples/new-table'
 import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
 import { styled, useMediaQuery } from '@mui/material'
+import useBrandData from './useBrandData'
 
 
-const MIBrandTable = ({ reduxState, reduxActions }) => {
-    const open = reduxState.openBrandModel
-    const [loading, setLoading] = useState(false)
-    const [other, setOther] = useState(1)
-    const [addMoreField, setAddMore] = useState([])
-    const [editMoreImage, setEditMoreImages] = useState([])
-    const id = reduxState.userDetails.id
-    const [errorSB, setErrorSB] = useState(false);
-    const [successSB, setSuccessSB] = useState(false);
+const MIBrandTable = (props) => {
+    const {
+        role,
+        renderSuccessSB,
+        renderErrorSB,
+        BrandButton,
+        showSuccessModal,
+        openEditModal,
+        formValue,
+        respMessage,
+        closeSuccessModal,
+        openAddBrandModal,
+        setFormValue,
+        openAddModal,
+        image,
+        addMoreField,
+        editMoreImage,
+        fileRef,
+        onChangeText,
+        closeAddBrandModal,
+        closeEditBrandModal,
+        handleFileUpload,
+        setRespMessage,
+        setEditMoreImages,
+        handleFileUploadEdit,
+        removeEditFiles,
+        openSuccessSB,
+        editAddMoreImages,
+        openErrorSB,
+        setAddMore,
+        addMore,
+        loading,
+        onSubmit,
+        setImage,
+        setFilesArray,
+        filesArray,
+        checkState,
+        setCheckState,
+        getDescriptionText,
+        openEditBrandModal,
+    } = useBrandData(props)
+
+    const currentRole = (role?.admin || role?.projectManager || role?.designer) ? true : false
     const is768 = useMediaQuery("(max-width:768px)")
     const is500 = useMediaQuery("(max-width:500px)")
-
-    // State for Checkbox
-    const [checkState, setCheckState] = useState({
-        isLogochk: true,
-        isMoodBoardchk: true,
-        isBrandGuidechk: true,
-        isothers: true,
-    })
-    const isDesignerAndManagerAdmin = reduxState.userDetails?.roles?.includes("Graphic-Designer") || reduxState.userDetails?.roles?.includes("Project-Manager") || reduxState.userDetails?.roles?.includes("Admin") ? true : false
-    const [showSuccessModal, setShowSuccessModal] = useState(false)
-    const [respMessage, setRespMessage] = useState("")
-    const fileRef = useRef(null)
-    const [image, setImage] = useState({
-        upload_logo: [],
-        upload_moodboard: [],
-        replace_brand_guidelines: [],
-        upload_more: []
-    })
-    const [formValue, setFormValue] = useState({
-        brand_name: '', brand_description: '', web_url: '',
-        facebook_url: '', instagram_url: '', twitter_url: '',
-        linkedin_url: '', tiktok_url: ''
-    })
-    const { rows, small_rows, columns, small_columns } = useBrandData(setFormValue)
-    const dispatch = useDispatch()
-    const userID = reduxState.userDetails.id
-    const [filesArray, setFilesArray] = useState([])
-
-    const openSuccessSB = () => setSuccessSB(true);
-    const closeSuccessSB = () => setSuccessSB(false);
-
-    const openErrorSB = () => setErrorSB(true);
-    const closeErrorSB = () => setErrorSB(false);
-
-    const closeBrandModal = () => dispatch(openEditBrandModal(false))
-    const iseditBrand = useSelector(state => state.iseditBrand)
-
-    const handleOpen = () => {
-        // setOpen(true)
-        reduxActions.openBrandModalFunc(true)
-    }
-    
-    const handleClose = () => {
-        // setOpen(false)
-        reduxActions.openBrandModalFunc(false)
-        setOther(1)
-        setAddMore([])
-    }
-
-    const getDescriptionText = (value) => {
-        setFormValue({
-            ...formValue,
-            brand_description: value
-        })
-    }
-
-    const onhandleChange = (event) => {
-        event.stopPropagation();
-        const { name, value } = event.target
-        setFormValue({
-            ...formValue,
-            [name]: value,
-        })
-
-    }
-    const handleFileUpload = (event) => {
-        if (!event.target.files.length) return
-        const { name, files } = event.target
-        setImage(prev => ({ ...prev, [name]: files }))
-        setFilesArray(prev => [...prev, { name: name, files: files }])
-    }
-    const handleFileUploadEdit = (event) => {
-        const files = event.target.files
-        if (files?.length > 5) {
-            alert("Only upload 5 files")
-            setEditMoreImages([])
-            return
-        }
-        for (let key = 0; key < files.length; key++) {
-            const file = files[key]
-            setEditMoreImages(prev => [...prev, file])
-        }
-    }
+    const { rows, small_rows, columns, small_columns } = brandData(setFormValue, openEditBrandModal)
 
     useEffect(() => {
-        if (editMoreImage.length > 5) {
-            alert("Only upload 5 files")
-            setEditMoreImages([])
-            return
-        }
-    }, [editMoreImage])
-
-    const removeEditFiles = (file) => {
-        const result = editMoreImage.filter(item => item.name !== file.name)
-        setEditMoreImages(result)
-    }
-    const addMore = () => {
-        if(addMoreField.length < 3){
-            setOther(other + 1)
-            setAddMore(prev => [...prev, {
-                name: `others_${other}`,
-                value: ''
-    
-            }])
-            setImage({
-                ...image,
-                [`others_${other}`]: []
-            })
-        }else{
-            console.log("You can not add more fields.")
-        }
-    }
-    const editAddMoreImages = () => {
-        fileRef.current.click()
-    }
-    const onSubmit = async () => {
-        setLoading(true)
-        let formData = new FormData()
-        formData.append('brand_name',formValue? formValue.brand_name : "")
-        formData.append('brand_description', formValue? formValue.brand_description : "")
-        formData.append('web_url',formValue? formValue.web_url :"")
-        formData.append('facebook_url',formValue? formValue.facebook_url : "")
-        formData.append('instagram_url',formValue? formValue.instagram_url : "")
-        formData.append('twitter_url',formValue? formValue.twitter_url :"")
-        formData.append('linkedin_url', formValue?formValue.linkedin_url : "")
-        formData.append('tiktok_url', formValue?formValue.tiktok_url : "")
-        formData.append('user', reduxState.userDetails?.id)
-        formData.append('name', reduxState.userDetails?.name)
-
-        for (let i = 0; i < filesArray.length; i++) {
-
-            formData.append('files', filesArray[i].files[0])
-        }
-        await apiClient.post("/api/brand", formData)
-            .then(({ data }) => {
-                setRespMessage(data?.message)
-                dispatch(getNew_Brand(true))
-                setLoading(false)
-                // openSuccessSB()
-                setAddMore([])
-                setImage({
-                    upload_logo: [],
-                    upload_moodboard: [],
-                    replace_brand_guidelines: [],
-                    upload_more: [],
-                })
-                setFilesArray([])
-                closeBrandModal()
-                handleClose()
-                setTimeout(() => {
-                    setShowSuccessModal(true)
-                    getBrandData(userID, reduxActions.getCustomerBrand)
-                }, 700)
-
-            })
-            .catch((error) => {
-                if (error?.response) {
-                    // dispatch(getNew_Brand(!new_brand))
-                    setRespMessage(error.response?.data?.message)
-                    setLoading(false)
-                    setTimeout(() => {
-                        openErrorSB()
-                    }, 500)
-                    return
-                }
-                setLoading(false)
-            })
-    }
-    const renderErrorSB = (
-        <MDSnackbar
-            color="error"
-            icon="warning"
-            title="Error"
-            content={respMessage}
-            dateTime={new Date().toLocaleTimeString('pk')}
-            open={errorSB}
-            onClose={closeErrorSB}
-            close={closeErrorSB}
-            bgWhite
-        />
-    );
-    const renderSuccessSB = (
-        <MDSnackbar
-            color="success"
-            icon="check"
-            title="SUCCESS"
-            content={respMessage}
-            dateTime={new Date().toLocaleTimeString('pk')}
-            open={successSB}
-            onClose={closeSuccessSB}
-            close={closeSuccessSB}
-            bgWhite
-        />
-    );
-    const brandModelProps = {
-        handleFileUpload, open,
-        image, other, addMoreField,
-        addMore, loading, onSubmit,
-        setImage, setAddMore, setFilesArray,
-        filesArray, getDescriptionText,
-    }
-    useEffect(() => {
-        return () => {
-            setAddMore([])
-            setEditMoreImages([])
-        }
+        console.log('Unmount')
     }, [])
-    useEffect(() => {
-    }, [reduxState.customerBrand])
 
-    const BrandButton = styled(Button)(({ theme: { palette } }) => {
-        const { primary } = palette
-        return {
-            backgroundColor: primary.main,
-            fontFamily: fontsFamily.poppins,
-            fontWeight: '400',
-            borderRadius: 0,
-            height: '100%',
-            "&:hover": {
-                backgroundColor: "#d9ba08",
-            },
-            "&:focus": {
-                backgroundColor: "#d9ba08 !important",
-            }
-        }
-    })
     return (
         <DashboardLayout>
             <BrandForm
-                state={formValue}
-                checkboxState={checkState}
+                openAddModal={openAddModal}
+                onChangeText={onChangeText}
+                closeAddBrandModal={closeAddBrandModal}
+                handleFileUpload={handleFileUpload}
+                image={image}
+                addMoreField={addMoreField}
+                setAddMore={setAddMore}
+                addMore={addMore}
+                loading={loading}
+                onSubmit={onSubmit}
+                setImage={setImage}
+                setFilesArray={setFilesArray}
+                filesArray={filesArray}
+                checkState={checkState}
                 setCheckState={setCheckState}
-                onChange={onhandleChange}
-                onClose={handleClose}
-                {...brandModelProps}
+                getDescriptionText={getDescriptionText}
             />
             <EditBrand
-                onChange={onhandleChange}
-                onClose={closeBrandModal}
-                open={iseditBrand}
+                onChange={onChangeText}
+                onClose={closeEditBrandModal}
+                open={openEditModal}
                 setFormValue={setFormValue}
                 formValue={formValue}
                 openErrorSB={openErrorSB}
@@ -292,19 +117,19 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
             <SuccessModal
                 msg={respMessage}
                 open={showSuccessModal}
-                onClose={() => setShowSuccessModal(false)}
+                onClose={closeSuccessModal}
                 width="35%"
                 color="#333"
                 sideRadius={false}
             />
             <MDBox ml={4} pt={2} pb={3}>
-                <Grid container pt={isDesignerAndManagerAdmin && "0px"} justifyContent={"flex-end"} alignItems={"center"} spacing={2}>
+                <Grid container pt={currentRole && "0px"} justifyContent={"flex-end"} alignItems={"center"} spacing={2}>
                     <Grid item xxl={12} xl={12} md={12} xs={12}>
                         <Grid container alignItems={"center"} justifyContent={"space-around"}>
-                            <Grid item xxl={isDesignerAndManagerAdmin ? 12 : 6} xl={isDesignerAndManagerAdmin ? 12 : 6}>
-                                <MDTypography sx={{...titleStyles,fontSize: is500 ? '2rem' : '3rem',}}>miBrands</MDTypography>
+                            <Grid item xxl={currentRole ? 12 : 6} xl={currentRole ? 12 : 6}>
+                                <MDTypography sx={{ ...titleStyles, fontSize: is500 ? '2rem' : '3rem', }}>miBrands</MDTypography>
                             </Grid>
-                            {isDesignerAndManagerAdmin ? null :
+                            {currentRole ? null :
                                 (<Grid item xxl={6} xl={6}>
                                     <MDBox width={"100%"} sx={{ textAlign: "right", paddingInline: '32px' }}>
                                         <BrandButton
@@ -317,7 +142,7 @@ const MIBrandTable = ({ reduxState, reduxActions }) => {
                                                     fontSize: '1.3rem !important',
                                                     display: 'inline-flex'
                                                 }} />}
-                                            onClick={handleOpen}
+                                            onClick={openAddBrandModal}
                                         >
                                             ADD Brand
                                         </BrandButton>

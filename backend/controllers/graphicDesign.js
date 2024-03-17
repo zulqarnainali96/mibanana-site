@@ -247,7 +247,7 @@ const getCustomerFiles = async (req, res) => {
             let { user, name, project_title } = currentProject
             let project_titl = project_title.replace(/\s/g, '')
             let names = name.replace(/\s/g, '')
-            const prefix = `${names}-${user}/${project_titl}-${_id}/customer-upload`
+            const prefix = `${names}-${user}/projects/${project_titl}-${_id}/customer-upload`
             // console.log(prefix)
             const [files] = await bucket.getFiles({ prefix })
             // console.log(files)

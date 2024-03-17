@@ -17,6 +17,7 @@ import { makeStyles } from '@mui/styles'
 import ReactQuil from 'react-quill'
 import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings'
 import { formats, modules } from 'assets/react-quill-settings/react-quill-settings'
+import useBrandData from '../useBrandData'
 
 const BrandModal = styled(Dialog)(({ theme }) => ({
     // '& .MuiInputBase-root': {
@@ -49,27 +50,44 @@ const AlignGrid = styled(Grid)(({ theme }) => ({
 
 // const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
-const BrandForm = ({
-    state,
-    open,
-    onChange,
-    onClose,
-    handleFileUpload,
-    image,
-    other,
-    addMoreField,
-    setAddMore,
-    addMore,
-    loading,
-    onSubmit,
-    setImage,
-    setFilesArray,
-    filesArray,
-    checkboxState,
-    setCheckState,
-    getDescriptionText,
+const BrandForm = (props) => {
+    const {
+        openAddModal,
+        onChangeText,
+        closeAddBrandModal,
+        handleFileUpload,
+        image,
+        addMoreField,
+        setAddMore,
+        addMore,
+        loading,
+        onSubmit,
+        setImage,
+        setFilesArray,
+        filesArray,
+        checkState,
+        setCheckState,
+        getDescriptionText, 
+    } = props
+    // const {
+    //     // openAddModal,
+    //     onChangeText,
+    //     closeAddBrandModal,
+    //     handleFileUpload,
+    //     image,
+    //     addMoreField,
+    //     setAddMore,
+    //     addMore,
+    //     loading,
+    //     onSubmit,
+    //     setImage,
+    //     setFilesArray,
+    //     filesArray,
+    //     checkState,
+    //     setCheckState,
+    //     getDescriptionText,
 
-}) => {
+    // } = useBrandData
     const logoRef = useRef(null)
     const moodboard = useRef(null)
     const brandGuide = useRef(null)
@@ -86,8 +104,8 @@ const BrandForm = ({
     }
     const handleCheckboxes = (name) => {
         setCheckState({
-            ...checkboxState,
-            [name]: !checkboxState[name]
+            ...checkState,
+            [name]: !checkState[name]
         })
     }
     const useStyles = makeStyles({
@@ -110,11 +128,11 @@ const BrandForm = ({
     }, [image])
 
     return (
-        <BrandModal open={open} sx={{ width: '100% !important' }} >
+        <BrandModal open={openAddModal} sx={{ width: '100% !important' }} >
             <DialogTitle display={"flex"} position={"relative"} width={'100%'} justifyContent={"space-between"} alignItems={"center"}>
                 <MDTypography color="dark" fontWeight="bold">Add New Brand Details</MDTypography>
                 <MDButton
-                    onClick={onClose}
+                    onClick={closeAddBrandModal}
                     sx={{ position: "absolute", right: 4, padding: '1.4rem !important' }}
                 >
                     <CloseOutlined sx={
@@ -129,7 +147,7 @@ const BrandForm = ({
                     <Grid item xxl={12} lg={12} xs={12} md={12}>
                         <MDBox>
                             <label style={Styles} htmlFor='Name'>Brand Name</label>
-                            <MDInput type="text" name="brand_name" placeholder="Brand Name" variant="outlined" fullWidth onChange={onChange} />
+                            <MDInput type="text" name="brand_name" placeholder="Brand Name" variant="outlined" fullWidth onChange={onChangeText} />
                         </MDBox>
                     </Grid>
                     <Grid item xxl={12} lg={12} xs={12} md={12}>
@@ -155,44 +173,44 @@ const BrandForm = ({
                     <Grid item xxl={6} lg={6} xs={12} md={12}>
                         <MDBox>
                             <label style={Styles} htmlFor='website'>Website</label>
-                            <MDInput type="text" name="web_url" placeholder="Website url" variant="outlined" fullWidth onChange={onChange} />
+                            <MDInput type="text" name="web_url" placeholder="Website url" variant="outlined" fullWidth onChange={onChangeText} />
                         </MDBox>
                     </Grid>
                     <Grid item xxl={6} lg={6} xs={12} md={12}>
                         <MDBox>
                             <label style={Styles} htmlFor='facebook'>Facebook</label>
-                            <MDInput type="text" name="facebook_url" placeholder="Facebook profile url" variant="outlined" fullWidth onChange={onChange} />
+                            <MDInput type="text" name="facebook_url" placeholder="Facebook profile url" variant="outlined" fullWidth onChange={onChangeText} />
                         </MDBox>
                     </Grid>
                     <Grid item xxl={6} lg={6} xs={12} md={12}>
                         <MDBox>
                             <label style={Styles} htmlFor='instagram'>Instagram</label>
-                            <MDInput type="text" name="instagram_url" placeholder="Instagram url" variant="outlined" fullWidth onChange={onChange} />
+                            <MDInput type="text" name="instagram_url" placeholder="Instagram url" variant="outlined" fullWidth onChange={onChangeText} />
                         </MDBox>
                     </Grid>
                     <Grid item xxl={6} lg={6} xs={12} md={12}>
                         <MDBox>
                             <label style={Styles} htmlFor='twitter'>Twitter</label>
-                            <MDInput type="text" name="twitter_url" placeholder="Twitter profile url" variant="outlined" fullWidth onChange={onChange} />
+                            <MDInput type="text" name="twitter_url" placeholder="Twitter profile url" variant="outlined" fullWidth onChange={onChangeText} />
                         </MDBox>
                     </Grid>
                     <Grid item xxl={6} lg={6} xs={12} md={12}>
                         <MDBox>
                             <label style={Styles} htmlFor='linkedin'>Linkedin</label>
-                            <MDInput type="text" name="linkedin_url" placeholder="Linkedin url" variant="outlined" fullWidth onChange={onChange} />
+                            <MDInput type="text" name="linkedin_url" placeholder="Linkedin url" variant="outlined" fullWidth onChange={onChangeText} />
                         </MDBox>
                         <MDTypography variant="span" fontSize="small">This will help us to know your brand more</MDTypography>
                     </Grid>
                     <Grid item xxl={6} lg={6} xs={12} md={12}>
                         <MDBox>
                             <label style={Styles} htmlFor='tiktok'>TikTok</label>
-                            <MDInput type="text" name="tiktok_url" placeholder="Tiktok profile url" variant="outlined" fullWidth onChange={onChange} />
+                            <MDInput type="text" name="tiktok_url" placeholder="Tiktok profile url" variant="outlined" fullWidth onChange={onChangeText} />
                         </MDBox>
                     </Grid>
                     <Grid item xxl={12} xl={12} lg={12} xs={12} md={12}>
                         <MDTypography variant="h2" px={2} py={0} fontSize="large" fontWeight="bold">Upload Brand Materials</MDTypography>
-                        <MDTypography variant="h6" px={2} py={0} sx={{ color: "#ccc",fontSize:"13px !important" }} fontWeight="bold">Max 7 files allowed</MDTypography>
-                        <MDTypography variant="p" px={2} py={0} sx={{ color: "#ccc",fontSize:"12px !important" }}>allowed formats ai .eps .psd .jpg .png .pdf .svg</MDTypography>
+                        <MDTypography variant="h6" px={2} py={0} sx={{ color: "#ccc", fontSize: "13px !important" }} fontWeight="bold">Max 7 files allowed</MDTypography>
+                        <MDTypography variant="p" px={2} py={0} sx={{ color: "#ccc", fontSize: "12px !important" }}>allowed formats ai .eps .psd .jpg .png .pdf .svg</MDTypography>
                         <Grid container margin={1} justifyContent={"space-between"}
                             sx={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '8px', overflowY: 'scroll', height: '260px' }}
                         >
@@ -200,7 +218,7 @@ const BrandForm = ({
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
                                     <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox
                                         // classes={{ checked: classes.checkedCheckbox }}
-                                        checked={checkboxState.isLogochk}
+                                        checked={checkState?.isLogochk}
                                         sx={{
                                             width: 30,
                                             height: 30,
@@ -214,21 +232,20 @@ const BrandForm = ({
                                     <label style={Styles} htmlFor='logo' aria-label='logo'>Logo</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox checked={checkboxState.isMoodBoardchk} sx={{ width: 30, height: 30 }}
+                                    <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox checked={checkState?.isMoodBoardchk} sx={{ width: 30, height: 30 }}
                                         onChange={() => handleCheckboxes('isMoodBoardchk')}
-                                    />}
-                                    />
+                                    />} />
                                     <label style={Styles} htmlFor='moodboard' aria-label='moodboard'>Moodboard</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox checked={checkboxState.isBrandGuidechk} sx={{ width: 30, height: 30 }}
+                                    <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox checked={checkState?.isBrandGuidechk} sx={{ width: 30, height: 30 }}
                                         onChange={() => handleCheckboxes('isBrandGuidechk')}
                                     />}
                                     />
                                     <label style={Styles} htmlFor='brand-guidelines' aria-label='guidelines'>Brand Guidelines</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
-                                    <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox checked={checkboxState.isothers} sx={{ width: 30, height: 30 }}
+                                    <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox checked={checkState?.isothers} sx={{ width: 30, height: 30 }}
                                         onChange={() => handleCheckboxes('isothers')} />}
                                     />
                                     <label style={Styles} htmlFor='Others' aria-label='others'>Others</label>
@@ -236,7 +253,7 @@ const BrandForm = ({
                             </Grid>
                             <Grid item xxl={9} xl={9} lg={9} mb={1.5}>
                                 <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
-                                    {image.upload_logo?.length ? <Close fontSize='medium'
+                                    {image?.upload_logo?.name ? <Close fontSize='medium'
                                         sx={{
                                             position: 'absolute', cursor: 'pointer',
                                             left: '-29px',
@@ -252,11 +269,11 @@ const BrandForm = ({
                                             sx={{
                                                 ...inputStyles,
                                                 "& fieldset": {
-                                                    opacity: checkboxState.isLogochk ? 1 : '0.2',
+                                                    opacity: checkState?.isLogochk ? 1 : '0.2',
                                                     backgroundColor: '#cccccca1'
                                                 },
                                             }}
-                                            value={image.upload_logo?.length ? image.upload_logo[0]?.name : ''}
+                                            value={image?.upload_logo?.name ? image.upload_logo?.name : ''}
                                             disabled
                                         />
                                     </MDBox>
@@ -269,7 +286,7 @@ const BrandForm = ({
                                             type="button"
                                             sx={buttonStyles}
                                             onClick={() => openLogo(logoRef)}
-                                            disabled={!checkboxState.isLogochk}
+                                            disabled={!checkState?.isLogochk}
                                         >
                                             Upload Logo
                                         </MDButton>
@@ -282,13 +299,13 @@ const BrandForm = ({
                                             accept=".ai, .eps, .psd, .jpg, .png, .pdf, .svg"
                                             id="upload-logo"
                                             onChange={handleFileUpload}
-                                            disabled={!checkboxState.isLogochk}
+                                            disabled={!checkState?.isLogochk}
                                         />
                                     </label>
 
                                 </AlignGrid>
                                 <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
-                                    {image.upload_moodboard[0]?.name ? <Close fontSize='medium'
+                                    {image?.upload_moodboard[0]?.name ? <Close fontSize='medium'
                                         sx={{
                                             position: 'absolute', cursor: 'pointer',
                                             left: '-29px',
@@ -303,12 +320,12 @@ const BrandForm = ({
                                             sx={{
                                                 ...inputStyles,
                                                 "& fieldset": {
-                                                    opacity: checkboxState.isMoodBoardchk ? 1 : '0.2',
+                                                    opacity: checkState?.isMoodBoardchk ? 1 : '0.2',
                                                     backgroundColor: '#cccccca1'
                                                 },
                                             }}
-                                            value={image.upload_moodboard.length ? image.upload_moodboard[0]?.name : ''}
-                                            disabled={!checkboxState.isMoodBoardchk} />
+                                            value={image?.upload_moodboard.length ? image?.upload_moodboard[0]?.name : ''}
+                                            disabled={!checkState?.isMoodBoardchk} />
                                     </MDBox>
                                     &nbsp; &nbsp;
                                     <label htmlFor='upload-moodboard' style={{ position: 'relative' }}>
@@ -319,7 +336,7 @@ const BrandForm = ({
                                             type="button"
                                             sx={buttonStyles}
                                             onClick={() => openLogo(moodboard)}
-                                            disabled={!checkboxState.isMoodBoardchk}
+                                            disabled={!checkState?.isMoodBoardchk}
                                         >
                                             Upload Moodboard
                                         </MDButton>
@@ -332,12 +349,12 @@ const BrandForm = ({
                                             name="upload_moodboard"
                                             id="upload-moodboard"
                                             onChange={handleFileUpload}
-                                            disabled={!checkboxState.isMoodBoardchk}
+                                            disabled={!checkState?.isMoodBoardchk}
                                         />
                                     </label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
-                                    {image.replace_brand_guidelines[0]?.name ? <Close fontSize='medium'
+                                    {image?.replace_brand_guidelines[0]?.name ? <Close fontSize='medium'
                                         sx={{
                                             position: 'absolute', cursor: 'pointer',
                                             left: '-29px',
@@ -352,11 +369,11 @@ const BrandForm = ({
                                             sx={{
                                                 ...inputStyles,
                                                 "& fieldset": {
-                                                    opacity: checkboxState.isBrandGuidechk ? 1 : '0.2',
+                                                    opacity: checkState?.isBrandGuidechk ? 1 : '0.2',
                                                     backgroundColor: '#cccccca1'
                                                 },
                                             }}
-                                            value={image.replace_brand_guidelines.length ? image.replace_brand_guidelines[0]?.name : ''}
+                                            value={image?.replace_brand_guidelines.length ? image.replace_brand_guidelines[0]?.name : ''}
                                             disabled
 
                                         />
@@ -371,7 +388,7 @@ const BrandForm = ({
                                             type="button"
                                             sx={buttonStyles}
                                             onClick={() => openLogo(brandGuide)}
-                                            disabled={!checkboxState.isBrandGuidechk}
+                                            disabled={!checkState?.isBrandGuidechk}
                                         >
                                             Replace Brand Guidelines
                                         </MDButton>
@@ -384,12 +401,12 @@ const BrandForm = ({
                                             name="replace_brand_guidelines"
                                             id="upload-guide-lines"
                                             onChange={handleFileUpload}
-                                            disabled={!checkboxState.isBrandGuidechk}
+                                            disabled={!checkState?.isBrandGuidechk}
                                         />
                                     </label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
-                                    {image.upload_more[0]?.name ? <Close fontSize='medium'
+                                    {image?.upload_more[0]?.name ? <Close fontSize='medium'
                                         sx={{
                                             position: 'absolute', cursor: 'pointer',
                                             left: '-29px',
@@ -404,11 +421,11 @@ const BrandForm = ({
                                             sx={{
                                                 ...inputStyles,
                                                 "& fieldset": {
-                                                    opacity: checkboxState.isothers ? 1 : '0.2',
+                                                    opacity: checkState?.isothers ? 1 : '0.2',
                                                     backgroundColor: '#cccccca1'
                                                 },
                                             }}
-                                            value={image.upload_more.length ? image.upload_more[0]?.name : ''}
+                                            value={image?.upload_more.length ? image?.upload_more[0]?.name : ''}
                                             disabled
                                         />
                                         {/* <span style={{ fontSize: '12px' }}>allowed any image formats</span> */}
@@ -422,7 +439,7 @@ const BrandForm = ({
                                             type="button"
                                             sx={buttonStyles}
                                             onClick={() => openLogo(isOthers)}
-                                            disabled={!checkboxState.isothers}
+                                            disabled={!checkState?.isothers}
                                         >
                                             Upload More..
                                         </MDButton>
@@ -436,13 +453,13 @@ const BrandForm = ({
                                             name="upload_more"
                                             id="upload-more"
                                             onChange={handleFileUpload}
-                                            disabled={!checkboxState.isothers}
+                                            disabled={!checkState?.isothers}
                                         />
                                     </label>
                                 </AlignGrid>
                             </Grid>
 
-                            {addMoreField.length ? addMoreField.map((item, i) => {
+                            {addMoreField?.length ? addMoreField.map((item, i) => {
                                 let value = image[item.name]?.length ? image[item.name][0].name : ''
                                 return (
                                     <React.Fragment key={i}>
@@ -507,7 +524,7 @@ const BrandForm = ({
                                     onClick={addMore}
                                     type="button"
                                     sx={{ ...buttonStyles, color: "#fff", width: 'auto' }}
-                                    disabled={addMoreField.length >= 3}
+                                    disabled={addMoreField?.length >= 3}
                                 >
                                     Add More
                                 </MDButton>
@@ -539,15 +556,15 @@ const BrandForm = ({
     )
 }
 
-BrandForm.prototype = {
-    state: PropTypes.object.isRequired,
-    open: PropTypes.bool.isRequired,
-    loading: PropTypes.bool.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
+// BrandForm.prototype = {
+//     state: PropTypes.object.isRequired,
+//     open: PropTypes.bool.isRequired,
+//     loading: PropTypes.bool.isRequired,
+//     onChange: PropTypes.func.isRequired,
+//     onClose: PropTypes.func.isRequired,
+//     onSubmit: PropTypes.func.isRequired,
 
-}
+// }
 
 const uploadImage = {
     position: 'absolute',

@@ -168,9 +168,9 @@ const getFilesOnVersionBasis = async (req, res) => {
                     obj.type = file.metadata.contentType,
                     obj.size = file.metadata.size,
                     obj.time = file.metadata.timeCreated
-                obj.upated_time = file.metadata.updated,
+                    obj.upated_time = file.metadata.updated,
                     obj.folder_name = prefix
-                obj.folder_dir = "version-" + versionNo
+                    obj.folder_dir = "version-" + versionNo
                 return obj
             })
             if (filesInfo.length > 0) {

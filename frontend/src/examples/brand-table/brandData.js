@@ -8,7 +8,7 @@ import { getBrandData } from "redux/global/global-functions";
 import { getCustomerBrand } from "redux/actions/actions";
 import { useDispatch } from "react-redux";
 import MDSnackbar from "components/MDSnackbar";
-import { openEditBrandModal } from "redux/actions/actions";
+// import { openEditBrandModal } from "redux/actions/actions";
 import fileImage from "assets/mi-banana-icons/file-image.png";
 import { MoonLoader } from "react-spinners";
 import "../../examples/new-table/table-style.css";
@@ -18,7 +18,7 @@ import { ArrowDownward } from "@mui/icons-material";
 import { currentUserRole } from "redux/global/global-functions";
 import { Link } from "react-router-dom";
 
-export const Action = ({ item, setFormValue }) => {
+export const Action = ({ item, setFormValue, openEditBrandModal }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
   const id = useSelector((state) => state.userDetails.id);
@@ -78,12 +78,11 @@ export const Action = ({ item, setFormValue }) => {
       });
   }
   const openBrandModal = () => {
-    // setCurrentOpenBrandID(item._id);
     const filterBrand = reduxState.customerBrand?.find((brand) => brand._id === item._id);
     if (filterBrand) {
-      console.log('filterBrand:', filterBrand);
       setFormValue({ ...filterBrand });
-      dispatch(openEditBrandModal(true));
+      openEditBrandModal()
+      // dispatch(openEditBrandModal(true));
     }
   };
 
@@ -207,7 +206,7 @@ const ShowFiles = ({ item }) => {
   );
 };
 
-const BrandData = (setFormValue) => {
+const BrandData = (setFormValue, openEditBrandModal) => {
   const userID = useSelector((state) => state.userDetails.id);
   const reduxState = useSelector((state) => state);
   const new_brand = useSelector((state) => state.new_brand);
@@ -231,9 +230,17 @@ const BrandData = (setFormValue) => {
 
     const arr = { url: "" };
     function getBrandLogo() {
-      if (item.files?.length > 0) {
-        const result = item.files?.find((list) => list.type?.startsWith("image/"));
-        arr.url = result ? result?.url : fileImage;
+      const result = item.files?.find((list) => list.name?.startsWith("brand-logo"));
+      if (result) {
+        arr.url = result?.url
+      }
+      else {
+        const result = item.files?.find((list) => list.type?.startsWith("image/"))
+        if (result) {
+          arr.url = result?.url
+        } else {
+          arr.url = ""
+        }
       }
     }
     let brandDescription = item.brand_description?.substring(0, 50) + '...'
@@ -280,7 +287,7 @@ const BrandData = (setFormValue) => {
       files: <ShowFiles item={item} />,
       action: (
         <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
-          <Action item={item} setFormValue={setFormValue} />
+          <Action item={item} setFormValue={setFormValue} openEditBrandModal={openEditBrandModal} />
         </MDTypography>
       ),
     };
@@ -288,9 +295,17 @@ const BrandData = (setFormValue) => {
   const small_rows = customerBrand?.map((item) => {
     const arr = { url: "" };
     function getBrandLogo() {
-      if (item.files?.length > 0) {
-        const result = item.files?.find((list) => list.type?.startsWith("image/"));
-        arr.url = result ? result?.url : fileImage;
+      const result = item.files?.find((list) => list.name?.startsWith("brand-logo"));
+      if (result) {
+        arr.url = result?.url
+      }
+      else {
+        const result = item.files?.find((list) => list.type?.startsWith("image/"))
+        if (result) {
+          arr.url = result?.url
+        } else {
+          arr.url = ""
+        }
       }
     }
     let brandDescription = item.brand_description?.substring(0, 50) + '...'
@@ -300,7 +315,7 @@ const BrandData = (setFormValue) => {
         <>
           {role?.customer ? (
             <img
-              src={arr?.url}
+              src={arr?.url === "" ? "" : arr?.url}
               style={{ maxWidth: 70, maxHeight: 70, width: 50, height: "auto" }}
               alt="brand-logo"
             />
@@ -321,7 +336,7 @@ const BrandData = (setFormValue) => {
       ),
       action: (
         <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
-          <Action item={item} setFormValue={setFormValue} />
+          <Action item={item} setFormValue={setFormValue} openEditBrandModal={openEditBrandModal} />
         </MDTypography>
       ),
     };

@@ -44,9 +44,6 @@ const SocialMediaManager = (props) => {
         
     } = useSocialMediaManager(props)
 
-    console.log(selectService)
-    console.log(choosePlatform)
-    console.log(selectPlan)
     return (
         <BootstrapDialog open={open} sx={{ width: '100% !important' }} >
             <DialogTitle display={"flex"} position={"relative"} width={'100%'} justifyContent={"space-between"} alignItems={"center"} borderBottom={`1px solid #ccc !important`}>
