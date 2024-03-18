@@ -186,24 +186,24 @@ const FileUploadContainer = ({
   }
 
   // Designer Files ====================================
-  async function designerFiles() {
-    setVersion([]);
-    setFileMsg("");
-    setLoading(true);
-    await apiClient
-      .get("/api/designer-uploads/" + id)
-      .then(({ data }) => {
-        // setVersion(data.filesInfo);
-        handlePreviewImages(data?.filesInfo)
-        setFileMsg("");
-        setLoading(false);
-      })
-      .catch((err) => {
-        setFileMsg("No Files Found");
-        setVersion([]);
-        setLoading(false);
-      });
-  }
+  // async function designerFiles() {
+  //   setVersion([]);
+  //   setFileMsg("");
+  //   setLoading(true);
+  //   await apiClient
+  //     .get("/api/designer-uploads/" + id)
+  //     .then(({ data }) => {
+  //       // setVersion(data.filesInfo);
+  //       handlePreviewImages(data?.filesInfo)
+  //       setFileMsg("");
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       setFileMsg("No Files Found");
+  //       setVersion([]);
+  //       setLoading(false);
+  //     });
+  // }
   async function getFilesOnVerion(value) {
     setVersion([]);
     setFileMsg("");
@@ -239,36 +239,36 @@ const FileUploadContainer = ({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const deleteDesignerFiles = async (filename) => {
-    setLoading(true)
-    await apiClient
-      .delete(`/api/del-designer-files/${id}/${filename}`)
-      .then(({ data }) => {
-        const { message } = data;
-        setRespMessage(message);
-        setLoading(false)
-        setTimeout(() => {
-          openSuccessSB();
-          designerFiles();
-        }, 1000);
-      })
-      .catch((err) => {
-        if (err.response) {
-          const { message } = err.response.data;
-          setRespMessage(message);
-          setLoading(false)
-          setTimeout(() => {
-            openErrorSB();
-          }, 1000)
-        } else {
-          setRespMessage(err.message);
-          setLoading(false)
-          setTimeout(() => {
-            openErrorSB();
-          }, 1000);
-        }
-      });
-  };
+  // const deleteDesignerFiles = async (filename) => {
+  //   setLoading(true)
+  //   await apiClient
+  //     .delete(`/api/del-designer-files/${id}/${filename}`)
+  //     .then(({ data }) => {
+  //       const { message } = data;
+  //       setRespMessage(message);
+  //       setLoading(false)
+  //       setTimeout(() => {
+  //         openSuccessSB();
+  //         // designerFiles();
+  //       }, 1000);
+  //     })
+  //     .catch((err) => {
+  //       if (err.response) {
+  //         const { message } = err.response.data;
+  //         setRespMessage(message);
+  //         setLoading(false)
+  //         setTimeout(() => {
+  //           openErrorSB();
+  //         }, 1000)
+  //       } else {
+  //         setRespMessage(err.message);
+  //         setLoading(false)
+  //         setTimeout(() => {
+  //           openErrorSB();
+  //         }, 1000);
+  //       }
+  //     });
+  // };
 
   const deleteFile = async (fileData) => {
     const formdata = {
@@ -496,16 +496,16 @@ const FileUploadContainer = ({
       return [];
     }
   }
-  const designerFilesforAll = async () => {
-    try {
-      const response = await apiClient.get("/api/designer-uploads/" + id);
-      const { data } = response;
+  // const designerFilesforAll = async () => {
+  //   try {
+  //     const response = await apiClient.get("/api/designer-uploads/" + id);
+  //     const { data } = response;
 
-      return data.filesInfo || [];
-    } catch (err) {
-      return [];
-    }
-  };
+  //     return data.filesInfo || [];
+  //   } catch (err) {
+  //     return [];
+  //   }
+  // };
   const getAllVersionFiles = async () => {
     if (fileVersion?.length === 0) return []
     let allversionfiles = []
@@ -568,11 +568,10 @@ const FileUploadContainer = ({
 
     try {
       // const clientFilesData = await clientFilesforAll();
-      const designerFiles = await designerFilesforAll();
+      // const designerFiles = await designerFilesforAll();
       const get_all_version_Files = await getAllVersionFiles();
-      const combinedData = [...designerFiles, ...get_all_version_Files];
+      const combinedData = [...get_all_version_Files];
       handlePreviewImages(combinedData);
-      console.log(combinedData)
     } catch (error) {
       // Handle API call errors
       console.error("Error fetching files:", error);

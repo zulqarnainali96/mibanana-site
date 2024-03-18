@@ -12,12 +12,10 @@ const postMessageToOtherMembers = async (req, res) => {
             if (findProject !== null) {
                 const _id = findProject.user
                 const findUser = await User.findById(_id)
-                console.log(findUser)
                 if (findUser) {
                     const notifications = findUser.notifications
                     if (notifications?.length > 0) {
                         findUser.notifications = [...notifications, message]
-                        console.log('Manager')
                         await findUser.save()
                     } else {
                         findUser.notifications = [message]
@@ -34,7 +32,7 @@ const postMessageToOtherMembers = async (req, res) => {
                             if (notifications?.length > 0) {
                                 findTeamMember.notifications = [...notifications, message]
                                 await findTeamMember.save()
-                                console.log('Manager')
+                                // console.log('Manager')
                             } else {
                                 findTeamMember.notifications = [message]
                                 await findTeamMember.save()
@@ -57,7 +55,6 @@ const postMessageToOtherMembers = async (req, res) => {
                             const _id = manager[y]?._id
                             const notifications = manager[y].notifications
                             if (notifications?.length > 0) {
-                                console.log('Graphic-Designer')
                                 await User.findByIdAndUpdate(_id, { notifications: [...notifications, message] })
                             } else {
                                 await User.findByIdAndUpdate(_id, { notifications: [message] })
@@ -69,7 +66,6 @@ const postMessageToOtherMembers = async (req, res) => {
                 if (findUser) {
                     const notifications = findUser.notifications
                     if (notifications?.length > 0) {
-                        console.log('Graphic-Designer')
                         findUser.notifications = [...notifications, message]
                         await findUser.save()
                     } else {
@@ -91,7 +87,7 @@ const postMessageToOtherMembers = async (req, res) => {
                     if (manager?.length > 0) {
                         for (let y = 0; y < manager?.length; y++) {
                             const _id = String(manager[y]?._id)
-                            console.log(_id)
+                            // console.log(_id)
                             const notifications = manager[y].notifications
                             if (notifications?.length > 0) {
                                 console.log('Customer')
@@ -99,7 +95,7 @@ const postMessageToOtherMembers = async (req, res) => {
                                 const arr = [...notifications, message]
                                 result.notifications = arr
                                 const tt = await result.save()
-                                console.log(tt)
+                                // console.log(tt)
                             } else {
                                 await User.findByIdAndUpdate(_id, { notifications: [message] })
                             }
@@ -116,7 +112,7 @@ const postMessageToOtherMembers = async (req, res) => {
                             const notifications = findTeamMember.notifications
                             if (notifications?.length > 0) {
                                 findTeamMember.notifications = [...findTeamMember.notifications, message]
-                                console.log('Customer')
+                                // console.log('Customer')
                                 await findTeamMember.save()
                             } else {
                                 findTeamMember.notifications = [message]
@@ -216,7 +212,7 @@ const getProjectNotifications = async (req, res) => {
     try {
         const user = await User.findById(_id).lean()
         if (user) {
-            console.log(user.project_notifications)
+            // console.log(user.project_notifications)
             const { project_notifications } = user
             if (project_notifications?.length > 0) {
                 return res.status(200).send({ project_notifications })
