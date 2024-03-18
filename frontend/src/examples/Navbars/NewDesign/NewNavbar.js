@@ -839,6 +839,12 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       <SocialMediaManager
         open={openSocialMediaForm}
         handleClose={handleCloseSocialMedia}
+        formValue={formValue}
+        setFormValue={setFormValue}
+        add_files={add_files}
+        upload_files={upload_files}
+        handleFileUpload={handleFileUpload}
+        removeFiles={removeFiles}
       />
 
       <WebsiteForm
