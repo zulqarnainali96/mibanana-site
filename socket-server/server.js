@@ -73,6 +73,7 @@ io.on('connection', function (socket) {
   })
 
   socket.on('sending-status-change', (item, role, id, status) => {
+    console.log("socket ========================================>>>>>>>>>>>>>>>>>>",item)
     const msg = `${role} change status to ${status}`
     const statusData = getStatusChange(item, role, item.user, msg, status)
     const isProjectUser = connectedUser.some(onlineUser => onlineUser.id === item.user)
@@ -91,7 +92,7 @@ io.on('connection', function (socket) {
   })
 
   socket.on('customer-sending-notifications', (item, role, status) => {
-    const msg = `${role} change status to ${status}`
+    const msg = `${item.name} change status to ${status}`
     const isManger = connectedUser.some(onlineUser => onlineUser.role?.includes('Project-Manager'))
     if (item?.team_members?.length > 0) {
       const team_member_id = item?.team_members[0]?._id

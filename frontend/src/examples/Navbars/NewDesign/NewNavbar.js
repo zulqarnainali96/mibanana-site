@@ -609,10 +609,26 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     if (role?.customer) {
       socketIO.current.on('status-change-notification', project_data => {
         // notificationSound()
-        // console.log('Customer', project_data)
         reduxActions.handleProject_notifications(project_data)
+        console.log("hello there !!!!!!==========================>>>>>>>>>>",project_data);
       })
-    } if (role?.projectManager || role?.designer) {
+    }
+    // if (role?.customer) {
+    //   socketIO.current.on('status-change-notification', project_data => {
+    //     // Assuming project_data includes id and new status
+    //     const { id, status } = project_data;
+    //     // Update status in the redux state for the corresponding project
+    //     const updatedProjects = reduxState.project_list.CustomerProjects.map(project => {
+    //       if (project._id === id) {
+    //         return { ...project, status: status };
+    //       }
+    //       return project;
+    //     });
+    //     reduxActions.getCustomerProject({ ...reduxState.projects_list, CustomerProjects: updatedProjects });
+    //     reduxActions.handleProject_notifications(project_data);
+    //   })
+    // }
+     if (role?.projectManager || role?.designer) {
       socketIO.current.on('getting-customer-notifications', (project_data, id, status) => {
         // notificationSound()
         const filterProject = reduxState.project_list.CustomerProjects?.map(project => {
@@ -631,11 +647,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   }, [reloadProject]);
 
 
-  useEffect(() => {
-    const id = reduxState.userDetails?.id;
-    getProjectData(id, reduxActions.getCustomerProject);
-    getBrandData(id, reduxActions.getCustomerBrand);
-  }, []);
+  // useEffect(() => {
+  //   const id = reduxState.userDetails?.id;
+  //   getProjectData(id, reduxActions.getCustomerProject);
+  //   getBrandData(id, reduxActions.getCustomerBrand);
+  // }, []);
 
   const ProjectButton = styled(Button)(({ theme: { palette } }) => {
     const { primary } = palette;
@@ -840,6 +856,12 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       <SocialMediaManager
         open={openSocialMediaForm}
         handleClose={handleCloseSocialMedia}
+        formValue={formValue}
+        setFormValue={setFormValue}
+        add_files={add_files}
+        upload_files={upload_files}
+        handleFileUpload={handleFileUpload}
+        removeFiles={removeFiles}
       />
 
       <WebsiteForm

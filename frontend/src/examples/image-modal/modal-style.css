@@ -1,0 +1,7 @@
+@media screen and (min-width: 991px){
+    img.ril-image-current {
+        width: 75% !important;
+        height: 75% !important;
+        object-fit: contain;
+    }
+}
