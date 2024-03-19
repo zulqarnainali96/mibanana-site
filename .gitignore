@@ -10,8 +10,9 @@ frontend/node_modules
 backend/node_modules
 
 # creadential files backend
-backend/google-cloud-storage/mibanana-app-1bcac3255187.json
 backend/google-cloud-storage/mibanana.json
+backend/google-cloud-storage/new-mibanana-key.json
+
 
 # testing
 

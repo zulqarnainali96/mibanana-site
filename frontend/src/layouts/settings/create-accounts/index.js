@@ -175,7 +175,7 @@ const CreateAccounts = () => {
                                                     }}
                                                     // onClick={moveToBrandPage}
                                                     id="select-role-demo"
-                                                    options={["Project-Manager", "Graphic-Designer"]}
+                                                    options={["Project-Manager", "Graphic-Designer","Social-Media-Manager"]}
                                                     sx={{ width: '100%' }}
                                                     renderInput={(params) => <TextField required placeholder='Select Role' {...params} />}
 

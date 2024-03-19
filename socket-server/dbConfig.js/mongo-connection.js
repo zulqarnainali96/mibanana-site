@@ -2,10 +2,10 @@ const mongoose = require('mongoose')
 
 const ConnectDB = async () => {
     try {
-        await mongoose.connect('mongodb+srv://heroappman:63ko69NRhaRmQVdN@cluster-mi-banana.qtlcdaf.mongodb.net/Mi-Banana-database?retryWrites=true&w=majority')
+        await mongoose.connect('mongodb+srv://mibanana:F0GLmBdleUZ5Mq9M@mibananacluster.cva0t3g.mongodb.net/mibanana-database?retryWrites=true&w=majority&appName=mibananaCluster')
     } catch (error) {
        console.log(error) 
     }
 }
 
-module.exports = ConnectDB
+module.exports = ConnectDB  

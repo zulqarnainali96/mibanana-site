@@ -14,13 +14,13 @@ const uploadFiles = multer({
 const { createGraphicProject, getAssignGraphicProject, getDesignerList } = require('../controllers/Team-Members/Designers/designerProjects')
 const { createChatController, getProjectChat, findChatWithIDs } = require('../controllers/chat/chat_controller')
 const { fileUploader, getProfileData, updateCustomerProfile } = require('../controllers/cloudinary_control')
-const { getBrandList, createBrand, deleteBrandList, updateBrandList, addMoreImages } = require('../controllers/Brand/brandController')
+const { getBrandList, createBrand, deleteBrandList, updateBrandList, addMoreImages, UpdateAllBrandDetails, getSingleBrandFile } = require('../controllers/Brand/brandController')
 const changePassword = require('../controllers/forgetPassControll')
 const verifyToken = require('../controllers/verifyEmail/verify-email-control')
 const { downloadFile, getFiles, uploadFile } = require('../google-cloud-storage/gCloudStorage')
 const { designerUpload, getDesignerFiles, deleteDesigners, deleteDesignerFiles, designerUploadsOnVersion, getFilesOnVersionBasis, deleteFileOnVersionBasis } = require('../controllers/Projects/Graphic_design/designer_upload')
 const { UploadProfileImage, UploadWithoutProfileImage } = require('../controllers/profile-image/profileImage')
-const { getAllRequiredFields, createUserRole, getNewCustomerDetails, getNonActiveCustomer, deleteCurrentCustomer, updateCustomerDetails  } = require('../controllers/userController')
+const { getAllRequiredFields, createUserRole, getNewCustomerDetails, getNonActiveCustomer, deleteCurrentCustomer, updateCustomerDetails } = require('../controllers/userController')
 const { postMessageToOtherMembers, getUserNotifications, updateChatMessage, updateAllChatMessage, getProjectNotifications, getProjectStatusNotifications } = require('../controllers/Notifications/notificationsController')
 
 
@@ -95,7 +95,8 @@ router.post("/api/add-more-files/:id", uploadFiles.array('files', 5), addMoreIma
 router.get("/api/brand/:id", getBrandList)
 router.delete("/api/brand/:id", deleteBrandList)
 router.patch("/api/brand", updateBrandList)
-
+router.post("/api/update-brand-details", uploadFiles.array('files', 5), UpdateAllBrandDetails)
+router.get("/api/get-single-brand-files/:id", getSingleBrandFile)
 // Route for changing password 
 router.put("/api/settings/forget-password", changePassword)
 

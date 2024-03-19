@@ -52,28 +52,38 @@ const AlignGrid = styled(Grid)(({ theme }) => ({
   cursor: "pointer",
 }));
 
+let Jpg = "image/jpg";
+let Webp = "image/webp";
+let Jpeg = "image/jpeg";
+let Svg = "image/svg+xml";
+let Png = "image/png";
+let pdf = "application/pdf";
+let aiLogo = "application/postscript";
+let psdfile = "image/vnd.adobe.photoshop";
+
 const EditBrand = (props) => {
 
   const {
+    open,
+    fileRef,
     onChange,
     onClose,
-    open,
-    // setFormValue,
     formValue,
-    openErrorSB,
+    setFormValue,
     openSuccessSB,
     setRespMessage,
+    openErrorSB,
     editAddMoreImages,
     editMoreImage,
     handleFileUploadEdit,
-    fileRef,
     removeEditFiles,
-    setEditMoreImages,
     getDescriptionText,
+    setEditMoreImages,
   } = props
 
   const [loading, setLoading] = useState(false);
   const [deleteFiles, setDeleteFiles] = useState([]);
+  const [del_brand_files, setDel_Brand_File] = useState([]);
   const name = useSelector((state) => state.userDetails.name);
   const dispatch = useDispatch();
   const new_brand = useSelector((state) => state.new_brand);
@@ -81,26 +91,33 @@ const EditBrand = (props) => {
   const smallScreen = useMediaQuery("(max-width:768px)");
 
 
-  let Jpg = "image/jpg";
-  let Jpeg = "image/jpeg";
-  let Svg = "image/svg+xml";
-  let Png = "image/png";
-  let pdf = "application/pdf";
-  let aiLogo = "application/postscript";
-  let psdfile = "image/vnd.adobe.photoshop";
-
-  async function handleUpateFiles() {
+  async function handleUpdateFiles() {
+    if (!formValue.brand_name || !formValue.brand_description) {
+      setRespMessage("Please provide brand name, brand description")
+      openErrorSB()
+      return
+    }
     setLoading(true);
     const data = {
-      ...formValue,
+      brand_name: formValue.brand_name,
+      brand_description: formValue.brand_description,
+      web_url: formValue.web_url,
+      facebook_url: formValue.facebook_url,
+      instagram_url: formValue.instagram_url,
+      twitter_url: formValue.twitter_url,
+      linkedin_url: formValue.linkedin_url,
+      tiktok_url: formValue.tiktok_url,
+      user: formValue.user,
+      _id: formValue._id,
       name: name,
-      files_name: deleteFiles,
+      files_name: del_brand_files,
     };
     await apiClient
       .patch("/api/brand", data)
       .then(async ({ data }) => {
-        const { message } = data;
+        const { message, brandData } = data;
         setRespMessage(message);
+        setFormValue({ ...formValue, ...brandData })
         dispatch(getNew_Brand(!new_brand));
         setLoading(false);
         if (editMoreImage.length > 0) {
@@ -114,11 +131,10 @@ const EditBrand = (props) => {
           await apiClient
             .post("/api/add-more-files/" + formValue?.user, formdata)
             .then((resp) => {
-              console.log(resp?.data?.message);
+              console.log(resp?.data);
+              setFormValue({ ...formValue, ...resp.data?.brandData })
               setEditMoreImages([]);
-              setTimeout(() => {
-                dispatch(getNew_Brand(!new_brand));
-              }, 1000);
+              dispatch(getNew_Brand(!new_brand));
               setLoading(false);
             })
             .catch((err) => {
@@ -148,20 +164,34 @@ const EditBrand = (props) => {
       });
   }
 
+
   function downloadImage(url) {
     window.open(url, "_blank");
   }
 
-  function handleDeleteFiles(name) {
-    setDeleteFiles((prev) => [...prev, name]);
+  function handleDeleteFiles(brand) {
+    const { name, folder_name, id } = brand
+    const path = folder_name + name
+
+    if (name.startsWith('brand-logo')) {
+      alert("you cannot Delete your brand logo")
+      return
+    } else {
+      setDeleteFiles((prev) => [...prev, name]);
+      setDel_Brand_File((prev) => [...prev, { prefix: path, unique: id }]);
+    }
+
   }
   function removeDeleteFiles(item) {
-    setDeleteFiles(deleteFiles.filter((name) => name !== item));
+    const { name, id } = item
+    setDeleteFiles(deleteFiles.filter((file_name) => file_name !== name));
+    setDel_Brand_File(prev => prev.filter((brand) => brand.unique !== id));
   }
+
   return (
     <BrandModal className="brand-modal-container" open={open}
       sx={{
-           width: "100% !important", "& .MuiPaper-root":
+        width: "100% !important", "& .MuiPaper-root":
           { maxWidth: `${smallScreen ? "90%" : "45% !important"}` }
       }}>
       <DialogTitle
@@ -175,7 +205,10 @@ const EditBrand = (props) => {
           Edit Brand Details
         </MDTypography>
         <MDButton
-          onClick={onClose}
+          onClick={() => {
+            onClose()
+            setEditMoreImages([])
+          }}
           sx={{ position: "absolute", right: 4, padding: "1.4rem !important" }}
         >
           <CloseOutlined
@@ -187,7 +220,7 @@ const EditBrand = (props) => {
         <Divider light={false} />
       </DialogTitle>
       <DialogContent>
-        <Grid container component={"form"} spacing={2} justifyContent={"center"}>
+        <Grid container component={"form"} spacing={2} justifyContent={"center"}  >
           <Grid item xxl={12} lg={12} xs={12} md={12}>
             <MDBox>
               <label style={Styles} htmlFor="Name">
@@ -200,6 +233,8 @@ const EditBrand = (props) => {
                 placeholder="Brand Name"
                 variant="outlined"
                 fullWidth
+                required
+                disabled
                 onChange={onChange}
               />
             </MDBox>
@@ -355,12 +390,13 @@ const EditBrand = (props) => {
                       xl={3}
                       display={"flex"}
                       gap={"10px"}
-                      justifyContent={"center"}
+                      justifyContent={formValue?.files?.length === 2 ? "flex-start" : "center"}
                       flexDirection={"column"}
                       alignItems={"center"}
                       position={"relative"}
                     >
                       {item?.type?.startsWith(Jpg) ||
+                        item?.type?.startsWith(Webp) ||
                         item?.type?.startsWith(Png) ||
                         item?.type?.startsWith(Svg) ||
                         item?.type?.startsWith(Jpeg) ? (
@@ -377,7 +413,7 @@ const EditBrand = (props) => {
                                 cursor: "pointer",
                                 transition: "all.4s ease-in",
                               }}
-                              onClick={() => removeDeleteFiles(item.name)}
+                              onClick={() => removeDeleteFiles(item)}
                             />
                           ) : (
                             <Close
@@ -391,7 +427,7 @@ const EditBrand = (props) => {
                                 cursor: "pointer",
                                 transition: "all.4s ease-in",
                               }}
-                              onClick={() => handleDeleteFiles(item.name)}
+                              onClick={() => handleDeleteFiles(item)}
                             />
                           )}
                           <img
@@ -423,7 +459,7 @@ const EditBrand = (props) => {
                                 cursor: "pointer",
                                 transition: "all.4s ease-in",
                               }}
-                              onClick={() => removeDeleteFiles(item.name)}
+                              onClick={() => removeDeleteFiles(item)}
                             />
                           ) : (
                             <Close
@@ -437,7 +473,7 @@ const EditBrand = (props) => {
                                 cursor: "pointer",
                                 transition: "all.4s ease-in",
                               }}
-                              onClick={() => handleDeleteFiles(item.name)}
+                              onClick={() => handleDeleteFiles(item)}
                             />
                           )}
                           <img
@@ -469,7 +505,7 @@ const EditBrand = (props) => {
                                 transition: "all.4s ease-in",
                                 cursor: "pointer",
                               }}
-                              onClick={() => removeDeleteFiles(item.name)}
+                              onClick={() => removeDeleteFiles(item)}
                             />
                           ) : (
                             <Close
@@ -483,7 +519,7 @@ const EditBrand = (props) => {
                                 cursor: "pointer",
                                 transition: "all.4s ease-in",
                               }}
-                              onClick={() => handleDeleteFiles(item.name)}
+                              onClick={() => handleDeleteFiles(item)}
                             />
                           )}
                           <PictureAsPdf
@@ -512,7 +548,7 @@ const EditBrand = (props) => {
                                 cursor: "pointer",
                                 transition: "all.4s ease-in",
                               }}
-                              onClick={() => removeDeleteFiles(item.name)}
+                              onClick={() => removeDeleteFiles(item)}
                             />
                           ) : (
                             <Close
@@ -526,7 +562,7 @@ const EditBrand = (props) => {
                                 cursor: "pointer",
                                 transition: "all.4s ease-in",
                               }}
-                              onClick={() => handleDeleteFiles(item.name)}
+                              onClick={() => handleDeleteFiles(item)}
                             />
                           )}
                           <img
@@ -558,7 +594,7 @@ const EditBrand = (props) => {
                                 cursor: "pointer",
                                 transition: "all.4s ease-in",
                               }}
-                              onClick={() => removeDeleteFiles(item.name)}
+                              onClick={() => removeDeleteFiles(item)}
                             />
                           ) : (
                             <Close
@@ -572,7 +608,7 @@ const EditBrand = (props) => {
                                 cursor: "pointer",
                                 transition: "all.4s ease-in",
                               }}
-                              onClick={() => handleDeleteFiles(item.name)}
+                              onClick={() => handleDeleteFiles(item)}
                             />
                           )}
                           <img
@@ -657,6 +693,7 @@ const EditBrand = (props) => {
         <DialogActions>
           <MDButton
             type="button"
+            onClick={handleUpdateFiles}
             disabled={loading}
             endIcon={
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -665,7 +702,7 @@ const EditBrand = (props) => {
                 <MoonLoader loading={loading} size={20} color="#121212" />
               </div>
             }
-            onClick={handleUpateFiles}
+
             size="large"
             color="warning"
             sx={{

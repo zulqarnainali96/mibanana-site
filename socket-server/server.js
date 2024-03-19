@@ -26,9 +26,7 @@ mongoose.connection.once('open', () => {
 })
 
 io.on('connection', function (socket) {
-  console.log("////////////////////// Start ///////////////////////////////////")
   console.log("User Connected ", socket.id)
-  console.log("////////////////////// End ///////////////////////////////////")
   socket.on('user_online', (status, id, role) => {
     if (role, id) {
       socket.join(id)
@@ -51,7 +49,6 @@ io.on('connection', function (socket) {
     })
     if (filterManager.length > 0) {
       for (let c = 0; c < filterManager.length; c++) {
-        console.log('Render ')
         const manager = filterManager[c]
         const newProject = getValue(project_data, manager.id)
         socket.to(manager.id).emit('new-project-notification', newProject)
@@ -59,14 +56,12 @@ io.on('connection', function (socket) {
       }
     } else {
       const newProject = getValue(project_data)
-      console.log('Without Render ')
       UpdateWithoutOnline(newProject)
     }
   })
 
   socket.on('update-current-notification', async (unique_key, user_id) => {
     const Ok = await updateCurrentNotificationsStatus(unique_key, user_id)
-    console.log(Ok)
     socket.emit('send-update-notification-status', Ok)
   })
 
@@ -78,11 +73,11 @@ io.on('connection', function (socket) {
   })
 
   socket.on('sending-status-change', (item, role, id, status) => {
+    console.log("socket ========================================>>>>>>>>>>>>>>>>>>",item)
     const msg = `${role} change status to ${status}`
     const statusData = getStatusChange(item, role, item.user, msg, status)
     const isProjectUser = connectedUser.some(onlineUser => onlineUser.id === item.user)
     if (isProjectUser) {
-      // console.log('isProjectUser')
       const project_creater = connectedUser.find(q => q.id === item.user)
       if (project_creater) {
         console.log('project-creator', project_creater)
@@ -92,36 +87,33 @@ io.on('connection', function (socket) {
       }
     }
     else {
-      // console.log('Project creator not Online')
       updateAndSendingStatusNotifications(statusData, item)
     }
   })
 
   socket.on('customer-sending-notifications', (item, role, status) => {
-    const msg = `${role} change status to ${status}`
+    const msg = `${item.name} change status to ${status}`
     const isManger = connectedUser.some(onlineUser => onlineUser.role?.includes('Project-Manager'))
     if (item?.team_members?.length > 0) {
-      console.log('Team Memeber')
       const team_member_id = item?.team_members[0]?._id
       const designer = connectedUser.some(onlineUser => onlineUser.id === team_member_id)
       const designerData = getStatusChange(item, role, team_member_id, msg, status)
       if (designer) {
         socket.join(team_member_id)
-        socket.to(team_member_id).emit('getting-customer-notifications', designerData)
+        socket.to(team_member_id).emit('getting-customer-notifications', designerData, item._id, status)
         sendingNotificationsToDesigner(designerData, team_member_id)
       } else {
         sendingNotificationsToDesigner(designerData, team_member_id)
       }
     }
     if (isManger) {
-      console.log('is Manger')
+      // console.log('is Manger')
       const filterManager = connectedUser.filter(user => {
         return user.role?.includes('Project-Manager')
-      })
+      })  
       if (filterManager.length > 0) {
         if (filterManager.length === 1) {
           for (let c = 0; c < filterManager.length; c++) {
-            console.log('1 Manger online')
             const manager = filterManager[c]
             const managerData = getStatusChange(item, role, manager.id, msg, status)
             socket.join(manager.id)
@@ -130,7 +122,6 @@ io.on('connection', function (socket) {
           }
         } else {
           for (let p = 0; p < filterManager.length; p) {
-            // console.log('Manger receiving customer notifications ')
             const manager = filterManager[p]
             const managerData = getStatusChange(item, role, manager.id, msg, status)
             socket.join(manager.id)
@@ -141,10 +132,25 @@ io.on('connection', function (socket) {
       }
     }
     if (!isManger) {
-      // console.log('Manager not Online')
       const managerData = getStatusChange(item, role, '', msg, status)
       UpdateWithoutOnline(managerData)
     }
+  })
+
+  socket.on('project-completed', (data) => {
+    const filterManager = connectedUser.filter(user => {
+      return user.role?.includes('Project-Manager')
+    })
+
+    if (filterManager.length > 0) {
+      for (let i = 0; i < filterManager.length; i++) {
+        const manager = filterManager[i];
+        socket.join(manager.id);
+        socket.to(manager.id).emit('project-completed-notification', data);
+      }
+    }
+
+    socket.emit('project-completed-ack', data);
   })
 
   socket.on("room-message", (message, room) => {

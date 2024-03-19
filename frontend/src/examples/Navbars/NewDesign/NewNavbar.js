@@ -9,6 +9,7 @@ import {
   MenuItem,
   fabClasses,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import MibananaIcon from "assets/new-images/navbars/mibanana-logo.png";
 import MDTypography from "components/MDTypography";
@@ -114,9 +115,22 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const [openWebsite, setOpenWebsite] = useState(false)
   const [openWebApp, setOpenWebAppApp] = useState(false)
   const [openMobileApp, setOpenMobileApp] = useState(false)
+  const theme = useTheme()
 
   const is1040 = useMediaQuery("(max-width:1040px)")
+  const extraLargeScreen = useMediaQuery(theme.breakpoints.up('xxl'))
+  const largeScreen = useMediaQuery(theme.breakpoints.down('xxl'))
+  const middleScreen = useMediaQuery(theme.breakpoints.down('lg'))
+  const mobileScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
+  function modalWidth(){
+    let size = ""
+    if(extraLargeScreen) {size = "40%";}
+    if(largeScreen) {size = "50%";}
+    if(middleScreen) {size = "55%";}
+    if(mobileScreen) {size = "80%";}
+    return size 
+  }
 
   const [reloadProject, setReloadProjects] = useState(false)
   const [controller, dispatch] = useMaterialUIController();
@@ -587,7 +601,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   useEffect(() => {
     if (role?.projectManager) {
       socketIO.current.on('new-project-notification', project_data => {
-        // showNotification()
+        getProjectData(reduxState.userDetails?.id, reduxActions.getCustomerProject)
         notificationSound()
         reduxActions.handleProject_notifications(project_data)
       })
@@ -595,10 +609,26 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     if (role?.customer) {
       socketIO.current.on('status-change-notification', project_data => {
         // notificationSound()
-        // console.log('Customer', project_data)
         reduxActions.handleProject_notifications(project_data)
+        console.log("hello there !!!!!!==========================>>>>>>>>>>",project_data);
       })
-    } if (role?.projectManager || role?.designer) {
+    }
+    // if (role?.customer) {
+    //   socketIO.current.on('status-change-notification', project_data => {
+    //     // Assuming project_data includes id and new status
+    //     const { id, status } = project_data;
+    //     // Update status in the redux state for the corresponding project
+    //     const updatedProjects = reduxState.project_list.CustomerProjects.map(project => {
+    //       if (project._id === id) {
+    //         return { ...project, status: status };
+    //       }
+    //       return project;
+    //     });
+    //     reduxActions.getCustomerProject({ ...reduxState.projects_list, CustomerProjects: updatedProjects });
+    //     reduxActions.handleProject_notifications(project_data);
+    //   })
+    // }
+     if (role?.projectManager || role?.designer) {
       socketIO.current.on('getting-customer-notifications', (project_data, id, status) => {
         // notificationSound()
         const filterProject = reduxState.project_list.CustomerProjects?.map(project => {
@@ -617,11 +647,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   }, [reloadProject]);
 
 
-  useEffect(() => {
-    const id = reduxState.userDetails?.id;
-    getProjectData(id, reduxActions.getCustomerProject);
-    getBrandData(id, reduxActions.getCustomerBrand);
-  }, []);
+  // useEffect(() => {
+  //   const id = reduxState.userDetails?.id;
+  //   getProjectData(id, reduxActions.getCustomerProject);
+  //   getBrandData(id, reduxActions.getCustomerBrand);
+  // }, []);
 
   const ProjectButton = styled(Button)(({ theme: { palette } }) => {
     const { primary } = palette;
@@ -783,18 +813,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     setShowAccountsBtn(prev => !prev)
   }, [showAccountsbtn])
 
-  // const projectNotifications = async () => {
-  //   const id = reduxState?.userDetails?.id;
-  //   await apiClient
-  //     .get("/api/project-notifications/" + id)
-  //     .then(({ data }) => {
-  //       const reverseArray = data.project_notifications?.reverse()
-  //       reduxActions.handleProject_notifications(reverseArray)
-  //     })
-  //     .catch((err) => {
-  //     });
-  // };
-
   useEffect(() => {
     socketIO.current.emit('user_online', true, reduxState?.userDetails?.id, reduxState?.userDetails?.roles)
     // socketIO.on('active_users', (data) => {
@@ -803,7 +821,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     projectNotifications(id, reduxActions.handleProject_notifications)
   }, [])
 
-  console.log('Checking')
   return (
     <>
       <CreateProject1
@@ -867,7 +884,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         msg={respMessage}
         open={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
-        width="35%"
+        width={modalWidth()}
         color="#333333"
         sideRadius={false}
       />

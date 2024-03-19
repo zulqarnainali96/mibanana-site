@@ -117,7 +117,6 @@ function NewProjectsTable({
         setGlobalFilter(value);
     }, 100);
 
-    console.log(canNextPage, canPreviousPage, pageOptions);
     // A function that sets the sorted value for the table
     const setSortedValue = (column) => {
         let sortedValue;

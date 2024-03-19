@@ -47,7 +47,7 @@ const Modal = ({
     const { id } = useParams()
     return (
         <ModalLayout open={open} sx={{
-            "& .MuiDialog-paper": { maxHeight: height, maxWidth: width, width: width, borderRadius: !sideRadius && "0px",backgroundColor:'#F6F6E8'  },
+            "& .MuiDialog-paper": { maxHeight: height, maxWidth: width, width: width, borderRadius: !sideRadius && "0px", backgroundColor: '#F6F6E8' },
         }}>
             <DialogTitle
                 display={"flex"}
@@ -125,11 +125,10 @@ const Modal = ({
                 }
                 <MDButton
                     onClick={onClose}
-                    sx={{ position: "absolute", right: isBorder ? 4 : 1, padding: '1rem !important', top: isBorder ? undefined : '4px',backgroundColor:'transparent' }} variant="contained">
+                    sx={{ position: "absolute", right: isBorder ? 4 : 1, padding: '1rem !important', top: isBorder ? undefined : '4px', backgroundColor: 'transparent !important' }} variant="contained">
                     <CloseOutlined
                         sx={{ fill: '#444' }}
-                        fontSize={"medium"}
-                    // onClick={() => showFilesModal(open, setOpen)}
+                        fontSize={"large"}
                     />
                 </MDButton>
             </DialogTitle>

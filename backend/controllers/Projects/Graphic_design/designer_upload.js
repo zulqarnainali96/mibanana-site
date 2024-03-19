@@ -94,7 +94,7 @@ const designerUploadsOnVersion = async (req, res) => {
             let { user, name, project_title } = currentProject
             project_title = project_title.replace(/\s/g, '')
             name = name.replace(/\s/g, '')
-            const prefix = `${name}-${user}/${project_title}-${_id}/version-${versionNo}/`
+            const prefix = `${name}-${user}/projects/${project_title}-${_id}/version-${versionNo}/`
             await Promise.all(files?.map(file => {
                 const options = {
                     resumable: false,
@@ -117,7 +117,6 @@ const designerUploadsOnVersion = async (req, res) => {
                                 }
 
                             }
-
                             return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
                         }
                         else {
@@ -129,6 +128,11 @@ const designerUploadsOnVersion = async (req, res) => {
                             return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
                         }
                     } else {
+                        const project_creator = await User.findById({ _id: user })
+                        if (project_creator && project_creator?.email) {
+                            const msg = `Designer uploded file in project ${project_title}`
+                            await designerUploadFilesMail(project_title, project_creator.email, msg)
+                        }
                         currentProject.version = [versionNo]
                         await currentProject.save()
                         return res.status(201).send({ message: `Files uploaded on version-${versionNo}` })
@@ -153,7 +157,7 @@ const getFilesOnVersionBasis = async (req, res) => {
             let { user, name, project_title } = currentProject
             project_title = project_title.replace(/\s/g, '')
             name = name.replace(/\s/g, '')
-            const prefix = `${name}-${user}/${project_title}-${_id}/version-${versionNo}/`
+            const prefix = `${name}-${user}/projects/${project_title}-${_id}/version-${versionNo}/`
             const [files] = await bucket.getFiles({ prefix })
             let filesInfo = files?.map((file) => {
                 let obj = {}
@@ -164,9 +168,9 @@ const getFilesOnVersionBasis = async (req, res) => {
                     obj.type = file.metadata.contentType,
                     obj.size = file.metadata.size,
                     obj.time = file.metadata.timeCreated
-                obj.upated_time = file.metadata.updated,
+                    obj.upated_time = file.metadata.updated,
                     obj.folder_name = prefix
-                obj.folder_dir = "version-" + versionNo
+                    obj.folder_dir = "version-" + versionNo
                 return obj
             })
             if (filesInfo.length > 0) {
