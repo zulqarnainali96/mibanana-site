@@ -309,7 +309,6 @@ const updateCustomerDetails = async (req, res) => {
 }
 const createUserRole = async (req, res) => {
     const { username, is_active, roles, verified, password, email } = req.body
-    console.log(req.body)
     if (!username || !roles || !password || !email) {
         return res.status(402).send({ message: 'Please provide all req fields' })
     }

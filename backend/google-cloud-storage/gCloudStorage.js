@@ -44,7 +44,7 @@ const uploadFile = async (req, res) => {
         const blob = bucket.file(prefix + file.originalname)
         blob.createWriteStream(options).on('error', (err) => console.log('err=> ', err))
             .on('finish', async () => {
-                console.log('files uploaded')
+                // console.log('files uploaded')
                 // await bucket.file(file.originalname).makePublic()
             }).end(file.buffer)
     }))

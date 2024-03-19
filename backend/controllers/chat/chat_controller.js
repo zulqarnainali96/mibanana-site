@@ -58,7 +58,7 @@ const findChatWithIDs = async (req, res) => {
                 }
             })
         }
-        console.log(singleArray)
+        // console.log(singleArray)
         return res.status(200).send({ message: "TESTING NOW" })
     } catch (error) {
         console.log(error)

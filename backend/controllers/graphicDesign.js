@@ -281,7 +281,6 @@ const getCustomerFiles = async (req, res) => {
 const duplicateProject = async (req, res) => {
     const id = req.params.id
     const { user } = req.body
-    console.log(id)
     if (!id) {
         return res.status(400).send({ message: 'ID not found' })
     }

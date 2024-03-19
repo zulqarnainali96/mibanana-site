@@ -90,7 +90,7 @@ const postMessageToOtherMembers = async (req, res) => {
                             // console.log(_id)
                             const notifications = manager[y].notifications
                             if (notifications?.length > 0) {
-                                console.log('Customer')
+                                // console.log('Customer')
                                 const result = await User.findById(_id)
                                 const arr = [...notifications, message]
                                 result.notifications = arr
