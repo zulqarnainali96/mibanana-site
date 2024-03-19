@@ -33,7 +33,7 @@ const ProjectNotification = (props) => {
         <MDBox
             display="flex"
             flexDirection="column"
-            justiftyContent="flex-start"
+            justifyContent="flex-start"
             width="95%"
             paddingInline="5px"
         >
