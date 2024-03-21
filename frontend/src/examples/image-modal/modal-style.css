@@ -1,7 +1,8 @@
-@media screen and (min-width: 991px){
-    img.ril-image-current {
+@media screen and (min-width: 992px){
+    img.ril-image-current.ril__image {
         width: 75% !important;
         height: 75% !important;
         object-fit: contain;
+        transform: unset !important;
     }
 }
