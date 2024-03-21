@@ -75,10 +75,6 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
       .post("/authentication/mi-sign-in", data)
       .then(async (resp) => {
         if (resp.status === 200) {
-          let socket = io('http://localhost:4000', {
-            withCredentials: true
-          });
-          socketClient.setSocket(socket)
           setEmail("");
           setPassword("");
           setRespMessage(resp?.data?.message);

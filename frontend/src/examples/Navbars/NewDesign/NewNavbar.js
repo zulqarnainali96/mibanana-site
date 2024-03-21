@@ -59,7 +59,7 @@ let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   // const socketIO = useRef(useSocket())
-  const socketIO = useRef(useContext(SocketContext).socket);
+  const socketIO = useRef(useContext(SocketContext));
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
   const [userMenu, setUserMenu] = useState(false);
@@ -123,13 +123,13 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const middleScreen = useMediaQuery(theme.breakpoints.down('lg'))
   const mobileScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
-  function modalWidth(){
+  function modalWidth() {
     let size = ""
-    if(extraLargeScreen) {size = "40%";}
-    if(largeScreen) {size = "50%";}
-    if(middleScreen) {size = "55%";}
-    if(mobileScreen) {size = "80%";}
-    return size 
+    if (extraLargeScreen) { size = "40%"; }
+    if (largeScreen) { size = "50%"; }
+    if (middleScreen) { size = "55%"; }
+    if (mobileScreen) { size = "80%"; }
+    return size
   }
 
   const [reloadProject, setReloadProjects] = useState(false)
@@ -610,25 +610,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       socketIO.current.on('status-change-notification', project_data => {
         // notificationSound()
         reduxActions.handleProject_notifications(project_data)
-        console.log("hello there !!!!!!==========================>>>>>>>>>>",project_data);
+        console.log("hello there !!!!!!==========================>>>>>>>>>>", project_data);
       })
     }
-    // if (role?.customer) {
-    //   socketIO.current.on('status-change-notification', project_data => {
-    //     // Assuming project_data includes id and new status
-    //     const { id, status } = project_data;
-    //     // Update status in the redux state for the corresponding project
-    //     const updatedProjects = reduxState.project_list.CustomerProjects.map(project => {
-    //       if (project._id === id) {
-    //         return { ...project, status: status };
-    //       }
-    //       return project;
-    //     });
-    //     reduxActions.getCustomerProject({ ...reduxState.projects_list, CustomerProjects: updatedProjects });
-    //     reduxActions.handleProject_notifications(project_data);
-    //   })
-    // }
-     if (role?.projectManager || role?.designer) {
+
+    if (role?.projectManager || role?.designer) {
       socketIO.current.on('getting-customer-notifications', (project_data, id, status) => {
         // notificationSound()
         const filterProject = reduxState.project_list.CustomerProjects?.map(project => {
@@ -638,8 +624,14 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         reduxActions.handleProject_notifications(project_data)
       })
     }
+    
+    socketIO.current.on('chat-message-notification', message => {
+      reduxActions.handleProject_notifications(message)
+      console.log('message', message);
+    })
   }, [socketIO.current])
 
+  console.log(reduxState.project_notifications)
   useEffect(() => {
     const id = reduxState.userDetails?.id;
     getProjectData(id, reduxActions.getCustomerProject);
