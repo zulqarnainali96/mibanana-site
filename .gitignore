@@ -16,7 +16,7 @@ backend/google-cloud-storage/new-mibanana-key.json
 
 # testing
 
-test.js
+!test.js
 
 backend/.env
 backend/logs

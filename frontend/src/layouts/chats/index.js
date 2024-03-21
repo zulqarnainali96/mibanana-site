@@ -22,7 +22,7 @@ import { SocketContext } from "sockets";
 
 const Chating = ({ reduxState, reduxActions }) => {
   // const socketIO = useSocket()
-  const socketIO = useRef(useContext(SocketContext));
+  const socketRef = useRef(useContext(SocketContext).socket);
   const role = currentUserRole(reduxState);
   const currentTime = new Date(); // Get the current date and time
   const formattedTime = currentTime.toLocaleTimeString();
@@ -48,7 +48,7 @@ const Chating = ({ reduxState, reduxActions }) => {
 
   const { id } = useParams();
   const { id: user, name } = reduxState?.userDetails;
-  const socketRef = socketIO
+  
   let avatar = useSelector((state) => state.userDetails?.avatar);
 
 

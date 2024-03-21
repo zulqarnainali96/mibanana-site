@@ -242,7 +242,7 @@ const deleteFileOnVersionBasis = async (req, res) => {
 const deleteDesignerFiles = async (req, res) => {
     const _id = req.params.id
     const fileName = req.params.filename
-    console.log(req.params.id, req.params.filename)
+    // console.log(req.params.id, req.params.filename)
     if (!_id) {
         return res.status(400).send({ message: 'ID not found try again' })
     }
@@ -257,7 +257,7 @@ const deleteDesignerFiles = async (req, res) => {
             await Promise.all(files?.map(file => {
                 try {
                     const filePath = path.basename(file.name)
-                    console.log(filePath, ' ', fileName)
+                    // console.log(filePath, ' ', fileName)
                     if (filePath === fileName) {
                         file.delete()
                     }

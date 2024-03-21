@@ -101,7 +101,6 @@ const getSingleBrandFile = async (req, res) => {
     if (!_id) return
     try {
         const brand = await brand_model.findById(_id)
-        console.log(brand)
         return res.status(201).send({ message: 'Brand Files', files: brand.files })
     } catch (error) {
         return res.status(500).send({ message: 'Internal Server Error ' })
@@ -184,7 +183,6 @@ const updateBrandList = async (req, res) => {
                     const unique = files_name[i].unique
                     const file = bucket.file(prefix)
                     await file.delete().then(async () => {
-                        console.log(`Deleted file: ${prefix}`);
                         const { files } = await brand_model.findById(_id)
                         const result = files?.filter(file => file.id !== unique)
                         await brand_model.findByIdAndUpdate(_id, { files: result })
@@ -312,7 +310,6 @@ const UpdateAllBrandDetails = async (req, res) => {
                     const unique = files_name[i].unique
                     const file = bucket.file(prefix)
                     await file.delete().then(async () => {
-                        console.log(`Deleted file: ${prefix}`);
                         const { files } = await brand_model.findById(_id)
                         const result = files?.filter(file => file.id !== unique)
                         await brand_model.findByIdAndUpdate(_id, { files: result })

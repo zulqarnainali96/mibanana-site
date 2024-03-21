@@ -173,8 +173,6 @@ const CreateProject1 = ({
     const func = () => dispatch(openBrandModalFunc(true))
     const filter = createFilterOptions()
     const classes = reactQuillStyles()
-    // const socketIO = useRef(useSocket())
-    const socketIO = useRef(useContext(SocketContext));
 
     function moveToBrandPage() {
         handleClose()
@@ -203,16 +201,6 @@ const CreateProject1 = ({
             margin: '0px'
         }
     })
-    const sendTestMessage = () => {
-        const projectData = {
-            name : 'Zain',
-            project_title : 'Tesing 222',
-            user: 'asdasdasdasdadasd',
-            id: '6569f77ff3db027fe3b32b66',
-            project_id: '6569f77ff3db027fe3bcccd',
-          };
-        socketIO.current.emit('new-project',projectData)
-    }
 
     return (
         <BootstrapDialog open={open} sx={{ width: '100% !important' }} >

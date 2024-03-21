@@ -1,5 +1,5 @@
 // import { useSocket } from 'sockets'
-import React, { useContext, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { projectNotifications } from 'redux/global/global-functions'
 import { SocketContext } from 'sockets';
 
@@ -21,18 +21,7 @@ export const useUpdateProjectNotifications = (reduxActions, reduxState, project_
                     );
                     console.log('Updated array:', arr);
                     reduxActions.handleProject_notifications(arr);
-                } else {
-                    console.log(`Notification with unique_key ${unique_key} not found`);
-                }
-                //         const project_notif = project_notifications?.find(item => item.unique_key === unique_key)
-                //         console.log(project_notifications)
-                //         let arr = [...project_notifications]
-                //         const findIndex = arr.indexOf(project_notif)
-                //         const obj = { ...project_notif, view: false }
-                //         console.log('Index ',findIndex)
-                //         arr.splice(findIndex, 1, obj)
-                //         console.log('Delete object ',arr)
-                //         // reduxActions.handleProject_notifications(arr)
+                } 
             }
         })
 

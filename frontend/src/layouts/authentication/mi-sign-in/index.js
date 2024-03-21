@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import MiLayoutCover from "../components/Mi-Layout";
 import MDBox from "components/MDBox";
 import MiIcon from "assets/mi-banana-icons/mibanana-logo-1-color 1.png";
@@ -16,9 +16,12 @@ import { ArrowForward } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 import reduxContainer from "redux/containers/containers";
 import MoonLoader from "react-spinners/MoonLoader";
+import { SocketContext } from "sockets";
+import { io } from "socket.io-client";
 
 
 const MiSignIn = ({ reduxActions, reduxState }) => {
+  const socketClient = useContext(SocketContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -72,6 +75,10 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
       .post("/authentication/mi-sign-in", data)
       .then(async (resp) => {
         if (resp.status === 200) {
+          let socket = io('http://localhost:4000', {
+            withCredentials: true
+          });
+          socketClient.setSocket(socket)
           setEmail("");
           setPassword("");
           setRespMessage(resp?.data?.message);

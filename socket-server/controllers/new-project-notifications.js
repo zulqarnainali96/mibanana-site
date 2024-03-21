@@ -7,7 +7,7 @@ const UpdateProjectNotifications = async (data) => {
 
         if (users) {
             const filterManager = users.filter(user => {
-                return user.role?.includes('Project-Manager')
+                return user.roles?.includes('Project-Manager')
             })
             if (filterManager?.length > 0) {
                 for (let a = 0; a < filterManager.length; a++) {
@@ -36,7 +36,7 @@ const UpdateWithoutOnline = async (data) => {
         const users = await user.find()
         if (users) {
             const filterManager = users.filter(user => {
-                return user.role?.includes('Project-Manager')
+                return user.roles?.includes('Project-Manager')
             })
             if (filterManager?.length > 0) {
                 for (let a = 0; a < filterManager.length; a++) {

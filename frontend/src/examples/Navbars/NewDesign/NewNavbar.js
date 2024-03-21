@@ -59,7 +59,7 @@ let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   // const socketIO = useRef(useSocket())
-  const socketIO = useRef(useContext(SocketContext));
+  const socketIO = useRef(useContext(SocketContext).socket);
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
   const [userMenu, setUserMenu] = useState(false);

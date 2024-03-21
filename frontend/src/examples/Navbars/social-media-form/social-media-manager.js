@@ -57,9 +57,6 @@ const SocialMediaManager = (props) => {
     })
 }
 
-  console.log(selectService);
-  console.log(choosePlatform);
-  console.log(selectPlan);
   return (
     <BootstrapDialog open={open} sx={{ width: "100% !important" }}>
       <DialogTitle
