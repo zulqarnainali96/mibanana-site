@@ -1,3 +1,4 @@
+const User = require("../../models/UsersLogin")
 const chatModel = require("../../models/chat/chat-model")
 const asyncHandler = require("express-async-handler")
 
@@ -26,7 +27,6 @@ const createChatController = asyncHandler(async (req, res) => {
     }
     return res.status(404).send({ message: 'not found any chat' })
 })
-
 
 const getProjectChat = asyncHandler(async (req, res) => {
     const project_id = req.params.id

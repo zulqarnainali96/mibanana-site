@@ -161,8 +161,9 @@ const redIndicator = {
 }
 
 const chatMsg = {
-    fontSize: "13px",
-    color: '#333',
+    fontSize: "14px",
+    fontFamily : fontsFamily.poppins,
+    color: '#333 !important',
     padding: '4px',
     textOverflow: 'ellipsis',
     whiteSpace: "break-spaces",

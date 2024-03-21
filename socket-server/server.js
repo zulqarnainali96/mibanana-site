@@ -155,13 +155,15 @@ io.on('connection', function (socket) {
     socket.emit('project-completed-ack', data);
   })
 
-  socket.on('', () => {
-
+  socket.on('join-room', (room) => {
+    // Join user to room
+    socket.join(room);
+    
   })
 
   socket.on("room-message", (message, room, teamId) => {
     const rooms = io.sockets.adapter.rooms;
-    socket.join(room)
+    // socket.join(room)
     socket.to(room).emit('message', message);
     const roomsArray = Array.from(rooms.entries()).map(([roomId, usersSet]) => ({
       roomId,

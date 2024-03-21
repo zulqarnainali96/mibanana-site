@@ -33,8 +33,8 @@ const Chating = ({ reduxState, reduxActions }) => {
   const [message, sendMessage] = useState("");
   const chatContainerRef = useRef(null);
   const [modalState, setModalState] = useState(false);
-  const [hideChatBox, setHideChatBox] = useState(false);
-  const re_render_chat = useSelector((state) => state.re_render_chat);
+  // const [hideChatBox, setHideChatBox] = useState(false);
+  // const re_render_chat = useSelector((state) => state.re_render_chat);
 
   const [open, setOpen] = useState(false);
   const [respMessage, setRespMessage] = useState("");
@@ -86,8 +86,8 @@ const Chating = ({ reduxState, reduxActions }) => {
         type: "chat-message",
         project_id: id,
         project_title: personProject().project_title ? personProject().
-        project_title : "",
-        authorId : personProject() ? personProject()?.user : "",
+          project_title : "",
+        authorId: personProject() ? personProject()?.user : "",
         user,
         name: name,
         avatar: avatar ? avatar : ImageAvatar,
@@ -113,7 +113,7 @@ const Chating = ({ reduxState, reduxActions }) => {
       projectID: id,
       role: getUserRoles(),
       message: {
-        unique : uuidv4(),
+        unique: uuidv4(),
         project_id: id,
         project_title: personProject().project_title ? personProject().project_title : "",
         user,
@@ -135,8 +135,9 @@ const Chating = ({ reduxState, reduxActions }) => {
     // sendMessage("");
   };
   function joinChatRoom() {
-    setHideChatBox(true);
-    socketRef.current.emit("room-message", "", id);
+    // setHideChatBox(true);
+    // socketRef.current.emit("room-message", "", id);
+    socketRef.current.emit("join-room", id);
   }
 
   const getChatMessage = async () => {
@@ -165,10 +166,10 @@ const Chating = ({ reduxState, reduxActions }) => {
     getChatMessage();
   }, []);
 
-  useEffect(() => {
-    joinChatRoom();
-    getChatMessage();
-  }, [re_render_chat]);
+  // useEffect(() => {
+  //   joinChatRoom();
+  //   getChatMessage();
+  // }, [re_render_chat]);
 
   useEffect(() => {
     if (chatContainerRef.current) {

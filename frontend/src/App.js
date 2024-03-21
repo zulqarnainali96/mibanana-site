@@ -37,7 +37,7 @@ export default function App() {
   // process.env.REACT_APP_SOCKET_URL
   // 'http://localhost:4000'
   const socket = useMemo(() => {
-    const socketO = io(process.env.REACT_APP_SOCKET_URL, {
+    const socketO = io('http://localhost:4000', {
       withCredentials: true
     });
     return socketO
