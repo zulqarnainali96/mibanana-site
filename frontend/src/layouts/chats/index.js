@@ -17,12 +17,14 @@ import FileUploadContainer from "./File-upload-container";
 import { currentUserRole } from "redux/global/global-functions";
 import ChatsContainer from "./Chat-container";
 import { SocketContext } from "sockets";
+import { v4 as uuidv4 } from 'uuid';
+import { SocketConnection } from "hooks/useSocketConnectoion";
 // https://socket-dot-mi-banana-401205.uc.r.appspot.com
 // http://34.125.239.154
 
 const Chating = ({ reduxState, reduxActions }) => {
   // const socketIO = useSocket()
-  const socketRef = useRef(useContext(SocketContext).socket);
+  const socketRef = useRef(useContext(SocketContext));
   const role = currentUserRole(reduxState);
   const currentTime = new Date(); // Get the current date and time
   const formattedTime = currentTime.toLocaleTimeString();
@@ -48,7 +50,7 @@ const Chating = ({ reduxState, reduxActions }) => {
 
   const { id } = useParams();
   const { id: user, name } = reduxState?.userDetails;
-  
+
   let avatar = useSelector((state) => state.userDetails?.avatar);
 
 
@@ -69,9 +71,11 @@ const Chating = ({ reduxState, reduxActions }) => {
       return {};
     }
   };
+  const team_members = personProject()?.team_members?.length > 0 ? personProject()?.team_members[0]?._id : "";
+
   const onSendMessage = async (event) => {
     const user_message = message
-    sendMessage("") 
+    sendMessage("")
     event.preventDefault();
     if (user_message === "") {
       return;
@@ -79,8 +83,11 @@ const Chating = ({ reduxState, reduxActions }) => {
     const data = {
       project_id: id,
       chat_message: {
+        type: "chat-message",
         project_id: id,
-        project_title: personProject().project_title ? personProject().project_title : "",
+        project_title: personProject().project_title ? personProject().
+        project_title : "",
+        authorId : personProject() ? personProject()?.user : "",
         user,
         name: name,
         avatar: avatar ? avatar : ImageAvatar,
@@ -93,7 +100,7 @@ const Chating = ({ reduxState, reduxActions }) => {
     };
 
     setMsgArray((prev) => (prev ? [...prev, data.chat_message] : [data.chat_message]));
-    socketRef.current.emit("room-message", data.chat_message, id);
+    socketRef.current.emit("room-message", data.chat_message, id, team_members);
     await apiClient
       .put("/chat-message", data)
       .then(({ data }) => {
@@ -106,6 +113,7 @@ const Chating = ({ reduxState, reduxActions }) => {
       projectID: id,
       role: getUserRoles(),
       message: {
+        unique : uuidv4(),
         project_id: id,
         project_title: personProject().project_title ? personProject().project_title : "",
         user,
@@ -201,9 +209,12 @@ const Chating = ({ reduxState, reduxActions }) => {
 
   useEffect(() => {
     joinChatRoom();
+    return () => {
+      socketRef.current.emit('leave-room', id)
+    }
   }, []);
 
-  useEffect( () => {
+  useEffect(() => {
     getChatMessage();
   }, [id])
 
@@ -265,7 +276,7 @@ const Chating = ({ reduxState, reduxActions }) => {
         </Grid>
         <Grid item xxl={6} xl={6} lg={12} md={12} sm={12} xs={12} pt="0 !important" height="100%" sx={({ breakpoints }) => ({
           [breakpoints.down('xl')]: {
-            paddingLeft : '0 !important'
+            paddingLeft: '0 !important'
             //  overflowY : 'auto' 
           }
         })}>

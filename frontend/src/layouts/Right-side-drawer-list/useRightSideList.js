@@ -147,27 +147,27 @@ export default () => {
     const userNewChatMessage = useSelector(state => state.userNewChatMessage)
     const project_notifications = useSelector(state => state.project_notifications)
 
-    const showChatPoints = () => {
-        const isnotifications = userNewChatMessage?.some(item => item?.view === true)
-        return isnotifications
-    }
+    // const showChatPoints = () => {
+    //     const isnotifications = userNewChatMessage?.some(item => item?.view === true)
+    //     return isnotifications
+    // }
 
-    const showOtherPoints = () => {
-        const is_project_notifications = project_notifications?.some(item => item?.view === true)
+    // const showOtherPoints = () => {
+    //     const is_project_notifications = project_notifications?.some(item => item?.view === true)
 
-        return is_project_notifications
-    }
+    //     return is_project_notifications
+    // }
 
-    function showProjects(id, index) {
-        setIndex(index)
-        setChatRender(!render_chat)
-        setTimeout(() => {
-            navigate("/chat/" + id)
-        }, 400)
-    }
-    function toggleShowNotifications() {
-        toggleNotifcations(!toogle_chats)
-    }
+    // function showProjects(id, index) {
+    //     setIndex(index)
+    //     setChatRender(!render_chat)
+    //     setTimeout(() => {
+    //         navigate("/chat/" + id)
+    //     }, 400)
+    // }
+    // function toggleShowNotifications() {
+    //     toggleNotifcations(!toogle_chats)
+    // }
 
     const list = (anchor) => (
         <Box
@@ -179,8 +179,8 @@ export default () => {
             <East fontSize='medium' sx={{ position: 'absolute', top: 10, left: 10, cursor: 'pointer', }} onClick={toggleDrawer("right", false, setState, rightSideDrawer)} />
 
             <List sx={projectBoxStyles}>
-                <MDTypography variant="h5" pt={1} pb={1} textAlign="left" sx={{ fontFamily: fontsFamily.poppins, fontWeight: 'bold', color: mibananaColor.yellowTextColor }}>&nbsp;&nbsp;Projects</MDTypography>
-                <MDBox
+                <MDTypography variant="h5" pt={1} pb={1} textAlign="left" sx={{ fontFamily: fontsFamily.poppins, fontWeight: 'bold', color: mibananaColor.yellowTextColor }}>&nbsp;&nbsp;Projects chats</MDTypography>
+                {/* <MDBox
                     sx={{
                         display: 'flex',
                         justifyContent: 'center',
@@ -218,9 +218,10 @@ export default () => {
                         {showOtherPoints() && <span className="notifications-point" style={{
                             top: '-8px', right: '1px'
                         }}></span>}
-                    </MDButton>
-                </MDBox>
-                {toogle_chats ? <ProjectNotification project_notifications={project_notifications} /> :
+                    </MDButton> 
+                </MDBox>*/}
+                <ProjectNotification project_notifications={project_notifications} />
+                {/* {toogle_chats ? <ProjectNotification project_notifications={project_notifications} /> :
                     <React.Fragment>
                         {projects?.map((item, index) => {
                             return (
@@ -236,7 +237,7 @@ export default () => {
                         )}
                         {projects?.length === 0 && <MDTypography variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: 'bold' }} textAlign="center">No Projects Found</MDTypography>}
                     </React.Fragment>
-                }
+                } */}
 
             </List>
         </Box>

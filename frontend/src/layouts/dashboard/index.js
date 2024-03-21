@@ -90,7 +90,7 @@ function Dashboard({ reduxActions, reduxState }) {
 
     const projectid = project_list.indexOf(item)
 
-    socketIO.current.emit("room-message", '', projectid)
+    // socketIO.current.emit("room-message", '', projectid)
 
     return {
       project_title: (
@@ -152,7 +152,7 @@ function Dashboard({ reduxActions, reduxState }) {
     }
     hours = String(hours).padStart(2, "0");
     const projectid = project_list.indexOf(item)
-    socketIO.current.emit("room-message", '', projectid)
+    // socketIO.current.emit("room-message", '', projectid)
 
     return {
       project_title: (

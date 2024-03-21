@@ -33,16 +33,16 @@ import { io } from 'socket.io-client';
 
 
 export default function App() {
-  const [socket, setSocket] = useState(null);
+  // const [socket, setSocket] = useState(null);
   // process.env.REACT_APP_SOCKET_URL
   // 'http://localhost:4000'
-  // const socket = useMemo(() => {
-  //   const socketO = io("http://localhost:4000", {
-  //     withCredentials: true
-  //   });
-  //   return socketO
-  // }, [])
-
+  const socket = useMemo(() => {
+    const socketO = io(process.env.REACT_APP_SOCKET_URL, {
+      withCredentials: true
+    });
+    return socketO
+  }, [])
+  
   const [controller, dispatch] = useMaterialUIController();
   const is1200 = useMediaQuery("(max-width:1199px)")
   const {
@@ -163,7 +163,7 @@ export default function App() {
   );
 
   return (
-    <SocketContext.Provider value={{ socket: socket, setSocket: setSocket }}>
+    <SocketContext.Provider value={socket}>
       <MainComponent >
         <ThemeProvider theme={darkMode ? themeDark : theme}>
           <CssBaseline />
