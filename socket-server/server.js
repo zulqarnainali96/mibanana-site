@@ -52,7 +52,8 @@ io.on('connection', function (socket) {
       for (let c = 0; c < filterManager.length; c++) {
         const manager = filterManager[c]
         const newProject = getValue(project_data, manager.id)
-        socket.to(manager.id).emit('new-project-notification', newProject)
+        socket.join(manager.socketID)
+        socket.to(manager.socketID).emit('new-project-notification', newProject)
         UpdateProjectNotifications(newProject)
       }
     } else {
@@ -99,8 +100,8 @@ io.on('connection', function (socket) {
     if (isProjectUser) {
       const project_creater = connectedUser.find(q => q.id === item.user)
       if (project_creater) {
-        socket.join(project_creater.id)
-        socket.to(project_creater.id).emit('status-change-notification', statusData)
+        socket.join(project_creater.socketID)
+        socket.to(project_creater.socketID).emit('status-change-notification', statusData)
         updateAndSendingStatusNotifications(statusData, item)
       }
     }
@@ -113,11 +114,13 @@ io.on('connection', function (socket) {
     const isManger = connectedUser.some(onlineUser => onlineUser.role?.includes('Project-Manager'))
     if (item?.team_members?.length > 0) {
       const team_member_id = item?.team_members[0]?._id
-      const designer = connectedUser.some(onlineUser => onlineUser.id === team_member_id)
+      const designer = connectedUser.find(onlineUser => onlineUser.id === team_member_id)
       const designerData = getStatusChange(item, role, team_member_id, msg, status)
       if (designer) {
-        socket.join(team_member_id)
-        socket.to(team_member_id).emit('getting-customer-notifications', designerData, item._id, status)
+        console.log('Designer Online')
+        console.log(designer)
+        socket.join(designer.socketID)
+        socket.to(designer.socketID).emit('getting-customer-notifications', designerData, item._id, status)
         sendingNotificationsToDesigner(designerData, team_member_id)
       } else {
         sendingNotificationsToDesigner(designerData, team_member_id)
@@ -278,8 +281,6 @@ io.on('connection', function (socket) {
     // sendChatsNotifications(connectedUser, message, room, roomsArray, teamId, rooms, socket)
   })
   socket.on('leave-room',(room) => {
-    console.log('Start--')
-    console.log(`client leaved the ${room} `)
     socket.leave(room)
   })
   socket.on('connect',() => {
