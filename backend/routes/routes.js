@@ -22,6 +22,7 @@ const { designerUpload, getDesignerFiles, deleteDesigners, deleteDesignerFiles, 
 const { UploadProfileImage, UploadWithoutProfileImage } = require('../controllers/profile-image/profileImage')
 const { getAllRequiredFields, createUserRole, getNewCustomerDetails, getNonActiveCustomer, deleteCurrentCustomer, updateCustomerDetails } = require('../controllers/userController')
 const { postMessageToOtherMembers, getUserNotifications, updateChatMessage, updateAllChatMessage, getProjectNotifications, getProjectStatusNotifications } = require('../controllers/Notifications/notificationsController')
+const { createCopyWritingProject, getCopyWritingProject, deleteCopyWritingProject } = require('../controllers/Projects/CopyWriting/copy-writing')
 
 
 
@@ -136,5 +137,10 @@ router.get('/api/udpate-all-notifications/:id', updateAllChatMessage)
 router.get('/api/project-notifications/:id', getProjectNotifications)
 router.get('/api/project-status-notifications/:id', getProjectStatusNotifications)
 
+
+// CopyWriting routes 
+router.post('/api/create-copywriting-project', createCopyWritingProject)
+router.get('/api/get-copywriting-projects/:id', getCopyWritingProject)
+router.delete('/api/delete-copywriting-project/:id', deleteCopyWritingProject)
 
 module.exports = router 
