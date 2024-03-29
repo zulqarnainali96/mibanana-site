@@ -136,16 +136,16 @@ io.on('connection', function (socket) {
           for (let c = 0; c < filterManager.length; c++) {
             const manager = filterManager[c]
             const managerData = getStatusChange(item, role, manager.id, msg, status)
-            socket.join(manager.id)
-            socket.to(manager.id).emit('getting-customer-notifications', managerData)
+            socket.join(manager.socketID)
+            socket.to(manager.socketID).emit('getting-customer-notifications', managerData)
             UpdateWithoutOnline(managerData)
           }
         } else {
           for (let p = 0; p < filterManager.length; p) {
             const manager = filterManager[p]
             const managerData = getStatusChange(item, role, manager.id, msg, status)
-            socket.join(manager.id)
-            socket.to(manager.id).emit('getting-customer-notifications', managerData)
+            socket.join(manager.socketID)
+            socket.to(manager.socketID).emit('getting-customer-notifications', managerData)
             sendingNotificationsCurrentManager(managerData, manager.id)
           }
         }
