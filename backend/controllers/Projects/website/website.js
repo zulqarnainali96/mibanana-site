@@ -1,30 +1,31 @@
-const copyWritingModel = require("../../../models/projects/copy-writing/copy-writing-model");
+const WebsiteModal = require("../../../models/projects/website-model/website-model")
 
-const createCopyWritingProject = async (req, res) => {
-    const { user, name, project_title, copy_writing_service, word_count, project_details, } = req.body;
+const createWebsiteProject = async (req, res) => {
+    const { user, name, project_title, website_type, preferred_stack, project_details, } = req.body;
 
-    if (!user) {
+    if (!user || !name) {
         return res.status(400).send({ message: "id not provided Try Login again!" })
     }
-    if (!project_title || !copy_writing_service || !word_count || !project_details) {
+    if (!project_title || !website_type || !preferred_stack || !project_details) {
         return res.status(400).send({ message: "Please provide all required fields" })
     }
     try {
         const obj = {
-            user, name, project_title, team_members : [], copy_writing_service, word_count, project_details,
+            user, name, project_title, team_members: [], website_type, preferred_stack, project_details,
             status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
-        const copyWriting = new copyWritingModel({ ...obj }).save()
-        if (copyWriting) {
+        const webisteProject = new WebsiteModal({ ...obj }).save()
+        if (webisteProject) {
             return res.status(201).send({ message: "Project Created Successfully" })
         } else {
             return res.status(500).send({ message: "Failed to create project" })
         }
+
     } catch (error) {
         return res.status(500).send({ message: "Internal Server Error" })
     }
 }
-const getCopyWritingProject = async (req, res) => {
+const getWebsiteProjects = async (req, res) => {
     const user = req.params.id
     const role = req.body.role
     if (!user) {
@@ -35,48 +36,50 @@ const getCopyWritingProject = async (req, res) => {
     }
     try {
         if (role === 'Project-Manager') {
-            const copyWritingProjects = await copyWritingModel.find().exec()
-            if (copyWritingProjects.length > 0) {
-                return res.status(200).json({ message: "Project Found", copywriting: copyWritingProjects })
+            const webisteProjects = await WebsiteModal.find().exec()
+            if (webisteProjects.length > 0) {
+                return res.status(200).json({ message: "Project Found", websites: webisteProjects })
             } else {
                 return res.status(404).json({ message: "Projects Not Found" })
             }
         }
         else if (role === 'Customer') {
-            const copyWritingProjects = await copyWritingModel.find({ user })
-            if (copyWritingProjects.length > 0) {
-                return res.status(200).json({ message: "Project Found", copywriting: copyWritingProjects })
+            const webisteProjects = await WebsiteModal.find({ user })
+            if (webisteProjects.length > 0) {
+                return res.status(200).json({ message: "Project Found", websites: webisteProjects })
             } else {
                 return res.status(404).json({ message: "Projects Not Found" })
             }
-        } else if (role === 'Copy-Writer') {
-            const copyWritingProjects = await copyWritingModel.find().lean()
-            console.log(copyWritingProjects)
-            if (copyWritingProjects.length > 0) {
-                const assignedProjects = copyWritingProjects.filter(item =>
-                      item.team_members.some(member => member._id === user)
+        }
+        else if (role === 'Web-Developer') {
+            const webisteProjects = await WebsiteModal.find().lean()
+            if (webisteProjects.length > 0) {
+                const assignedProjects = webisteProjects.filter(item =>
+                    item.team_members.some(member => member._id === user)
                 )
                 if (assignedProjects.length > 0) {
-                    return res.status(200).json({ message: "Project Found", copywriting: assignedProjects })
+                    return res.status(200).json({ message: "Project Found", websites: assignedProjects })
                 } else {
                     return res.status(404).json({ message: "Projects Not Found" })
                 }
             }
-        } else {
+        }
+        else {
             return res.status(400).json({ message: "You are not authorized" })
         }
-    } catch (err) {
+
+    } catch (error) {
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
-const deleteCopyWritingProject = async (req, res) => {
+const deleteWebsiteProject = async (req, res) => {
     const _id = req.params.id
     if (!_id) {
         return res.status(400).json({ message: "id not provided Try Login again!" })
     }
     try {
-        const copyWritingProjects = await copyWritingModel.findByIdAndRemove(_id)
-        if (copyWritingProjects) {
+        const webisteProjects = await WebsiteModal.findByIdAndRemove(_id)
+        if (webisteProjects) {
             return res.status(200).json({ message: "Project Deleted" })
         } else {
             return res.status(500).json({ message: "Failed to delete project" })
@@ -86,5 +89,4 @@ const deleteCopyWritingProject = async (req, res) => {
     }
 }
 
-
-module.exports = { createCopyWritingProject, getCopyWritingProject, deleteCopyWritingProject }
+module.exports = { createWebsiteProject, getWebsiteProjects, deleteWebsiteProject }

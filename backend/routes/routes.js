@@ -24,6 +24,10 @@ const { getAllRequiredFields, createUserRole, getNewCustomerDetails, getNonActiv
 const { postMessageToOtherMembers, getUserNotifications, updateChatMessage, updateAllChatMessage, getProjectNotifications, getProjectStatusNotifications } = require('../controllers/Notifications/notificationsController')
 const { createCopyWritingProject, getCopyWritingProject, deleteCopyWritingProject } = require('../controllers/Projects/CopyWriting/copy-writing')
 
+const { createSocialMediaProject, getSocialMediaProjects, deleteSocialMediaProject } = require('../controllers/Projects/social-media-manager/social-media-manager')
+const { createWebsiteProject, getWebsiteProjects, deleteWebsiteProject } = require('../controllers/Projects/website/website')
+const { createWebAppProject, getWebAppProjects, deleteWebAppProject } = require('../controllers/Projects/web-app/web-app')
+const { createMobileAppProject, getMobileAppProjects, deleteMobileAppProject } = require('../controllers/Projects/mobile-dev/mobile-dev')
 
 
 // Project Manager Route
@@ -142,5 +146,29 @@ router.get('/api/project-status-notifications/:id', getProjectStatusNotification
 router.post('/api/create-copywriting-project', createCopyWritingProject)
 router.get('/api/get-copywriting-projects/:id', getCopyWritingProject)
 router.delete('/api/delete-copywriting-project/:id', deleteCopyWritingProject)
+
+// Social Media Projects
+
+router.post("/api/create-social-media-project", createSocialMediaProject)
+router.get("/api/get-social-media-projects/:id", getSocialMediaProjects)
+router.delete("/api/delete-social-media-project/:id", deleteSocialMediaProject)
+
+
+// Website Development 
+router.post('/api/create-website-project', createWebsiteProject)
+router.get('/api/get-website-projects/:id', getWebsiteProjects)
+router.delete('/api/delete-website-project/:id', deleteWebsiteProject)
+
+
+// Web App Development
+router.post('/api/create-web-app-project', createWebAppProject)
+router.get('/api/get-web-app-project/:id', getWebAppProjects)
+router.delete('/api/delete-web-app-project/:id', deleteWebAppProject)
+
+
+// Mobile App Development
+router.post('/api/create-mobile-app-project', createMobileAppProject)
+router.get('/api/get-mobile-app-projects/:id', getMobileAppProjects)
+router.delete('/api/delete-mobile-app-project/:id', deleteMobileAppProject)
 
 module.exports = router 
