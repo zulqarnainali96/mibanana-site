@@ -63,34 +63,9 @@ const LoginUser = async (req, res) => {
             }
         }
         if (user.roles?.includes("Admin")) {
-            console.log(user)
             const { name, email, _id, is_active, created_at, roles, verified, phone_no, avatar, } = await User.findById(user._id)
             return res.status(200).send({ userDetails: { name, email, id: _id, is_active, created_at, roles, verified, phone_no, avatar }, message: "logged in successfully" })
         }
-        // if (!user?.verified) {
-        //     let token = await Token.findOne({ userId: user._id });
-        //     if (!token) {
-        //         const token = await new Token({
-        //             userId: user._id,
-        //             token: crypto.randomBytes(32).toString("hex"),
-        //         }).save();
-        //         const url = `${process.env.FRONT_BASE_URL}/auth/user/${user._id}/verify/${token.token}`
-        //         await sendMailToUser(user.email, url).then(() => {
-        //             return res.status(400).send({ message: 'An Email has been sent Please verify your account at ' + user.email })
-
-        //         }).catch((error) => {
-        //             console.log('error')
-        //             return res.status(400).send({ message: 'Found Error while sending email try again!' })
-        //         })
-        //     } else {
-        //         //await Token.findByIdAndRemove(token._id)
-        //         //await User.findByIdAndUpdate(user.id, { verified: true })
-        //         return res.status(404).send({ message: 'Please Verify your account first' })
-        //     }
-        // }
-        // if (!user?.is_active) {
-        //     return res.status(402).send({ showModal: true, message: "Your Account Status is on Pending. Once your account is verified you will get email from Mibanana.com " })
-        // }
         const { name, email, _id, is_active, created_at, roles, verified, phone_no, avatar, company_profile } = await User.findById(user._id)
         const findUser = await User.findById(user._id).lean()
         return res.status(200).json({ userDetails: { name, email, id: _id, is_active, created_at, roles, verified, phone_no, avatar, company_profile, notifications: findUser.notifications }, message: "logged in successfully" });

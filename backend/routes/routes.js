@@ -22,7 +22,7 @@ const { designerUpload, getDesignerFiles, deleteDesigners, deleteDesignerFiles, 
 const { UploadProfileImage, UploadWithoutProfileImage } = require('../controllers/profile-image/profileImage')
 const { getAllRequiredFields, createUserRole, getNewCustomerDetails, getNonActiveCustomer, deleteCurrentCustomer, updateCustomerDetails } = require('../controllers/userController')
 const { postMessageToOtherMembers, getUserNotifications, updateChatMessage, updateAllChatMessage, getProjectNotifications, getProjectStatusNotifications } = require('../controllers/Notifications/notificationsController')
-const { createCopyWritingProject, getCopyWritingProject, deleteCopyWritingProject } = require('../controllers/Projects/CopyWriting/copy-writing')
+const { createCopyWritingProject, getCopyWritingProject, deleteCopyWritingProject, uploadFilesCopywrite } = require('../controllers/Projects/CopyWriting/copy-writing')
 
 const { createSocialMediaProject, getSocialMediaProjects, deleteSocialMediaProject } = require('../controllers/Projects/social-media-manager/social-media-manager')
 const { createWebsiteProject, getWebsiteProjects, deleteWebsiteProject } = require('../controllers/Projects/website/website')
@@ -37,8 +37,8 @@ router.get("/api/get-company-details/:id", getCompanyDetails)
 router.delete("/api/delete-customer/:id", deleteCurrentCustomer)
 // Route for required field afeter login
 // router.post("/api/req-fields/:id", postRequiredFields)
-router.post("/api/create-new-customer", getNewCustomerDetails)
-router.get("/api/get-req-fields/:id", getAllRequiredFields)
+router.post("/api/create-new-customer", getNewCustomerDetails) // Not added on api documentation
+router.get("/api/get-req-fields/:id", getAllRequiredFields) // Not added on api documentation
 router.post("/api/create-user", createUserRole)
 
 // Route for Company profile Data
@@ -51,13 +51,13 @@ router.patch("/settings/company-profile", updateProfile)
 router.get("/get-customer-files/:id", getCustomerFiles)
 router.get("/graphic-project/:id", getGraphicProject)
 router.delete("/graphic-project/:id", deleteGraphicProject)
-router.post("/api/duplicate-project/:id", duplicateProject)
+router.post("/api/duplicate-project/:id", duplicateProject) 
 router.get("/api/project-completed/:id", projectCompleted)
 router.get("/api/attend-project/:id", projectAttend)
 router.get("/api/cancel-project/:id", projectCancel)
 router.post("/api/updating-drive-link", updateDriveLink)
 router.post("/api/updating-figma-link", updateFigmaLink)
-router.get("/api/ongoing-project/:id", projectOngoing)
+router.get("/api/ongoing-project/:id", projectOngoing) // Not added on api documentation
 router.get("/api/for-review-project/:id", projectForReview)
 router.get("/api/get-project-by/:id", getSingleProject)
 router.route("/graphic-project")
@@ -67,13 +67,13 @@ router.route("/graphic-project")
 // router.get("/authentication/sign-in", graphicCategory)
 // Route for Assigning project to Graphic getDesignerList
 
-router.post("/assign-graphic-project", createGraphicProject)
-router.get("/assign-graphic-project/:id", getAssignGraphicProject)
+router.post("/assign-graphic-project", createGraphicProject) // Not added on api documentation
+router.get("/assign-graphic-project/:id", getAssignGraphicProject) // Not added on api documentation
 
 
 // get Designer List ===> project manager route
 router.get("/api/get-designer-list/:id", getDesignerList)
-router.delete("/api/del-designer-files/:id/:filename", deleteDesignerFiles)
+router.delete("/api/del-designer-files/:id/:filename", deleteDesignerFiles) // Not added on api documentation
 router.post("/api/delete-file", deleteFile)
 router.put('/api/delete-designer', deleteDesigners)
 
@@ -100,8 +100,9 @@ router.post("/api/add-more-files/:id", uploadFiles.array('files', 5), addMoreIma
 router.get("/api/brand/:id", getBrandList)
 router.delete("/api/brand/:id", deleteBrandList)
 router.patch("/api/brand", updateBrandList)
-router.post("/api/update-brand-details", uploadFiles.array('files', 5), UpdateAllBrandDetails)
+// router.post("/api/update-brand-details", uploadFiles.array('files', 5), UpdateAllBrandDetails) // Not added on api documentation
 router.get("/api/get-single-brand-files/:id", getSingleBrandFile)
+
 // Route for changing password 
 router.put("/api/settings/forget-password", changePassword)
 
@@ -112,18 +113,18 @@ router.get("/auth/user/:id/verify/:token", verifyToken)
 
 router.post('/file/google-cloud/', uploadFiles.array('files', 7), uploadFile)
 router.post('/file/get-files', getFiles)
-router.get('/get-files/download/:name', downloadFile)
+router.get('/get-files/download/:name', downloadFile) // Not added on api documentation
 
 
 // Route for Designer Uploading files releated to project
 
-router.post('/api/designer-uploads/:id', uploadFiles.array('files', 5), designerUpload)
+router.post('/api/designer-uploads/:id', uploadFiles.array('files', 5), designerUpload) // Not added on api documentation
 router.post('/api/version-uploads/:version/:id', uploadFiles.array('files', 5), designerUploadsOnVersion)
 router.get('/api/get-version-uploads/:version/:id', getFilesOnVersionBasis)
 
-router.delete('/api/del-version-uploads/:version/:id', deleteFileOnVersionBasis)
+router.delete('/api/del-version-uploads/:version/:id', deleteFileOnVersionBasis) // Not added on api documentation
 
-router.get('/api/designer-uploads/:id', getDesignerFiles)
+router.get('/api/designer-uploads/:id', getDesignerFiles) // Not added on api documentation
 
 
 // Router For user profile image for Google Cloud
@@ -135,17 +136,19 @@ router.post('/api/user/no-profile/:id', UploadWithoutProfileImage)
 
 // Send Message to other those who are not online 
 router.post('/api/send-message-to-others', postMessageToOtherMembers)
-router.get('/api/get-notifications/:id', getUserNotifications)
-router.get('/api/udpate-notifications/:userId/:id', updateChatMessage)
-router.get('/api/udpate-all-notifications/:id', updateAllChatMessage)
+router.get('/api/get-notifications/:id', getUserNotifications) // Not added on api documentation
+router.get('/api/udpate-notifications/:userId/:id', updateChatMessage) // Not added on api documentation
+router.get('/api/udpate-all-notifications/:id', updateAllChatMessage) // Not added on api documentation
 router.get('/api/project-notifications/:id', getProjectNotifications)
-router.get('/api/project-status-notifications/:id', getProjectStatusNotifications)
+router.get('/api/project-status-notifications/:id', getProjectStatusNotifications) // Not added on api documentation
 
 
 // CopyWriting routes 
 router.post('/api/create-copywriting-project', createCopyWritingProject)
 router.get('/api/get-copywriting-projects/:id', getCopyWritingProject)
 router.delete('/api/delete-copywriting-project/:id', deleteCopyWritingProject)
+router.post('/api/upload-copywriting-files/:id/:userId', uploadFiles.array('files', 5),uploadFilesCopywrite) 
+router.post('/api/uploading-single-files/:id/:userId', uploadFiles.single('files', 1),uploadFilesCopywrite) 
 
 // Social Media Projects
 

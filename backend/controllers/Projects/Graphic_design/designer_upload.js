@@ -94,7 +94,8 @@ const designerUploadsOnVersion = async (req, res) => {
             let { user, name, project_title } = currentProject
             project_title = project_title.replace(/\s/g, '')
             name = name.replace(/\s/g, '')
-            const prefix = `${name}-${user}/projects/${project_title}-${_id}/version-${versionNo}/`
+            // const prefix = `${name}-${user}/projects/${project_title}-${_id}/version-${versionNo}/`
+            const prefix = `${user}/projects/${project_title}-${_id}/version-${versionNo}/`
             await Promise.all(files?.map(file => {
                 const options = {
                     resumable: false,
@@ -157,7 +158,8 @@ const getFilesOnVersionBasis = async (req, res) => {
             let { user, name, project_title } = currentProject
             project_title = project_title.replace(/\s/g, '')
             name = name.replace(/\s/g, '')
-            const prefix = `${name}-${user}/projects/${project_title}-${_id}/version-${versionNo}/`
+            const prefix = `${user}/projects/${project_title}-${_id}/version-${versionNo}/`
+            // const prefix = `${name}-${user}/projects/${project_title}-${_id}/version-${versionNo}/`
             const [files] = await bucket.getFiles({ prefix })
             let filesInfo = files?.map((file) => {
                 let obj = {}
@@ -203,7 +205,8 @@ const deleteFileOnVersionBasis = async (req, res) => {
                 let { name, _id: userId } = findUser
                 project_title = project_title.replace(/\s/g, '')
                 name = name.replace(/\s/g, '')
-                const prefix = `${name}-${userId}/${project_title}-${_id}/version-${versionNo}/`
+                // const prefix = `${name}-${userId}/${project_title}-${_id}/version-${versionNo}/`
+                const prefix = `${userId}/${project_title}-${_id}/version-${versionNo}/`
                 const [files] = await bucket.getFiles({ prefix })
                 await Promise.all(
                     files?.map(async (file) => {
@@ -252,7 +255,8 @@ const deleteDesignerFiles = async (req, res) => {
             let { user, name, project_title } = currentProject
             project_title = project_title.replace(/\s/g, '')
             name = name.replace(/\s/g, '')
-            const prefix = `${name}-${user}/${project_title}-${_id}/designer_uploads/`
+            // const prefix = `${name}-${user}/${project_title}-${_id}/designer_uploads/`
+            const prefix = `${user}/${project_title}-${_id}/designer_uploads/`
             const [files] = await bucket.getFiles({ prefix })
             await Promise.all(files?.map(file => {
                 try {

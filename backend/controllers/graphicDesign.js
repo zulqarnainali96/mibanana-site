@@ -67,7 +67,6 @@ const createGraphicDesign = asyncHandler(async (req, res) => {
     }
     return res.status(400).json({ message: "failed to create data " })
 })
-
 const upadteProject = asyncHandler(async (req, res) => {
     const { project_id, project_data } = req.body
     if (!project_id) {
@@ -91,7 +90,6 @@ const upadteProject = asyncHandler(async (req, res) => {
     }
     res.status(404).send({ message: "No Project Found" })
 })
-
 const getSingleProject = async (req, res) => {
     const _id = req.params.id
     if (!_id) {
@@ -108,7 +106,6 @@ const getSingleProject = async (req, res) => {
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
-
 const deleteGraphicProject = async (req, res) => {
     const _id = req.params.id
     if (!_id) {
@@ -121,7 +118,8 @@ const deleteGraphicProject = async (req, res) => {
             name = name.replace(/\s/g, '')
             project_title = project_title.replace(/\s/g, '')
 
-            const prefix = `${name}-${user}/${project_title}-${_id}/customer-upload`
+            // const prefix = `${name}-${user}/${project_title}-${_id}/customer-upload`
+            const prefix = `${user}/${project_title}-${_id}/customer-upload`
             const designer_prefix = `${name}-${user}/${project_title}-${_id}/designer_upload/`
 
             const [files] = await bucket.getFiles({ prefix })
@@ -247,7 +245,8 @@ const getCustomerFiles = async (req, res) => {
             let { user, name, project_title } = currentProject
             let project_titl = project_title.replace(/\s/g, '')
             let names = name.replace(/\s/g, '')
-            const prefix = `${names}-${user}/projects/${project_titl}-${_id}/customer-upload`
+            // const prefix = `${names}-${user}/projects/${project_titl}-${_id}/customer-upload`
+            const prefix = `${user}/projects/${project_titl}-${_id}/customer-upload`
             // console.log(prefix)
             const [files] = await bucket.getFiles({ prefix })
             // console.log(files)

@@ -7,10 +7,10 @@ const fileUploader = asyncHandler(async (req, res) => {
         return res.status(204).send("Image file not found")
     }
     const { email, phone, fullName, user } = req.body
-    // console.log(req.file)
+
 
     if (!email, !phone, !fullName, !user) {
-        return res.status(422).send({ message: "invalid data missing required fields" })
+        return res.status(422).send({ message: "Invalid data missing required fields" })
     }
     let avatar = req.file.path
     // cloudinary.uploader.upload_stream((result) => {
@@ -36,7 +36,7 @@ const fileUploader = asyncHandler(async (req, res) => {
         const data = await checkField.save()
         return res.status(200).send({ message: 'Profile Data saved', profile: data })
     }
-    return res.status(500).send('Server error')
+    return res.status(500).send('Internal Server Error')
 })
 
 const updateCustomerProfile = asyncHandler(async (req, res) => {
@@ -51,12 +51,12 @@ const updateCustomerProfile = asyncHandler(async (req, res) => {
             person.fullName = fullName
             person.phone = phone
             const profile = await person.save()
-            return res.status(201).json({ message: 'Profile Updated', profile: { email: profile.email, phone: profile.phone, fullName : profile.fullName} })
+            return res.status(201).json({ message: 'Profile Updated', profile: { email: profile.email, phone: profile.phone, fullName: profile.fullName } })
         } else {
             return res.status(400).json({ message: 'Profile Not Updated' })
         }
     }
-    res.status(400).send({message : 'Not found'})
+    res.status(400).send({ message: 'Not found' })
 
 })
 
