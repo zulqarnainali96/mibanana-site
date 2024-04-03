@@ -30,7 +30,8 @@ const createBrand = async (req, res) => {
         if (createNewBrand !== null) {
             let username = name.replace(/\s/g, '')
             let brandName = createNewBrand.brand_name.replace(/\s/g, '')
-            const prefix = `${username}-${user}/brands/${brandName}-${createNewBrand._id}/`
+            // const prefix = `${username}-${user}/brands/${brandName}-${createNewBrand._id}/`
+            const prefix = `${user}/brands/${brandName}-${createNewBrand._id}/`
             await Promise.all(files.map(file => {
                 const options = {
                     resumable: true,
@@ -229,7 +230,8 @@ const addMoreImages = async (req, res) => {
         if (user) {
             const username = user.name.replace(/\s/g, '')
             const brand_name = brandName.replace(/\s/g, '')
-            const prefix = `${username}-${user._id}/brands/${brand_name}-${brand_id}/`
+            // const prefix = `${username}-${user._id}/brands/${brand_name}-${brand_id}/`
+            const prefix = `${user._id}/brands/${brand_name}-${brand_id}/`
 
             await Promise.all(files.map(file => {
                 const options = {
@@ -321,7 +323,8 @@ const UpdateAllBrandDetails = async (req, res) => {
             if (newImages.length > 0) {
                 const username = name.replace(/\s/g, '')
                 const brand_na = brand_name.replace(/\s/g, '')
-                const prefix = `${username}-${user}/brands/${brand_na}-${_id}/`
+                // const prefix = `${username}-${user}/brands/${brand_na}-${_id}/`
+                const prefix = `${user}/brands/${brand_na}-${_id}/`
 
                 await Promise.all(newImages.map(file => {
                     const options = {
