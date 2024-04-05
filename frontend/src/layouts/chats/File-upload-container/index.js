@@ -22,7 +22,7 @@ import MDButton from "components/MDButton";
 // import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import { useDropzone } from "react-dropzone";
-import React from "react";
+import React, { useContext } from "react";
 import { useStyles } from "./styles";
 import SuccessModal from "components/SuccessBox/SuccessModal";
 
@@ -46,6 +46,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CachedIcon from "@mui/icons-material/Cached";
 import ProjectFilesFolder from "./project-filter-button/project-files-folder";
 import { getProjectById } from "redux/global/global-functions";
+import { SocketContext } from "sockets";
 
 const uploadBtn = {
   backgroundColor: "#98e225",
@@ -98,6 +99,7 @@ const FileUploadContainer = ({
   const [successOpen, setsuccessOpen] = useState(false);
   const [successMessage, setsuccessMessage] = useState("");
   const [currentImage, setCurrentImage] = useState(0)
+  const socketIO = useContext(SocketContext)
 
   const [designerLoading, setDesignerLoading] = useState(false)
   const [teamMembers, setTeamMembers] = useState(project?.team_members)
@@ -185,25 +187,6 @@ const FileUploadContainer = ({
       });
   }
 
-  // Designer Files ====================================
-  // async function designerFiles() {
-  //   setVersion([]);
-  //   setFileMsg("");
-  //   setLoading(true);
-  //   await apiClient
-  //     .get("/api/designer-uploads/" + id)
-  //     .then(({ data }) => {
-  //       // setVersion(data.filesInfo);
-  //       handlePreviewImages(data?.filesInfo)
-  //       setFileMsg("");
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       setFileMsg("No Files Found");
-  //       setVersion([]);
-  //       setLoading(false);
-  //     });
-  // }
   async function getFilesOnVerion(value) {
     setVersion([]);
     setFileMsg("");
@@ -238,37 +221,6 @@ const FileUploadContainer = ({
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
-  // const deleteDesignerFiles = async (filename) => {
-  //   setLoading(true)
-  //   await apiClient
-  //     .delete(`/api/del-designer-files/${id}/${filename}`)
-  //     .then(({ data }) => {
-  //       const { message } = data;
-  //       setRespMessage(message);
-  //       setLoading(false)
-  //       setTimeout(() => {
-  //         openSuccessSB();
-  //         // designerFiles();
-  //       }, 1000);
-  //     })
-  //     .catch((err) => {
-  //       if (err.response) {
-  //         const { message } = err.response.data;
-  //         setRespMessage(message);
-  //         setLoading(false)
-  //         setTimeout(() => {
-  //           openErrorSB();
-  //         }, 1000)
-  //       } else {
-  //         setRespMessage(err.message);
-  //         setLoading(false)
-  //         setTimeout(() => {
-  //           openErrorSB();
-  //         }, 1000);
-  //       }
-  //     });
-  // };
 
   const deleteFile = async (fileData) => {
     const formdata = {
@@ -478,11 +430,11 @@ const FileUploadContainer = ({
     setFiles([]);
     setFilesType([]);
   };
-  useEffect(() => {
-    setSelectedFilePeople("Latest design")
-    let lastIndex = [...fileVersion]?.pop()
-    getFilesOnVerion(lastIndex)
-  }, []);
+  // useEffect(() => {
+  //   setSelectedFilePeople("Latest design")
+  //   let lastIndex = [...fileVersion]?.pop()
+  //   getFilesOnVerion(lastIndex)
+  // }, []);
 
   // ---------- Version Files for All
 
@@ -605,11 +557,7 @@ const FileUploadContainer = ({
   }
 
   useEffect(() => {
-    getAllDesignersList()
-  }, []);
-  
-  useEffect(() => {
-    getAllDesignersList()
+    if (role.projectManager || role.admin) getAllDesignersList()
     setSelectedFilePeople("Latest design")
     let lastIndex = [...fileVersion]?.pop()
     getFilesOnVerion(lastIndex)
@@ -643,6 +591,18 @@ const FileUploadContainer = ({
       await apiClient.patch("/graphic-project", data)
         .then(({ data }) => {
           const { save } = data;
+          const message = {
+            teamId : value._id,
+            user : reduxState.userDetails.id,
+            name : reduxState.userDetails.name,
+            type : 'project-assigned',
+            project_id : personProject()._id,
+            project_title : personProject().project_title,
+            role : 'Project-Manager',
+            msg : 'New Project assigned',
+            view : true,
+          }
+          socketIO.emit('project-assigned', value._id, message)
           setTeamMembers(save?.team_members)
           setsuccessMessage(data?.message);
           setsuccessOpen(true);

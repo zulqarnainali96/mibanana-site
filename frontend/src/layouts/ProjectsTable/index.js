@@ -187,6 +187,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
               resonseMessage={setRespMessage}
               errorSBNot={openErrorSB}
               successSBNot={openSuccessSB}
+              projects={projectList}
               role={role}
             />
           </MDTypography>
@@ -282,6 +283,10 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     getProjectData(id, reduxActions.getCustomerProject);
     getBrandData(id, reduxActions.getCustomerBrand);
   }, []);
+
+  useEffect(() => {
+    setProjectList(reduxState.project_list.CustomerProjects)
+  }, [reduxState.project_list])
 
   const renderErrorSB = (
     <MDSnackbar

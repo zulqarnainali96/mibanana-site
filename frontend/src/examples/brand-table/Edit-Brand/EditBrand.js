@@ -234,7 +234,7 @@ const EditBrand = (props) => {
                 variant="outlined"
                 fullWidth
                 required
-                disabled
+                // disabled
                 onChange={onChange}
               />
             </MDBox>

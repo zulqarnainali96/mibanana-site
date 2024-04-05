@@ -14,6 +14,7 @@ import MDSnackbarIconRoot from "components/MDSnackbar/MDSnackbarIconRoot";
 
 // Material Dashboard 2 React context
 import { useMaterialUIController } from "context";
+import { fontsFamily } from "assets/font-family";
 
 function MDSnackbar({ delay = 5000, color, icon, title, dateTime, content, close, bgWhite, ...rest }) {
   const [controller] = useMaterialUIController();
@@ -55,14 +56,16 @@ function MDSnackbar({ delay = 5000, color, icon, title, dateTime, content, close
       <MDBox
         variant={bgWhite ? "contained" : "gradient"}
         bgColor={bgWhite ? "white" : color}
-        minWidth="21.875rem"
+        minWidth="26.875rem"
         maxWidth="100%"
+        height="140px"
         shadow="md"
-        borderRadius="md"
+        // borderRadius="md"
         p={1}
         sx={{
-          backgroundColor: ({ palette }) =>
-            darkMode ? palette.background.card : palette[color] || palette.white.main,
+          backgroundColor : '#F6F6E8',
+          // backgroundColor: ({ palette }) =>
+          //   darkMode ? palette.background.card : palette[color] || palette.white.main,
         }}
       >
         <MDBox
@@ -80,13 +83,16 @@ function MDSnackbar({ delay = 5000, color, icon, title, dateTime, content, close
               variant="button"
               fontWeight="medium"
               color={titleColor}
+              fontSize=".975rem"
               textGradient={bgWhite}
+              fontFamily={fontsFamily.poppins}
+              // sx={{fontFamily:fontsFamily.poppins}}
             >
               {title}
             </MDTypography>
           </MDBox>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <MDTypography variant="caption" color={dateTimeColor}>
+            <MDTypography variant="caption" sx={{fontFamily:fontsFamily.poppins,fontSize:'.80rem'}} color={dateTimeColor}>
               {dateTime}
             </MDTypography>
             <Icon
@@ -97,6 +103,7 @@ function MDSnackbar({ delay = 5000, color, icon, title, dateTime, content, close
                 cursor: "pointer",
                 marginLeft: 2,
                 transform: "translateY(-1px)",
+                scale : 1.1,
               }}
               onClick={close}
             >
@@ -108,16 +115,19 @@ function MDSnackbar({ delay = 5000, color, icon, title, dateTime, content, close
         <MDBox
           p={1.5}
           sx={{
+            fontFamily: fontsFamily.poppins,
             fontSize: ({ typography: { size } }) => size.sm,
-            color: ({ palette: { white, text } }) => {
-              let colorValue = bgWhite || color === "light" ? text.main : white.main;
+            color : '#333 !important',
+            // fontSize: ({ typography: { size } }) => size.sm,
+            // color: ({ palette: { white, text } }) => {
+            //   let colorValue = bgWhite || color === "light" ? text.main : white.main;
 
-              if (darkMode) {
-                colorValue = color === "light" ? "inherit" : white.main;
-              }
+            //   if (darkMode) {
+            //     colorValue = color === "light" ? "inherit" : white.main;
+            //   }
 
-              return colorValue;
-            },
+            //   return colorValue;
+            // },
           }}
         >
           {content}

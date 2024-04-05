@@ -1,10 +1,7 @@
-// import { useSocket } from 'sockets'
 import { useContext, useEffect, useRef } from 'react'
-import { projectNotifications } from 'redux/global/global-functions'
 import { SocketContext } from 'sockets';
 
 export const useUpdateProjectNotifications = (reduxActions, reduxState, project_notifications) => {
-    // const socketIO = useRef(useSocket());
     const socketIO = useRef(useContext(SocketContext));
 
 
@@ -15,11 +12,9 @@ export const useUpdateProjectNotifications = (reduxActions, reduxState, project_
             if (Ok) {
                 const project_notif = project_notifications?.find(item => item.unique_key === unique_key);
                 if (project_notif) {
-                    console.log(project_notifications);
                     let arr = project_notifications.map(item =>
                         item.unique_key === unique_key ? { ...item, view: false } : item
                     );
-                    console.log('Updated array:', arr);
                     reduxActions.handleProject_notifications(arr);
                 } 
             }

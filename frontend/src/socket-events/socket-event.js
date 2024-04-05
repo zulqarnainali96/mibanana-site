@@ -6,7 +6,7 @@ export const sendingStatusNotification = (socket, role, item, userId, status) =>
         const designer = 'Graphic-Designer'
         return socket.current.emit('sending-status-change', item, designer, userId, status)
     } else if (role?.admin) {
-        const admin = 'Graphic-Designer'
+        const admin = 'Admin'
         return socket.current.emit('sending-status-change', item, admin, userId, status)
     }
 }

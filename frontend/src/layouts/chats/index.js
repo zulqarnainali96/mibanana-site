@@ -5,20 +5,17 @@ import Grid from "@mui/material/Grid";
 import { useParams } from "react-router-dom";
 import apiClient from "api/apiClient";
 import reduxContainer from "redux/containers/containers";
-// import { io } from "socket.io-client"
 import { useSelector } from "react-redux";
 import ImageAvatar from "assets/mi-banana-icons/default-profile.png";
 import "./style.css";
 import MDSnackbar from "components/MDSnackbar";
 import FileModal from "./Files Modal/FileModal";
 import SuccessModal from "components/SuccessBox/SuccessModal";
-// import { useSocket } from 'sockets';
 import FileUploadContainer from "./File-upload-container";
 import { currentUserRole } from "redux/global/global-functions";
 import ChatsContainer from "./Chat-container";
 import { SocketContext } from "sockets";
 import { v4 as uuidv4 } from 'uuid';
-import { SocketConnection } from "hooks/useSocketConnectoion";
 // https://socket-dot-mi-banana-401205.uc.r.appspot.com
 // http://34.125.239.154
 
@@ -33,8 +30,6 @@ const Chating = ({ reduxState, reduxActions }) => {
   const [message, sendMessage] = useState("");
   const chatContainerRef = useRef(null);
   const [modalState, setModalState] = useState(false);
-  // const [hideChatBox, setHideChatBox] = useState(false);
-  // const re_render_chat = useSelector((state) => state.re_render_chat);
 
   const [open, setOpen] = useState(false);
   const [respMessage, setRespMessage] = useState("");
@@ -104,7 +99,6 @@ const Chating = ({ reduxState, reduxActions }) => {
     await apiClient
       .put("/chat-message", data)
       .then(({ data }) => {
-        // setIsComingMsg(true)
         // console.log("Message ", data?.message)
       })
       .catch((e) => console.log("Chat Send Error ", e?.response));
@@ -126,12 +120,12 @@ const Chating = ({ reduxState, reduxActions }) => {
         view: true,
       },
     };
-    await apiClient
-      .post("/api/send-message-to-others", userData)
-      .then(({ data }) => {
-        console.log(data);
-      })
-      .catch((e) => console.log("Update chat notifications error ", e?.response));
+    // await apiClient
+    //   .post("/api/send-message-to-others", userData)
+    //   .then(({ data }) => {
+    //     console.log(data);
+    //   })
+    //   .catch((e) => console.log("Update chat notifications error ", e?.response));
     // sendMessage("");
   };
   function joinChatRoom() {
@@ -165,11 +159,6 @@ const Chating = ({ reduxState, reduxActions }) => {
   useEffect(() => {
     getChatMessage();
   }, []);
-
-  // useEffect(() => {
-  //   joinChatRoom();
-  //   getChatMessage();
-  // }, [re_render_chat]);
 
   useEffect(() => {
     if (chatContainerRef.current) {

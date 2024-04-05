@@ -18,7 +18,6 @@ const mapStateToProps = (state) => ({
         new_brand: state.new_brand,
         customerBrand: state.customerBrand,
         openBrandModel: state.openBrandModel,
-        userNewChatMessage: state.userNewChatMessage,
         re_render_chat: state.re_render_chat,
         trigerNotifcations: state.trigerNotifcations,
         non_active_customer_data : state.non_active_customer_data,

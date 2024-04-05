@@ -13,7 +13,6 @@ export const OPEN_BRAND_MODAL = "OPEN_BRAND_MODAL";
 export const RIGHTSIDEDRAWER = "RIGHTSIDEDRAWER";
 export const CURRENT_INDEX = "CURRENT_INDEX";
 export const RE_RENDER_CHAT = "RE_RENDER_CHAT";
-export const USER_CHAT_MESSAGE = "USER_CHAT_MESSAGE";
 export const TRIGER_NOTIFICATIONS = "TRIGER_NOTIFICATIONS";
 export const NON_ACTIVE_CUSTOMER = "NON_ACTIVE_CUSTOMER";
 export const TOGGLE_CHATS = "TOGGLE_CHATS";
@@ -95,10 +94,6 @@ export const reRenderChatComponent = (payload) => ({
   payload: payload,
 });
 
-export const getUserNewChatMessage = (payload) => ({
-  type: USER_CHAT_MESSAGE,
-  payload: payload,
-});
 
 export const trigeringNotifications = (payload) => ({
   type: TRIGER_NOTIFICATIONS,
@@ -140,7 +135,6 @@ export const reduxFunctions = {
   setRightSideBar,
   setCurrentIndex,
   reRenderChatComponent,
-  getUserNewChatMessage,
   trigeringNotifications,
   getNonActiveCustomerData,
   ToogleChatsAction,

@@ -158,11 +158,13 @@ const useBrandData = (props) => {
                 })
                 setFilesArray([])
                 closeAddBrandModal()
-                getSingleBrandFile(data?.customerBrand?._id)
-                reduxActions.getNew_Brand(!reduxState.new_brand)
+                getBrandData(reduxState?.userDetails?.id, reduxActions.getCustomerBrand)
+                // getSingleBrandFile(data?.customerBrand?._id)
+                // reduxActions.getNew_Brand(!reduxState.new_brand)
 
                 setTimeout(() => {
                     openSuccessModal(true)
+                    document.location.reload()
                 }, 700)
 
             })

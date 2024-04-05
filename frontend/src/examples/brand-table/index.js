@@ -1,28 +1,20 @@
 import Card from '@mui/material/Card'
 import MDBox from 'components/MDBox'
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import "./brand-table.css"
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
-import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import Add from '@mui/icons-material/Add'
 import BrandForm from './Add-brand-form'
-import apiClient from 'api/apiClient'
-import MDSnackbar from 'components/MDSnackbar'
 import brandData from './brandData'
 import MDTypography from 'components/MDTypography'
-import { useDispatch } from 'react-redux'
-import { getNew_Brand } from 'redux/actions/actions'
-import { useSelector } from 'react-redux'
-import { getBrandData } from 'redux/global/global-functions'
 import reduxContainer from 'redux/containers/containers'
 import EditBrand from './Edit-Brand/EditBrand'
-// import { openEditBrandModal } from 'redux/actions/actions'
 import SuccessModal from 'components/SuccessBox/SuccessModal'
 import NewProjectsTable from 'examples/new-table'
 import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
-import { styled, useMediaQuery } from '@mui/material'
+import { useMediaQuery } from '@mui/material'
 import useBrandData from './useBrandData'
 
 
@@ -71,11 +63,7 @@ const MIBrandTable = (props) => {
     const currentRole = (role?.admin || role?.projectManager || role?.designer) ? true : false
     const is768 = useMediaQuery("(max-width:768px)")
     const is500 = useMediaQuery("(max-width:500px)")
-    const { rows, small_rows, columns, small_columns } = brandData(setFormValue, openEditBrandModal)
-
-    useEffect(() => {
-        console.log('Unmount')
-    }, [])
+    const { rows, small_rows, columns, small_columns } = brandData(setFormValue, openEditBrandModal )
 
     return (
         <DashboardLayout>
