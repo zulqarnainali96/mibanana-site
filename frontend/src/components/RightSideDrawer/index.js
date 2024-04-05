@@ -1,17 +1,18 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
 import { toggleDrawer } from 'redux/global/global-functions';
-import styled from '@mui/material/styles/styled'
-import { ArrowBack, Chat } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { setRightSideBar } from 'redux/actions/actions';
 import { chatIcon } from 'assets/new-images/navbars/chats-icon';
 
-const RightSideDrawer = ({ list }) => {
+const RightSideDrawer = memo(({ list }) => {
     const rightSideDrawer = useSelector(state => state.rightSideDrawer)
     const dispatch = useDispatch()
     const setState = (payload) => dispatch(setRightSideBar(payload))
+
+    // const openSideBar = () => {
+    //     toggleDrawer('right', true, setState, rightSideDrawer)
+    // }
 
     const sx = {
         "& .MuiPaper-root": {
@@ -41,7 +42,7 @@ const RightSideDrawer = ({ list }) => {
             ))}
         </div>
     )
-}
+})
 export default RightSideDrawer
 
 const styles = {

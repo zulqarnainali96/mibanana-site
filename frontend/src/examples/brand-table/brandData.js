@@ -210,7 +210,8 @@ const BrandData = (setFormValue, openEditBrandModal) => {
   const userID = useSelector((state) => state.userDetails.id);
   const reduxState = useSelector((state) => state);
   const new_brand = useSelector((state) => state.new_brand);
-  const customerBrand = useSelector((state) => state.customerBrand);
+  const [customerBrand, setCustomerBrand] = useState(reduxState.customerBrand);
+
   const dispatch = useDispatch();
   const role = currentUserRole(reduxState);
   const func = useCallback((value) => dispatch(getCustomerBrand(value)), [dispatch]);
@@ -341,6 +342,11 @@ const BrandData = (setFormValue, openEditBrandModal) => {
       ),
     };
   });
+
+  useEffect(() => {
+    setCustomerBrand(reduxState.customerBrand)
+  }, [reduxState.customerBrand])
+  
   return {
     rows: customerBrand?.length > 0 ? rows : [],
     small_rows: customerBrand?.length > 0 ? small_rows : [],

@@ -95,6 +95,7 @@ const CopyWritingForm = (props) => {
         }
         setUploadedImages(uploadedImagesArray);
     };
+    console.log("image upload",uploadedImages)
 
     const handleDragOver = (e) => {
         e.preventDefault();

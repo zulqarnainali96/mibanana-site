@@ -114,7 +114,7 @@ export default function ProjectMenuOptions(props) {
                                         <MenuItem onClick={openCopyWriting}>CopyWriting</MenuItem>
                                         <MenuItem onClick={openSocialMedia}>Social Media Manager</MenuItem>
                                         <MenuItem onClick={openWebsite}>Website Development</MenuItem>
-                                        <MenuItem onClick={openWebApp}>Website App</MenuItem>
+                                        <MenuItem onClick={openWebApp}>Web App</MenuItem>
                                         <MenuItem onClick={openMobileAppDev}>Mobile App Development</MenuItem>
                                     </MenuList>
                                 </ClickAwayListener>

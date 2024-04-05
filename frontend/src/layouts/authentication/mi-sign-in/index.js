@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import MiLayoutCover from "../components/Mi-Layout";
 import MDBox from "components/MDBox";
 import MiIcon from "assets/mi-banana-icons/mibanana-logo-1-color 1.png";
-import { Button, Checkbox, Grid, IconButton, TextField } from "@mui/material";
-import CoverImage from "assets/mi-banana-icons/Frame.png";
+import { Grid, IconButton, } from "@mui/material";
+// import CoverImage from "assets/mi-banana-icons/Photo.png";
+import CoverImage from "assets/mi-banana-icons/Frame.jpg";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MDSnackbar from "components/MDSnackbar";
 import MDButton from "components/MDButton";
 import Visibility from "@mui/icons-material/Visibility";
@@ -16,12 +17,10 @@ import { ArrowForward } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 import reduxContainer from "redux/containers/containers";
 import MoonLoader from "react-spinners/MoonLoader";
-import { SocketContext } from "sockets";
-import { io } from "socket.io-client";
+import { socket } from "sockets";
 
 
 const MiSignIn = ({ reduxActions, reduxState }) => {
-  const socketClient = useContext(SocketContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,9 +28,6 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
 
   // State for requried field after login
   const [open, setOpen] = useState(false);
-  // const [localstorageData, setLocalStorageData] = useState(null)
-  // const [phone, setPhone] = useState("")
-  // const [phone2, setPhone2] = useState("")
   const [formValue, setFormValue] = useState({
     name: "",
     email: "",
@@ -81,11 +77,10 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           setMsg(resp?.data?.message);
           localStorage.setItem("user_details", JSON.stringify(resp?.data?.userDetails));
           reduxActions.getUserDetails(resp?.data?.userDetails);
-          const { notifications } = resp.data?.userDetails;
-          reduxActions.getUserNewChatMessage(notifications);
           openSuccessSB();
           setLoading(false);
           navigate("/board");
+          socket.connect();
         } else {
           setLoading(false);
           throw Error;
@@ -145,14 +140,6 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
 
-  // const onChange = (event) => {
-  //     const { name, value } = event.target
-  //     console.log(name)
-  //     setFormValue({
-  //         ...formValue,
-  //         [name]: value
-  //     })
-  // }
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formValue.password !== formValue.confirm_password) {
@@ -263,7 +250,7 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
               lg={5}
               sx={{ display: isSmall ? "block" : "none", boxShadow: "4px 3px 7px -2px #cccccc0d", textAlign:"end" }}
             >
-              <img src={CoverImage} width={"80%"} height={"100%"} />
+              <img src={CoverImage} width={"100%"} height={"100%"} />
             </Grid>
             <Grid
               item

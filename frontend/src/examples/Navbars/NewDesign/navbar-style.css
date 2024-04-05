@@ -92,11 +92,17 @@
 
 .notifications-point {
   position: absolute;
-  padding: 6px;
-  top: 6px;
-  right: 5px;
+  padding: 4px;
+  top: -11px;
+  right: -8px;
   border-radius: 30px;
   background-color: var(--yellow-color);
+  font-size: 13px;
+  height: 26px;
+  width: auto;
+  padding-inline: 9px;
+  font-weight: 800;
+
 }
 
 .btn-container svg {
@@ -172,9 +178,10 @@
   }
   .grid-2 .btn-container .notifications-point,
   .grid-3 .btn-container .notifications-point {
-    padding: 5px;
-    top: 2px;
-    right: 2px;
+    padding: 4px;
+    top: -11px;
+    right: -8px;
+    padding-inline: 9px;
   }
   .grid-2 .grid-2-box .btn-container,
   .grid-2 .grid-2-box .create-project-btn {
@@ -219,6 +226,16 @@
     font-size: 0.775rem;
     font-weight: 400;
   }
+  .grid-2 .btn-container .notifications-point,
+  .grid-3 .btn-container .notifications-point {
+    padding: 4px;
+    top: -11px;
+    right: -8px;
+    width: auto;
+    height: 20px;
+    font-size: 10px;
+  }
+
   .grid-3 .btn-container svg {
     padding-top: 5px !important;
   }

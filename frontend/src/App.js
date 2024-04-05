@@ -28,21 +28,10 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useMediaQuery } from "@mui/material";
 import MainComponent from "main-comp";
-import { SocketContext } from "sockets";
+import { SocketContext, socket } from "sockets";
 import { io } from 'socket.io-client';
 
-
 export default function App() {
-  // const [socket, setSocket] = useState(null);
-  // process.env.REACT_APP_SOCKET_URL
-  // 'http://localhost:4000'
-  const socket = useMemo(() => {
-    const socketO = io('http://localhost:4000', {
-      withCredentials: true
-    });
-    return socketO
-  }, [])
-  
   const [controller, dispatch] = useMaterialUIController();
   const is1200 = useMediaQuery("(max-width:1199px)")
   const {

@@ -28,22 +28,18 @@ const ProjectNotification = (props) => {
     }
     const handleNotificationsOpen = (item) => {
         if (item.view) {
-            if (item.type === "chat-message") {
-                console.log('Open chat message')
-            } else {
-                onChangeProjectView(item)
-            }
+            onChangeProjectView(item)
         } else {
             onChangeScreenToChats(item)
         }
     }
 
     const handleNotificationDelete = (item) => {
-        if (item.type === "chat-message") {
-            console.log('Delete chat message')
-        } else {
-            deleteNotification(item.unique_key)
-        }
+        deleteNotification(item.unique_key)
+        // if (item.type === "chat-message") {
+        //     console.log('Delete chat message')
+        // } else {
+        // }
     }
 
     const shrinkText = (msg) => {
@@ -128,8 +124,8 @@ const ProjectNotification = (props) => {
                     >
                         {item?.type === 'new-project' ? `${item.name} ${item.msg}` : item?.type === 'chat-message' ? <i>Recieved a New message</i> : `${item.msg}`}
                     </MDTypography>
-                    {item.type === 'chat-message' &&  (
-                    <MDBox sx={chatMsg} dangerouslySetInnerHTML={{ __html: shrinkText(item?.message) }}></MDBox>)}
+                    {item.type === 'chat-message' && (
+                        <MDBox sx={chatMsg} dangerouslySetInnerHTML={{ __html: shrinkText(item?.message) }}></MDBox>)}
                     <MDTypography
                         variant="body2"
                         color="text"
@@ -162,7 +158,7 @@ const redIndicator = {
 
 const chatMsg = {
     fontSize: "14px",
-    fontFamily : fontsFamily.poppins,
+    fontFamily: fontsFamily.poppins,
     color: '#333 !important',
     padding: '4px',
     textOverflow: 'ellipsis',

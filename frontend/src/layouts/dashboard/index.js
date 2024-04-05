@@ -9,7 +9,6 @@ import MDBadge from "components/MDBadge";
 import { Card, useMediaQuery } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import MDSnackbar from "components/MDSnackbar";
-// import { useSocket } from "sockets";
 import { checkIcon } from "assets/new-images/dashboard/fi_check-circle (1)";
 import { bananaIcon } from "assets/new-images/dashboard/Vector";
 import { clockIcon } from "assets/new-images/dashboard/Group42";
@@ -20,22 +19,20 @@ import { fontsFamily } from "assets/font-family";
 import "./status-box/status-style.css"
 import { currentUserRole, projectStatus } from "redux/global/global-functions";
 import "./status-box/status-style.css"
-import { SocketContext } from "sockets";
 import { Assigned } from "redux/global/status";
 import { ForReview } from "redux/global/status";
 import { Ongoing } from "redux/global/status";
 import { Project_manager } from "redux/global/status";
 import { Completed } from "redux/global/status";
+import { SocketContext } from "sockets";
 
 function Dashboard({ reduxActions, reduxState }) {
   const [project_list, setProject_List] = useState(reduxState.project_list?.CustomerProjects)
-  // const socketIO = useRef(useSocket())
-  const socketIO = useRef(useContext(SocketContext));
   const role = currentUserRole(reduxState)
-  const user = reduxState?.userDetails
   const [errorSB, setErrorSB] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
   const isLg = useMediaQuery("(max-width:768px)")
+  const socketIO = useRef(useContext(SocketContext))
 
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
@@ -47,6 +44,11 @@ function Dashboard({ reduxActions, reduxState }) {
   const projectQueue = project_list?.filter(item => {
     return item.status === Project_manager
   })
+  useEffect(() => {
+    // socketIO.current.emit('user_online', true, reduxState?.userDetails?.id, reduxState?.userDetails?.roles)
+    // const id = reduxState?.userDetails?.id;
+    // projectNotifications(id, reduxActions.handleProject_notifications)
+  }, [])
   const sumbitAndOngoing = () => {
     const filterStatus = project_list?.filter(item => item.status === Assigned || item.status === ForReview || item.status === Ongoing)
     return filterStatus?.length
@@ -87,10 +89,7 @@ function Dashboard({ reduxActions, reduxState }) {
     />
   );
   const rows = project_list?.length > 0 ? project_list.map((item, i) => {
-
     const projectid = project_list.indexOf(item)
-
-    // socketIO.current.emit("room-message", '', projectid)
 
     return {
       project_title: (
@@ -132,7 +131,7 @@ function Dashboard({ reduxActions, reduxState }) {
       </MDTypography>,
       createdAt: <MDTypography variant="p" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>{item?.createdAt?.map(d => <p>{d}</p>)}</MDTypography>,
       action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} />
+        <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} projects={project_list} />
       </MDTypography>
 
     }
@@ -152,7 +151,6 @@ function Dashboard({ reduxActions, reduxState }) {
     }
     hours = String(hours).padStart(2, "0");
     const projectid = project_list.indexOf(item)
-    // socketIO.current.emit("room-message", '', projectid)
 
     return {
       project_title: (

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef } from "react";
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useRef } from "react";
 import MDBox from "components/MDBox";
 import {
   Avatar,
@@ -7,7 +7,6 @@ import {
   Icon,
   Menu,
   MenuItem,
-  fabClasses,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -22,7 +21,6 @@ import { store } from "redux/store";
 import reduxContainer from "redux/containers/containers";
 import { getProjectData } from "redux/global/global-functions";
 import { getBrandData } from "redux/global/global-functions";
-import MDButton from "components/MDButton";
 import DefaultAvatar from "assets/mi-banana-icons/default-profile.png";
 import { reRenderChatComponent } from "redux/actions/actions";
 import apiClient from "api/apiClient";
@@ -44,9 +42,7 @@ import { setMiniSidenav } from 'context'
 import "./navbar-style.css"
 import MenuIcon from "@mui/icons-material/Menu"
 
-// import { useSocket } from 'sockets';
 import { projectNotifications } from "redux/global/global-functions";
-// import discordSound from 'assets/sound/discord.mp3'
 import notif from 'assets/sound/notif.wav'
 import { SocketContext } from "sockets";
 import ProjectMenuOptions from "../create-project-poper/project-menu-poper";
@@ -55,20 +51,16 @@ import SocialMediaManager from "../social-media-form/social-media-manager";
 import WebsiteForm from "../website-form/website-form";
 import WebAppDevForm from "../web-app-form/web-app-dev-form";
 import MobileAppDevForm from "../mobile-app-dev-form/mobile-app-dev-form";
+import { socket } from "sockets";
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
-  // const socketIO = useRef(useSocket())
   const socketIO = useRef(useContext(SocketContext));
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
   const [userMenu, setUserMenu] = useState(false);
-  const [openMenu, setOpenMenu] = useState(false);
-  const [inComingMsg, setInComingMsg] = useState(false);
-  const userNewChatMessage = reduxState.userNewChatMessage;
   const handleUserProfileMenu = (event) => setUserMenu(event.currentTarget);
   const handleUserCloseMenu = () => setUserMenu(false);
-  const handleCloseMenu = () => setOpenMenu(false);
   const reduxDispatch = useDispatch();
   const render_chat = useSelector((state) => state.re_render_chat);
   const role = currentUserRole(reduxState);
@@ -132,6 +124,12 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     return size
   }
 
+  useEffect(() => {
+    socketIO.current.emit('user_online', true, reduxState?.userDetails?.id, reduxState?.userDetails?.roles)
+    const id = reduxState?.userDetails?.id;
+    projectNotifications(id, reduxActions.handleProject_notifications)
+  }, [])
+
   const [reloadProject, setReloadProjects] = useState(false)
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -142,12 +140,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   } = controller;
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const [openProjectMenu, setOpenProjectMenu] = useState(false);
-  const anchorRef = useRef(null);
-
-  const handleToggle = useCallback(() => {
-    setOpenProjectMenu((prevOpen) => !prevOpen);
-  }, [openProjectMenu]);
+  // const [openProjectMenu, setOpenProjectMenu] = useState(false);
 
   let textColor = "white";
   const handleMenuOpen = (event) => {
@@ -157,7 +150,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
+  // const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -167,7 +160,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       persistStore(store).purge();
       localStorage.removeItem("user_details");
       navigate("/authentication/mi-sign-in");
-      // socketIO.current.disconnect()
+      socketIO.current.disconnect()
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -216,10 +209,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       [name]: value,
     });
   };
-  const handleOpenMenu = (event) => {
-    setInComingMsg(false);
-    setOpenMenu(event.currentTarget);
-  };
   function clearAllNotfications() {
     reduxActions.getUserNewChatMessage([]);
   }
@@ -233,35 +222,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       return;
     }
   }
-  function clearIncomingMsg(item, index) {
-    const userId = index;
-    const _id = reduxState?.userDetails?.id;
-    apiClient
-      .get(`/api/udpate-notifications/${userId}/${_id}`)
-      .then(({ data }) => {
-        reduxActions.getUserNewChatMessage(data?.msgArray);
-      })
-      .catch((err) => {
-        console.error(err.message);
-      });
-    getToTheProject(item?.project_id);
-  }
 
-  async function updateAllChatMessage() {
-    const id = reduxState.userDetails?.id
-    if (getMessageNotification()) {
-      await apiClient.get(`/api/udpate-all-notifications/${id}`)
-        .then(({ data }) => {
-          // console.log('updated chat data =>', data)
-          reduxActions.getUserNewChatMessage(data?.msgArray)
-        }).catch((err) => {
-          console.error(err.message)
-        })
-        .catch((err) => {
-          console.error(err.message);
-        });
-    }
-  }
   function showPersonRoles() {
     if (role?.projectManager) return "(Project Manager)";
     if (role?.admin) return "(Admin)";
@@ -423,28 +384,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         }, 1000);
       });
   };
-  const getAllNotificationsMsg = () => {
-    const id = reduxState?.userDetails?.id;
-    apiClient
-      .get("/api/get-notifications/" + id)
-      .then(({ data }) => {
-        localStorage.setItem(
-          "user_details",
-          JSON.stringify({
-            ...reduxState?.userDetails,
-            ...data.userDetails,
-          })
-        );
-        reduxActions.getUserDetails({
-          ...reduxState?.userDetails,
-          ...data.userDetails,
-        });
-        reduxActions.getUserNewChatMessage(data.userDetails?.notifications);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   // Accunts Dropdown
   const renderUserMenu = () => (
     <Menu
@@ -472,103 +411,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   );
 
   // Notifications Dropdown
-  const renderMenu = () => (
-    <Menu
-      anchorEl={openMenu}
-      anchorReference={null}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "left",
-      }}
-      open={Boolean(openMenu)}
-      onClose={handleCloseMenu}
-      sx={{
-        mt: 2,
-        height: 400,
-        borderRadius: "0px",
-        padding: "10px",
-      }}
-    >
-      {userNewChatMessage?.length > 0 && (
-        <MDButton
-          variant="filled"
-          color="info"
-          p={1}
-          sx={{ width: "100%", fontsFamily: fontsFamily.poppins }}
-          onClick={clearAllNotfications}
-        >
-          clear all message
-        </MDButton>
-      )}
-      {userNewChatMessage?.length > 0 ? (
-        userNewChatMessage.map((newMsg, i) => (
-          <MDBox
-            display="flex"
-            key={i}
-            flexDirection="column"
-            p={0.8}
-            mb={0.2}
-            width="240px"
-            gap="5px"
-            sx={{
-              backgroundColor: newMsg?.view ? "#4b45458c" : "white",
-              ":hover": {
-                backgroundColor: "#ddd",
-                cursor: "pointer",
-                borderRadius: "0px !important",
-              },
-            }}
-            onClick={() => clearIncomingMsg(newMsg, i)}
-          >
-            <MDTypography fontSize="medium" fontWeight="bold" sx={notificationStyles}>
-              {newMsg?.project_title}
-            </MDTypography>
-            <MDBox display="flex" gap="8px" width="100%">
-              {newMsg?.avatar ? (
-                <img
-                  src={newMsg?.avatar}
-                  loading="lazy"
-                  width={'100%'}
-                  height={'100%'}
-                  style={{ borderRadius: "20px" }}
-                />
-              ) : (
-                <img
-                  src={DefaultAvatar}
-                  loading="lazy"
-                  width={'100%'}
-                  height={'100%'}
-                  style={{ borderRadius: "20px" }}
-                />
-              )}
-              <MDBox display="flex" flexDirection="column" gap="5px" width="100%">
-                <MDTypography fontSize="small" fontWeight="300" sx={notificationStyles}>
-                  {newMsg?.message}
-                </MDTypography>
-                <MDTypography
-                  fontSize="small"
-                  fontWeight="300"
-                  sx={{
-                    fontFamily: fontsFamily.poppins,
-                    color: mibananaColor.tableHeaderColor,
-                    fontStyle: "italic",
-                  }}
-                >
-                  {"received message from "}
-                  <b style={{ display: "block" }}>{newMsg?.role}</b>
-                </MDTypography>
-              </MDBox>
-            </MDBox>
-          </MDBox>
-        ))
-      ) : (
-        <>
-          <NotificationItem title="No message found" />
-        </>
-      )}
-    </Menu>
-  );
-
   const notificationSound = () => {
     const audio = new Audio(notif);
     audio.play();
@@ -594,11 +436,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     }
   };
 
-
-  useEffect(() => {
-    setInComingMsg(true);
-  }, [userNewChatMessage]);
-
   useEffect(() => {
     if (role?.projectManager) {
       socketIO.current.on('new-project-notification', project_data => {
@@ -609,15 +446,12 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     }
     if (role?.customer) {
       socketIO.current.on('status-change-notification', project_data => {
-        // notificationSound()
         reduxActions.handleProject_notifications(project_data)
-        console.log("hello there !!!!!!==========================>>>>>>>>>>", project_data);
       })
     }
 
     if (role?.projectManager || role?.designer) {
       socketIO.current.on('getting-customer-notifications', (project_data, id, status) => {
-        // notificationSound()
         const filterProject = reduxState.project_list.CustomerProjects?.map(project => {
           return project._id === id ? { ...project, status: status } : project
         })
@@ -625,26 +459,44 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         reduxActions.handleProject_notifications(project_data)
       })
     }
-    
+    if (role?.designer) {
+      socketIO.current.on('new-project-assigned', message => {
+        console.log('message', message);
+        reduxActions.handleProject_notifications(message)
+      })
+    }
+
     socketIO.current.on('chat-message-notification', message => {
       reduxActions.handleProject_notifications(message)
       console.log('message', message);
     })
+    return () => {
+      socketIO.current.off('chat-message-notification')
+      if (role?.designer) {
+        socketIO.current.off('new-project-assigned')
+      }
+      if (role?.projectManager || role?.designer) {
+        socketIO.current.off('getting-customer-notifications')
+      }
+      if (role?.projectManager) {
+        socketIO.current.off('new-project-notification')
+      }
+      if (role?.customer) {
+        socketIO.current.off('status-change-notification')
+      }
+    }
   }, [socketIO.current])
 
-  console.log(reduxState.project_notifications)
+  useEffect(() => {
+    socket.connect();
+  }, [])
+
   useEffect(() => {
     const id = reduxState.userDetails?.id;
     getProjectData(id, reduxActions.getCustomerProject);
     getBrandData(id, reduxActions.getCustomerBrand);
   }, [reloadProject]);
 
-
-  // useEffect(() => {
-  //   const id = reduxState.userDetails?.id;
-  //   getProjectData(id, reduxActions.getCustomerProject);
-  //   getBrandData(id, reduxActions.getCustomerBrand);
-  // }, []);
 
   const ProjectButton = styled(Button)(({ theme: { palette } }) => {
     const { primary } = palette;
@@ -701,17 +553,20 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     },
   })
   const getMessageNotification = () => {
-    const isnotifications = userNewChatMessage?.some(item => item?.view === true)
     const is_project_notifications = reduxState.project_notifications?.some(item => item?.view === true)
-    if (is_project_notifications || isnotifications) {
+    if (is_project_notifications) {
       return true
     } else {
       return false
     }
-    // return isnotifications
+  }
+  const notificationsLength = () => {
+    return reduxState.project_notifications?.filter(item => {
+      return item?.view === true
+    }).length
   }
   useEffect(() => {
-    getAllNotificationsMsg();
+    // getAllNotificationsMsg();
     return () => {
       setReloadProjects(false)
     }
@@ -806,13 +661,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     setShowAccountsBtn(prev => !prev)
   }, [showAccountsbtn])
 
-  useEffect(() => {
-    socketIO.current.emit('user_online', true, reduxState?.userDetails?.id, reduxState?.userDetails?.roles)
-    // socketIO.on('active_users', (data) => {
-    // })
-    const id = reduxState?.userDetails?.id;
-    projectNotifications(id, reduxActions.handleProject_notifications)
-  }, [])
+  console.log('Testing Navbar');
 
   return (
     <>
@@ -894,78 +743,58 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             </div>
           </MDBox>
           <MDBox className="grid-2-box">
-            <div className="btn-container" onClick={updateAllChatMessage}>
+            <div className="btn-container">
               {getMessageNotification() ? (
-                <span className="notifications-point"></span>
+                <span className="notifications-point">{notificationsLength()}</span>
               ) : null}
               <RightSideDrawer list={list} />
             </div>
-            {/* <div className="btn-container"
-              onClick={handleUserProfileMenu}>
-              <AccountCircle fontSize="large" />
-              </div>*/}
             <div className="btn-container menu-icon" onClick={handleMobileNav} >
               <MenuIcon fontSize="large" />
             </div>
             {renderUserMenu()}
-            {/* {role?.customer && (
-              <ProjectButton
-                variant="contained"
+            {role?.customer &&
+              
+
+
+              <ProjectMenuOptions
                 size="medium"
-                className="create-project-btn"
-                startIcon={projectIcon}
-                ref={anchorRef}
-                id="composition-button"
-                aria-controls={openProjectMenu ? 'composition-menu' : undefined}
-                aria-expanded={openProjectMenu ? 'true' : undefined}
-                aria-haspopup="true"
-                onClick={handleToggle}
-              // onClick={handleClickOpen}
-              >
-                Create Project
-              </ProjectButton>
-            )} */}
-            {role?.customer && <ProjectMenuOptions
-              size="medium"
-              handleClickOpen={handleClickOpen}
-              handleCopyWriting={handleOpenCopyWriting}
-              handleSocialMedia={handleOpenSocialMedia}
-              handleWebsite={handleWebsite}
-              handleWebAppDev={handleWebAppDev}
-              handleMobileAppDev={handleMobileAppDev}
-            />}
+                handleClickOpen={handleClickOpen}
+                handleCopyWriting={handleOpenCopyWriting}
+                handleSocialMedia={handleOpenSocialMedia}
+                handleWebsite={handleWebsite}
+                handleWebAppDev={handleWebAppDev}
+                handleMobileAppDev={handleMobileAppDev}
+              />
+            }
           </MDBox>
         </Grid>
         <Grid className="grid-3" item style={{ display: showAccountsbtn ? 'flex' : 'none' }}>
-          <div className="btn-container" onClick={updateAllChatMessage}>
+          <div className="btn-container">
 
             {getMessageNotification() ? (
-              <span className="notifications-point"></span>
+              <span className="notifications-point">{notificationsLength()}</span>
             ) : null}
             <RightSideDrawer list={list} />
           </div>
-          {/*<div className="btn-container"
-            onClick={handleUserProfileMenu}>
-            <AccountCircle fontSize="large" />
-            </div>*/}
           {role?.customer && (
-            // <ProjectButton2
-            //   variant="contained"
-            //   size="small"
-            //   startIcon={projectIcon}
-            //   onClick={handleClickOpen}
-            // >
-            //   Create Project
-            // </ProjectButton2>
-            <ProjectMenuOptions
-              size={"small"}
-              handleClickOpen={handleClickOpen}
-              handleCopyWriting={handleOpenCopyWriting}
-              handleSocialMedia={handleOpenSocialMedia}
-              handleWebsite={handleWebsite}
-              handleWebAppDev={handleWebAppDev}
-              handleMobileAppDev={handleMobileAppDev}
-            />
+            <ProjectButton2
+              variant="contained"
+              size="small"
+              startIcon={projectIcon}
+              onClick={handleClickOpen}
+            >
+              Create Project
+            </ProjectButton2>
+            // <ProjectMenuOptions
+            //   size={"small"}
+            //   handleClickOpen={handleClickOpen}
+            //   handleCopyWriting={handleOpenCopyWriting}
+            //   handleSocialMedia={handleOpenSocialMedia}
+            //   handleWebsite={handleWebsite}
+            //   handleWebAppDev={handleWebAppDev}
+            //   handleMobileAppDev={handleMobileAppDev}
+            // />
           )}
         </Grid>
       </Grid>

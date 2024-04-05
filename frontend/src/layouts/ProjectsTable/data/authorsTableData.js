@@ -1,6 +1,6 @@
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import apiClient from "api/apiClient";
 import MDSnackbar from "components/MDSnackbar";
 import { useSelector } from "react-redux";
@@ -9,10 +9,10 @@ import { getCustomerProject } from "redux/actions/actions";
 import { getProjectData } from "redux/global/global-functions";
 import "./../../../examples/new-table/table-style.css"
 import OptionsList from "./options-list";
-// import { useSocket } from "sockets";
 import { sendingStatusNotification } from "socket-events/socket-event";
 import { customerSendingNotification } from "socket-events/socket-event";
 import { SocketContext } from "sockets";
+// import { getSingleProjectById } from "redux/global/global-functions";
 
 export const Author = ({ name, }) => (
   <MDBox lineHeight={1}>
@@ -31,7 +31,7 @@ export const Job = ({ title, description }) => (
   </MDBox>
 );
 
-export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNot, role }) => {
+export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNot, role, projects }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [loading1, setLoading1] = useState(false)
   const [loading2, setLoading2] = useState(false)
@@ -196,7 +196,15 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
 
         sendingStatusNotification(socketIO, role, item, userid, 'Ongoing')
 
+        // const updatedProjects = projects.map(item => {
+        //   if (item._id === id) {
+        //     return { ...item, status: 'Ongoing' }
+        //   }
+        //   return item
+        // })
+
         setTimeout(() => {
+          // console.log(updatedProjects)
           getProjectData(userid, func)
           successSBNot()
         }, 900)
@@ -239,10 +247,18 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
 
         sendingStatusNotification(socketIO, role, item, userid, 'For Review')
 
+        // const updatedProjects = projects.map(item => {
+        //   if (item._id === id) {
+        //     return { ...item, status: 'For Review' }
+        //   }
+        //   return item
+        // })
+
         setTimeout(() => {
+          // func(updatedProjects)
           getProjectData(userid, func)
           successSBNot()
-        }, 900)
+        }, 800)
       })
       .catch((err) => {
         if (err.response) {
