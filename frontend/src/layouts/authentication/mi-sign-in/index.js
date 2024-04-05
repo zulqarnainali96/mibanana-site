@@ -3,7 +3,7 @@ import MiLayoutCover from "../components/Mi-Layout";
 import MDBox from "components/MDBox";
 import MiIcon from "assets/mi-banana-icons/mibanana-logo-1-color 1.png";
 import { Button, Checkbox, Grid, IconButton, TextField } from "@mui/material";
-import CoverImage from "assets/mi-banana-icons/Photo.png";
+import CoverImage from "assets/mi-banana-icons/Frame.png";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import { Link, useNavigate } from "react-router-dom";
@@ -207,7 +207,7 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
     borderRadius: "5px",
     textAlign: "center",
   };
-
+  
   useEffect(() => {
     return () => {
       setEmail("");
@@ -219,51 +219,51 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
   }, []);
   return (
     <MiLayoutCover>
-      {/* <ModalLayout
-                open={open}
-                title="Please complete your account setup"
-                height="auto"
-                width="50%"
-                isBorder={false}
-                onClose={handleClose}
-                color="dark"
-                align="0px auto"
-            >
-                <RequiredForm
-                    onChange={onChange}
-                    handleSubmit={handleSubmit}
-                    loading={loading}
-                    setFormValue={setFormValue}
-                    formValue={formValue}
-                />
-            </ModalLayout> */}
-      <MDBox
-        bgColor="white"
-        sx={({ palette: { light } }) => ({
-          width: "calc(100%)",
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          background: light.cream,
-        })}
-      >
-        <MDBox display="flex" justifyContent="center" alignItems="center" mt={-10} pb={4}>
-          <img src={MiIcon} width={isSmall ? "100%" : "60%"} />
-        </MDBox>
-        {UiChange ? (
-          <div style={noti_msg}>{msg}</div>
-        ) : (
-          <Grid container justifyContent={"center"}>
+    {/* <ModalLayout
+    open={open}
+    title="Please complete your account setup"
+    height="auto"
+    width="50%"
+    isBorder={false}
+    onClose={handleClose}
+    color="dark"
+    align="0px auto"
+    >
+    <RequiredForm
+    onChange={onChange}
+    handleSubmit={handleSubmit}
+    loading={loading}
+    setFormValue={setFormValue}
+    formValue={formValue}
+    />
+  </ModalLayout> */}
+  <MDBox
+  bgColor="white"
+  sx={({ palette: { light } }) => ({
+    width: "calc(100%)",
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+    background: light.cream,
+  })}
+  >
+  <MDBox display="flex" justifyContent="center" alignItems="center" mt={-10} pb={4}>
+  <img src={MiIcon} width={isSmall ? "100%" : "60%"} />
+  </MDBox>
+  {UiChange ? (
+    <div style={noti_msg}>{msg}</div>
+    ) : (
+      <Grid container justifyContent={"center"}>
             <Grid
               item
               xxl={3}
               xl={4}
               lg={5}
-              sx={{ display: isSmall ? "block" : "none", boxShadow: "4px 3px 7px -2px #cccccc0d" }}
+              sx={{ display: isSmall ? "block" : "none", boxShadow: "4px 3px 7px -2px #cccccc0d", textAlign:"end" }}
             >
-              <img src={CoverImage} width={"100%"} height={"100%"} />
+              <img src={CoverImage} width={"80%"} height={"100%"} />
             </Grid>
             <Grid
               item

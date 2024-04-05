@@ -6,21 +6,20 @@ import Dialog from "@mui/material/Dialog";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
-import Grid from "@mui/material/Grid";
-import "./style.css";
-import { Checkbox, FormControlLabel } from "@mui/material";
-import useSocialMediaManager from "./useSocialMediaManager";
-import ReactQuil from "react-quill";
-import MDBox from "components/MDBox";
-import { reactQuillStyles } from "assets/react-quill-settings/react-quill-settings";
-import { formats } from 'assets/react-quill-settings/react-quill-settings';
-import { modules } from 'assets/react-quill-settings/react-quill-settings';
-import UploadFile from "components/File upload button/FileUpload";
+import { useFormik } from "formik";
+import Input from "components/Input/Input";
+import { Grid, MenuItem, Select, TextField } from "@mui/material";
+import { socialMediaSchema } from "Schema/Index";
+
+const borderColorRed = {
+  borderColor: "red",
+};
+
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
   "& .MuiPaper-root": {
-    maxWidth: "100% !important",
-    width: "45%",
+    maxWidth: "60% !important",
+    width: "100%",
     [breakpoints.down("lg")]: {
       width: "95%",
     },
@@ -37,25 +36,37 @@ const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => 
   },
 }));
 
-const SocialMediaManager = (props) => {
-  const { open } = props;
-  const {
-    handleModalClose,
-    handleSelectPlan,
-    handleChoosePlatform,
-    handleContent,
-    selectService,
-    choosePlatform,
-    selectPlan,
-  } = useSocialMediaManager(props);
+const userDetailsString = localStorage.getItem('user_details');
+const name = userDetailsString ? JSON.parse(userDetailsString).name : '';
+const user = userDetailsString ? JSON.parse(userDetailsString).id : "";
 
-  const classes = reactQuillStyles();
-  const getDescriptionText = (value) => {
-    props.setFormValue({
-        ...props.formValue,
-        project_description: value
-    })
+const initialValues = {
+  name: name,
+  user: user,
+  project_title: "",
+  project_details: "",
+  plan: "",
+  platforms: "", 
+  service_type: "",
 }
+
+const SocialMediaManager = (props) => {
+  const { open, handleClose } = props;
+
+  const {
+    values,
+    errors,
+    handleBlur,
+    handleSubmit,
+    handleChange,
+    touched
+  } = useFormik({
+    initialValues: initialValues,
+    validationSchema: socialMediaSchema,
+    onSubmit: (values) => {
+      console.log(values)
+    }
+  })
 
   return (
     <BootstrapDialog open={open} sx={{ width: "100% !important" }}>
@@ -67,253 +78,224 @@ const SocialMediaManager = (props) => {
         alignItems={"center"}
         borderBottom={`1px solid #ccc !important`}
       >
-        <MDTypography className="fontsStyle">Create Social Media Form</MDTypography>
+        <MDTypography className="fontsStyle">Social Media Request Form</MDTypography>
         <MDButton
-          onClick={handleModalClose}
+          onClick={handleClose}
           sx={{ position: "absolute", right: 4, padding: "1.4rem !important" }}
         >
           <CloseOutlined sx={{ fill: "#444" }} />
         </MDButton>
       </DialogTitle>
       <DialogContent>
-        <Grid container spacing={2} className="grid-social-container">
-          <Grid item xs={4} className="grid-social-item-1">
-            <MDTypography variant={"h6"} pb={1} className="social-head-title">
-              Select Service Type
-            </MDTypography>
-            <Grid container>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={
-                    <Checkbox
-                      checked={selectService.contentCreation}
-                      sx={{ width: 30, height: 30 }}
-                    />
-                  }
-                  onChange={handleContent("contentCreation")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Content Creation
-                </MDTypography>
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={
-                    <Checkbox
-                      checked={selectService.postingSchedule}
-                      sx={{ width: 30, height: 30 }}
-                    />
-                  }
-                  onChange={handleContent("postingSchedule")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Posting Schedule
-                </MDTypography>
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={
-                    <Checkbox
-                      checked={selectService.engagementStrategy}
-                      sx={{ width: 30, height: 30 }}
-                    />
-                  }
-                  onChange={handleContent("engagementStrategy")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Engagement Strategy
-                </MDTypography>
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={
-                    <Checkbox
-                      checked={selectService.otherServiceType}
-                      sx={{ width: 30, height: 30 }}
-                    />
-                  }
-                  onChange={handleContent("otherServiceType")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Other Service type
-                </MDTypography>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={4} className="grid-social-item-1">
-            <MDTypography variant={"h6"} pb={1} className="social-head-title">
-              Chosse Platforms
-            </MDTypography>
-            <Grid container>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={<Checkbox checked={choosePlatform.All} sx={{ width: 30, height: 30 }} />}
-                  onChange={handleChoosePlatform("All")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  All
-                </MDTypography>
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={
-                    <Checkbox checked={choosePlatform.facebook} sx={{ width: 30, height: 30 }} />
-                  }
-                  onChange={handleChoosePlatform("facebook")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Facebook
-                </MDTypography>
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={
-                    <Checkbox checked={choosePlatform.twitter} sx={{ width: 30, height: 30 }} />
-                  }
-                  onChange={handleChoosePlatform("twitter")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Twitter
-                </MDTypography>
-              </Grid>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={
-                    <Checkbox checked={choosePlatform.linkedin} sx={{ width: 30, height: 30 }} />
-                  }
-                  onChange={handleChoosePlatform("linkedin")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Linkedin
-                </MDTypography>
-              </Grid>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={
-                    <Checkbox
-                      checked={choosePlatform.otherMediaPlatform}
-                      sx={{ width: 30, height: 30 }}
-                    />
-                  }
-                  onChange={handleChoosePlatform("otherMediaPlatform")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Other Social Media Platforms
-                </MDTypography>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={4} className="grid-social-item-1">
-            <MDTypography variant={"h6"} pb={1} className="social-head-title">
-              Select Plan
-            </MDTypography>
-            <Grid container>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={<Checkbox checked={selectPlan.weekly} sx={{ width: 30, height: 30 }} />}
-                  onChange={handleSelectPlan("weekly")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Weekly Plan
-                </MDTypography>
-              </Grid>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={<Checkbox checked={selectPlan.monthly} sx={{ width: 30, height: 30 }} />}
-                  onChange={handleSelectPlan("monthly")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Monthly Plan
-                </MDTypography>
-              </Grid>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={<Checkbox checked={selectPlan.quarter} sx={{ width: 30, height: 30 }} />}
-                  onChange={handleSelectPlan("quarter")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Quarter Plan
-                </MDTypography>
-              </Grid>
-              <Grid item xs={8} className="grid-social-item-1-inside">
-                <FormControlLabel
-                  sx={{ mr: 0, ml: 0 }}
-                  control={
-                    <Checkbox checked={selectPlan.otherPlan} sx={{ width: 30, height: 30 }} />
-                  }
-                  onChange={handleSelectPlan("otherPlan")}
-                />
-                <MDTypography variant={"h6"} className="social-head">
-                  Other Plan Options
-                </MDTypography>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xxl={6} xl={6} lg={6} md={12} xs={12} mt={2}>
-            <MDBox
-              mb={2}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                "& > textarea:focus": {
-                  outline: 0,
-                },
-              }}
-            >
-              <label htmlFor="requirnments">Specify Requirements *</label>
-              <ReactQuil
-                theme="snow"
-                className={classes.quill}
-                id="requirnments"
-                value={props.formValue.project_description || ""}
-                onChange={getDescriptionText}
-                modules={modules}
-                formats={formats}
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            {/*project title*/}
+            <Grid item xs={12}>
+              <MDTypography variant="h6" pb={1} className="">
+                Project Title
+              </MDTypography>
+              <Input
+                placeholder="Enter your Project Title"
+                id="project_title"
+                name="project_title"
+                type="text"
+                value={values.project_title}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                touched={touched.project_title}
+                errors={errors.project_title}
               />
-            </MDBox>
+            </Grid>
+
+            {/*service type*/}
+            <Grid item xs={6}>
+              <MDTypography variant={"h6"} pb={1} className="">
+                Select Service Type
+              </MDTypography>
+              <Grid container>
+                <Grid item xs={12}>
+                  <Select
+                    id="service_type"
+                    name="service_type"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.service_type}
+                    error={touched.service_type && Boolean(errors.service_type)}
+                    fullWidth
+                    displayEmpty
+                  >
+                    <MenuItem value="" selected disabled>Select Service Type</MenuItem>
+                    <MenuItem value="content creation">Content Creation</MenuItem>
+                    <MenuItem value="posting schedule">Posting Schedule</MenuItem>
+                    <MenuItem value="engagement strategy">Engagement Strategy</MenuItem>
+                    <MenuItem value="other">Other</MenuItem>
+                  </Select>
+
+
+                </Grid>
+              </Grid>
+
+            </Grid>
+
+            <Grid item xs={6}>
+              <MDTypography variant={"h6"} pb={1} className="">
+                Others
+              </MDTypography>
+              <Grid container>
+                <Grid item xs={12}>
+                  <Input
+                    type="text"
+                    id="otherServiceType"
+                    name="otherServiceType"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    touched={touched.otherServiceType}
+                    value={values.otherServiceType}
+                    placeholder="Specify other service type"
+                    disabled={values.social_media_service !== "other"} />
+
+                </Grid>
+              </Grid>
+
+            </Grid>
+
+            {/*choose platform*/}
+
+            <Grid item xs={6}>
+              <MDTypography variant={"h6"} pb={1} className="">
+                Choose Platform
+              </MDTypography>
+              <Grid container>
+                <Grid item xs={12}>
+                  <Select
+                    id="platforms"
+                    name="platforms"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.platforms}
+                    error={touched.platforms && Boolean(errors.platforms)}
+                    fullWidth
+                    displayEmpty
+                  >
+                    <MenuItem value="" selected disabled>Choose Platform</MenuItem>
+                    <MenuItem value="all">All</MenuItem>
+                    <MenuItem value="facebook">Facebook</MenuItem>
+                    <MenuItem value="instagram">Instagram</MenuItem>
+                    <MenuItem value="twitter">Twitter</MenuItem>
+                    <MenuItem value="linkedIn">LinkedIn</MenuItem>
+                    <MenuItem value="other">Other</MenuItem>
+                  </Select>
+
+
+                </Grid>
+              </Grid>
+
+            </Grid>
+
+            <Grid item xs={6}>
+              <MDTypography variant={"h6"} pb={1} className="">
+                Others
+              </MDTypography>
+              <Grid container>
+                <Grid item xs={12}>
+                  <Input
+                    type="text"
+                    id="otherPlatform"
+                    name="otherPlatform"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    touched={touched.otherPlatform}
+                    value={values.otherPlatform}
+                    placeholder="Specify other service type"
+                    disabled={values.social_media_platform !== "other"} />
+
+                </Grid>
+              </Grid>
+
+            </Grid>
+
+            {/*choose plan*/}
+
+            <Grid item xs={6}>
+              <MDTypography variant={"h6"} pb={1} className="">
+                Choose Plan
+              </MDTypography>
+              <Grid container>
+                <Grid item xs={12}>
+                  <Select
+                    id="plan"
+                    name="plan"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.plan}
+                    error={touched.plan && Boolean(errors.plan)}
+                    fullWidth
+                    displayEmpty
+                  >
+                    <MenuItem value="" selected disabled>Choose Plan</MenuItem>
+                    <MenuItem value="weekly">Weekly</MenuItem>
+                    <MenuItem value="monthly">Monthly Plan</MenuItem>
+                    <MenuItem value="quarterly">Quarterly Plan</MenuItem>
+                    <MenuItem value="other">Other</MenuItem>
+                  </Select>
+
+
+                </Grid>
+              </Grid>
+
+            </Grid>
+
+            <Grid item xs={6}>
+              <MDTypography variant={"h6"} pb={1} className="">
+                Others
+              </MDTypography>
+              <Grid container>
+                <Grid item xs={12}>
+                  <Input
+                    type="text"
+                    id="otherPlatform"
+                    name="otherPlatform"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    touched={touched.otherPlatform}
+                    value={values.otherPlatform}
+                    placeholder="Specify other service type"
+                    disabled={values.social_media_plan !== "other"} />
+
+                </Grid>
+              </Grid>
+
+            </Grid>
+
+            {/*description*/}
+            <Grid item xs={12}>
+              <MDTypography variant="h6" pb={1} className="">
+                Project Description
+              </MDTypography>
+              <TextField
+                placeholder="Enter your Project Description"
+                id="project_details"
+                name="project_details"
+                type="text"
+                value={values.project_details}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                touched={touched.project_details}
+                errors={errors.project_details}
+                multiline
+                rows={4}
+                maxRows={8}
+                style={{ width: '100%' }}
+                className={touched.project_details && Boolean(errors.project_details) ? 'border-color-red' : ''}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <MDButton type="submit" style={{ width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }}>Submit</MDButton>
+            </Grid>
+
           </Grid>
-          <Grid item xxl={3} xl={3} lg={12} md={12} xs={12}>
-            <MDBox>
-              <UploadFile
-                id="customer-upload-image"
-                add_files={props.add_files}
-                upload_files={props.upload_files}
-                handleFileUpload={props.handleFileUpload}
-                removeFiles={props.removeFiles}
-                isCloseIcon={true}
-            />
-            </MDBox>
-            <MDTypography
-              component="h5"
-              sx={{ color: "#b19d9db5", fontWeight: "300", fontSize: "12px", paddingTop: "10px" }}
-            >
-              Note : Only .png, .pdf, .jpg, .jpeg,
-              <br /> .ai, .zip, .psd, .eps formats are allowed
-            </MDTypography>
-          </Grid>
-        </Grid>
+        </form>
       </DialogContent>
     </BootstrapDialog>
   );

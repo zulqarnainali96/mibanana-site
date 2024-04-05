@@ -542,8 +542,8 @@ const CreateProject1 = ({
                             )}
                         </MDBox>
                         <Button onClick={handleClose} >Cancel</Button>
-                        
-                        <SubmitButton sx={{ color: 'white !important' }} disabled={loading} variant='contained' type='submit' 
+
+                        <SubmitButton sx={{ color: 'white !important' }} disabled={loading} variant='contained' type='submit'
                             endIcon={<MoonLoader loading={loading} size={18} color='#fff' />}
                         >
                             Submit &nbsp;&nbsp;

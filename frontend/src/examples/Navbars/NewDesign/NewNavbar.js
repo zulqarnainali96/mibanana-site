@@ -381,6 +381,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       file_formats: formValue.file_formats,
       is_active: false,
     };
+    
     await apiClient.post("/graphic-project", data)
       .then((resp) => {
         if (resp?.status === 201) {
