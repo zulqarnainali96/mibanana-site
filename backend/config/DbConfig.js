@@ -4,9 +4,14 @@ const mongoose = require('mongoose')
 
 // New String
 // mongodb+srv://mibanana:F0GLmBdleUZ5Mq9M@mibananacluster.cva0t3g.mongodb.net/?retryWrites=true&w=majority&appName=mibananaCluster
+
+// test backend
+// mongodb+srv://mibanana:F0GLmBdleUZ5Mq9M@mibananacluster.cva0t3g.mongodb.net/test-database?retryWrites=true&w=majority&appName=mibananaCluster
+
+
 const ConnectDB = async () => {
     try {
-        await mongoose.connect('mongodb+srv://mibanana:F0GLmBdleUZ5Mq9M@mibananacluster.cva0t3g.mongodb.net/mibanana-database?retryWrites=true&w=majority&appName=mibananaCluster')
+        await mongoose.connect('mongodb+srv://mibanana:F0GLmBdleUZ5Mq9M@mibananacluster.cva0t3g.mongodb.net/test-database?retryWrites=true&w=majority&appName=mibananaCluster')
     } catch (error) {
        console.log(error) 
     }

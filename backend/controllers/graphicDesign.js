@@ -415,6 +415,37 @@ const projectCancel = async (req, res) => {
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
+const projectWidthRevision = async (req, res) => {
+    const id = req.params.id
+    if (!id) {
+        return res.status(400).send({ message: 'ID not found' })
+    }
+    try {
+        const findproject = await graphicDesignModel.findById(id)
+        if (findproject) {
+            const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'With Revision' })
+            if (updatingStatus) {
+                const project_user = await User.findById({ _id: updatingStatus.user })
+                if (project_user) {
+                    const { email } = project_user
+                    const { project_title } = updatingStatus
+                    const msg = `Designer change project status to <b>With Revision</b>`
+                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'With Revision')
+                }
+                return res.status(201).send({ message: 'Project status updated for changes' })
+            }
+            else {
+                return res.status(400).send({ message: 'Found error while Updating Project' })
+
+            }
+        } else {
+            return res.status(404).send({ messsage: 'Project Not Found' })
+        }
+
+    } catch (err) {
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+}
 const projectForReview = async (req, res) => {
     const id = req.params.id
     if (!id) {
@@ -499,4 +530,4 @@ const updateFigmaLink = async (req, res) => {
     }
 }
 
-module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectForReview, deleteFile, projectOngoing, projectCancel, updateDriveLink, updateFigmaLink, getSingleProject }
+module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectForReview, deleteFile, projectOngoing, projectCancel, updateDriveLink, updateFigmaLink, getSingleProject, projectWidthRevision }
