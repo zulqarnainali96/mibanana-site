@@ -265,7 +265,8 @@ const Chating = ({ reduxState, reduxActions }) => {
             sendMessage={sendMessage}
             message={message}
             reduxState={reduxState}
-            projectCompleted={()=>Action.projectCompleted(id)}
+            projectAttend={()=>Action.projectAttend(id)}
+            projectForReview={()=> Action.projectForReview(id)}
           />
         </Grid>
         <Grid item xxl={6} xl={6} lg={12} md={12} sm={12} xs={12} pt="0 !important" height="100%" sx={({ breakpoints }) => ({

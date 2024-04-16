@@ -11,7 +11,7 @@ import React from 'react'
 import ReactQuill from "react-quill";
 import { fontsFamily } from 'assets/font-family';
 import imageAvatar from "assets/mi-banana-icons/default-profile.png";
-import { useMediaQuery } from '@mui/material';
+import { MenuList, useMediaQuery } from '@mui/material';
 import MDBox from 'components/MDBox';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
@@ -24,7 +24,8 @@ const ChatsContainer = ({
     reduxState,
     sendMessage,
     message,
-    projectCompleted
+    projectAttend,
+    projectForReview
 }) => {
     const classes = reactQuillStyles2()
     const avatar = reduxState?.userDetails?.avatar;
@@ -44,10 +45,20 @@ const ChatsContainer = ({
     const userDetailsString = localStorage.getItem('user_details');
     const userRole = userDetailsString ? JSON.parse(userDetailsString).roles[0] : '';
 
-    const projectComplete = (itemId) => {
+    const projectAttend1 = (itemId) => {
         // Implement your logic here to handle project completion
-        console.log(`Project with ID ${itemId} completed`);
-        alert("Completed")
+        console.log(`Project with ID ${itemId} Ongoing`);
+        alert("Ongoing")
+    };
+    const projectForReview1 = (itemId) => {
+        // Implement your logic here to handle project completion
+        console.log(`Project with ID ${itemId} for review`);
+        alert("For Review")
+    };
+    const withRevision = (itemId) => {
+        // Implement your logic here to handle project completion
+        console.log(`Project with ID ${itemId} revision`);
+        alert("For Revision")
     };
 
     return (
@@ -65,25 +76,43 @@ const ChatsContainer = ({
                 variant="h4"
                 pb={1}
             >
-                <Grid xs={6}>Activity</Grid>
-                {((userRole === 'Graphic-Designer') || (userRole === 'Customer')) && (
+                <Grid xs={6} style={{display:"flex", alignItems:"center"}}>Activity</Grid>
+                {userRole === 'Graphic-Designer' && (
                     <Grid
                         id="dropdown-btn"
-                        aria-controls={open ? 'dropdown-menu' : undefined}
+                        aria-controls={anchorEl ? 'dropdown-menu' : undefined}
                         aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
+                        aria-expanded={anchorEl ? 'true' : undefined}
                         onClick={handleClick}
                         item
                         xs={6}
-                        style={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer" }}>
+                        style={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer" }}
+                    >
                         Change Status
                         <MoreVertIcon />
+                    </Grid>
+                )}
+                {userRole === 'Customer' && (
+                    <Grid
+                        id="dropdown-btn-customer"
+                        aria-controls={anchorEl ? 'dropdown-menu-customer' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={anchorEl ? 'true' : undefined}
+                        onClick={handleClick}
+                        item
+                        xs={6}
+                        style={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer" }}
+                    >
+                        <span style={{backgroundColor: "#FFE135", color: "#636e72", padding:"0.5rem 0.8rem", display: "flex", alignItems:"center"}}>
+                            Send Changes to Designer
+                            <MoreVertIcon />
+                        </span>
                     </Grid>
                 )}
                 <Menu
                     id="dropdown-menu"
                     anchorEl={anchorEl}
-                    open={open}
+                    open={Boolean(anchorEl)}
                     onClose={handleClose}
                     anchorOrigin={{
                         vertical: 'bottom',
@@ -95,9 +124,19 @@ const ChatsContainer = ({
                     }}
                     style={{ top: "10px" }}
                 >
-                    <MenuItem onClick={()=>projectComplete(projectId)}>Completed</MenuItem>
-                    <MenuItem onClick={handleClose}>Revisions</MenuItem>
+                    <MenuList>
+                        {userRole === 'Graphic-Designer' && (
+                            <div>
+                                <MenuItem onClick={()=>{projectAttend1(projectId); handleClose();}}>Ongoing</MenuItem>
+                                <MenuItem onClick={()=>{projectForReview1(projectId); handleClose();}}>For Review</MenuItem>
+                            </div>
+                        )}
+                        {userRole === 'Customer' && (
+                            <MenuItem onClick={()=>{handleClose(); withRevision(projectId)}}>Revisions</MenuItem>
+                        )}
+                    </MenuList>
                 </Menu>
+
 
 
             </MDTypography>
