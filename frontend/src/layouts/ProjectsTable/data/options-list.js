@@ -9,6 +9,7 @@ const AuthMembersList = (props) => {
         <React.Fragment>
             <MenuItemDropdown loading={loading5} disabled={loading5} onClick={projectAttend} title="Ongoing" />
             <MenuItemDropdown loading={loading4} disabled={loading4} onClick={projectForReview} title="For Review" />
+            <MenuItemDropdown loading={loading4} disabled={loading4} onClick={("")} title="With Revision" />
 
             {role?.admin && <MenuItemDropdown loading={loading6} disabled={loading6} onClick={deleteProject} title="Delete Project" />}
         </React.Fragment>
@@ -33,8 +34,8 @@ const CustomerList = (props) => {
     }
     return (
         <React.Fragment>
-            <MenuItemDropdown loading={loading3} disabled={loading3 || getActionsDisabled()} onClick={projectCompleted} title="Completed" />
-            <MenuItemDropdown loading={loading2} disabled={loading2} onClick={duplicateProject} title="Duplicate" />
+        <MenuItemDropdown loading={loading3} disabled={loading3 || getActionsDisabled()} onClick={projectCompleted} title="Completed" />
+        <MenuItemDropdown loading={loading2} disabled={loading2} onClick={duplicateProject} title="Duplicate" />
             <MenuItemDropdown loading={loading1} disabled={loading1} onClick={projectCancel} title="Cancel" />
         </React.Fragment>
     )

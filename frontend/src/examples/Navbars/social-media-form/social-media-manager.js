@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -10,10 +10,6 @@ import { useFormik } from "formik";
 import Input from "components/Input/Input";
 import { Grid, MenuItem, Select, TextField } from "@mui/material";
 import { socialMediaSchema } from "Schema/Index";
-
-const borderColorRed = {
-  borderColor: "red",
-};
 
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
@@ -46,12 +42,14 @@ const initialValues = {
   project_title: "",
   project_details: "",
   plan: "",
-  platforms: "", 
+  platforms: "",
   service_type: "",
 }
 
 const SocialMediaManager = (props) => {
   const { open, handleClose } = props;
+  const [uploadedImages, setUploadedImages] = useState([]);
+  const fileInputRef = useRef(null);
 
   const {
     values,
@@ -67,6 +65,37 @@ const SocialMediaManager = (props) => {
       console.log(values)
     }
   })
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    handleFiles(files);
+  };
+
+  const handleFiles = (files) => {
+    const uploadedImagesArray = [...uploadedImages];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      uploadedImagesArray.push(file);
+    }
+    setUploadedImages(uploadedImagesArray);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleFileInputChange = (e) => {
+    const files = e.target.files;
+    handleFiles(files);
+  };
+
+  const removeImage = (indexToRemove) => {
+    const filteredImages = uploadedImages.filter((image, index) => index !== indexToRemove);
+    setUploadedImages(filteredImages);
+  };
+
+
 
   return (
     <BootstrapDialog open={open} sx={{ width: "100% !important" }}>
@@ -289,6 +318,42 @@ const SocialMediaManager = (props) => {
                 className={touched.project_details && Boolean(errors.project_details) ? 'border-color-red' : ''}
               />
             </Grid>
+
+            {/* Add Drag and Drop area */}
+            <Grid item xs={12}>
+              <label htmlFor="fileInput" style={{ display: 'block', cursor: 'pointer' }}>
+                <div
+                  style={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center' }}
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                >
+                  <p>Drag & Drop Images Here</p>
+                </div>
+              </label>
+              <input
+                id="fileInput"
+                type="file"
+                accept="image/*"
+                onChange={handleFileInputChange}
+                style={{ display: 'none' }}
+                ref={fileInputRef}
+              />
+              {/* Display uploaded images */}
+              {uploadedImages.map((image, index) => (
+                <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
+                  <img src={URL.createObjectURL(image)} alt={`uploaded-${index}`} style={{ maxWidth: '100px', maxHeight: '100px', margin: '10px', width: "150px", height: "150px", objectFit: "cover" }} />
+                  <button
+                    onClick={() => removeImage(index)}
+                    style={{ position: 'absolute', top: 10, right: 10, padding: '4px', background: '#000', border: 'none', cursor: 'pointer' }}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+            </Grid>
+
+
+
 
             <Grid item xs={12}>
               <MDButton type="submit" style={{ width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }}>Submit</MDButton>

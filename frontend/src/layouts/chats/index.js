@@ -16,6 +16,7 @@ import { currentUserRole } from "redux/global/global-functions";
 import ChatsContainer from "./Chat-container";
 import { SocketContext } from "sockets";
 import { v4 as uuidv4 } from 'uuid';
+import { Action } from 'layouts/ProjectsTable/data/authorsTableData';
 // https://socket-dot-mi-banana-401205.uc.r.appspot.com
 // http://34.125.239.154
 
@@ -248,6 +249,8 @@ const Chating = ({ reduxState, reduxActions }) => {
             padding: 0,
             height: "100%",
             overflow: "scroll",
+            overflowX:"hidden",
+            paddingRight:"16px",
             "::-webkit-scrollbar": {
               width: "0",
               height: "0",
@@ -262,6 +265,7 @@ const Chating = ({ reduxState, reduxActions }) => {
             sendMessage={sendMessage}
             message={message}
             reduxState={reduxState}
+            projectCompleted={()=>Action.projectCompleted(id)}
           />
         </Grid>
         <Grid item xxl={6} xl={6} lg={12} md={12} sm={12} xs={12} pt="0 !important" height="100%" sx={({ breakpoints }) => ({

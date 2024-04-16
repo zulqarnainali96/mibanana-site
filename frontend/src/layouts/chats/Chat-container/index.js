@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import SendOutlined from '@mui/icons-material/SendOutlined';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -12,6 +13,9 @@ import { fontsFamily } from 'assets/font-family';
 import imageAvatar from "assets/mi-banana-icons/default-profile.png";
 import { useMediaQuery } from '@mui/material';
 import MDBox from 'components/MDBox';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 const ChatsContainer = ({
     chatContainerRef,
@@ -20,11 +24,31 @@ const ChatsContainer = ({
     reduxState,
     sendMessage,
     message,
+    projectCompleted
 }) => {
     const classes = reactQuillStyles2()
     const avatar = reduxState?.userDetails?.avatar;
     const id = reduxState?.userDetails?.id
     const is500 = useMediaQuery("(max-width:500px)")
+    const projectId = reduxState?.customerBrand[0]._id;
+
+    // handle dropdown menu for change status in chat
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const userDetailsString = localStorage.getItem('user_details');
+    const userRole = userDetailsString ? JSON.parse(userDetailsString).roles[0] : '';
+
+    const projectComplete = (itemId) => {
+        // Implement your logic here to handle project completion
+        console.log(`Project with ID ${itemId} completed`);
+        alert("Completed")
+    };
 
     return (
         <React.Fragment>
@@ -36,11 +60,46 @@ const ChatsContainer = ({
                     fontSize: is500 ? "14px !important" : "16px",
                     paddingBottom: "5px",
                     borderBottom: `2px solid ${mibananaColor.tableHeaderColor}`,
+                    display: "flex",
                 })}
                 variant="h4"
                 pb={1}
             >
-                Activity
+                <Grid xs={6}>Activity</Grid>
+                {((userRole === 'Graphic-Designer') || (userRole === 'Customer')) && (
+                    <Grid
+                        id="dropdown-btn"
+                        aria-controls={open ? 'dropdown-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleClick}
+                        item
+                        xs={6}
+                        style={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer" }}>
+                        Change Status
+                        <MoreVertIcon />
+                    </Grid>
+                )}
+                <Menu
+                    id="dropdown-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    style={{ top: "10px" }}
+                >
+                    <MenuItem onClick={()=>projectComplete(projectId)}>Completed</MenuItem>
+                    <MenuItem onClick={handleClose}>Revisions</MenuItem>
+                </Menu>
+
+
             </MDTypography>
             <Grid
                 ref={chatContainerRef}
@@ -95,7 +154,7 @@ const ChatsContainer = ({
                                                     </p>
                                                 </MDBox>
                                                 <Box
-                                                    sx={{ mt: 1, p: '7px', paddingInline : is500 && '18px', ...nameStyle, fontWeight: "300", fontSize: "10px" }}
+                                                    sx={{ mt: 1, p: '7px', paddingInline: is500 && '18px', ...nameStyle, fontWeight: "300", fontSize: "10px" }}
                                                     className="message-content"
                                                     dangerouslySetInnerHTML={{ __html: item.message }}
                                                 >
@@ -103,64 +162,64 @@ const ChatsContainer = ({
                                                 </Box>
                                             </prev>
                                         ) : (
-                                        <pre
-                                            key={index}
-                                            className={`message ${item.user === id ? "right" : "left"
-                                                }`}
-                                            style={{ position: "relative" }}
-                                        >
-                                            <Box sx={{ display: "flex" }}>
-                                                <img
-                                                    src={item.avatar}
-                                                    width={50}
-                                                    height={50}
-                                                    loading="lazy"
-                                                    style={{
-                                                        borderRadius: 0,
-                                                        marginTop: -7,
-                                                        display: "inline-block",
-                                                        left: item.user === id ? "70px" : "-9px",
-                                                    }}
-                                                />
-                                                <Box width="100%" ml={"18px"}>
-                                                    <Box
-                                                        className="user-name"
+                                            <pre
+                                                key={index}
+                                                className={`message ${item.user === id ? "right" : "left"
+                                                    }`}
+                                                style={{ position: "relative" }}
+                                            >
+                                                <Box sx={{ display: "flex" }}>
+                                                    <img
+                                                        src={item.avatar}
+                                                        width={50}
+                                                        height={50}
+                                                        loading="lazy"
                                                         style={{
-                                                            display: "flex",
-                                                            gap: "8px",
-                                                            alignItems: "center",
+                                                            borderRadius: 0,
+                                                            marginTop: -7,
+                                                            display: "inline-block",
+                                                            left: item.user === id ? "70px" : "-9px",
                                                         }}
-                                                    >
-                                                        <p style={{ ...nameStyle, position: "relative", width: "100%" }}>
-                                                            {item.name}
-                                                            <span
-                                                                style={{ ...nameStyle, fontWeight: "300", fontSize: "12px" }}
-                                                            >
-                                                                {" (" + item?.role + ")"}
-                                                            </span>
-                                                            <span
-                                                                style={{
-                                                                    fontSize: "10px",
-                                                                    fontWeight: "300",
-                                                                    position: "absolute",
-                                                                    right: "10px",
-                                                                    color: mibananaColor.tableHeaderColor,
-                                                                }}
-                                                            >
-                                                                {item.time_data ? item.time_data : null}
-                                                            </span>
-                                                        </p>
-                                                    </Box>
-                                                    <Box
-                                                        sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
-                                                        className="message-content"
-                                                        dangerouslySetInnerHTML={{ __html: item.message }}
-                                                    >
+                                                    />
+                                                    <Box width="100%" ml={"18px"}>
+                                                        <Box
+                                                            className="user-name"
+                                                            style={{
+                                                                display: "flex",
+                                                                gap: "8px",
+                                                                alignItems: "center",
+                                                            }}
+                                                        >
+                                                            <p style={{ ...nameStyle, position: "relative", width: "100%" }}>
+                                                                {item.name}
+                                                                <span
+                                                                    style={{ ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                                                                >
+                                                                    {" (" + item?.role + ")"}
+                                                                </span>
+                                                                <span
+                                                                    style={{
+                                                                        fontSize: "10px",
+                                                                        fontWeight: "300",
+                                                                        position: "absolute",
+                                                                        right: "10px",
+                                                                        color: mibananaColor.tableHeaderColor,
+                                                                    }}
+                                                                >
+                                                                    {item.time_data ? item.time_data : null}
+                                                                </span>
+                                                            </p>
+                                                        </Box>
+                                                        <Box
+                                                            sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
+                                                            className="message-content"
+                                                            dangerouslySetInnerHTML={{ __html: item.message }}
+                                                        >
 
+                                                        </Box>
                                                     </Box>
                                                 </Box>
-                                            </Box>
-                                        </pre>)}
+                                            </pre>)}
                                     </>
                                 );
                             })
@@ -185,7 +244,7 @@ const ChatsContainer = ({
                     backgroundColor: mibananaColor.headerColor
                 }}
             >
-                <Box sx={{display : is500 ? "none" : 'block'}}>
+                <Box sx={{ display: is500 ? "none" : 'block' }}>
                     <img
                         src={avatar ? avatar : imageAvatar}
                         width={is500 ? 34 : 50}
@@ -200,7 +259,7 @@ const ChatsContainer = ({
                     modules={modules}
                     formats={formats}
                     className={classes.quill}
-                    style={{width : is500 ? '97%' : '87%'}}
+                    style={{ width: is500 ? '97%' : '87%' }}
                 />
                 <SendOutlined
                     fontSize="medium"

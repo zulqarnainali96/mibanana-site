@@ -19,11 +19,7 @@ import { fontsFamily } from "assets/font-family";
 import "./status-box/status-style.css"
 import { currentUserRole, projectStatus } from "redux/global/global-functions";
 import "./status-box/status-style.css"
-import { Assigned } from "redux/global/status";
-import { ForReview } from "redux/global/status";
-import { Ongoing } from "redux/global/status";
-import { Project_manager } from "redux/global/status";
-import { Completed } from "redux/global/status";
+import { Project_manager ,Assigned, ForReview, Ongoing, Completed, Rev } from "redux/global/status";
 import { SocketContext } from "sockets";
 
 function Dashboard({ reduxActions, reduxState }) {
@@ -50,7 +46,7 @@ function Dashboard({ reduxActions, reduxState }) {
     // projectNotifications(id, reduxActions.handleProject_notifications)
   }, [])
   const sumbitAndOngoing = () => {
-    const filterStatus = project_list?.filter(item => item.status === Assigned || item.status === ForReview || item.status === Ongoing)
+    const filterStatus = project_list?.filter(item => item.status === Assigned || item.status === Rev || item.status === ForReview || item.status === Ongoing)
     return filterStatus?.length
   }
   const projectCompleted = project_list?.filter(item => item.status === Completed)

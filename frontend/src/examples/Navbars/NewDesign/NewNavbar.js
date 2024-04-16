@@ -754,26 +754,18 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             </div>
             {renderUserMenu()}
             {role?.customer &&
-              <ProjectButton
-                variant="contained"
-                className="create-project-btn"
-                size="small"
-                startIcon={projectIcon}
-                onClick={handleClickOpen}
-              >
-                Create Project
-              </ProjectButton>
+              
 
 
-              // <ProjectMenuOptions
-              //   size="medium"
-              //   handleClickOpen={handleClickOpen}
-              //   handleCopyWriting={handleOpenCopyWriting}
-              //   handleSocialMedia={handleOpenSocialMedia}
-              //   handleWebsite={handleWebsite}
-              //   handleWebAppDev={handleWebAppDev}
-              //   handleMobileAppDev={handleMobileAppDev}
-              // />
+              <ProjectMenuOptions
+                size="medium"
+                handleClickOpen={handleClickOpen}
+                handleCopyWriting={handleOpenCopyWriting}
+                handleSocialMedia={handleOpenSocialMedia}
+                handleWebsite={handleWebsite}
+                handleWebAppDev={handleWebAppDev}
+                handleMobileAppDev={handleMobileAppDev}
+              />
             }
           </MDBox>
         </Grid>

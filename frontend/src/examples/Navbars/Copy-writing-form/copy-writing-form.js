@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { styled } from "@mui/material/styles";
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
@@ -50,6 +50,7 @@ const initialValues = {
 const CopyWritingForm = (props) => {
     const { open, handleClose } = props;
     const [uploadedImages, setUploadedImages] = useState([]);
+    const fileInputRef = useRef(null);
 
     const {
         values,
@@ -71,7 +72,7 @@ const CopyWritingForm = (props) => {
                 const response = await axios.post('http://localhost:8000/api/create-copywriting-project', dataToSend);
                 resetForm(clearForm());
             } catch (error) {
-                console.error('Error:', error); 
+                console.error('Error:', error);
             }
             function clearForm() {
                 var projectTitle = document.getElementById('project_title');
@@ -88,6 +89,10 @@ const CopyWritingForm = (props) => {
     const handleDrop = (e) => {
         e.preventDefault();
         const files = e.dataTransfer.files;
+        handleFiles(files);
+    };
+
+    const handleFiles = (files) => {
         const uploadedImagesArray = [...uploadedImages];
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
@@ -95,10 +100,19 @@ const CopyWritingForm = (props) => {
         }
         setUploadedImages(uploadedImagesArray);
     };
-    console.log("image upload",uploadedImages)
 
     const handleDragOver = (e) => {
         e.preventDefault();
+    };
+
+    const handleFileInputChange = (e) => {
+        const files = e.target.files;
+        handleFiles(files);
+    };
+
+    const removeImage = (indexToRemove) => {
+        const filteredImages = uploadedImages.filter((image, index) => index !== indexToRemove);
+        setUploadedImages(filteredImages);
     };
 
     const customChangeService = (e) => {
@@ -279,16 +293,34 @@ const CopyWritingForm = (props) => {
 
                         {/* Add Drag and Drop area */}
                         <Grid item xs={12}>
-                            <div
-                                style={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center' }}
-                                onDrop={handleDrop}
-                                onDragOver={handleDragOver}
-                            >
-                                <p>Drag & Drop Images Here</p>
-                            </div>
+                            <label htmlFor="fileInput" style={{ display: 'block', cursor: 'pointer' }}>
+                                <div
+                                    style={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center' }}
+                                    onDrop={handleDrop}
+                                    onDragOver={handleDragOver}
+                                >
+                                    <p>Drag & Drop Images Here</p>
+                                </div>
+                            </label>
+                            <input
+                                id="fileInput"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileInputChange}
+                                style={{ display: 'none' }}
+                                ref={fileInputRef}
+                            />
                             {/* Display uploaded images */}
                             {uploadedImages.map((image, index) => (
-                                <img key={index} src={URL.createObjectURL(image)} alt={`uploaded-${index}`} style={{ maxWidth: '100px', maxHeight: '100px', margin: '10px' }} />
+                                <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
+                                    <img src={URL.createObjectURL(image)} alt={`uploaded-${index}`} style={{ maxWidth: '100px', maxHeight: '100px', margin: '10px', width: "150px", height: "150px", objectFit: "cover" }} />
+                                    <button
+                                        onClick={() => removeImage(index)}
+                                        style={{ position: 'absolute', top: 10, right: 10, padding: '4px', background: '#000', border: 'none', cursor: 'pointer' }}
+                                    >
+                                        X
+                                    </button>
+                                </div>
                             ))}
                         </Grid>
 
@@ -296,7 +328,6 @@ const CopyWritingForm = (props) => {
                         <Grid item xs={12}>
                             <MDButton type="submit" style={{ width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }}>Submit</MDButton>
                         </Grid>
-
                     </Grid>
                 </form>
                 {/*<FormControl>
