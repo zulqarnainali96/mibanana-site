@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { styled } from "@mui/material/styles";
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -10,6 +10,7 @@ import { Grid, MenuItem, Select, TextField } from '@mui/material';
 import Input from 'components/Input/Input';
 import { useFormik } from 'formik';
 import { mobileAppSchema } from 'Schema/Index';
+import TransitionsModal from 'components/Modal/Modal';
 
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
@@ -46,6 +47,7 @@ const initialValues = {
 
 const MobileAppDevForm = (props) => {
     const { open, handleClose } = props;
+const [openModal, setOpenModal] = useState(false)
 
     const {
         values,
@@ -56,8 +58,9 @@ const MobileAppDevForm = (props) => {
         touched
     } = useFormik({
         initialValues: initialValues,
-        validationSchema: mobileAppSchema,
+        // validationSchema: mobileAppSchema,
         onSubmit: (values) => {
+            setOpenModal(true);
             console.log(values)
         }
     })
@@ -116,10 +119,10 @@ const MobileAppDevForm = (props) => {
                                     <Select
                                         id="app_platform"
                                         name="app_platform"
-                                        onChange={handleChange}
                                         onBlur={handleBlur}
                                         value={values.platform}
                                         error={touched.platform && Boolean(errors.platform)}
+                                        onChange={handleChange}
                                         fullWidth
                                         displayEmpty
                                     >
@@ -163,6 +166,9 @@ const MobileAppDevForm = (props) => {
                         <Grid item xs={12}>
                             <MDButton type="submit" style={{ width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }}>Submit</MDButton>
                         </Grid>
+                        
+                        <TransitionsModal message="hello there!" openModal={openModal} setOpenModal=
+                        {setOpenModal}  />
                     </Grid>
                 </form>
             </DialogContent>

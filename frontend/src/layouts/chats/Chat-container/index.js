@@ -16,6 +16,8 @@ import MDBox from 'components/MDBox';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const ChatsContainer = ({
     chatContainerRef,
@@ -29,9 +31,12 @@ const ChatsContainer = ({
 }) => {
     const classes = reactQuillStyles2()
     const avatar = reduxState?.userDetails?.avatar;
-    const id = reduxState?.userDetails?.id
+    const userId = reduxState?.userDetails?.id
     const is500 = useMediaQuery("(max-width:500px)")
-    const projectId = reduxState?.customerBrand[0]._id;
+    const { id } = useParams();
+    // const projectId = reduxState?.project_list?.CustomerProjects?._id;
+    console.log("redux state is ==============>>>>>",reduxState)
+    console.log("project ID is ==============>>>>>",id)
 
     // handle dropdown menu for change status in chat
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -55,10 +60,13 @@ const ChatsContainer = ({
         console.log(`Project with ID ${itemId} for review`);
         alert("For Review")
     };
-    const withRevision = (itemId) => {
-        // Implement your logic here to handle project completion
-        console.log(`Project with ID ${itemId} revision`);
-        alert("For Revision")
+    const withRevision = async (id) => {
+        try {
+            const response = await axios.get(`http://localhost:8000/api/with-revision/${id}`);
+            console.log(response)
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
     };
 
     return (
@@ -76,7 +84,7 @@ const ChatsContainer = ({
                 variant="h4"
                 pb={1}
             >
-                <Grid xs={6} style={{display:"flex", alignItems:"center"}}>Activity</Grid>
+                <Grid xs={6} style={{ display: "flex", alignItems: "center" }}>Activity</Grid>
                 {userRole === 'Graphic-Designer' && (
                     <Grid
                         id="dropdown-btn"
@@ -103,7 +111,7 @@ const ChatsContainer = ({
                         xs={6}
                         style={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer" }}
                     >
-                        <span style={{backgroundColor: "#FFE135", color: "#636e72", padding:"0.5rem 0.8rem", display: "flex", alignItems:"center"}}>
+                        <span style={{ backgroundColor: "#FFE135", color: "#636e72", padding: "0.5rem 0.8rem", display: "flex", alignItems: "center" }}>
                             Send Changes to Designer
                             <MoreVertIcon />
                         </span>
@@ -127,12 +135,12 @@ const ChatsContainer = ({
                     <MenuList>
                         {userRole === 'Graphic-Designer' && (
                             <div>
-                                <MenuItem onClick={()=>{projectAttend1(projectId); handleClose();}}>Ongoing</MenuItem>
-                                <MenuItem onClick={()=>{projectForReview1(projectId); handleClose();}}>For Review</MenuItem>
+                                <MenuItem onClick={() => { projectAttend1(id); handleClose(); }}>Ongoing</MenuItem>
+                                <MenuItem onClick={() => { projectForReview1(id); handleClose(); }}>For Review</MenuItem>
                             </div>
                         )}
                         {userRole === 'Customer' && (
-                            <MenuItem onClick={()=>{handleClose(); withRevision(projectId)}}>Revisions</MenuItem>
+                            <MenuItem onClick={() => { handleClose(); withRevision(id) }}>Revisions</MenuItem>
                         )}
                     </MenuList>
                 </Menu>
@@ -168,7 +176,7 @@ const ChatsContainer = ({
                                     <>
                                         {is500 ? (
                                             <prev key={index}
-                                                className={`message ${item.user === id ? "right" : "left"
+                                                className={`message ${item.user === userId ? "right" : "left"
                                                     }`}
                                                 style={{ position: "relative" }}>
                                                 <MDBox display="flex" gap="12px">
@@ -203,7 +211,7 @@ const ChatsContainer = ({
                                         ) : (
                                             <pre
                                                 key={index}
-                                                className={`message ${item.user === id ? "right" : "left"
+                                                className={`message ${item.user === userId ? "right" : "left"
                                                     }`}
                                                 style={{ position: "relative" }}
                                             >
@@ -217,7 +225,7 @@ const ChatsContainer = ({
                                                             borderRadius: 0,
                                                             marginTop: -7,
                                                             display: "inline-block",
-                                                            left: item.user === id ? "70px" : "-9px",
+                                                            left: item.user === userId ? "70px" : "-9px",
                                                         }}
                                                     />
                                                     <Box width="100%" ml={"18px"}>

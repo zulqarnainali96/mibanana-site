@@ -416,6 +416,7 @@ const projectCancel = async (req, res) => {
     }
 }
 const projectWidthRevision = async (req, res) => {
+    console.log("msg from backend", req)
     const id = req.params.id
     if (!id) {
         return res.status(400).send({ message: 'ID not found' })

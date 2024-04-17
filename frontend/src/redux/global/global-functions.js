@@ -165,6 +165,8 @@ const projectStatus = (status) => {
       return "For Review";
     case "Submitted":
       return "Submitted";
+    case "Revision":
+      return "Revision";
     default:
       return "End";
   }

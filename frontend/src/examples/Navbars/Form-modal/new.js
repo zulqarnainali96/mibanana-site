@@ -340,7 +340,7 @@ const CreateProject1 = ({
                             </MDBox>
                         </Grid>
                         <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
-                            <Typography variant="h4" size="medium">Custom width*</Typography>
+                            <Typography variant="h4" size="medium">Custom width</Typography>
                             <FormControl sx={({ breakpoints }) => ({
                                 m: 1, width: '30%',
                                 [breakpoints.down('lg')]: {
@@ -355,8 +355,7 @@ const CreateProject1 = ({
                                     type="number"
                                     name="width"
                                     onChange={handleChange}
-                                    required
-                                    placeholder="Width *" variant="outlined" fullWidth
+                                    placeholder="Width" variant="outlined" fullWidth
                                     sx={({ breakpoints, spacing }) => ({
                                         "& > *": {
                                             padding: '6px 8px !important'
@@ -383,8 +382,7 @@ const CreateProject1 = ({
                                     type="number"
                                     name="height"
                                     onChange={handleChange}
-                                    placeholder="Height *" variant="outlined" fullWidth
-                                    required
+                                    placeholder="Height" variant="outlined" fullWidth
                                     sx={({ breakpoints }) => ({
                                         "& > *": {
                                             padding: '6px 8px !important'
@@ -416,7 +414,7 @@ const CreateProject1 = ({
                                     id="select-units"
                                     options={unitOptions}
                                     sx={{ width: '100%' }}
-                                    renderInput={(params) => <TextField required {...params} label="Select Units" />}
+                                    renderInput={(params) => <TextField {...params} label="Select Units" />}
                                 />
                             </FormControl>
                         </Grid>
@@ -473,7 +471,7 @@ const CreateProject1 = ({
                                                 backgroundColor: "#ddd !important"
                                             }
                                         }}
-                                        renderInput={(params) => <TextField required {...params} label="Select Specific Software" />}
+                                        renderInput={(params) => <TextField {...params} label="Select Specific Software" />}
                                     />
                                 </FormControl>
                             </MDBox>
