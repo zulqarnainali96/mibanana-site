@@ -160,13 +160,13 @@ const projectStatus = (status) => {
     case 'Assigned':
       return "Assigned"
     case 'Cancel':
-      return "Canceled"
+      return "Cancelled"
     case "For Review":
       return "For Review";
     case "Submitted":
       return "Submitted";
-    case "Revision":
-      return "Revision";
+    case "With Revision":
+      return "With Revision";
     default:
       return "End";
   }

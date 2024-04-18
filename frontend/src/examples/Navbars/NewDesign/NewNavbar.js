@@ -342,7 +342,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       file_formats: formValue.file_formats,
       is_active: false,
     };
-    
+
     await apiClient.post("/graphic-project", data)
       .then((resp) => {
         if (resp?.status === 201) {
@@ -754,18 +754,24 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             </div>
             {renderUserMenu()}
             {role?.customer &&
-              
-
-
-              <ProjectMenuOptions
-                size="medium"
-                handleClickOpen={handleClickOpen}
-                handleCopyWriting={handleOpenCopyWriting}
-                handleSocialMedia={handleOpenSocialMedia}
-                handleWebsite={handleWebsite}
-                handleWebAppDev={handleWebAppDev}
-                handleMobileAppDev={handleMobileAppDev}
-              />
+              <ProjectButton
+                variant="contained"
+                className="create-project-btn"
+                size="small"
+                startIcon={projectIcon}
+                onClick={handleClickOpen}
+              >
+                Create Project
+              </ProjectButton>
+              // <ProjectMenuOptions
+              //   size="medium"
+              //   handleClickOpen={handleClickOpen}
+              //   handleCopyWriting={handleOpenCopyWriting}
+              //   handleSocialMedia={handleOpenSocialMedia}
+              //   handleWebsite={handleWebsite}
+              //   handleWebAppDev={handleWebAppDev}
+              //   handleMobileAppDev={handleMobileAppDev}
+              // />
             }
           </MDBox>
         </Grid>

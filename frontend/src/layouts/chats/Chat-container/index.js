@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import SendOutlined from '@mui/icons-material/SendOutlined';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -18,6 +18,16 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import MDButton from 'components/MDButton';
+import apiClient from 'api/apiClient';
+import { sendingStatusNotification } from 'socket-events/socket-event';
+import { SocketContext } from 'sockets';
+import { getProjectData } from 'redux/global/global-functions';
+import { ArrowForward } from '@mui/icons-material';
+import { MoonLoader } from 'react-spinners';
+import { useDispatch } from 'react-redux';
+import { getCustomerProject } from 'redux/actions/actions';
+import { currentUserRole } from 'redux/global/global-functions';
 
 const ChatsContainer = ({
     chatContainerRef,
@@ -33,10 +43,14 @@ const ChatsContainer = ({
     const avatar = reduxState?.userDetails?.avatar;
     const userId = reduxState?.userDetails?.id
     const is500 = useMediaQuery("(max-width:500px)")
+    const [loading, setLoading] = useState(false)
+    const socketIO = useRef(useContext(SocketContext));
+    const role = currentUserRole(reduxState);
     const { id } = useParams();
+    const currentProject = reduxState?.project_list?.CustomerProjects?.find(item => item._id === id);
+    const dispatch = useDispatch()
     // const projectId = reduxState?.project_list?.CustomerProjects?._id;
-    console.log("redux state is ==============>>>>>",reduxState)
-    console.log("project ID is ==============>>>>>",id)
+    const func = (value) => dispatch(getCustomerProject(value))
 
     // handle dropdown menu for change status in chat
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -50,24 +64,78 @@ const ChatsContainer = ({
     const userDetailsString = localStorage.getItem('user_details');
     const userRole = userDetailsString ? JSON.parse(userDetailsString).roles[0] : '';
 
-    const projectAttend1 = (itemId) => {
-        // Implement your logic here to handle project completion
-        console.log(`Project with ID ${itemId} Ongoing`);
-        alert("Ongoing")
-    };
-    const projectForReview1 = (itemId) => {
-        // Implement your logic here to handle project completion
-        console.log(`Project with ID ${itemId} for review`);
-        alert("For Review")
-    };
-    const withRevision = async (id) => {
-        try {
-            const response = await axios.get(`http://localhost:8000/api/with-revision/${id}`);
-            console.log(response)
-        } catch (error) {
-            console.error('Error:', error.message);
+    const projectAttend1 = async (itemId) => {
+        const data = {
+            user: currentProject?.user
         }
+        await apiClient.get('/api/attend-project/' + id, data)
+            .then(({ data }) => {
+                sendingStatusNotification(socketIO, role, currentProject, userId, 'Ongoing')
+                handleClose()
+                setTimeout(() => {
+                    getProjectData(userId, func)
+                    //   show Pop notifications here
+                }, 800)
+            })
+            .catch((err) => {
+                handleClose()
+                console.log(err.message)
+                // Show Error POp here
+
+            })
+        // Implement your logic here to handle project completion
+
     };
+    const projectForReview1 = async () => {
+        // Implement your logic here to handle project completion
+        const data = {
+            user: currentProject?.user
+        }
+        await apiClient.get('/api/for-review-project/' + id, data)
+            .then(({ data }) => {
+                sendingStatusNotification(socketIO, role, currentProject, userId, 'For Review')
+                handleClose()
+                setTimeout(() => {
+                    getProjectData(userId, func)
+                    //   show Pop notifications here
+                }, 800)
+            })
+            .catch((err) => {
+                console.log(err.message)
+                handleClose()
+                // Show Error POp here
+
+            })
+
+    };
+    // const withRevision = async (id) => {
+    //     try {
+    //         const response = await axios.get(`http://localhost:8000/api/with-revision/${id}`);
+    //         console.log(response)
+    //     } catch (error) {
+    //         console.error('Error:', error.message);
+    //     }
+    // };
+    const withRevision = async () => {
+        setLoading(true)
+        await apiClient.get('/api/with-revision/' + id)
+            .then(({ data }) => {
+                sendingStatusNotification(socketIO, role, currentProject, userId, 'With Revision')
+                handleClose()
+                setLoading(false)
+                setTimeout(() => {
+                    getProjectData(userId, func)
+                    //   show Pop notifications here
+                }, 800)
+            })
+            .catch((err) => {
+                handleClose()
+                setLoading(false)
+
+                // Show Error POp here
+
+            })
+    }
 
     return (
         <React.Fragment>
@@ -94,28 +162,48 @@ const ChatsContainer = ({
                         onClick={handleClick}
                         item
                         xs={6}
-                        style={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer" }}
+                        sx={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer", color: '#333' }}
                     >
                         Change Status
-                        <MoreVertIcon />
+                        <MoreVertIcon fontSize='small' />
                     </Grid>
                 )}
                 {userRole === 'Customer' && (
-                    <Grid
-                        id="dropdown-btn-customer"
-                        aria-controls={anchorEl ? 'dropdown-menu-customer' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={anchorEl ? 'true' : undefined}
-                        onClick={handleClick}
-                        item
-                        xs={6}
-                        style={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer" }}
-                    >
-                        <span style={{ backgroundColor: "#FFE135", color: "#636e72", padding: "0.5rem 0.8rem", display: "flex", alignItems: "center" }}>
+                    // <Grid
+                    //     id="dropdown-btn-customer"
+                    //     aria-controls={anchorEl ? 'dropdown-menu-customer' : undefined}
+                    //     aria-haspopup="true"
+                    //     aria-expanded={anchorEl ? 'true' : undefined}
+                    //     onClick={handleClick}
+                    //     item
+                    //     xs={6}
+                    //     style={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer" }}
+                    // >
+                    //     <span style={{ backgroundColor: "#FFE135", color: "#636e72", padding: "0.5rem 0.8rem", display: "flex", alignItems: "center", fontSize : '13px' }}>
+                    //         Send Changes to Designer
+                    //         {/* <MoreVertIcon fontSize='small' /> */}
+                    //     </span>
+                    // </Grid>
+                    <MDBox display="flex" justifyContent="flex-end" alignItems="center" width="100%" onClick={() => withRevision(id)}>
+                        {/* <MDButton sx={sendChangeButton} variant="contained" color="primary" >Send Changes to Designer</MDButton> */}
+                        <MDButton
+                            type="submit"
+                            color="warning"
+                            endIcon={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <MoonLoader loading={loading} size={18} color='#121212' />
+                            </div>}
+                            disabled={loading}
+                            boxShadow="none"
+                            sx={{
+                                color: '#000 !important',
+                                textTransform: "capitalize",
+                                fontFamily: "Poppins, sans-serif",
+                                fontSize: '12px'
+                            }}
+                        >
                             Send Changes to Designer
-                            <MoreVertIcon />
-                        </span>
-                    </Grid>
+                        </MDButton>
+                    </MDBox>
                 )}
                 <Menu
                     id="dropdown-menu"
@@ -135,13 +223,13 @@ const ChatsContainer = ({
                     <MenuList>
                         {userRole === 'Graphic-Designer' && (
                             <div>
-                                <MenuItem onClick={() => { projectAttend1(id); handleClose(); }}>Ongoing</MenuItem>
-                                <MenuItem onClick={() => { projectForReview1(id); handleClose(); }}>For Review</MenuItem>
+                                <MenuItem onClick={projectAttend1}>Ongoing</MenuItem>
+                                <MenuItem onClick={projectForReview1}>For Review</MenuItem>
                             </div>
                         )}
-                        {userRole === 'Customer' && (
+                        {/* {userRole === 'Customer' && (
                             <MenuItem onClick={() => { handleClose(); withRevision(id) }}>Revisions</MenuItem>
-                        )}
+                        )} */}
                     </MenuList>
                 </Menu>
 
@@ -331,4 +419,11 @@ const nameStyle = {
     color: mibananaColor.yellowTextColor,
 };
 
+const sendChangeButton = {
+    color: '#333',
+    textTransform: 'capitalize',
+    "&.MuiButton-root:focus": {
+        backgroundColor: "#FFE135"
+    }
+}
 export default ChatsContainer

@@ -117,7 +117,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                 variant="h6"
                 sx={{ fontFamily: fontsFamily.poppins, fontWeight: "400  !important" }}
               >
-                Currently not Assigned to <br /> any Team members
+                {/* Currently not Assigned to <br /> any Team members */}
+                Unassigned 
               </MDTypography>
             )}
           </MDTypography>
@@ -197,26 +198,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     : [];
   const small_rows = projectList?.length
     ? projectList?.map((item) => {
-      // const date = new Date(item.createdAt);
-      // const year = date.getFullYear();
-      // const month = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-indexed
-      // const day = String(date.getDate()).padStart(2, "0");
-      // let hours = date.getHours();
-      // const minutes = String(date.getMinutes()).padStart(2, "0");
-      // const seconds = String(date.getSeconds()).padStart(2, "0");
-      // let ampm = "AM";
-
-      // Convert to 12-hour format and set AM/PM
-      // if (hours >= 12) {
-      //   ampm = "PM";
-      //   if (hours > 12) {
-      //     hours -= 12;
-      //   }
-      // }
-      // hours = String(hours).padStart(2, "0");
-      // const projectid = project_list.CustomerProjects.indexOf(item);
-      // socketIO.emit("room-message", "", projectid);
-
       return {
         project_title: (
           <MDBox lineHeight={1}>
@@ -316,23 +297,29 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   );
   let statuses = [
     "All",
-    "Archived",
+    // "Archived",
     "Assigned",
-    "Cancel",
+    "Cancelled",
     "Project manager",
     "Completed",
     "Ongoing",
     "For Review",
-    "Draft",
-    "Heads Up!",
+    // "Draft",
+    // "Heads Up!",
   ];
   const filterBrand = reduxState?.customerBrand?.map((item) => item.brand_name);
 
   const handleStatusChange = useCallback((value) => {
     if (value === "All" || value === "" || value === null) {
-      console.log(status)
       setProjectList(copyProjectList);
-    } else {
+    }
+    else if (value === "Cancelled") {
+      setProjectList(copyProjectList);
+      setProjectList(prevList => {
+        return prevList.filter(item => item.status === 'Cancel');
+      });
+    }
+    else {
       setProjectList(copyProjectList);
       setProjectList(prevList => {
         return prevList.filter(item => item.status === value);

@@ -40,11 +40,7 @@ function Dashboard({ reduxActions, reduxState }) {
   const projectQueue = project_list?.filter(item => {
     return item.status === Project_manager
   })
-  useEffect(() => {
-    // socketIO.current.emit('user_online', true, reduxState?.userDetails?.id, reduxState?.userDetails?.roles)
-    // const id = reduxState?.userDetails?.id;
-    // projectNotifications(id, reduxActions.handleProject_notifications)
-  }, [])
+  
   const sumbitAndOngoing = () => {
     const filterStatus = project_list?.filter(item => item.status === Assigned || item.status === Revision || item.status === ForReview || item.status === Ongoing)
     return filterStatus?.length
@@ -110,7 +106,7 @@ function Dashboard({ reduxActions, reduxState }) {
       ),
       team_members: <MDTypography display="flex" flexDirection="column" gap="10px" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>
         {item.team_members?.length > 0 ? item.team_members.map(item => <MDTypography color="#333" variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }}>{item.name}</MDTypography>) :
-          <MDTypography color="#333" fontSize="small" variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }}>Currently not Assigned to <br /> any Team members</MDTypography>}
+          <MDTypography color="#333" fontSize="small" variant="h6" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important' }}>Unassigned</MDTypography>}
       </MDTypography>,
       status: <MDBox ml={-1}>
         <MDBadge badgeContent={projectStatus(item?.status)}
