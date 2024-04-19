@@ -61,7 +61,7 @@ const fileFormats = ["Jpg", "Png", "Pdf", "gif"]
 const category = ["Graphic Design"]
 
 const EditProjectModal = (props) => {
-    const { open, handleClose, current_id, projects, brandOption, imagesLoading, files, setImagesLoading, setEditImages, editImages, userId, callback } = props
+    const { open, handleClose, current_id, projects, brandOption, imagesLoading, files, setImagesLoading, setEditImages, editImages, userId, callback, setOpenModal, setRespMessage } = props
 
     const [loading, setEditLoading] = useState(false)
     const [formValue, setFormValue] = useState({
@@ -93,6 +93,7 @@ const EditProjectModal = (props) => {
     };
     const classes = reactQuillStyles()
     const project = projects.find(project => project?._id === current_id)
+    console.log(current_id)
 
     const getOptionDisabled = (option, newValue) => {
         if (formValue.file_formats.length === 3) {
@@ -114,13 +115,15 @@ const EditProjectModal = (props) => {
         setEditLoading(true)
         const formData = {
             ...formValue,
-            sizes : `${formValue.width} x ${formValue.height} (${formValue.unit})`,
+            sizes: `${formValue.width} x ${formValue.height} (${formValue.unit})`,
         }
         await apiClient.patch('/api/update-current-project/' + current_id, formData)
             .then(({ data }) => {
                 console.log(data)
                 setEditLoading(false)
-                getProjectData(userId,callback);
+                setRespMessage("Project updated successfully")
+                setOpenModal(true)
+                getProjectData(userId, callback);
                 handleClose()
             }).catch(error => {
                 setEditLoading(false)
@@ -144,9 +147,7 @@ const EditProjectModal = (props) => {
         // logic to remove single file from editImages array
 
     }
-
     useEffect(() => {
-        console.log(project)
         const regex = /(\d+)\s*x\s*(\d+)\s*\((\w+)\)/;
         const match = regex.exec(project?.sizes);
         const width = parseInt(match[1]);
@@ -170,7 +171,6 @@ const EditProjectModal = (props) => {
             margin: '0px'
         }
     })
-    console.log(editImages)
     return (
         <Dialog open={open} sx={{ "& .MuiPaper-root": { maxWidth: '70% !important' } }}>
             <DialogTitle display={"flex"} position={"relative"} width={'100%'} justifyContent={"space-between"} alignItems={"center"} >

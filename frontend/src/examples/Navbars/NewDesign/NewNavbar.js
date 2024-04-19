@@ -334,6 +334,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         console.error("Error Found =>", err);
       });
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (add_files.length > 0 && upload_files.length > 0) {
@@ -384,7 +385,9 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           setTimeout(() => {
             // openSuccessSB()
             setLoading(false);
+            setRespMessage()
             setOpenModal(true);
+            setRespMessage("Project created successfully!")
           }, 300);
         }
         setLoading(false);
@@ -715,6 +718,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         setImagesLoading={setImagesLoading}
         userId={reduxState.userDetails?.id}
         callback={reduxActions.getCustomerProject}
+        setOpenModal={setOpenModal}
+        setRespMessage={setRespMessage}
       />
 
       <CopyWritingForm
@@ -822,7 +827,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           )}
         </Grid>
       </Grid>
-      <TransitionsModal message="Project created successfully!" openModal={openModal} setOpenModal=
+      <TransitionsModal message={respMessage} openModal={openModal} setOpenModal=
                             {setOpenModal} />
       <div className="small-navbar-container">
         <List className="headesidebar">{renderRoutes}</List>
