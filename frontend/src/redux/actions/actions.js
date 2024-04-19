@@ -18,6 +18,8 @@ export const NON_ACTIVE_CUSTOMER = "NON_ACTIVE_CUSTOMER";
 export const TOGGLE_CHATS = "TOGGLE_CHATS";
 export const PROJECT_NOTIFICATIONS = "PROJECT_NOTIFICATIONS";
 export const STATUS_NOTIFICATIONS = "STATUS_NOTIFICATIONS";
+export const EDIT_PROJECT = "EDIT_PROJECT";
+export const CURRENT_PROJECT_ID = "CURRENT_PROJECT_ID";
 
 export const getUserDetails = (payload) => ({
   type: USER_DETAILS,
@@ -118,6 +120,15 @@ export const handleStatusProject_notifications = (payload) => ({
   type: STATUS_NOTIFICATIONS,
   payload: payload,
 });
+export const handle_OpenEditProject = (payload) => ({
+  type: EDIT_PROJECT,
+  payload: payload,
+});
+
+export const handle_CurrentProjectId = (payload) => ({
+  type: CURRENT_PROJECT_ID,
+  payload: payload,
+});
 
 export const reduxFunctions = {
   getUserDetails,
@@ -140,4 +151,6 @@ export const reduxFunctions = {
   ToogleChatsAction,
   handleProject_notifications,
   handleStatusProject_notifications,
+  handle_OpenEditProject,
+  handle_CurrentProjectId,
 };

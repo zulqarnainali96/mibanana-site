@@ -53,6 +53,7 @@ import WebAppDevForm from "../web-app-form/web-app-dev-form";
 import MobileAppDevForm from "../mobile-app-dev-form/mobile-app-dev-form";
 import { socket } from "sockets";
 import TransitionsModal from "components/Modal/Modal";
+import EditProjectModal from "../Form-modal/editProject";
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
@@ -103,12 +104,16 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   })
   const [showAccountsbtn, setShowAccountsBtn] = useState(false)
 
+  const [showEditProject,setEditProject] = useState(reduxState.edit_project)
+
   const [openCopyWriting, setOpenCopyWriting] = useState(false)
   const [openSocialMediaForm, setOpenSocialMediaForm] = useState(false)
   const [openWebsite, setOpenWebsite] = useState(false)
   const [openWebApp, setOpenWebAppApp] = useState(false)
   const [openMobileApp, setOpenMobileApp] = useState(false)
+  
   const theme = useTheme()
+  console.log('testing')
 
   const is1040 = useMediaQuery("(max-width:1040px)")
   const extraLargeScreen = useMediaQuery(theme.breakpoints.up('xxl'))
@@ -123,6 +128,10 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     if (middleScreen) { size = "55%"; }
     if (mobileScreen) { size = "80%"; }
     return size
+  }
+
+  const handleEditProjectClose = () => {
+    reduxActions.handle_OpenEditProject(false)
   }
 
   useEffect(() => {
@@ -663,7 +672,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     setShowAccountsBtn(prev => !prev)
   }, [showAccountsbtn])
 
-  console.log('Testing Navbar');
 
   return (
     <>
@@ -692,6 +700,17 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         removeSingleFile={removeSingleFile}
         deleteOtherSingleFile={deleteOtherSingleFile}
       />
+      <EditProjectModal 
+        open={reduxState.edit_project}
+        handleClose={handleEditProjectClose}
+        current_id={reduxState.currentProjectId}
+        projects={reduxState.project_list?.CustomerProjects}
+        formValue={formValue}
+        setFormValue={setFormValue}
+        brandOption={brandOption}
+        handleChange={handleChange}
+      />
+
       <CopyWritingForm
         open={openCopyWriting}
         handleClose={handleOpenCopyWritingClose}

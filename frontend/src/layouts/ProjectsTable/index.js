@@ -45,12 +45,21 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   const isLg = useMediaQuery("(max-width:768px)")
   const is500 = useMediaQuery("(max-width:500px)")
 
+  const onEditProject = (project_id) => {
+    console.log("Editing project", project_id);
+    reduxActions.handle_CurrentProjectId(project_id)
+    
+    reduxActions.handle_OpenEditProject(true)
+  }
+
   function openProjectChat(id) {
     reduxActions.getID(id);
     setTimeout(() => {
       navigate("/chat/" + id);
     }, 400)
   }
+
+
 
   const rows = projectList?.length
     ? projectList?.map((item, i) => {
@@ -118,7 +127,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                 sx={{ fontFamily: fontsFamily.poppins, fontWeight: "400  !important" }}
               >
                 {/* Currently not Assigned to <br /> any Team members */}
-                Unassigned 
+                Unassigned
               </MDTypography>
             )}
           </MDTypography>
@@ -190,6 +199,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
               successSBNot={openSuccessSB}
               projects={projectList}
               role={role}
+              onEditProject={() => onEditProject(item?._id)}
             />
           </MDTypography>
         ),

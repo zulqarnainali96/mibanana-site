@@ -1,4 +1,6 @@
 import { TRIGER_NOTIFICATIONS } from "redux/actions/actions"
+import { EDIT_PROJECT } from "redux/actions/actions"
+import { CURRENT_PROJECT_ID } from "redux/actions/actions"
 import { STATUS_NOTIFICATIONS } from "redux/actions/actions"
 import { PROJECT_NOTIFICATIONS } from "redux/actions/actions"
 import { USER_DETAILS, SHOW_MODAL, PROJECT_CATEGORY, CUSTOMER_BRAND, NEW_BRAND, STATUS, IS_ALERT, CUSTOMER_PROJECTS, USER_AVATAR_URL, PROJECT_ID, IS_EDIT_BRAND, OPEN_BRAND_MODAL, RIGHTSIDEDRAWER, CURRENT_INDEX, RE_RENDER_CHAT, NON_ACTIVE_CUSTOMER, TOGGLE_CHATS } from "redux/actions/actions"
@@ -51,6 +53,8 @@ const initialState = {
     toogle_chats: false,
     project_notifications: [],
     status_notifications: [],
+    edit_project : false,
+    currentProjectId : ""
 
 }
 const UserReducers = (state = initialState, action) => {
@@ -183,6 +187,18 @@ const UserReducers = (state = initialState, action) => {
             return {
                 ...state,
                 status_notifications: payload
+            }
+        }
+        case EDIT_PROJECT: {
+            return {
+                ...state,
+                edit_project: payload
+            }
+        }
+        case CURRENT_PROJECT_ID: {
+            return {
+                ...state,
+                currentProjectId: payload
             }
         }
         default:

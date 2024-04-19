@@ -16,7 +16,7 @@ const AuthMembersList = (props) => {
     )
 }
 const CustomerList = (props) => {
-    const { item, loading1, loading2, loading3, projectCancel, duplicateProject, projectCompleted } = props
+    const { item, loading1, loading2, loading3, projectCancel, duplicateProject, projectCompleted, onEditProject  } = props
 
     const getActionsDisabled = () => {
         let result = false
@@ -34,19 +34,19 @@ const CustomerList = (props) => {
     }
     return (
         <React.Fragment>
-        <MenuItemDropdown loading={false} disabled={false} onClick={()=>{}} title="Edit" />
-        <MenuItemDropdown loading={loading3} disabled={loading3 || getActionsDisabled()} onClick={projectCompleted} title="Completed" />
-        <MenuItemDropdown loading={loading2} disabled={loading2} onClick={duplicateProject} title="Duplicate" />
-            <MenuItemDropdown loading={loading1} disabled={loading1} onClick={projectCancel} title="Cancelled" />
+            <MenuItemDropdown loading={false} onClick={onEditProject} title="Edit" />
+            <MenuItemDropdown loading={loading3} disabled={loading3 || getActionsDisabled()} onClick={projectCompleted} title="Completed" />
+            <MenuItemDropdown loading={loading2} disabled={loading2} onClick={duplicateProject} title="Duplicate" />
+            <MenuItemDropdown loading={loading1} disabled={loading1} onClick={projectCancel} title="Cancel" />
         </React.Fragment>
     )
 }
 
 
 const OptionsList = (props) => {
-    const { item, children, handleMenuOpen, anchorEl, handleMenuClose, role, loading1, loading2, loading3, loading4, loading5, projectAttend, projectCancel, duplicateProject, projectCompleted, projectForReview, renderErrorSB, renderSuccessSB, deleteProject, loading6 } = props
+    const { item, children, handleMenuOpen, anchorEl, handleMenuClose, role, loading1, loading2, loading3, loading4, loading5, projectAttend, projectCancel, duplicateProject, projectCompleted, projectForReview, renderErrorSB, renderSuccessSB, deleteProject, loading6, onEditProject } = props
 
-    const customer_props = { item, loading1, loading2, loading3, projectCancel, duplicateProject, projectCompleted }
+    const customer_props = { item, loading1, loading2, loading3, projectCancel, duplicateProject, projectCompleted, onEditProject }
     const auth_member_list = { item, loading4, loading5, projectAttend, projectForReview, role, deleteProject, loading6 }
 
     return (
