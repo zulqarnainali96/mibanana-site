@@ -104,7 +104,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   })
   const [showAccountsbtn, setShowAccountsBtn] = useState(false)
 
-  const [showEditProject,setEditProject] = useState(reduxState.edit_project)
+
+  // edit modal state
+  const [images_loading, setImagesLoading] = useState(false)
+  const [editImages, setEditImages] = useState([])
+
 
   const [openCopyWriting, setOpenCopyWriting] = useState(false)
   const [openSocialMediaForm, setOpenSocialMediaForm] = useState(false)
@@ -113,7 +117,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const [openMobileApp, setOpenMobileApp] = useState(false)
   
   const theme = useTheme()
-  console.log('testing')
 
   const is1040 = useMediaQuery("(max-width:1040px)")
   const extraLargeScreen = useMediaQuery(theme.breakpoints.up('xxl'))
@@ -672,7 +675,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     setShowAccountsBtn(prev => !prev)
   }, [showAccountsbtn])
 
-
   return (
     <>
       <CreateProject1
@@ -705,10 +707,14 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         handleClose={handleEditProjectClose}
         current_id={reduxState.currentProjectId}
         projects={reduxState.project_list?.CustomerProjects}
-        formValue={formValue}
-        setFormValue={setFormValue}
         brandOption={brandOption}
-        handleChange={handleChange}
+        imagesLoading={images_loading}
+        files={editImages}
+        setEditImages={setEditImages}
+        editImages={editImages}
+        setImagesLoading={setImagesLoading}
+        userId={reduxState.userDetails?.id}
+        callback={reduxActions.getCustomerProject}
       />
 
       <CopyWritingForm

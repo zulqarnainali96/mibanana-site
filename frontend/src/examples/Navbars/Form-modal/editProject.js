@@ -1,6 +1,8 @@
-import { CloseOutlined } from '@mui/icons-material';
-import { Autocomplete, Box, Dialog, DialogContent, DialogTitle, FormControl, Grid, TextField, Typography } from '@mui/material';
+import { ArrowForward, CloseOutlined } from '@mui/icons-material';
+import { Autocomplete, Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, TextField, Typography } from '@mui/material';
 import styled from '@mui/material/styles/styled';
+import apiClient from 'api/apiClient';
+import { fontsFamily } from 'assets/font-family';
 import { formats } from 'assets/react-quill-settings/react-quill-settings';
 import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings';
 import { modules } from 'assets/react-quill-settings/react-quill-settings';
@@ -10,6 +12,10 @@ import MDInput from 'components/MDInput';
 import MDTypography from 'components/MDTypography';
 import React, { useEffect, useState } from 'react'
 import ReactQuill from 'react-quill';
+import { MoonLoader } from 'react-spinners';
+import CloseIcon from '@mui/icons-material/Close';
+import { deleteImageSvgIcon } from './new';
+import { getProjectData } from 'redux/global/global-functions';
 
 
 const designType = [
@@ -52,10 +58,12 @@ const SoftwareNames = [
 ]
 const unitOptions = ['px', 'inch', 'cm']
 const fileFormats = ["Jpg", "Png", "Pdf", "gif"]
+const category = ["Graphic Design"]
 
 const EditProjectModal = (props) => {
-    const { open, handleClose, current_id, projects, brandOption, handleChange } = props
+    const { open, handleClose, current_id, projects, brandOption, imagesLoading, files, setImagesLoading, setEditImages, editImages, userId, callback } = props
 
+    const [loading, setEditLoading] = useState(false)
     const [formValue, setFormValue] = useState({
         project_category: "",
         design_type: "",
@@ -74,12 +82,16 @@ const EditProjectModal = (props) => {
         specific_software_names: '',
     })
 
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        console.log(name, value)
+        setFormValue({
+            ...formValue,
+            [name]: value,
+        });
+    };
     const classes = reactQuillStyles()
-
-    const category = [
-        "Graphic Design",
-    ]
-
     const project = projects.find(project => project?._id === current_id)
 
     const getOptionDisabled = (option, newValue) => {
@@ -97,35 +109,60 @@ const EditProjectModal = (props) => {
             project_description: value
         })
     }
+
+    const updateEditForm = async () => {
+        setEditLoading(true)
+        const formData = {
+            ...formValue,
+            sizes : `${formValue.width} x ${formValue.height} (${formValue.unit})`,
+        }
+        await apiClient.patch('/api/update-current-project/' + current_id, formData)
+            .then(({ data }) => {
+                console.log(data)
+                setEditLoading(false)
+                getProjectData(userId,callback);
+                handleClose()
+            }).catch(error => {
+                setEditLoading(false)
+                console.log(error)
+            })
+    }
+
+    const clientFiles = async () => {
+        setImagesLoading(true);
+        await apiClient.get("/get-customer-files/" + current_id)
+            .then(({ data }) => {
+                setEditImages(data.filesInfo);
+                setImagesLoading(false);
+            })
+            .catch((err) => {
+                setEditImages([]);
+                setImagesLoading(false);
+            });
+    }
+    const removeSingleFile = () => {
+        // logic to remove single file from editImages array
+
+    }
+
     useEffect(() => {
         console.log(project)
+        const regex = /(\d+)\s*x\s*(\d+)\s*\((\w+)\)/;
+        const match = regex.exec(project?.sizes);
+        const width = parseInt(match[1]);
+        const height = parseInt(match[2]);
+        const unit = match[3];
         setFormValue({
-            ...project
+            ...project,
+            width,
+            height,
+            unit,
         })
+        clientFiles()
         return () => {
             handleClose()
         }
     }, [])
-
-    const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
-        '& .MuiPaper-root': {
-            maxWidth: '70% !important',
-            [breakpoints.down('lg')]: {
-                width: '95%'
-            },
-        },
-        '& .MuiInputBase-root': {
-            paddingBlock: '15px'
-        },
-        '& .MuiDialogContent-root': {
-            padding: spacing(2),
-        },
-        '& .MuiDialogActions-root': {
-            padding: spacing(1),
-            width: "100%"
-        },
-    }));
-
     const marginNone = (breakpoints) => ({
         m: 1,
         width: '100%',
@@ -133,10 +170,9 @@ const EditProjectModal = (props) => {
             margin: '0px'
         }
     })
-
-
+    console.log(editImages)
     return (
-        <BootstrapDialog open={open} sx={{ width: '100% !important' }}>
+        <Dialog open={open} sx={{ "& .MuiPaper-root": { maxWidth: '70% !important' } }}>
             <DialogTitle display={"flex"} position={"relative"} width={'100%'} justifyContent={"space-between"} alignItems={"center"} >
                 <MDTypography sx={({ palette: { light } }) => (
                     {
@@ -149,17 +185,14 @@ const EditProjectModal = (props) => {
                     onClick={handleClose}
                     sx={{ position: "absolute", right: 4, padding: '1.4rem !important' }}
                 >
-                    <CloseOutlined sx={
-                        {
-                            fill: '#444'
-                        }} />
+                    <CloseOutlined sx={{ fill: '#444' }} />
                 </MDButton>
             </DialogTitle>
             <DialogContent>
-                <Box component="form" onSubmit={() => { }} sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                <Box component="form" sx={{ display: 'flex', flexWrap: 'wrap' }}>
                     <Grid width={"100%"} container spacing={2} justifyContent={"space-between"} alignItems={"center"}>
 
-                        {/* <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
+                        <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
                             <FormControl sx={({ breakpoints }) => marginNone(breakpoints)}>
                                 <Autocomplete
                                     value={formValue.project_category}
@@ -174,7 +207,7 @@ const EditProjectModal = (props) => {
                                     renderInput={(params) => <TextField disabled={category.some(item => item !== 'Graphic Design')} required {...params} label="Select Project Category" />}
                                 />
                             </FormControl>
-                        </Grid> */}
+                        </Grid>
                         <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
                             <FormControl sx={({ breakpoints }) => marginNone(breakpoints)}>
                                 <Autocomplete
@@ -193,7 +226,7 @@ const EditProjectModal = (props) => {
                                 />
                             </FormControl>
                         </Grid>
-                        {/* <Grid item xxl={6} xl={6} lg={12} pt={"24px !important"} md={12} xs={12}>
+                        <Grid item xxl={6} xl={6} lg={12} pt={"24px !important"} md={12} xs={12}>
                             <FormControl sx={({ breakpoints }) => ({
                                 m: 1, width: '100%', position: 'relative', [breakpoints.down('md')]: {
                                     margin: 0,
@@ -218,16 +251,16 @@ const EditProjectModal = (props) => {
                         </Grid>
                         <Grid item xxl={6} xl={6} lg={12} pt={"0 !important"} md={12} xs={12}>
                             <FormControl sx={({ breakpoints }) => ({
-                                m: 1, width: '100%', 
-                                paddingTop : '23px !important',
+                                m: 1, width: '100%',
+                                paddingTop: '23px !important',
                                 [breakpoints.down('md')]: {
                                     margin: 0,
-                                    
                                 }
                             })}>
                                 <MDInput type="text"
                                     name="project_title"
                                     onChange={handleChange}
+                                    value={formValue.project_title}
                                     required
                                     placeholder="Project Title *" variant="outlined" fullWidth
                                     sx={{
@@ -272,6 +305,7 @@ const EditProjectModal = (props) => {
                                     type="number"
                                     name="width"
                                     onChange={handleChange}
+                                    value={formValue.width}
                                     placeholder="Width" variant="outlined" fullWidth
                                     sx={({ breakpoints, spacing }) => ({
                                         "& > *": {
@@ -298,6 +332,7 @@ const EditProjectModal = (props) => {
                                 <MDInput
                                     type="number"
                                     name="height"
+                                    value={formValue.height}
                                     onChange={handleChange}
                                     placeholder="Height" variant="outlined" fullWidth
                                     sx={({ breakpoints }) => ({
@@ -329,11 +364,12 @@ const EditProjectModal = (props) => {
                                     }}
                                     id="select-units"
                                     options={unitOptions}
+                                    value={formValue?.unit}
                                     sx={{ width: '100%' }}
                                     renderInput={(params) => <TextField {...params} label="Select Units" sx={{
                                         "&.MuiOutlinedInput-root": {
                                             paddingBlock: '11px',
-                                            backgroundColor : 'red !important'
+                                            backgroundColor: 'red !important'
                                         },
                                     }} />}
                                 />
@@ -396,12 +432,80 @@ const EditProjectModal = (props) => {
                                     />
                                 </FormControl>
                             </MDBox>
+                        </Grid>
+                        {/* <Grid item xxl={12} xl={12} lg={12} sm={12} md={12} xs={12} p={2}>
+                            <MDTypography variant="h6" fontWeight="400" sx={{ fontFamily: fontsFamily.poppins }}>Project Images</MDTypography>
+                            <MDBox sx={imageBox}>
+                                {imagesLoading ? (
+                                    <MoonLoader loading={imagesLoading} size={32} color='#121212' />
+                                ) : (
+                                    <MDBox sx={{ display: 'grid', gridTemplateColumns: `repeat(${editImages?.length}, 1fr)`, gap: '16px' }}>
+                                        {editImages?.length > 0 ? (
+                                            <>{editImages?.map(image => {
+                                                return (
+                                                    <MDBox key={image.id} sx={{ position: 'relative' }}>
+                                                        <CloseIcon
+                                                            fontSize='medium'
+                                                            onClick={() => removeSingleFile(image.id)}
+                                                            sx={{...deleteImageSvgIcon,
+                                                                right:'-13px'
+                                                            }}
+                                                        />
+
+                                                        <img
+                                                            src={image.url}
+                                                            alt={image.name}
+                                                            width={80} height={80}
+                                                        />
+                                                    </MDBox>
+                                                )
+                                            })}</>
+                                        ) :
+                                            <span>No Images Found</span>
+                                        }
+                                    </MDBox>
+                                )}
+                            </MDBox>
+
                         </Grid> */}
                     </Grid>
                 </Box>
             </DialogContent>
-        </BootstrapDialog>
+            <DialogActions>
+                <MDBox display="flex" justifyContent="flex-end" alignItems="center">
+                    <MDButton
+                        type="button"
+                        onClick={updateEditForm}
+                        color="warning"
+                        fullWidth
+                        endIcon={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <ArrowForward fontSize='large' />&nbsp;
+                            <MoonLoader loading={loading} size={18} color='#121212' />
+                        </div>}
+                        disabled={loading}
+                        circular={false}
+                        sx={{
+                            color: '#000 !important',
+                            fontSize: 14,
+                            textTransform: "capitalize",
+                        }}
+                    >
+                        Update &nbsp;
+                    </MDButton>
+                </MDBox>
+            </DialogActions>
+        </Dialog>
     )
 }
 
+const imageBox = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    border: '1px solid #ccc',
+    padding: '12px',
+    borderRadius: '4px',
+    widht: '100%',
+    height: '120px'
+}
 export default EditProjectModal

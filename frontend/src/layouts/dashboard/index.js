@@ -47,6 +47,11 @@ function Dashboard({ reduxActions, reduxState }) {
   }
   const projectCompleted = project_list?.filter(item => item.status === Completed)
 
+  const onEditProject = (project_id) => {
+    reduxActions.handle_CurrentProjectId(project_id)
+    reduxActions.handle_OpenEditProject(true)
+  }
+
   const navigate = useNavigate()
   function projectActiveorNot(id) {
     reduxActions.getID(id)
@@ -123,7 +128,7 @@ function Dashboard({ reduxActions, reduxState }) {
       </MDTypography>,
       createdAt: <MDTypography variant="p" sx={{ fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }}>{item?.createdAt?.map(d => <p>{d}</p>)}</MDTypography>,
       action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} projects={project_list} />
+        <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} projects={project_list} onEditProject={() => onEditProject(item?._id)} />
       </MDTypography>
 
     }
@@ -161,7 +166,7 @@ function Dashboard({ reduxActions, reduxState }) {
           }} circular="true" size="lg" />
       </MDBox>,
       action: <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} />
+        <Action item={item} resonseMessage={setRespMessage} errorSBNot={openErrorSB} successSBNot={openSuccessSB} role={role} onEditProject={() => onEditProject(item?._id)} />
       </MDTypography>
 
     }

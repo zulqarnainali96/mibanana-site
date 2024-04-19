@@ -47,7 +47,7 @@ let psdfile = "image/vnd.adobe.photoshop"
 let zipfile = 'application/x-zip-compressed'
 let pdf = "application/pdf"
 
-const OtherFilesShow = ({ file, deleteOtherSingleFile }) => {
+export const OtherFilesShow = ({ file, deleteOtherSingleFile }) => {
     return (
         <>
             {file.type.startsWith(zipfile) ?
@@ -617,7 +617,7 @@ const deleteImageContainer = {
     // width: '125px',
 }
 
-const deleteImageSvgIcon = {
+export const deleteImageSvgIcon = {
     borderRadius: '20px',
     padding: '4px',
     position: 'absolute',

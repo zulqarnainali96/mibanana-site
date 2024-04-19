@@ -12,5 +12,3 @@ export const socket = io('https://test-socket.mibanana.com', {
 })
 
 export const SocketContext = createContext()
-
-
