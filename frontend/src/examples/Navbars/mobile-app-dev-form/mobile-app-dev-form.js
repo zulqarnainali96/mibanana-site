@@ -47,7 +47,7 @@ const initialValues = {
 
 const MobileAppDevForm = (props) => {
     const { open, handleClose } = props;
-const [openModal, setOpenModal] = useState(false)
+    const [openModal, setOpenModal] = useState(false)
 
     const {
         values,
@@ -166,9 +166,9 @@ const [openModal, setOpenModal] = useState(false)
                         <Grid item xs={12}>
                             <MDButton type="submit" style={{ width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }}>Submit</MDButton>
                         </Grid>
-                        
+
                         <TransitionsModal message="hello there!" openModal={openModal} setOpenModal=
-                        {setOpenModal}  />
+                            {setOpenModal} />
                     </Grid>
                 </form>
             </DialogContent>

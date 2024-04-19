@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { styled, css } from '@mui/system';
 import { Modal as BaseModal } from '@mui/material';
 import Fade from '@mui/material/Fade';
+import { position } from 'stylis';
 
 export default function TransitionsModal({ message, openModal, setOpenModal }) {
   const [open, setOpen] = React.useState(false);
@@ -22,9 +23,12 @@ export default function TransitionsModal({ message, openModal, setOpenModal }) {
         <Fade in={openModal}
           style={{ textAlign: "center", padding: "3rem" }}>
           <ModalContent sx={style}>
-            <h4 id="transition-modal-title" className="modal-title">
-              {message}
-            </h4>
+            <div style={{position:"relative"}}>
+              <span onClick={()=>setOpenModal(false)} style={{position:"absolute", top:"-45px", right:"-30px", cursor:"pointer", fontSize:"20px"}}>x</span>
+              <h2 id="transition-modal-title" className="modal-title">
+                {message}
+              </h2>
+            </div>
           </ModalContent>
         </Fade>
       </Modal>

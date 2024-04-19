@@ -28,6 +28,7 @@ import { MoonLoader } from 'react-spinners';
 import { useDispatch } from 'react-redux';
 import { getCustomerProject } from 'redux/actions/actions';
 import { currentUserRole } from 'redux/global/global-functions';
+import TransitionsModal from 'components/Modal/Modal';
 
 const ChatsContainer = ({
     chatContainerRef,
@@ -51,6 +52,7 @@ const ChatsContainer = ({
     const dispatch = useDispatch()
     // const projectId = reduxState?.project_list?.CustomerProjects?._id;
     const func = (value) => dispatch(getCustomerProject(value))
+    const [openModal, setOpenModal] = useState(false)
 
     // handle dropdown menu for change status in chat
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -75,6 +77,7 @@ const ChatsContainer = ({
                 setTimeout(() => {
                     getProjectData(userId, func)
                     //   show Pop notifications here
+                    setOpenModal(true)
                 }, 800)
             })
             .catch((err) => {
@@ -98,6 +101,7 @@ const ChatsContainer = ({
                 setTimeout(() => {
                     getProjectData(userId, func)
                     //   show Pop notifications here
+                    setOpenModal(true)
                 }, 800)
             })
             .catch((err) => {
@@ -126,6 +130,7 @@ const ChatsContainer = ({
                 setTimeout(() => {
                     getProjectData(userId, func)
                     //   show Pop notifications here
+                    setOpenModal(true)
                 }, 800)
             })
             .catch((err) => {
@@ -408,6 +413,8 @@ const ChatsContainer = ({
                     onClick={onSendMessage}
                 />
             </Box>
+            <TransitionsModal message="Status change successfully" openModal={openModal} setOpenModal=
+                {setOpenModal} />
         </React.Fragment>
     )
 }

@@ -52,6 +52,7 @@ import WebsiteForm from "../website-form/website-form";
 import WebAppDevForm from "../web-app-form/web-app-dev-form";
 import MobileAppDevForm from "../mobile-app-dev-form/mobile-app-dev-form";
 import { socket } from "sockets";
+import TransitionsModal from "components/Modal/Modal";
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
@@ -132,6 +133,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
 
   const [reloadProject, setReloadProjects] = useState(false)
   const [controller, dispatch] = useMaterialUIController();
+  const [openModal, setOpenModal] = useState(false)
   const {
     miniSidenav,
     darkMode,
@@ -346,7 +348,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     await apiClient.post("/graphic-project", data)
       .then((resp) => {
         if (resp?.status === 201) {
-          const { message } = resp?.data;
+          // const { message } = resp?.data;
           const projectData = {
             ...data,
             brand: formValue.brand.brand_name,
@@ -354,7 +356,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             project_id: resp.data?.project._id,
           };
           socketIO.current.emit('new-project', projectData)
-          setRespMessage("Project Created Successfully");
+          // setRespMessage("Project Created Successfully");
           reduxActions.getNew_Brand(!reduxState.new_brand);
           let param = [
             reduxState.userDetails?.id,
@@ -370,7 +372,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           setTimeout(() => {
             // openSuccessSB()
             setLoading(false);
-            setShowSuccessModal(true);
+            setOpenModal(true);
           }, 300);
         }
         setLoading(false);
@@ -754,24 +756,15 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             </div>
             {renderUserMenu()}
             {role?.customer &&
-              <ProjectButton
-                variant="contained"
-                className="create-project-btn"
-                size="small"
-                startIcon={projectIcon}
-                onClick={handleClickOpen}
-              >
-                Create Project
-              </ProjectButton>
-              // <ProjectMenuOptions
-              //   size="medium"
-              //   handleClickOpen={handleClickOpen}
-              //   handleCopyWriting={handleOpenCopyWriting}
-              //   handleSocialMedia={handleOpenSocialMedia}
-              //   handleWebsite={handleWebsite}
-              //   handleWebAppDev={handleWebAppDev}
-              //   handleMobileAppDev={handleMobileAppDev}
-              // />
+              <ProjectMenuOptions
+                size="medium"
+                handleClickOpen={handleClickOpen}
+                handleCopyWriting={handleOpenCopyWriting}
+                handleSocialMedia={handleOpenSocialMedia}
+                handleWebsite={handleWebsite}
+                handleWebAppDev={handleWebAppDev}
+                handleMobileAppDev={handleMobileAppDev}
+              />
             }
           </MDBox>
         </Grid>
@@ -804,6 +797,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           )}
         </Grid>
       </Grid>
+      <TransitionsModal message="Project created successfully!" openModal={openModal} setOpenModal=
+                            {setOpenModal} />
       <div className="small-navbar-container">
         <List className="headesidebar">{renderRoutes}</List>
       </div>

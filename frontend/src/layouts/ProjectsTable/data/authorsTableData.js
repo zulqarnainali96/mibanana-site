@@ -12,6 +12,7 @@ import OptionsList from "./options-list";
 import { sendingStatusNotification } from "socket-events/socket-event";
 import { customerSendingNotification } from "socket-events/socket-event";
 import { SocketContext } from "sockets";
+import TransitionsModal from "components/Modal/Modal";
 // import { getSingleProjectById } from "redux/global/global-functions";
 
 export const Author = ({ name, }) => (
@@ -60,6 +61,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
   const func = (value) => dispatch(getCustomerProject(value))
+  const [openModal, setOpenModal] = useState(false)
 
   const deleteProject = async () => {
     setLoading6(true)
@@ -191,7 +193,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     }
     await apiClient.get('/api/attend-project/' + id, data)
       .then(({ data }) => {
-        if (data.message) resonseMessage(data.message)
+        // if (data.message) resonseMessage(data.message)
         setLoading5(false)
 
         sendingStatusNotification(socketIO, role, item, userid, 'Ongoing')
@@ -206,7 +208,8 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
         setTimeout(() => {
           // console.log(updatedProjects)
           getProjectData(userid, func)
-          successSBNot()
+          // successSBNot()
+          setOpenModal(true)
         }, 900)
       })
       .catch((err) => {
@@ -242,7 +245,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     }
     await apiClient.get('/api/for-review-project/' + id, data)
       .then(({ data }) => {
-        if (data.message) resonseMessage(data.message)
+        // if (data.message) resonseMessage(data.message)
         setLoading4(false)
 
         sendingStatusNotification(socketIO, role, item, userid, 'For Review')
@@ -257,7 +260,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
         setTimeout(() => {
           // func(updatedProjects)
           getProjectData(userid, func)
-          successSBNot()
+          setOpenModal(true)
         }, 800)
       })
       .catch((err) => {
@@ -351,6 +354,8 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     <MDBox>
       <OptionsList {...options_props} />
 
+      <TransitionsModal message="Project Attended" openModal={openModal} setOpenModal=
+                              {setOpenModal} />
     </MDBox >
   )
 }

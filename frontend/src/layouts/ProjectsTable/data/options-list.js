@@ -37,7 +37,7 @@ const CustomerList = (props) => {
         <MenuItemDropdown loading={false} disabled={false} onClick={()=>{}} title="Edit" />
         <MenuItemDropdown loading={loading3} disabled={loading3 || getActionsDisabled()} onClick={projectCompleted} title="Completed" />
         <MenuItemDropdown loading={loading2} disabled={loading2} onClick={duplicateProject} title="Duplicate" />
-            <MenuItemDropdown loading={loading1} disabled={loading1} onClick={projectCancel} title="Cancel" />
+            <MenuItemDropdown loading={loading1} disabled={loading1} onClick={projectCancel} title="Cancelled" />
         </React.Fragment>
     )
 }
