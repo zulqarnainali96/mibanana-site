@@ -47,6 +47,7 @@ import CachedIcon from "@mui/icons-material/Cached";
 import ProjectFilesFolder from "./project-filter-button/project-files-folder";
 import { getProjectById } from "redux/global/global-functions";
 import { SocketContext } from "sockets";
+import TransitionsModal from "components/Modal/Modal";
 
 const uploadBtn = {
   backgroundColor: "#98e225",
@@ -103,6 +104,7 @@ const FileUploadContainer = ({
 
   const [designerLoading, setDesignerLoading] = useState(false)
   const [teamMembers, setTeamMembers] = useState(project?.team_members)
+  const [openModal, setOpenModal] = useState(false);
 
 
   const toggleShowMore = () => {
@@ -286,11 +288,12 @@ const FileUploadContainer = ({
           .then(async () => {
             removeFiles();
             setLoading(false);
-            setRespMessage("Files Uploaded");
+            // setRespMessage("Files Uploaded");
             await getProjectData(reduxState.userDetails.id, reduxActions.getCustomerProject);
             await clientFiles();
             setTimeout(() => {
-              openSuccessSB();
+              // openSuccessSB();
+              setOpenModal(true)
             }, 1000);
           })
           .catch((err) => {
@@ -592,15 +595,15 @@ const FileUploadContainer = ({
         .then(({ data }) => {
           const { save } = data;
           const message = {
-            teamId : value._id,
-            user : reduxState.userDetails.id,
-            name : reduxState.userDetails.name,
-            type : 'project-assigned',
-            project_id : personProject()._id,
-            project_title : personProject().project_title,
-            role : 'Project-Manager',
-            msg : 'New Project assigned',
-            view : true,
+            teamId: value._id,
+            user: reduxState.userDetails.id,
+            name: reduxState.userDetails.name,
+            type: 'project-assigned',
+            project_id: personProject()._id,
+            project_title: personProject().project_title,
+            role: 'Project-Manager',
+            msg: 'New Project assigned',
+            view: true,
           }
           socketIO.emit('project-assigned', value._id, message)
           setTeamMembers(save?.team_members)
@@ -1001,6 +1004,8 @@ const FileUploadContainer = ({
           />
         )}
       </MDBox>
+      <TransitionsModal message="Files uploaded successfully" openModal={openModal} setOpenModal=
+        {setOpenModal} />
     </MDBox>
   );
 };

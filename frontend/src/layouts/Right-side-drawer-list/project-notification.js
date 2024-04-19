@@ -132,10 +132,11 @@ const ProjectNotification = (props) => {
                         sx={{
                             fontSize: "14px !important",
                             fontFamily: "Poppins",
-                            fontWeight: '600'
+                            fontWeight: '600',
+                            overflowX:"hidden",
                         }}
                     >
-                        Project: {item.project_title}
+                        Project: <span>{item.project_title}</span>
                     </MDTypography>
                 </MDBox>
             ))}
