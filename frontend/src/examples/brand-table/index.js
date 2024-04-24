@@ -1,6 +1,6 @@
 import Card from '@mui/material/Card'
 import MDBox from 'components/MDBox'
-import React from 'react'
+import React, { useState } from 'react'
 import "./brand-table.css"
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
 import Grid from '@mui/material/Grid'
@@ -58,6 +58,8 @@ const MIBrandTable = (props) => {
         setCheckState,
         getDescriptionText,
         openEditBrandModal,
+        openModal,
+        setOpenModal
     } = useBrandData(props)
 
     const currentRole = (role?.admin || role?.projectManager || role?.designer) ? true : false
@@ -84,6 +86,8 @@ const MIBrandTable = (props) => {
                 checkState={checkState}
                 setCheckState={setCheckState}
                 getDescriptionText={getDescriptionText}
+                openModal={openModal}
+                setOpenModal={setOpenModal}
             />
             <EditBrand
                 onChange={onChangeText}

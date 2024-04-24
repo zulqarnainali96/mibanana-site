@@ -54,6 +54,7 @@ import MobileAppDevForm from "../mobile-app-dev-form/mobile-app-dev-form";
 import { socket } from "sockets";
 import TransitionsModal from "components/Modal/Modal";
 import EditProjectModal from "../Form-modal/editProject";
+import check from '../../../assets/images/check.png'
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
@@ -104,14 +105,14 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   })
   const [showAccountsbtn, setShowAccountsBtn] = useState(false)
 
-  const [showEditProject,setEditProject] = useState(reduxState.edit_project)
+  const [showEditProject, setEditProject] = useState(reduxState.edit_project)
 
   const [openCopyWriting, setOpenCopyWriting] = useState(false)
   const [openSocialMediaForm, setOpenSocialMediaForm] = useState(false)
   const [openWebsite, setOpenWebsite] = useState(false)
   const [openWebApp, setOpenWebAppApp] = useState(false)
   const [openMobileApp, setOpenMobileApp] = useState(false)
-  
+
   const theme = useTheme()
   console.log('testing')
 
@@ -700,7 +701,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         removeSingleFile={removeSingleFile}
         deleteOtherSingleFile={deleteOtherSingleFile}
       />
-      <EditProjectModal 
+      <EditProjectModal
         open={reduxState.edit_project}
         handleClose={handleEditProjectClose}
         current_id={reduxState.currentProjectId}
@@ -816,8 +817,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           )}
         </Grid>
       </Grid>
-      <TransitionsModal message="Project created successfully!" openModal={openModal} setOpenModal=
-                            {setOpenModal} />
+      <TransitionsModal message="Project created successfully!" check={check} openModal={openModal} setOpenModal=
+        {setOpenModal} />
       <div className="small-navbar-container">
         <List className="headesidebar">{renderRoutes}</List>
       </div>

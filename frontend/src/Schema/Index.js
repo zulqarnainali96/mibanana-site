@@ -19,14 +19,14 @@ export const socialMediaSchema = Yup.object({
 export const webDevelopmentSchema = Yup.object({
     project_title: Yup.string().min(3).required("Please enter your project title"),
     website_type: Yup.string().required('Service type is required'),
-    stack: Yup.string().required('Service type is required'),
+    preferred_stack: Yup.string().required('Service type is required'),
     project_details: Yup.string().required('Project details is required'),
 });
 
 export const webAppSchema = Yup.object({
     project_title: Yup.string().min(3).required("Please enter your project title"),
-    stack: Yup.string().required('Service type is required'),
-    backend: Yup.string().required('Service type is required'),
+    preferred_stack: Yup.string().required('Service type is required'),
+    backend_tech: Yup.string().required('Service type is required'),
     project_details: Yup.string().required('Project details is required'),
 });
 

@@ -20,7 +20,7 @@ function convertCreatedAtToDate(createdAt) {
   return new Date(`${year}-${month - 1}-${day}T${hours}:${minutes}:${seconds}`);
 }
 
-const orderOfStatus = ['Project manager', 'Assigned', 'Revision', 'Ongoing', 'For Review', 'Completed', 'Cancel'];
+const orderOfStatus = ['For Review', 'Ongoing', 'Assigned','Project manager', 'Completed', 'Revision', 'Cancel'];
 
 function sortByStatus(arr) {
   return arr.sort((a, b) => {

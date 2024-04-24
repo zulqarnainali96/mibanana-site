@@ -27,6 +27,8 @@ const useBrandData = (props) => {
 
     const [openAddModal, setAddModal] = useState(false)
     const [openEditModal, setEditModal] = useState(false)
+    // this state is for modal 
+    const [openModal, setOpenModal] = useState(false)
 
     const [formValue, setFormValue] = useState({
         brand_name: '', brand_description: '', web_url: '',
@@ -163,7 +165,7 @@ const useBrandData = (props) => {
                 // reduxActions.getNew_Brand(!reduxState.new_brand)
 
                 setTimeout(() => {
-                    openSuccessModal(true)
+                    setOpenModal(true)
                     document.location.reload()
                 }, 700)
 
@@ -300,6 +302,8 @@ const useBrandData = (props) => {
         closeAddBrandModal,
         openEditBrandModal,
         closeEditBrandModal,
+        openModal,
+        setOpenModal
     }
 }
 

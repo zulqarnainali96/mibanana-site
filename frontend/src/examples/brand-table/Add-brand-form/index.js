@@ -18,6 +18,8 @@ import ReactQuil from 'react-quill'
 import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings'
 import { formats, modules } from 'assets/react-quill-settings/react-quill-settings'
 import useBrandData from '../useBrandData'
+import TransitionsModal from "components/Modal/Modal";
+import check from '../../../assets/images/check.png'
 
 const BrandModal = styled(Dialog)(({ theme }) => ({
     // '& .MuiInputBase-root': {
@@ -67,7 +69,9 @@ const BrandForm = (props) => {
         filesArray,
         checkState,
         setCheckState,
-        getDescriptionText, 
+        getDescriptionText,
+        setOpenModal,
+        openModal
     } = props
     // const {
     //     // openAddModal,
@@ -552,6 +556,8 @@ const BrandForm = (props) => {
                     </MDButton>
                 </DialogActions>
             </DialogContent>
+            <TransitionsModal message="Brand created successfully!" check={check} openModal={openModal} setOpenModal=
+        {setOpenModal} />
         </BrandModal >
     )
 }

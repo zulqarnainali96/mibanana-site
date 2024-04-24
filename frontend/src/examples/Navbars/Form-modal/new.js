@@ -354,6 +354,7 @@ const CreateProject1 = ({
                                 <MDInput
                                     type="number"
                                     name="width"
+                                    value="0"
                                     onChange={handleChange}
                                     placeholder="Width" variant="outlined" fullWidth
                                     sx={({ breakpoints, spacing }) => ({
@@ -381,6 +382,7 @@ const CreateProject1 = ({
                                 <MDInput
                                     type="number"
                                     name="height"
+                                    value="0"
                                     onChange={handleChange}
                                     placeholder="Height" variant="outlined" fullWidth
                                     sx={({ breakpoints }) => ({

@@ -5,7 +5,7 @@ import { Modal as BaseModal } from '@mui/material';
 import Fade from '@mui/material/Fade';
 import { position } from 'stylis';
 
-export default function TransitionsModal({ message, openModal, setOpenModal }) {
+export default function TransitionsModal({ message, openModal, setOpenModal, check }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpenModal(false);
@@ -25,7 +25,10 @@ export default function TransitionsModal({ message, openModal, setOpenModal }) {
           <ModalContent sx={style}>
             <div style={{position:"relative"}}>
               <span onClick={()=>setOpenModal(false)} style={{position:"absolute", top:"-45px", right:"-30px", cursor:"pointer", fontSize:"20px"}}>x</span>
-              <h2 id="transition-modal-title" className="modal-title">
+              {
+                check && <img src={check} style={{marginBottom:"1rem"}} />
+              }
+              <h2 id="transition-modal-title" style={{color:'#333',}} className="modal-title">
                 {message}
               </h2>
             </div>
@@ -98,7 +101,7 @@ const ModalContent = styled('div')(
     flex-direction: column;
     gap: 8px;
     overflow: hidden;
-    background-color: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};                              
+    background-color: ${theme.palette.mode === 'dark' ? grey[900] : '#F6F6E8'};                              
     border-radius: 8px;
     border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
     box-shadow: 0 4px 12px

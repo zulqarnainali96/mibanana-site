@@ -11,6 +11,8 @@ import Input from 'components/Input/Input';
 import { copyWritingSchema } from '../../../Schema/Index';
 import { useFormik } from 'formik';
 import axios from 'axios';
+import TransitionsModal from 'components/Modal/Modal';
+import check from '../../../assets/images/check.png'
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints } }) => ({
     '& .MuiPaper-root': {
@@ -37,19 +39,20 @@ const name = userDetailsString ? JSON.parse(userDetailsString).name : '';
 const user = userDetailsString ? JSON.parse(userDetailsString).id : "";
 
 const initialValues = {
+    user: user,
+    name: name,
     project_title: '',
     copy_writing_service: '',
-    otherServiceType: "",
-    otherWordCount: "",
     word_count: "",
     project_details: "",
-    name: name,
-    user: user,
+    otherServiceType: "",
+    otherWordCount: "",
 };
 
 const CopyWritingForm = (props) => {
     const { open, handleClose } = props;
     const [uploadedImages, setUploadedImages] = useState([]);
+    const [openModal, setOpenModal] = useState(false);
     const fileInputRef = useRef(null);
 
     const {
@@ -59,6 +62,7 @@ const CopyWritingForm = (props) => {
         handleChange,
         handleBlur,
         touched,
+        setFieldValue
     } = useFormik({
         initialValues: initialValues,
         validationSchema: copyWritingSchema,
@@ -70,7 +74,12 @@ const CopyWritingForm = (props) => {
             };
             try {
                 const response = await axios.post('http://localhost:8000/api/create-copywriting-project', dataToSend);
+                // handleClose();
                 resetForm(clearForm());
+                setOpenModal(true)
+                setTimeout(() => {
+                    handleClose();
+                }, 5000);
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -116,17 +125,17 @@ const CopyWritingForm = (props) => {
     };
 
     const customChangeService = (e) => {
-        debugger
         handleChange(e)
         if (handleChange(e) !== "other") {
-            var writingService = document.getElementById('otherServiceType');
-            writingService.value = "";
-            console.log(writingService)
+            setFieldValue("otherServiceType", "");
+            var serviceType = document.getElementById("otherServiceType");
+            serviceType.value = "";
         }
     }
     const customChangeCount = (e) => {
         handleChange(e)
         if (handleChange(e) !== "other") {
+            setFieldValue("otherWordCount", "");
             var wordCount = document.getElementById("otherWordCount");
             wordCount.value = "";
         }
@@ -136,10 +145,7 @@ const CopyWritingForm = (props) => {
     return (
         <BootstrapDialog open={open}>
             <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <MDTypography sx={({ palette: { light } }) => ({
-                    backgroundColor: light.cream,
-                    border: `1px solid ${light.cream}`
-                })}>
+                <MDTypography>
                     Copywriting Request Form
                 </MDTypography>
                 <MDButton onClick={handleClose} sx={{ position: "absolute", right: 4 }}>
@@ -335,7 +341,8 @@ const CopyWritingForm = (props) => {
                     <Input id="my-input"  />
         </FormControl>*/}
             </DialogContent>
-
+            <TransitionsModal message="Project created successfully!" check={check} openModal={openModal} setOpenModal=
+                {setOpenModal} />
         </BootstrapDialog>
     )
 }

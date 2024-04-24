@@ -80,7 +80,8 @@ const EditProjectModal = (props) => {
         "Graphic Design",
     ]
 
-    const project = projects.find(project => project?._id === current_id)
+    const project = projects?.find(project => project?._id === current_id)
+
 
     const getOptionDisabled = (option, newValue) => {
         if (formValue.file_formats.length === 3) {

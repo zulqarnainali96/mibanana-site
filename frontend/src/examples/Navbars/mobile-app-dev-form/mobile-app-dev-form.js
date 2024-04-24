@@ -11,6 +11,7 @@ import Input from 'components/Input/Input';
 import { useFormik } from 'formik';
 import { mobileAppSchema } from 'Schema/Index';
 import TransitionsModal from 'components/Modal/Modal';
+import axios from 'axios';
 
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
@@ -38,43 +39,63 @@ const name = userDetailsString ? JSON.parse(userDetailsString).name : '';
 const user = userDetailsString ? JSON.parse(userDetailsString).id : "";
 
 const initialValues = {
+    user: user,
+    name: name,
     project_title: '',
     platform: '',
     project_details: "",
-    name: name,
-    user: user,
 };
 
 const MobileAppDevForm = (props) => {
     const { open, handleClose } = props;
-    const [openModal, setOpenModal] = useState(false)
+    const [openModal, setOpenModal] = useState(false);
 
     const {
         values,
         errors,
-        handleBlur,
         handleSubmit,
         handleChange,
-        touched
+        handleBlur,
+        touched,
     } = useFormik({
         initialValues: initialValues,
-        // validationSchema: mobileAppSchema,
-        onSubmit: (values) => {
-            setOpenModal(true);
-            console.log(values)
-        }
-    })
+        validationSchema: mobileAppSchema,
+        onSubmit: async (values, { resetForm }) => {
+            const dataToSend = {
+                ...values,
+                user: user,
+                name: name,
+            };
+            try {
+                // const response = await axios.post('http://localhost:8000/api/create-mobile-app-project', dataToSend);
+                console.log(dataToSend)
+                // handleClose();
+                resetForm(clearForm());
+                setOpenModal(true)
+                setTimeout(() => {
+                    handleClose();
+                }, 5000);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            function clearForm() {
+                var projectTitle = document.getElementById('project_title');
+                projectTitle.value = "";
+                var projectDetail = document.getElementById('project_details');
+                projectDetail.value = "";
+            }
+
+            // Optionally, reset the form after submission
+            resetForm(clearForm());
+        },
+    });
+
 
 
     return (
         <BootstrapDialog open={open} sx={{ width: '100% !important' }} >
             <DialogTitle display={"flex"} position={"relative"} width={'100%'} justifyContent={"space-between"} alignItems={"center"} >
-                <MDTypography sx={({ palette: { light } }) => (
-                    {
-                        backgroundColor: light.cream,
-                        border: `1px solid ${light.cream}`
-                    }
-                )}>
+                <MDTypography>
                     Mobile App Development Form
                 </MDTypography>
                 <MDButton
@@ -117,8 +138,8 @@ const MobileAppDevForm = (props) => {
                             <Grid container>
                                 <Grid item xs={12}>
                                     <Select
-                                        id="app_platform"
-                                        name="app_platform"
+                                        id="platform"
+                                        name="platform"
                                         onBlur={handleBlur}
                                         value={values.platform}
                                         error={touched.platform && Boolean(errors.platform)}
@@ -127,11 +148,8 @@ const MobileAppDevForm = (props) => {
                                         displayEmpty
                                     >
                                         <MenuItem value="" selected disabled>Select Service Type</MenuItem>
-                                        <MenuItem value="web content">Website Content</MenuItem>
-                                        <MenuItem value="blog post">Blog Posts</MenuItem>
-                                        <MenuItem value="social media copy">Social Media Copy</MenuItem>
-                                        <MenuItem value="product description">Product Descriptions</MenuItem>
-                                        <MenuItem value="other">Other</MenuItem>
+                                        <MenuItem value="android">Android App Development</MenuItem>
+                                        <MenuItem value="ios">IOS App Development</MenuItem>
                                     </Select>
 
 
@@ -152,14 +170,12 @@ const MobileAppDevForm = (props) => {
                                 type="text"
                                 multiline
                                 rows={4}
-                                maxRows={8}
                                 style={{ width: '100%' }}
                                 value={values.project_details}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 touched={touched.project_details}
-                                errors={errors.project_details}
-                                className={touched.project_details && Boolean(errors.project_details) ? 'border-color-red' : ''}
+                                error={touched.project_details && Boolean(errors.project_details)}
                             />
                         </Grid>
 
