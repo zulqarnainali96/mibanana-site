@@ -46,9 +46,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   const is500 = useMediaQuery("(max-width:500px)")
 
   const onEditProject = (project_id) => {
-    console.log("Editing project", project_id);
     reduxActions.handle_CurrentProjectId(project_id)
-    
     reduxActions.handle_OpenEditProject(true)
   }
 
@@ -58,8 +56,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
       navigate("/chat/" + id);
     }, 400)
   }
-
-
 
   const rows = projectList?.length
     ? projectList?.map((item, i) => {
@@ -262,6 +258,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
               errorSBNot={openErrorSB}
               successSBNot={openSuccessSB}
               role={role}
+              onEditProject={() => onEditProject(item?._id)}
             />
           </MDTypography>
         ),

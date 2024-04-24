@@ -67,6 +67,23 @@ const createGraphicDesign = asyncHandler(async (req, res) => {
     }
     return res.status(400).json({ message: "failed to create data " })
 })
+
+const updateGraphicDesign = async (req, res) => {
+    const _id = req.params.id;
+
+    try {
+        const findProject = await graphicDesignModel.findById(_id)
+        if (findProject) {
+            await findProject.updateOne(req.body)
+            return res.status(200).send({ message: 'Project Updated' })
+        } else {
+            return res.status(404).send({ message: 'Project not found' })
+        }
+    } catch (err) {
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+}
+
 const upadteProject = asyncHandler(async (req, res) => {
     const { project_id, project_data } = req.body
     if (!project_id) {
@@ -531,4 +548,4 @@ const updateFigmaLink = async (req, res) => {
     }
 }
 
-module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectForReview, deleteFile, projectOngoing, projectCancel, updateDriveLink, updateFigmaLink, getSingleProject, projectWidthRevision }
+module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectForReview, deleteFile, projectOngoing, projectCancel, updateDriveLink, updateFigmaLink, getSingleProject, projectWidthRevision, updateGraphicDesign }

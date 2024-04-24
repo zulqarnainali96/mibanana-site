@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 // 'http://localhost:4000'
 //'https://test-socket.mibanana.com'
 // https://chat.mibanana.com live site url for socket
+// 34.118.52.166
 
 export const socket = io('https://test-socket.mibanana.com', {
     withCredentials: true,
@@ -12,5 +13,3 @@ export const socket = io('https://test-socket.mibanana.com', {
 })
 
 export const SocketContext = createContext()
-
-

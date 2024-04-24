@@ -47,7 +47,7 @@ let psdfile = "image/vnd.adobe.photoshop"
 let zipfile = 'application/x-zip-compressed'
 let pdf = "application/pdf"
 
-const OtherFilesShow = ({ file, deleteOtherSingleFile }) => {
+export const OtherFilesShow = ({ file, deleteOtherSingleFile }) => {
     return (
         <>
             {file.type.startsWith(zipfile) ?
@@ -354,7 +354,7 @@ const CreateProject1 = ({
                                 <MDInput
                                     type="number"
                                     name="width"
-                                    value="0"
+                                    required={formValue?.height}
                                     onChange={handleChange}
                                     placeholder="Width" variant="outlined" fullWidth
                                     sx={({ breakpoints, spacing }) => ({
@@ -382,7 +382,7 @@ const CreateProject1 = ({
                                 <MDInput
                                     type="number"
                                     name="height"
-                                    value="0"
+                                    required={formValue?.width}
                                     onChange={handleChange}
                                     placeholder="Height" variant="outlined" fullWidth
                                     sx={({ breakpoints }) => ({
@@ -619,7 +619,7 @@ const deleteImageContainer = {
     // width: '125px',
 }
 
-const deleteImageSvgIcon = {
+export const deleteImageSvgIcon = {
     borderRadius: '20px',
     padding: '4px',
     position: 'absolute',

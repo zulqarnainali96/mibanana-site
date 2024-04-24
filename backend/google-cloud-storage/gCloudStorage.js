@@ -10,8 +10,9 @@ const gCloudStorage = new Storage({
 const graphicProjectsModel = require('../models/graphic-design-model')
 // const bucketName = `mi-banana-401205.appspot.com`
 const bucketName2 = 'mibanana-files-bucket'
+const test_bucket_mibanana = 'test-mibanana-bucket'
 
-const bucket = gCloudStorage.bucket(bucketName2)
+const bucket = gCloudStorage.bucket(test_bucket_mibanana)
 const fs = require('fs')
 
 const createFolder = async () => {

@@ -96,15 +96,14 @@ const uploadFilesCopywrite = async (req, res) => {
     if (!files) {
         return res.status(400).send({ message: "No files uploaded" })
     }
-
     try {
         const user = await User.findById({ user: userId });
         if (user) {
             const copyWritingProject = await copyWritingModel.findById(_id).lean()
             if (copyWritingProject) {
                 const { _id: userID, } = user
-                const { _id: project_id, project_title } = copyWritingProject
-                const prefix = `${userID}/${project_title}/${project_id}/`
+                const { _id: project_id } = copyWritingProject
+                const prefix = `${userID}/${project_id}/`
                 const options = {
                     resumable: false,
                     preconditionOpts: {
@@ -121,7 +120,7 @@ const uploadFilesCopywrite = async (req, res) => {
                             const [files] = await bucket.getFiles({ prefix })
                             let filesInfo = files.map((file) => {
                                 let obj = {}
-                                obj.id = uniqID(),
+                                    obj.id = uniqID(),
                                     obj.name = path.basename(file.name),
                                     obj.url = encodeURI(file.storage.apiEndpoint + '/' + file.bucket.name + '/' + file.name),
                                     obj.download_link = file.metadata.mediaLink,
@@ -136,11 +135,13 @@ const uploadFilesCopywrite = async (req, res) => {
                             if (filesInfo) {
                                 if (copyWritingProject.files?.length > 0) {
                                     copyWritingProject.files = [...copyWritingProject.files, ...filesInfo]
+                                    await copyWritingProject.save()
                                 } else {
                                     copyWritingProject.files = filesInfo
+                                    await copyWritingProject.save()
                                 }
                             }
-                            // return res.status(200).send({ message: "File uploaded successfully" });
+                            return res.status(200).send({ message: "File uploaded successfully" });
                         }).end(file.buffer)
                     }
                 }

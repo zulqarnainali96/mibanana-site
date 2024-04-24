@@ -105,7 +105,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   })
   const [showAccountsbtn, setShowAccountsBtn] = useState(false)
 
-  const [showEditProject, setEditProject] = useState(reduxState.edit_project)
+
+  // edit modal state
+  const [images_loading, setImagesLoading] = useState(false)
+  const [editImages, setEditImages] = useState([])
+
 
   const [openCopyWriting, setOpenCopyWriting] = useState(false)
   const [openSocialMediaForm, setOpenSocialMediaForm] = useState(false)
@@ -114,7 +118,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const [openMobileApp, setOpenMobileApp] = useState(false)
 
   const theme = useTheme()
-  console.log('testing')
 
   const is1040 = useMediaQuery("(max-width:1040px)")
   const extraLargeScreen = useMediaQuery(theme.breakpoints.up('xxl'))
@@ -332,6 +335,18 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         console.error("Error Found =>", err);
       });
   };
+
+  function setSizes() {
+    let size = ""
+    if (formValue.width && formValue.height && formValue.unit) {
+      size = `${formValue.width} x ${formValue.height} (${formValue.unit})`;
+    }
+    else if (formValue.width && formValue.height && !formValue.unit) {
+      size = `${formValue.width} x ${formValue.height}`;
+    }
+    return size
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (add_files.length > 0 && upload_files.length > 0) {
@@ -349,12 +364,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       brand: formValue.brand,
       project_title: formValue.project_title,
       project_description: formValue.project_description,
-      sizes: `${formValue.width} x ${formValue.height} (${formValue.unit})`,
+      sizes: setSizes(),
       specific_software_names: formValue.specific_software_names,
       file_formats: formValue.file_formats,
       is_active: false,
     };
-
     await apiClient.post("/graphic-project", data)
       .then((resp) => {
         if (resp?.status === 201) {
@@ -382,7 +396,9 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           setTimeout(() => {
             // openSuccessSB()
             setLoading(false);
+            setRespMessage()
             setOpenModal(true);
+            setRespMessage("Project created successfully!")
           }, 300);
         }
         setLoading(false);
@@ -673,7 +689,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     setShowAccountsBtn(prev => !prev)
   }, [showAccountsbtn])
 
-
   return (
     <>
       <CreateProject1
@@ -705,11 +720,17 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         open={reduxState.edit_project}
         handleClose={handleEditProjectClose}
         current_id={reduxState.currentProjectId}
-        projects={reduxState.project_list?.CustomerProjects}
-        formValue={formValue}
-        setFormValue={setFormValue}
+        projects={reduxState?.project_list?.CustomerProjects}
         brandOption={brandOption}
-        handleChange={handleChange}
+        imagesLoading={images_loading}
+        files={editImages}
+        setEditImages={setEditImages}
+        editImages={editImages}
+        setImagesLoading={setImagesLoading}
+        userId={reduxState.userDetails?.id}
+        callback={reduxActions.getCustomerProject}
+        setOpenModal={setOpenModal}
+        setRespMessage={setRespMessage}
       />
 
       <CopyWritingForm
@@ -817,7 +838,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           )}
         </Grid>
       </Grid>
-      <TransitionsModal message="Project created successfully!" check={check} openModal={openModal} setOpenModal=
+      <TransitionsModal message={respMessage} openModal={openModal} setOpenModal=
         {setOpenModal} />
       <div className="small-navbar-container">
         <List className="headesidebar">{renderRoutes}</List>
