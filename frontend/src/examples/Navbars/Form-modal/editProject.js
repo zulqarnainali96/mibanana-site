@@ -10,7 +10,7 @@ import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import MDInput from 'components/MDInput';
 import MDTypography from 'components/MDTypography';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ReactQuill from 'react-quill';
 import { MoonLoader } from 'react-spinners';
 import CloseIcon from '@mui/icons-material/Close';
@@ -62,8 +62,8 @@ const category = ["Graphic Design"]
 
 const EditProjectModal = (props) => {
     const { open, handleClose, current_id, projects, brandOption, imagesLoading, files, setImagesLoading, setEditImages, editImages, userId, callback, setOpenModal, setRespMessage } = props
-
     const [loading, setEditLoading] = useState(false)
+    const formRef = useRef(null)
     const [formValue, setFormValue] = useState({
         project_category: "",
         design_type: "",
@@ -92,8 +92,7 @@ const EditProjectModal = (props) => {
         });
     };
     const classes = reactQuillStyles()
-    const project = projects.find(project => project?._id === current_id)
-    console.log(current_id)
+    const project = projects?.find(project => project?._id === current_id)
 
     const getOptionDisabled = (option, newValue) => {
         if (formValue.file_formats.length === 3) {
@@ -110,14 +109,25 @@ const EditProjectModal = (props) => {
             project_description: value
         })
     }
+    function setSizes() {
+        let size = ""
+        if (formValue.width && formValue.height && formValue.unit) {
+            size = `${formValue.width} x ${formValue.height} (${formValue.unit})`;
+        }
+        else if (formValue.width && formValue.height && !formValue.unit) {
+            size = `${formValue.width} x ${formValue.height}`;
+        }
+        return size
+    }
 
-    const updateEditForm = async () => {
+    const updateEditForm = (event) => {
+        event.preventDefault()
         setEditLoading(true)
         const formData = {
             ...formValue,
-            sizes: `${formValue.width} x ${formValue.height} (${formValue.unit})`,
+            sizes: setSizes(),
         }
-        await apiClient.patch('/api/update-current-project/' + current_id, formData)
+        apiClient.patch('/api/update-current-project/' + current_id, formData)
             .then(({ data }) => {
                 console.log(data)
                 setEditLoading(false)
@@ -129,6 +139,15 @@ const EditProjectModal = (props) => {
                 setEditLoading(false)
                 console.log(error)
             })
+    }
+
+    const handleButton = (event) => {
+        event.preventDefault();
+        // Trigger form submission programmatically
+        if (formRef.current) {
+            formRef.current.submit();
+        }
+        console.log(formRef.current)
     }
 
     const clientFiles = async () => {
@@ -143,27 +162,49 @@ const EditProjectModal = (props) => {
                 setImagesLoading(false);
             });
     }
-    const removeSingleFile = () => {
-        // logic to remove single file from editImages array
 
-    }
     useEffect(() => {
-        const regex = /(\d+)\s*x\s*(\d+)\s*\((\w+)\)/;
-        const match = regex.exec(project?.sizes);
-        const width = parseInt(match[1]);
-        const height = parseInt(match[2]);
-        const unit = match[3];
-        setFormValue({
-            ...project,
-            width,
-            height,
-            unit,
-        })
+        if (project?.sizes) {
+            setFormValue({
+                project_category: "",
+                design_type: "",
+                brand: {},
+                project_title: "",
+                project_description: "",
+                describe_audience: "",
+                sizes: "",
+                width: "",
+                height: "",
+                unit: "",
+                resources: "",
+                reference_example: "",
+                add_files: [],
+                file_formats: [],
+                specific_software_names: '',
+            })
+            const regex = /(\d+)\s*x\s*(\d+)\s*\((\w+)\)/;
+            const match = regex.exec(project?.sizes);
+            if (match?.length > 0) {
+                const width = parseInt(match[1]);
+                const height = parseInt(match[2]);
+                const unit = match.includes('inch') || match.includes('px') || match.includes('cm') ? match[3] : "";
+                setFormValue({
+                    ...project,
+                    width,
+                    height,
+                    unit: unit,
+                })
+            }
+        } else {
+            setFormValue({
+                ...project,
+            })
+        }
         clientFiles()
         return () => {
             handleClose()
         }
-    }, [])
+    }, [current_id])
     const marginNone = (breakpoints) => ({
         m: 1,
         width: '100%',
@@ -189,7 +230,7 @@ const EditProjectModal = (props) => {
                 </MDButton>
             </DialogTitle>
             <DialogContent>
-                <Box component="form" sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                <Box component="form" sx={{ display: 'flex', flexWrap: 'wrap' }} onSubmit={updateEditForm}>
                     <Grid width={"100%"} container spacing={2} justifyContent={"space-between"} alignItems={"center"}>
 
                         <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
@@ -304,6 +345,7 @@ const EditProjectModal = (props) => {
                                 <MDInput
                                     type="number"
                                     name="width"
+                                    required={formValue.height}
                                     onChange={handleChange}
                                     value={formValue.width}
                                     placeholder="Width" variant="outlined" fullWidth
@@ -332,6 +374,7 @@ const EditProjectModal = (props) => {
                                 <MDInput
                                     type="number"
                                     name="height"
+                                    required={formValue.width}
                                     value={formValue.height}
                                     onChange={handleChange}
                                     placeholder="Height" variant="outlined" fullWidth
@@ -433,6 +476,30 @@ const EditProjectModal = (props) => {
                                 </FormControl>
                             </MDBox>
                         </Grid>
+                        <Grid display={"flex"} justifyContent={"flex-end"} position={"relative"} paddingBlock={"30px !important"} alignItems={"center"} item xxl={12} xl={12} lg={12} sm={12} md={12} xs={12} p={2} pt={"10px"}>
+                            <MDBox display="flex" justifyContent="flex-end" alignItems="center" position="absolute !important" bottom="-15px">
+                                <MDButton
+                                    type="submit"
+                                    // onClick={updateEditForm}
+                                    // onClick={handleButton}
+                                    color="warning"
+                                    fullWidth
+                                    endIcon={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                        <ArrowForward fontSize='large' />&nbsp;
+                                        <MoonLoader loading={loading} size={18} color='#121212' />
+                                    </div>}
+                                    disabled={loading}
+                                    circular={false}
+                                    sx={{
+                                        color: '#000 !important',
+                                        fontSize: 14,
+                                        textTransform: "capitalize",
+                                    }}
+                                >
+                                    Update &nbsp;
+                                </MDButton>
+                            </MDBox>
+                        </Grid>
                         {/* <Grid item xxl={12} xl={12} lg={12} sm={12} md={12} xs={12} p={2}>
                             <MDTypography variant="h6" fontWeight="400" sx={{ fontFamily: fontsFamily.poppins }}>Project Images</MDTypography>
                             <MDBox sx={imageBox}>
@@ -472,10 +539,11 @@ const EditProjectModal = (props) => {
                 </Box>
             </DialogContent>
             <DialogActions>
-                <MDBox display="flex" justifyContent="flex-end" alignItems="center">
+                {/* <MDBox display="flex" justifyContent="flex-end" alignItems="center">
                     <MDButton
                         type="button"
-                        onClick={updateEditForm}
+                        // onClick={updateEditForm}
+                        onClick={handleButton}
                         color="warning"
                         fullWidth
                         endIcon={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -492,7 +560,7 @@ const EditProjectModal = (props) => {
                     >
                         Update &nbsp;
                     </MDButton>
-                </MDBox>
+                </MDBox> */}
             </DialogActions>
         </Dialog>
     )

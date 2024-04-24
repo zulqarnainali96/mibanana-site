@@ -115,7 +115,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const [openWebsite, setOpenWebsite] = useState(false)
   const [openWebApp, setOpenWebAppApp] = useState(false)
   const [openMobileApp, setOpenMobileApp] = useState(false)
-  
+
   const theme = useTheme()
 
   const is1040 = useMediaQuery("(max-width:1040px)")
@@ -335,6 +335,17 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       });
   };
 
+  function setSizes() {
+    let size = ""
+    if (formValue.width && formValue.height && formValue.unit) {
+      size = `${formValue.width} x ${formValue.height} (${formValue.unit})`;
+    }
+    else if (formValue.width && formValue.height && !formValue.unit) {
+      size = `${formValue.width} x ${formValue.height}`;
+    }
+    return size
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (add_files.length > 0 && upload_files.length > 0) {
@@ -352,12 +363,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       brand: formValue.brand,
       project_title: formValue.project_title,
       project_description: formValue.project_description,
-      sizes: `${formValue.width} x ${formValue.height} (${formValue.unit})`,
+      sizes: setSizes(),
       specific_software_names: formValue.specific_software_names,
       file_formats: formValue.file_formats,
       is_active: false,
     };
-
     await apiClient.post("/graphic-project", data)
       .then((resp) => {
         if (resp?.status === 201) {
@@ -705,11 +715,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         removeSingleFile={removeSingleFile}
         deleteOtherSingleFile={deleteOtherSingleFile}
       />
-      <EditProjectModal 
+      <EditProjectModal
         open={reduxState.edit_project}
         handleClose={handleEditProjectClose}
         current_id={reduxState.currentProjectId}
-        projects={reduxState.project_list?.CustomerProjects}
+        projects={reduxState?.project_list?.CustomerProjects}
         brandOption={brandOption}
         imagesLoading={images_loading}
         files={editImages}
@@ -828,7 +838,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         </Grid>
       </Grid>
       <TransitionsModal message={respMessage} openModal={openModal} setOpenModal=
-                            {setOpenModal} />
+        {setOpenModal} />
       <div className="small-navbar-container">
         <List className="headesidebar">{renderRoutes}</List>
       </div>
