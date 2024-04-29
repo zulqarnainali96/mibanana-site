@@ -23,7 +23,8 @@ import { Project_manager ,Assigned, ForReview, Ongoing, Completed, Revision } fr
 import { SocketContext } from "sockets";
 
 function Dashboard({ reduxActions, reduxState }) {
-  const [project_list, setProject_List] = useState(reduxState.project_list?.CustomerProjects)
+  const [project_list, setProject_List] = useState(reduxState.project_list?.CustomerProjects?.filter(item => item.status ===  'Ongoing'))
+  const [projects, setProjects] = useState(reduxState.project_list?.CustomerProjects || [])
   const role = currentUserRole(reduxState)
   const [errorSB, setErrorSB] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
@@ -37,15 +38,15 @@ function Dashboard({ reduxActions, reduxState }) {
   const closeSuccessSB = () => setSuccessSB(false);
   const [respMessage, setRespMessage] = useState("")
 
-  const projectQueue = project_list?.filter(item => {
+  const projectQueue = projects?.filter(item => {
     return item.status === Project_manager
   })
   
   const sumbitAndOngoing = () => {
-    const filterStatus = project_list?.filter(item => item.status === Assigned || item.status === Revision || item.status === ForReview || item.status === Ongoing)
+    const filterStatus = projects?.filter(item => item.status === Assigned || item.status === Revision || item.status === ForReview || item.status === Ongoing)
     return filterStatus?.length
   }
-  const projectCompleted = project_list?.filter(item => item.status === Completed)
+  const projectCompleted = projects?.filter(item => item.status === Completed)
 
   const onEditProject = (project_id) => {
     reduxActions.handle_CurrentProjectId(project_id)
@@ -55,8 +56,8 @@ function Dashboard({ reduxActions, reduxState }) {
   const navigate = useNavigate()
   function projectActiveorNot(id) {
     reduxActions.getID(id)
-    let projectID = project_list[id].hasOwnProperty("_id") ? project_list[id]?._id : project_list[id]?.id
-    navigate("/chat/" + projectID)
+    // let projectID = project_list[id].hasOwnProperty("_id") ? project_list[id]?._id : project_list[id]?.id
+    navigate("/chat/" + id)
   }
 
   const renderErrorSB = (
@@ -86,13 +87,13 @@ function Dashboard({ reduxActions, reduxState }) {
     />
   );
   const rows = project_list?.length > 0 ? project_list.map((item, i) => {
-    const projectid = project_list.indexOf(item)
+    // const projectid = project_list.indexOf(item)
 
     return {
       project_title: (
         <MDBox lineHeight={1}>
           <MDTypography display={"block"} sx={{ textDecoration: 'underline !important' }} variant="button" fontWeight="medium">
-            <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }} onClick={() => projectActiveorNot(projectid)}>
+            <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor }} onClick={() => projectActiveorNot(item._id)}>
               {item?.project_title}
             </MDBox>
           </MDTypography>
@@ -147,13 +148,13 @@ function Dashboard({ reduxActions, reduxState }) {
       }
     }
     hours = String(hours).padStart(2, "0");
-    const projectid = project_list.indexOf(item)
+    // const projectid = project_list.indexOf(item)
 
     return {
       project_title: (
         <MDBox lineHeight={1}>
           <MDTypography display={"block"} sx={{ textDecoration: 'underline !important' }} variant="button" fontWeight="medium">
-            <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor, fontSize: isLg && '12px' }} onClick={() => projectActiveorNot(projectid)}>
+            <MDBox sx={{ "&:hover": { color: "blue" }, fontFamily: fontsFamily.poppins, fontWeight: '400  !important', color: mibananaColor.yellowTextColor, fontSize: isLg && '12px' }} onClick={() => projectActiveorNot(item._id)}>
               {item?.project_title}
             </MDBox>
           </MDTypography>
@@ -190,7 +191,8 @@ function Dashboard({ reduxActions, reduxState }) {
 
 
   useEffect(() => {
-    setProject_List(reduxState.project_list.CustomerProjects)
+    setProject_List(reduxState.project_list?.CustomerProjects?.filter(item => item?.status ===  'Ongoing'))
+    setProjects(reduxState.project_list.CustomerProjects)
   }, [reduxState.project_list])
 
   return (

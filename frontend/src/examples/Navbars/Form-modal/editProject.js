@@ -1,4 +1,4 @@
-import { ArrowForward, CloseOutlined } from '@mui/icons-material';
+import { ArrowForward, CloseOutlined, FolderZip } from '@mui/icons-material';
 import { Autocomplete, Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, TextField, Typography } from '@mui/material';
 import styled from '@mui/material/styles/styled';
 import apiClient from 'api/apiClient';
@@ -14,9 +14,18 @@ import React, { useEffect, useRef, useState } from 'react'
 import ReactQuill from 'react-quill';
 import { MoonLoader } from 'react-spinners';
 import CloseIcon from '@mui/icons-material/Close';
-import { deleteImageSvgIcon } from './new';
+import { OtherFilesShow, deleteImageSvgIcon } from './new';
+import AiLogo from 'assets/mi-banana-icons/ai-logo.png'
+import Zipicon from 'assets/mi-banana-icons/zip-icon.png'
+import psdFile from "assets/images/psdfile.svg";
+import pdffile from "assets/images/pdffile.svg";
 import { getProjectData } from 'redux/global/global-functions';
 
+
+let aiLogo = "application/postscript"
+let psdfile = "image/vnd.adobe.photoshop"
+let zipfile = 'application/x-zip-compressed'
+let pdf = "application/pdf"
 
 const designType = [
     "App",
@@ -60,9 +69,11 @@ const unitOptions = ['px', 'inch', 'cm']
 const fileFormats = ["Jpg", "Png", "Pdf", "gif"]
 const category = ["Graphic Design"]
 
+
 const EditProjectModal = (props) => {
-    const { open, handleClose, current_id, projects, brandOption, imagesLoading, files, setImagesLoading, setEditImages, editImages, userId, callback, setOpenModal, setRespMessage } = props
+    const { open, handleClose, current_id, projects, brandOption, files, setEditImages, userId, callback, setOpenModal, setRespMessage, reduxState } = props
     const [loading, setEditLoading] = useState(false)
+    const [images_loading, setImagesLoading] = useState(false)
     const formRef = useRef(null)
     const [formValue, setFormValue] = useState({
         project_category: "",
@@ -81,7 +92,8 @@ const EditProjectModal = (props) => {
         file_formats: [],
         specific_software_names: '',
     })
-
+    const fileInputRef = useRef(null);
+    const [uploadedImages, setUploadedImages] = useState([]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -120,6 +132,20 @@ const EditProjectModal = (props) => {
         return size
     }
 
+    const uploadFile = (user_id, project_id) => {
+        const formdata = new FormData();
+        for (let i = 0; i < uploadedImages.length; i++) {
+            formdata.append("files", uploadedImages[i]);
+        }
+        formdata.append("user_id", user_id);
+        formdata.append("project_id", project_id);
+        apiClient.post("/file/google-cloud", formdata).then((res) => {
+            console.log('Edit files uploaded successfully')
+        }).catch(err => {
+            console.error("Error uploading files Found =>", err);
+        })
+    };
+
     const updateEditForm = (event) => {
         event.preventDefault()
         setEditLoading(true)
@@ -129,12 +155,25 @@ const EditProjectModal = (props) => {
         }
         apiClient.patch('/api/update-current-project/' + current_id, formData)
             .then(({ data }) => {
-                console.log(data)
-                setEditLoading(false)
-                setRespMessage("Project updated successfully")
-                setOpenModal(true)
-                getProjectData(userId, callback);
-                handleClose()
+                if (uploadedImages.length > 0) {
+                    uploadFile(userId, current_id)
+
+                    setEditLoading(false)
+                    setRespMessage("Project updated successfully")
+                    setOpenModal(true)
+                    getProjectData(userId, callback);
+                    setUploadedImages([])
+                    clientFiles()
+                    handleClose()
+                } else {
+                    setEditLoading(false)
+                    setRespMessage("Project updated successfully")
+                    setOpenModal(true)
+                    getProjectData(userId, callback);
+                    setUploadedImages([])
+                    clientFiles()
+                    handleClose()
+                }
             }).catch(error => {
                 setEditLoading(false)
                 console.log(error)
@@ -162,6 +201,78 @@ const EditProjectModal = (props) => {
                 setImagesLoading(false);
             });
     }
+
+    const removeSingleFile = async (file) => {
+        console.log(file)
+        const formdata = {
+            file_name: file?.name,
+            folder_name: file?.folder_name
+        }
+        await apiClient.post(`/api/delete-file`, formdata)
+            .then(({ data }) => {
+                if (data?.message) {
+                    setEditImages(files?.filter(item => item?.id !== file?.id))
+                    console.log('file deleted')
+                    // setRespMessage(data.message)
+                    // setTimeout(() => {
+                    //     openSuccessSB()
+                    // }, 500)
+                }
+            })
+            .catch((err) => {
+                if (err.response) {
+                    const { message } = err.response.data
+                    console.log('error deleting file')
+                    // setTimeout(() => {
+                    //     openErrorSB()
+                    // }, 500)
+                } else {
+                    // setRespMessage(err.message)
+                    // setTimeout(() => {
+                    //     openErrorSB()
+                    // }, 500)
+                }
+            })
+    }
+
+    const handleFiles = (files) => {
+        const MAX_FILES = 5
+        if (files?.length > MAX_FILES) {
+            alert("You can upload only 5 files")
+            return
+        }
+        if (uploadedImages.length >= MAX_FILES) {
+            alert("You can upload only 5 files")
+            return
+        } else {
+            const uploadedImagesArray = [...uploadedImages];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                uploadedImagesArray.push(file);
+            }
+            setUploadedImages(uploadedImagesArray);
+        }
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        handleFiles(files);
+    };
+    const removeImage = (file) => {
+        const indexToRemove = uploadedImages.indexOf(file)
+        const filteredImages = uploadedImages.filter((image, index) => index !== indexToRemove);
+        setUploadedImages(filteredImages);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
+    const handleFileInputChange = (e) => {
+        const files = e.target.files;
+        handleFiles(files);
+    };
+
 
     useEffect(() => {
         if (project?.sizes) {
@@ -205,6 +316,14 @@ const EditProjectModal = (props) => {
             handleClose()
         }
     }, [current_id])
+
+    useEffect(() => {
+        return () => {
+            setUploadedImages([])
+            setEditImages([])
+        }
+    }, [])
+
     const marginNone = (breakpoints) => ({
         m: 1,
         width: '100%',
@@ -475,6 +594,138 @@ const EditProjectModal = (props) => {
                                     />
                                 </FormControl>
                             </MDBox>
+
+                        </Grid>
+                        <Grid item xxl={12} xl={12} lg={12} sm={12} md={12} xs={12} p={2}>
+                            <MDTypography variant="h6" fontWeight="400" sx={{ fontFamily: fontsFamily.poppins }}>Project Images</MDTypography>
+                            <MDBox sx={imageBox}>
+                                {images_loading ? (
+                                    <MoonLoader loading={images_loading} size={32} color='#121212' />
+                                ) : (
+                                    <MDBox sx={{ display: 'grid', gridTemplateColumns: `repeat(${files?.length}, 1fr)`, gap: '16px' }}>
+                                        <React.Fragment>
+                                            {images_loading ? (
+                                                <React.Fragment>
+                                                    <MoonLoader loading={loading} size={18} color='#121212' />
+                                                </React.Fragment>
+                                            ) : (
+                                                <React.Fragment>
+                                                    {files?.length > 0 ? (
+                                                        <React.Fragment>
+                                                            {files?.map(image => {
+                                                                return <MDBox key={image.id} sx={{ position: 'relative' }}>
+                                                                    {image?.type?.startsWith("image/") ? (
+                                                                        <React.Fragment>
+                                                                            <CloseIcon
+                                                                                fontSize='medium'
+                                                                                onClick={() => removeSingleFile(image)}
+                                                                                sx={{
+                                                                                    ...deleteImageSvgIcon,
+                                                                                    right: '-8px',
+                                                                                    top: '-15px'
+                                                                                }}
+                                                                            />
+
+                                                                            <img
+                                                                                src={image.url}
+                                                                                alt={image.name}
+                                                                                width={80} height={80}
+                                                                            />
+                                                                        </React.Fragment>
+                                                                    ) : (
+                                                                        <React.Fragment>
+                                                                            <CloseIcon
+                                                                                fontSize='medium'
+                                                                                onClick={() => removeSingleFile(image)}
+                                                                                sx={{
+                                                                                    ...deleteImageSvgIcon,
+                                                                                    right: '-8px',
+                                                                                    top: '-15px'
+                                                                                }}
+                                                                            />
+                                                                            {/* <ShowOtherFiles file={image} /> */}
+                                                                            {image.type?.includes(aiLogo) ? (
+                                                                                <img src={AiLogo} width={80} height={80} loading='lazy' />
+                                                                            ) : image.type?.includes(pdf) ? (
+                                                                                <img src={pdffile} width={80} height={80} loading='lazy' />
+                                                                            ) : image.type?.includes(psdfile) ? (
+                                                                                <img src={psdFile} width={80} height={80} loading='lazy' />
+                                                                            ) : image.type?.includes(zipfile) ? (
+                                                                                <img src={Zipicon} width={80} height={80} loading='lazy' />
+                                                                            ) : null
+                                                                            }
+                                                                        </React.Fragment>
+                                                                    )}
+                                                                    <React.Fragment>
+                                                                    </React.Fragment>
+                                                                </MDBox>
+                                                            })}
+                                                        </React.Fragment>
+                                                    ) :
+                                                        <span>No Images Found</span>
+                                                    }
+                                                </React.Fragment>
+                                            )}
+                                        </React.Fragment>
+
+                                    </MDBox>
+                                )}
+                            </MDBox>
+
+                        </Grid>
+                        <MDTypography variant="body2" fontWeight="400"
+                            sx={{
+                                paddingInlineStart: '15px',
+                                fontSize: '13px',
+                                fontFamily: fontsFamily.poppins,
+                                color: 'red',
+                                fontWeight: '500',
+
+
+                            }} >5 files allowed</MDTypography>
+                        <Grid item xs={12}>
+                            <label htmlFor="fileInput" style={{ display: 'block', cursor: 'pointer' }}>
+                                <div
+                                    style={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center' }}
+                                    onDrop={handleDrop}
+                                    onDragOver={handleDragOver}
+                                >
+                                    <p>Drag & Drop Images Here</p>
+                                </div>
+                            </label>
+                            <input
+                                id="fileInput"
+                                type="file"
+                                multiple
+                                accept=".ai, .eps, .psd, .zip, .jpg, .png, .pdf, .jpeg, .svg"
+                                onChange={handleFileInputChange}
+                                style={{ display: 'none' }}
+                                ref={fileInputRef}
+                            />
+                            {/* Display uploaded images */}
+                            {uploadedImages.map((image, index) => {
+                                return (
+                                    <React.Fragment>
+                                        {image?.type?.startsWith("image/") ? (
+                                            <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
+                                                <img src={URL.createObjectURL(image)} alt={`uploaded-${index}`} style={{ maxWidth: '100px', maxHeight: '100px', margin: '10px', width: "80px", height: "80px", objectFit: "cover" }} />
+                                                <CloseIcon
+                                                    fontSize='medium'
+                                                    onClick={() => removeImage(image)}
+                                                    sx={{
+                                                        ...deleteImageSvgIcon,
+                                                        right: '1px',
+                                                        top: '1px'
+                                                    }}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <OtherFilesShow file={image} deleteOtherSingleFile={removeImage} />
+                                        )}
+
+                                    </React.Fragment>
+                                )
+                            })}
                         </Grid>
                         <Grid display={"flex"} justifyContent={"flex-end"} position={"relative"} paddingBlock={"30px !important"} alignItems={"center"} item xxl={12} xl={12} lg={12} sm={12} md={12} xs={12} p={2} pt={"10px"}>
                             <MDBox display="flex" justifyContent="flex-end" alignItems="center" position="absolute !important" bottom="-15px">
@@ -500,41 +751,7 @@ const EditProjectModal = (props) => {
                                 </MDButton>
                             </MDBox>
                         </Grid>
-                        {/* <Grid item xxl={12} xl={12} lg={12} sm={12} md={12} xs={12} p={2}>
-                            <MDTypography variant="h6" fontWeight="400" sx={{ fontFamily: fontsFamily.poppins }}>Project Images</MDTypography>
-                            <MDBox sx={imageBox}>
-                                {imagesLoading ? (
-                                    <MoonLoader loading={imagesLoading} size={32} color='#121212' />
-                                ) : (
-                                    <MDBox sx={{ display: 'grid', gridTemplateColumns: `repeat(${editImages?.length}, 1fr)`, gap: '16px' }}>
-                                        {editImages?.length > 0 ? (
-                                            <>{editImages?.map(image => {
-                                                return (
-                                                    <MDBox key={image.id} sx={{ position: 'relative' }}>
-                                                        <CloseIcon
-                                                            fontSize='medium'
-                                                            onClick={() => removeSingleFile(image.id)}
-                                                            sx={{...deleteImageSvgIcon,
-                                                                right:'-13px'
-                                                            }}
-                                                        />
 
-                                                        <img
-                                                            src={image.url}
-                                                            alt={image.name}
-                                                            width={80} height={80}
-                                                        />
-                                                    </MDBox>
-                                                )
-                                            })}</>
-                                        ) :
-                                            <span>No Images Found</span>
-                                        }
-                                    </MDBox>
-                                )}
-                            </MDBox>
-
-                        </Grid> */}
                     </Grid>
                 </Box>
             </DialogContent>

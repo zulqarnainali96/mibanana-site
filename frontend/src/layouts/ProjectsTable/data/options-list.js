@@ -20,24 +20,46 @@ const CustomerList = (props) => {
 
     const getActionsDisabled = () => {
         let result = false
-        if (item.status === 'Project manager') result = false
-        if (item.status === 'Assigned') result = true
-        if (item.status === 'Completed') result = false
+        if (item.status === 'For Review') result = false
+
+        else if (item.status === 'Project manager') result = true
+        else if (item.status === 'Assigned') result = true
+        else if (item.status === 'With Revision') result = true
+        else if (item.status === 'Ongoing') result = true
+        else if (item.status === 'Completed') result = true
+        else if (item.status === 'Cancel') result = true
         return result
     }
     const getCancelDisabled = () => {
+        let result = false
+        if (item.status === 'Project manager') result = false
+        
+        else if (item.status === 'For Review') result = true
+        else if (item.status === 'Ongoing') result = true
+        else if (item.status === 'Assigned') result = true
+        else if (item.status === 'With Revision') result = true
+        else if (item.status === 'Completed') result = true
+        else if (item.status === 'Cancel') result = true
+        return result
+    }
+    const getEditDisabled = () => {
         let disabled = false
-        if (item.status === 'Completed') disabled = true
+        if (item.status === 'Project manager') disabled = false
+
+        else if (item.status === 'Completed') disabled = true
+        else if (item.status === 'For Review') disabled = true
+        else if (item.status === 'With Revision') disabled = true
         else if (item.status === 'Ongoing') disabled = true
-        // else if(item.status === 'Assigned') disabled = true
+        else if (item.status === 'Assigned') disabled = true
+        else if (item.status === 'Cancel') disabled = true
         return disabled
     }
     return (
         <React.Fragment>
-            <MenuItemDropdown loading={false} onClick={onEditProject} title="Edit" />
+            <MenuItemDropdown loading={false} onClick={onEditProject} disabled={getEditDisabled()} title="Edit" />
             <MenuItemDropdown loading={loading3} disabled={loading3 || getActionsDisabled()} onClick={projectCompleted} title="Completed" />
             <MenuItemDropdown loading={loading2} disabled={loading2} onClick={duplicateProject} title="Duplicate" />
-            <MenuItemDropdown loading={loading1} disabled={loading1} onClick={projectCancel} title="Cancel" />
+            <MenuItemDropdown loading={loading1} disabled={loading1 || getCancelDisabled()} onClick={projectCancel} title="Cancel" />
         </React.Fragment>
     )
 }
@@ -52,7 +74,7 @@ const OptionsList = (props) => {
     return (
         <React.Fragment>
             <div onClick={handleMenuOpen}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="active-svg" width="27" height="27" fill="none"><path stroke="inherit" stroke-linecap="round" stroke-linejoin="round" d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" className="active-svg" width="27" height="27" fill="none"><path stroke="inherit" strokeLinecap="round" strokeLinejoin="round" d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" /></svg>
             </div>
             {children ? children :
                 <Menu

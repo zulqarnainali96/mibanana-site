@@ -25,6 +25,8 @@ import AiLogo from 'assets/mi-banana-icons/ai-logo.png'
 import fileImage from 'assets/mi-banana-icons/file-image.png'
 import ReactQuil from "react-quill";
 import { formats } from 'assets/react-quill-settings/react-quill-settings';
+import psdFile from "assets/images/psdfile.svg";
+import pdffile from "assets/images/pdffile.svg";
 import { modules } from 'assets/react-quill-settings/react-quill-settings';
 import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings';
 // import { useSocket } from 'sockets';
@@ -68,16 +70,19 @@ export const OtherFilesShow = ({ file, deleteOtherSingleFile }) => {
                         (
                             <div style={deleteImageContainer}>
                                 <CloseIcon fontSize="medium" sx={deleteImageSvgIcon} onClick={() => deleteOtherSingleFile(file)} />
-                                <img src={fileImage} width={100} height={100} loading='lazy' />
+                                {/* <img src={fileImage} width={100} height={100} loading='lazy' /> */}
+                                <img src={psdFile} width={100} height={100} loading='lazy' />
                             </div>
                         ) : file.type.includes(pdf) ?
                             (
                                 <div style={deleteImageContainer}>
                                     <CloseIcon fontSize="medium" sx={deleteImageSvgIcon} onClick={() => deleteOtherSingleFile(file)} />
-                                    <PictureAsPdf
+                                    <img src={pdffile} width={100} height={100} loading='lazy' />
+                                    {/* <PictureAsPdf
                                         sx={{
                                             fontSize: '6rem !important',
-                                        }} />
+                                        }} /> */}
+                                        
                                 </div>
                             ) : null
             }
@@ -160,7 +165,7 @@ const unitOptions = ['px', 'inch', 'cm']
 
 
 const CreateProject1 = ({
-    reduxState, handleClose, open, handleChange,
+    reduxState, reduxActions, handleClose, open, handleChange,
     loading, onSubmit, formValue, setSelectedOption,
     selectedOption, onRemoveChange, add_files,
     upload_files, uploadProgress, setFormValue,
@@ -168,16 +173,14 @@ const CreateProject1 = ({
     removeSingleFile, deleteOtherSingleFile
 }) => {
     const navigate = useNavigate()
-    const dispatch = useDispatch()
     const is768 = useMediaQuery("(min-width:768px)")
-    const func = () => dispatch(openBrandModalFunc(true))
     const filter = createFilterOptions()
     const classes = reactQuillStyles()
 
     function moveToBrandPage() {
         handleClose()
         navigate("/mi-brands")
-        func()
+        reduxActions.openBrandModalFunc(true)
     }
     const getOptionDisabled = (option, newValue) => {
         if (formValue.file_formats.length === 3) {

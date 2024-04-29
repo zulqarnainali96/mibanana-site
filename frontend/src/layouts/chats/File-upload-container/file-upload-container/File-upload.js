@@ -38,7 +38,7 @@ const ImageBox2 = ({ item }) => {
     )
 }
 
-const ImageBox = ({ item }) => {
+export const ImageBox = ({ item }) => {
     const gridProps = {
         item: true,
         xxl: 3,
@@ -68,7 +68,6 @@ const ImageBox = ({ item }) => {
 }
 
 const FileUpload = ({ files, filesType, removeFiles, loading, handleSubmit   }) => {
-    console.log('files', filesType)
     const classes = useStyles()
     return (
         <MDBox className={classes.filesModalStyle} bgColor="#f6f6f6" paddingBlock="11px" paddingLeft="15px">

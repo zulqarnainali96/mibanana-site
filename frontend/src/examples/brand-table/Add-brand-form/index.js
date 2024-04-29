@@ -73,25 +73,7 @@ const BrandForm = (props) => {
         setOpenModal,
         openModal
     } = props
-    // const {
-    //     // openAddModal,
-    //     onChangeText,
-    //     closeAddBrandModal,
-    //     handleFileUpload,
-    //     image,
-    //     addMoreField,
-    //     setAddMore,
-    //     addMore,
-    //     loading,
-    //     onSubmit,
-    //     setImage,
-    //     setFilesArray,
-    //     filesArray,
-    //     checkState,
-    //     setCheckState,
-    //     getDescriptionText,
-
-    // } = useBrandData
+    
     const logoRef = useRef(null)
     const moodboard = useRef(null)
     const brandGuide = useRef(null)

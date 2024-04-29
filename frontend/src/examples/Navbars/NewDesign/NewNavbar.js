@@ -107,7 +107,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
 
 
   // edit modal state
-  const [images_loading, setImagesLoading] = useState(false)
   const [editImages, setEditImages] = useState([])
 
 
@@ -293,9 +292,9 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     for (let i = 0; i < upload_files.length; i++) {
       formdata.append("files", upload_files[i]);
     }
+    // formdata.append("name", name);
+    // formdata.append("project_title", project_title);
     formdata.append("user_id", user_id);
-    formdata.append("name", name);
-    formdata.append("project_title", project_title);
     formdata.append("project_id", project_id);
     apiClient
       .post("/file/google-cloud", formdata, {
@@ -711,6 +710,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         handleFileUpload={handleFileUpload}
         removeFiles={removeFiles}
         reduxState={reduxState}
+        reduxActions={reduxActions}
         setShowSuccessModal={setShowSuccessModal}
         brandOption={brandOption}
         removeSingleFile={removeSingleFile}
@@ -722,15 +722,14 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         current_id={reduxState.currentProjectId}
         projects={reduxState?.project_list?.CustomerProjects}
         brandOption={brandOption}
-        imagesLoading={images_loading}
         files={editImages}
         setEditImages={setEditImages}
-        editImages={editImages}
-        setImagesLoading={setImagesLoading}
         userId={reduxState.userDetails?.id}
         callback={reduxActions.getCustomerProject}
         setOpenModal={setOpenModal}
         setRespMessage={setRespMessage}
+        reduxState={reduxState}
+        
       />
 
       <CopyWritingForm

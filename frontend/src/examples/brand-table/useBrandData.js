@@ -50,8 +50,8 @@ const useBrandData = (props) => {
 
     const [filesArray, setFilesArray] = useState([])
 
-    const openAddBrandModal = () => setAddModal(true)
-    const closeAddBrandModal = () => setAddModal(false)
+    const openAddBrandModal = () => reduxActions.openBrandModalFunc(true)
+    const closeAddBrandModal = () => reduxActions.openBrandModalFunc(false)
 
     const openEditBrandModal = () => setEditModal(true)
     const closeEditBrandModal = () => setEditModal(false)
@@ -267,7 +267,7 @@ const useBrandData = (props) => {
         role,
         image,
         loading,
-        openAddModal,
+        openAddModal : reduxState.openBrandModel,
         addMoreField,
         openEditModal,
         renderSuccessSB,
