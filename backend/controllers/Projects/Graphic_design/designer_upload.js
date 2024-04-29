@@ -91,11 +91,8 @@ const designerUploadsOnVersion = async (req, res) => {
     try {
         const currentProject = await Projects.findById(_id)
         if (currentProject) {
-            let { user, name, project_title } = currentProject
-            project_title = project_title.replace(/\s/g, '')
-            name = name.replace(/\s/g, '')
-            // const prefix = `${name}-${user}/projects/${project_title}-${_id}/version-${versionNo}/`
-            const prefix = `${user}/projects/${project_title}-${_id}/version-${versionNo}/`
+            let { user, project_title } = currentProject
+            const prefix = `${user}/projects/${_id}/version-${versionNo}/`
             await Promise.all(files?.map(file => {
                 const options = {
                     resumable: false,
@@ -155,11 +152,8 @@ const getFilesOnVersionBasis = async (req, res) => {
     try {
         const currentProject = await Projects.findById(_id)
         if (currentProject) {
-            let { user, name, project_title } = currentProject
-            project_title = project_title.replace(/\s/g, '')
-            name = name.replace(/\s/g, '')
-            const prefix = `${user}/projects/${project_title}-${_id}/version-${versionNo}/`
-            // const prefix = `${name}-${user}/projects/${project_title}-${_id}/version-${versionNo}/`
+            let { user } = currentProject
+            const prefix = `${user}/projects/${_id}/version-${versionNo}`
             const [files] = await bucket.getFiles({ prefix })
             let filesInfo = files?.map((file) => {
                 let obj = {}
@@ -176,6 +170,7 @@ const getFilesOnVersionBasis = async (req, res) => {
                 return obj
             })
             if (filesInfo.length > 0) {
+                console.log(filesInfo)
                 return res.status(200).send({ message: 'Files found on verion ' + versionNo, filesInfo })
             }
             if (filesInfo.length === 0 && files.length === 0) {
@@ -206,6 +201,7 @@ const deleteFileOnVersionBasis = async (req, res) => {
                 project_title = project_title.replace(/\s/g, '')
                 name = name.replace(/\s/g, '')
                 // const prefix = `${name}-${userId}/${project_title}-${_id}/version-${versionNo}/`
+                // const prefix = `${userId}/${project_title}-${_id}/version-${versionNo}/`
                 const prefix = `${userId}/${project_title}-${_id}/version-${versionNo}/`
                 const [files] = await bucket.getFiles({ prefix })
                 await Promise.all(
@@ -295,7 +291,7 @@ const deleteDesigners = async (req, res) => {
             findProject.team_members = filterTeamMembers
             findProject.status = 'Project manager'
             findProject.is_active = false
-            findProject.save()
+            await findProject.save()
             return res.status(200).send({ message: "Team member removed" })
         } else {
             return res.status(404).send({ message: "Team member Not Found" })

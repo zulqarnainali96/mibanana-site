@@ -123,6 +123,8 @@ const getSingleProject = async (req, res) => {
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
+
+// Api Needs to be updated 
 const deleteGraphicProject = async (req, res) => {
     const _id = req.params.id
     if (!_id) {
@@ -136,8 +138,8 @@ const deleteGraphicProject = async (req, res) => {
             project_title = project_title.replace(/\s/g, '')
 
             // const prefix = `${name}-${user}/${project_title}-${_id}/customer-upload`
-            const prefix = `${user}/${project_title}-${_id}/customer-upload`
-            const designer_prefix = `${name}-${user}/${project_title}-${_id}/designer_upload/`
+            const prefix = `${user}/${_id}/customer-upload`
+            const designer_prefix = `${user}/${_id}/designer_upload/`
 
             const [files] = await bucket.getFiles({ prefix })
             const [desingerFiles] = await bucket.getFiles({ prefix: designer_prefix })
@@ -193,12 +195,10 @@ const deleteFile = async (req, res) => {
         await file.delete().then(() => {
             return res.status(200).send({ message: 'File Deleted Successfully', })
         }).catch((err) => {
-            console.log(err)
             return res.status(500).send({ message: 'Found error try again' })
         })
     }
     catch (error) {
-        console.log(error.message)
         res.status(500).send({ message: 'Internal Server error' })
     }
 
@@ -259,29 +259,23 @@ const getCustomerFiles = async (req, res) => {
     try {
         const currentProject = await Projects.findById(_id)
         if (currentProject) {
-            let { user, name, project_title } = currentProject
-            let project_titl = project_title.replace(/\s/g, '')
-            let names = name.replace(/\s/g, '')
-            // const prefix = `${names}-${user}/projects/${project_titl}-${_id}/customer-upload`
-            const prefix = `${user}/projects/${project_titl}-${_id}/customer-upload`
-            // console.log(prefix)
+            let { user } = currentProject
+            const prefix = `${user}/projects/${_id}/customer-upload/`
             const [files] = await bucket.getFiles({ prefix })
-            // console.log(files)
             let filesInfo = files?.map((file) => {
                 let obj = {}
-                obj.id = uniqID(),
+                    obj.id = uniqID(),
                     obj.name = path.basename(file.name),
                     obj.url = encodeURI(file.storage.apiEndpoint + '/' + file.bucket.name + '/' + file.name),
                     obj.download_link = file.metadata.mediaLink
-                obj.type = file.metadata.contentType
-                obj.size = file.metadata.size
-                obj.time = file.metadata.timeCreated
-                obj.upated_time = file.metadata.updated
-                obj.folder_name = prefix
-                obj.folder_dir = "Customer"
+                    obj.type = file.metadata.contentType
+                    obj.size = file.metadata.size
+                    obj.time = file.metadata.timeCreated
+                    obj.upated_time = file.metadata.updated
+                    obj.folder_name = prefix
+                    obj.folder_dir = "Customer"
                 return obj
             })
-            // console.log(filesInfo)
             if (filesInfo.length > 0) {
                 return res.status(200).send({ message: 'Files fount', filesInfo })
             }
@@ -309,9 +303,7 @@ const duplicateProject = async (req, res) => {
                 user, name, project_category, project_title: copy_project_title, design_type, brand, project_description, file_formats,
                 sizes, specific_software_names, is_active: false, version: ["1"], status: 'Project manager', team_members: []
             }
-            // console.log(obj)
             const creatingNewProject = await graphicDesignModel.create(obj)
-            // console.log(creatingNewProject)
             if (creatingNewProject) {
                 return res.status(201).send({ message: 'Project Duplicate Done', project: creatingNewProject })
             } else {
@@ -327,14 +319,12 @@ const duplicateProject = async (req, res) => {
     }
 }
 const projectCompleted = async (req, res) => {
-    // console.log('worlkonfas')
     const id = req.params.id
     if (!id) {
         return res.status(400).send({ message: 'ID not found' })
     }
     try {
         const findproject = await graphicDesignModel.findById(id)
-        // console.log(id)
         if (findproject) {
             const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'Completed' })
             if (updatingStatus) {
@@ -418,7 +408,7 @@ const projectCancel = async (req, res) => {
         if (findproject) {
             const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { status: 'Cancel' })
             if (updatingStatus) {
-                return res.status(201).send({ message: 'Project Cancel' })
+                return res.status(201).send({ message: 'Project Cancelled' })
             }
             else {
                 return res.status(400).send({ message: 'Found error while Updating Project' })
@@ -433,7 +423,6 @@ const projectCancel = async (req, res) => {
     }
 }
 const projectWidthRevision = async (req, res) => {
-    console.log("msg from backend", req)
     const id = req.params.id
     if (!id) {
         return res.status(400).send({ message: 'ID not found' })

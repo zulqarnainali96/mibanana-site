@@ -28,10 +28,7 @@ const createBrand = async (req, res) => {
         }
         const createNewBrand = await brand_model.create(obj)
         if (createNewBrand !== null) {
-            let username = name.replace(/\s/g, '')
-            let brandName = createNewBrand.brand_name.replace(/\s/g, '')
-            // const prefix = `${username}-${user}/brands/${brandName}-${createNewBrand._id}/`
-            const prefix = `${user}/brands/${brandName}-${createNewBrand._id}/`
+            const prefix = `${user}/brands/${createNewBrand._id}/`
             await Promise.all(files.map(file => {
                 const options = {
                     resumable: true,

@@ -12,7 +12,7 @@ const graphicProjectsModel = require('../models/graphic-design-model')
 const bucketName2 = 'mibanana-files-bucket'
 const test_bucket_mibanana = 'test-mibanana-bucket'
 
-const bucket = gCloudStorage.bucket(test_bucket_mibanana)
+const bucket = gCloudStorage.bucket(bucketName2)
 const fs = require('fs')
 
 const createFolder = async () => {
@@ -30,11 +30,8 @@ const createFolder = async () => {
 let generationMatchPreCondition = 0
 
 const uploadFile = async (req, res) => {
-    let { user_id, name, project_id, project_title } = req.body
-    project_title = project_title?.replace(/\s/g, '')
-    name = name?.replace(/\s/g, '')
-    const prefix = `${user_id}/projects/${project_title}-${project_id}/customer-upload/`
-    // const prefix = `${name}-${user_id}/projects/${project_title}-${project_id}/customer-upload/`
+    let { user_id, project_id } = req.body
+    const prefix = `${user_id}/projects/${project_id}/customer-upload/`
     await Promise.all(req.files.map(file => {
         const options = {
             resumable: false,
@@ -60,11 +57,8 @@ const uploadFile = async (req, res) => {
 }
 
 const getFiles = async (req, res) => {
-    let { user_id, name, project_title, project_id } = req.body
-    project_title = project_title?.replace(/\s/g, '')
-    name = name?.replace(/\s/g, '')
-    const prefix = `${user_id}/projects/${project_title}-${project_id}/customer-upload/`
-    // const prefix = `${name}-${user_id}/projects/${project_title}-${project_id}/customer-upload/`
+    let { user_id, project_id } = req.body
+    const prefix = `${user_id}/projects/${project_id}/customer-upload/`
     try {
         const [files] = await bucket.getFiles({ prefix })
         let filesInfo = files.map((file) => {

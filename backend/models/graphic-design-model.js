@@ -37,7 +37,7 @@ const projectModel = mongoose.Schema({
     },
     sizes: {
         type: String,
-        required: true
+        required: false
     },
     resources: {                    // Content of Project
         type: String,
