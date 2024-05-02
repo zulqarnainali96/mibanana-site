@@ -55,6 +55,8 @@ import { socket } from "sockets";
 import TransitionsModal from "components/Modal/Modal";
 import EditProjectModal from "../Form-modal/editProject";
 import check from '../../../assets/images/check.png'
+import closeIcon from 'assets/images/close.webp'
+
 let image = "image/"
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
@@ -105,6 +107,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   })
   const [showAccountsbtn, setShowAccountsBtn] = useState(false)
 
+  const [images_loading, setImagesLoading] = useState(false)
+  const [edit_loading, setEditLoading] = useState(false)
 
   // edit modal state
   const [editImages, setEditImages] = useState([])
@@ -592,12 +596,27 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       return item?.view === true
     }).length
   }
+
+  const clientFiles = async () => {
+    setImagesLoading(true);
+    await apiClient.get("/get-customer-files/" + reduxState.currentProjectId)
+      .then(({ data }) => {
+        setEditImages(data.filesInfo);
+        setImagesLoading(false);
+      })
+      .catch((err) => {
+        setEditImages([]);
+        setImagesLoading(false);
+      });
+  }
+
   useEffect(() => {
-    // getAllNotificationsMsg();
+    clientFiles()
+
     return () => {
       setReloadProjects(false)
     }
-  }, []);
+  }, [reduxState.edit_project]);
   const renderRoutes = routes?.map(
     ({ type, name, icon, title, noCollapse, collapse, key, href, route }) => {
       let returnValue;
@@ -729,7 +748,12 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         setOpenModal={setOpenModal}
         setRespMessage={setRespMessage}
         reduxState={reduxState}
-        
+        setEditLoading={setEditLoading}
+        images_loading={images_loading}
+        loading={edit_loading}
+        clientFiles={clientFiles}
+
+
       />
 
       <CopyWritingForm
@@ -837,8 +861,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           )}
         </Grid>
       </Grid>
-      <TransitionsModal message={respMessage} openModal={openModal} setOpenModal=
-        {setOpenModal} />
+      <TransitionsModal message={respMessage} openModal={openModal} setOpenModal={setOpenModal} />
       <div className="small-navbar-container">
         <List className="headesidebar">{renderRoutes}</List>
       </div>

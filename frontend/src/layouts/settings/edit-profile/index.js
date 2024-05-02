@@ -12,7 +12,11 @@ import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
 import PhoneInput from 'react-phone-input-2'
 import { makeStyles } from '@mui/styles'
+import closeIcon from 'assets/images/close.webp'
+import check from 'assets/images/check.png'
 import useEditProfile from './useEditProfile'
+import TransitionsModal from 'components/Modal/Modal'
+import TransitionsErrorModal from 'components/Modal/ErrorModal'
 
 
 const useStyles = makeStyles({
@@ -30,7 +34,7 @@ const useStyles = makeStyles({
 const EditProfile = ({ reduxState, reduxActions }) => {
     const is991 = useMediaQuery("(min-width:990px)")
     const classes = useStyles()
-    
+
     const [errorSB, setErrorSB] = useState(false);
     const [successSB, setSuccessSB] = useState(false);
     const openSuccessSB = () => setSuccessSB(true);
@@ -38,17 +42,17 @@ const EditProfile = ({ reduxState, reduxActions }) => {
     const openErrorSB = () => setErrorSB(true);
     const closeErrorSB = () => setErrorSB(false);
 
-    const { 
-        respMessage, 
-        profileData, 
-        loading, 
-        imageUrl, 
-        handleChange, 
-        handleFileUpload, 
-        handlePhoneChange1, 
-        UpdateProfile } = 
+    const {
+        respMessage,
+        profileData,
+        loading,
+        imageUrl,
+        handleChange,
+        handleFileUpload,
+        handlePhoneChange1,
+        UpdateProfile } =
         useEditProfile({ openSuccessSB, openErrorSB, reduxActions, reduxState })
-    
+
     const props = { respMessage, closeErrorSB, closeSuccessSB, successSB, errorSB }
 
     const Styles = {
@@ -57,7 +61,9 @@ const EditProfile = ({ reduxState, reduxActions }) => {
         marginLeft: 4
     }
     return (
-        <DashboardLayout {...props}>
+        <DashboardLayout>
+            <TransitionsModal message={respMessage} openModal={successSB} setOpenModal={setSuccessSB} check={check} />
+            <TransitionsErrorModal message={respMessage} openModal={errorSB} setOpenModal={setErrorSB} close={closeIcon} />
             <MDBox pt={6} pb={3}>
                 <Grid container >
                     <Grid item xxl={12} xl={12} lg={12} md={12} xs={12} sx={{ background: 'white', boxShadow: "4px 3px 7px -2px #cccccc0d" }}>

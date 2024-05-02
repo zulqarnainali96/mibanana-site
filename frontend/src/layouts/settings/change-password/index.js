@@ -14,6 +14,10 @@ import { useSelector } from 'react-redux'
 import MDSnackbar from 'components/MDSnackbar'
 import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
+import closeIcon from 'assets/images/close.webp'
+import check from 'assets/images/check.png'
+import TransitionsModal from 'components/Modal/Modal'
+import TransitionsErrorModal from 'components/Modal/ErrorModal'
 
 const ChangePassword = () => {
     const [loading, setLoading] = useState(false)
@@ -116,6 +120,8 @@ const ChangePassword = () => {
     }
     return (
         <DashboardLayout>
+            <TransitionsModal message={respMessage} openModal={successSB} setOpenModal={setSuccessSB} check={check} />
+            <TransitionsErrorModal message={respMessage} openModal={errorSB} setOpenModal={setErrorSB} close={closeIcon} />
             <MDBox pt={6} pb={3}>
                 <Grid container >
                     <Grid item xxl={10} xl={10} lg={10} md={12} xs={12} sx={{ background: 'white', boxShadow: "4px 3px 7px -2px #cccccc0d", marginLeft: '8px' }}>
@@ -202,8 +208,8 @@ const ChangePassword = () => {
                                         Save &nbsp;
                                     </MDButton>
                                 </MDBox>
-                                {renderErrorSB}
-                                {renderSuccessSB}
+                                {/* {renderErrorSB}
+                                {renderSuccessSB} */}
                             </MDBox>
                         </MDBox>
                     </Grid>

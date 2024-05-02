@@ -18,22 +18,22 @@ import { ArrowDownward } from "@mui/icons-material";
 import { currentUserRole } from "redux/global/global-functions";
 import { Link } from "react-router-dom";
 
-export const Action = ({ item, setFormValue, openEditBrandModal }) => {
+export const Action = ({ item, setFormValue, openEditBrandModal, openSuccessSB, openErrorSB, setRespMessage }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
   const id = useSelector((state) => state.userDetails.id);
   const reduxState = useSelector((state) => state);
-  const [errorSB, setErrorSB] = useState(false);
-  const [successSB, setSuccessSB] = useState(false);
-  const [respMessage, setRespMessage] = useState("");
+  // const [errorSB, setErrorSB] = useState(false);
+  // const [successSB, setSuccessSB] = useState(false);
+  // const [respMessage, setRespMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const role = currentUserRole(reduxState);
 
-  const openSuccessSB = () => setSuccessSB(true);
-  const closeSuccessSB = () => setSuccessSB(false);
+  // const openSuccessSB = () => setSuccessSB(true);
+  // const closeSuccessSB = () => setSuccessSB(false);
 
-  const openErrorSB = () => setErrorSB(true);
-  const closeErrorSB = () => setErrorSB(false);
+  // const openErrorSB = () => setErrorSB(true);
+  // const closeErrorSB = () => setErrorSB(false);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -86,32 +86,32 @@ export const Action = ({ item, setFormValue, openEditBrandModal }) => {
     }
   };
 
-  const renderErrorSB = (
-    <MDSnackbar
-      color="error"
-      icon="warning"
-      title="Error"
-      content={respMessage}
-      dateTime={new Date().toLocaleTimeString("pk")}
-      open={errorSB}
-      onClose={closeErrorSB}
-      close={closeErrorSB}
-      bgWhite
-    />
-  );
-  const renderSuccessSB = (
-    <MDSnackbar
-      color="success"
-      icon="check"
-      title="SUCCESS"
-      content={respMessage}
-      dateTime={new Date().toLocaleTimeString("pk")}
-      open={successSB}
-      onClose={closeSuccessSB}
-      close={closeSuccessSB}
-      bgWhite
-    />
-  );
+  // const renderErrorSB = (
+  //   <MDSnackbar
+  //     color="error"
+  //     icon="warning"
+  //     title="Error"
+  //     content={respMessage}
+  //     dateTime={new Date().toLocaleTimeString("pk")}
+  //     open={errorSB}
+  //     onClose={closeErrorSB}
+  //     close={closeErrorSB}
+  //     bgWhite
+  //   />
+  // );
+  // const renderSuccessSB = (
+  //   <MDSnackbar
+  //     color="success"
+  //     icon="check"
+  //     title="SUCCESS"
+  //     content={respMessage}
+  //     dateTime={new Date().toLocaleTimeString("pk")}
+  //     open={successSB}
+  //     onClose={closeSuccessSB}
+  //     close={closeSuccessSB}
+  //     bgWhite
+  //   />
+  // );
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -166,8 +166,8 @@ export const Action = ({ item, setFormValue, openEditBrandModal }) => {
           </MenuItem>
         )}
       </Menu>
-      {renderSuccessSB}
-      {renderErrorSB}
+      {/* {renderSuccessSB} */}
+      {/* {renderErrorSB} */}
     </MDBox>
   );
 };
@@ -206,13 +206,13 @@ const ShowFiles = ({ item }) => {
   );
 };
 
-const BrandData = (setFormValue, openEditBrandModal) => {
+const BrandData = (setFormValue, openEditBrandModal, openSuccessSB, openErrorSB, setRespMessage) => {
   const userID = useSelector((state) => state.userDetails.id);
   const reduxState = useSelector((state) => state);
   const new_brand = useSelector((state) => state.new_brand);
   const [customerBrand, setCustomerBrand] = useState(reduxState.customerBrand);
 
-  const dispatch = useDispatch();
+const dispatch = useDispatch();
   const role = currentUserRole(reduxState);
   const func = useCallback((value) => dispatch(getCustomerBrand(value)), [dispatch]);
   const is768 = useMediaQuery("(max-width:768px)")
@@ -288,7 +288,7 @@ const BrandData = (setFormValue, openEditBrandModal) => {
       files: <ShowFiles item={item} />,
       action: (
         <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
-          <Action item={item} setFormValue={setFormValue} openEditBrandModal={openEditBrandModal} />
+          <Action item={item} setFormValue={setFormValue} openEditBrandModal={openEditBrandModal} openSuccessSB={openSuccessSB} openErrorSB={openErrorSB} setRespMessage={setRespMessage} />
         </MDTypography>
       ),
     };
@@ -337,7 +337,7 @@ const BrandData = (setFormValue, openEditBrandModal) => {
       ),
       action: (
         <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
-          <Action item={item} setFormValue={setFormValue} openEditBrandModal={openEditBrandModal} />
+          <Action item={item} setFormValue={setFormValue} openEditBrandModal={openEditBrandModal} openSuccessSB={openSuccessSB} openErrorSB={openErrorSB} setRespMessage={setRespMessage} />
         </MDTypography>
       ),
     };

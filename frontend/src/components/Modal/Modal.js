@@ -4,6 +4,7 @@ import { styled, css } from '@mui/system';
 import { Modal as BaseModal } from '@mui/material';
 import Fade from '@mui/material/Fade';
 import { position } from 'stylis';
+import { fontsFamily } from 'assets/font-family';
 
 export default function TransitionsModal({ message, openModal, setOpenModal, check }) {
   const [open, setOpen] = React.useState(false);
@@ -28,7 +29,7 @@ export default function TransitionsModal({ message, openModal, setOpenModal, che
               {
                 check && <img src={check} style={{marginBottom:"1rem"}} />
               }
-              <h2 id="transition-modal-title" style={{color:'#333',}} className="modal-title">
+              <h2 id="transition-modal-title" style={{color:'#333',fontFamily:fontsFamily.poppins}} className="modal-title">
                 {message}
               </h2>
             </div>

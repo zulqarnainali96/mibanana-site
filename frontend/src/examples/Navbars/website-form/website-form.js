@@ -12,7 +12,7 @@ import { useFormik } from 'formik';
 import axios from 'axios';
 import { webDevelopmentSchema } from 'Schema/Index';
 import TransitionsModal from 'components/Modal/Modal';
-import check from '../../../assets/images/check.png'
+import check from 'assets/images/check.png'
 
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({

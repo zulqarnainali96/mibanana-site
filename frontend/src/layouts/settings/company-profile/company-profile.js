@@ -13,6 +13,10 @@ import { fontsFamily } from 'assets/font-family'
 import PhoneInput from 'react-phone-input-2'
 import { makeStyles } from '@mui/styles'
 import { useCompanyProfileData } from './useCompanyProfileData'
+import TransitionsModal from 'components/Modal/Modal'
+import closeIcon from 'assets/images/close.webp'
+import check from 'assets/images/check.png'
+import TransitionsErrorModal from 'components/Modal/ErrorModal'
 
 const useStyles = makeStyles({
     Container: {
@@ -67,6 +71,9 @@ const CompanyProfile = () => {
 
     return (
         <DashboardLayout>
+            <TransitionsModal message={respMessage} openModal={successSB} setOpenModal={setSuccessSB} check={check} />
+            <TransitionsErrorModal message={respMessage} openModal={errorSB} setOpenModal={setErrorSB} close={closeIcon} />
+
             <MDBox pt={3} ml={1.5} pb={3}
                 sx={({ breakpoints }) => ({
                     [breakpoints.down('md')]: {
@@ -188,8 +195,8 @@ const CompanyProfile = () => {
                         </Grid>
                     </Grid>
                 </Card>
-                {renderSuccessSB}
-                {renderErrorSB}
+                {/* {renderSuccessSB} */}
+                {/* {renderErrorSB} */}
             </MDBox>
         </DashboardLayout >
     )

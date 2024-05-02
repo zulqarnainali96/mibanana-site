@@ -1,6 +1,6 @@
 import Card from '@mui/material/Card'
 import MDBox from 'components/MDBox'
-import React, { useState } from 'react'
+import React from 'react'
 import "./brand-table.css"
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
 import Grid from '@mui/material/Grid'
@@ -16,6 +16,10 @@ import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
 import { useMediaQuery } from '@mui/material'
 import useBrandData from './useBrandData'
+import closeIcon from 'assets/images/close.webp'
+import check from 'assets/images/check.png'
+import TransitionsModal from 'components/Modal/Modal'
+import TransitionsErrorModal from 'components/Modal/ErrorModal'
 
 
 const MIBrandTable = (props) => {
@@ -59,13 +63,27 @@ const MIBrandTable = (props) => {
         getDescriptionText,
         openEditBrandModal,
         openModal,
-        setOpenModal
+        setOpenModal,
+        successSB,
+        setSuccessSB,
+        errorSB,
+        setErrorSB,
     } = useBrandData(props)
+
+    // const [errorSB, setErrorSB] = useState(false);
+    // const [successSB, setSuccessSB] = useState(false);
+    // const [message, setRespMessage] = useState("")
+
+    // const openSuccessSB = () => setSuccessSB(true);
+    // const closeSuccessSB = () => setSuccessSB(false);
+
+    // const openErrorSB = () => setErrorSB(true);
+    // const closeErrorSB = () => setErrorSB(false);
 
     const currentRole = (role?.admin || role?.projectManager || role?.designer) ? true : false
     const is768 = useMediaQuery("(max-width:768px)")
     const is500 = useMediaQuery("(max-width:500px)")
-    const { rows, small_rows, columns, small_columns } = brandData(setFormValue, openEditBrandModal )
+    const { rows, small_rows, columns, small_columns } = brandData(setFormValue, openEditBrandModal, openSuccessSB, openErrorSB, setRespMessage)
 
     return (
         <DashboardLayout>
@@ -114,6 +132,8 @@ const MIBrandTable = (props) => {
                 color="#333"
                 sideRadius={false}
             />
+            <TransitionsModal message={respMessage} successSB={successSB} setSuccessSB={setSuccessSB} check={check} />
+            <TransitionsErrorModal message={respMessage} errorSB={errorSB} setErrorSB={setErrorSB} closeIcon={closeIcon} />
             <MDBox ml={4} pt={2} pb={3}>
                 <Grid container pt={currentRole && "0px"} justifyContent={"flex-end"} alignItems={"center"} spacing={2}>
                     <Grid item xxl={12} xl={12} md={12} xs={12}>
@@ -159,8 +179,8 @@ const MIBrandTable = (props) => {
                     </Grid>
                 </Grid>
             </MDBox>
-            {renderErrorSB}
-            {renderSuccessSB}
+            {/* {renderErrorSB} */}
+            {/* {renderSuccessSB} */}
         </DashboardLayout>
 
 

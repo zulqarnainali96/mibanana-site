@@ -71,9 +71,9 @@ const category = ["Graphic Design"]
 
 
 const EditProjectModal = (props) => {
-    const { open, handleClose, current_id, projects, brandOption, files, setEditImages, userId, callback, setOpenModal, setRespMessage, reduxState } = props
-    const [loading, setEditLoading] = useState(false)
-    const [images_loading, setImagesLoading] = useState(false)
+    const { open, handleClose, current_id, projects, brandOption, images_loading, clientFiles, files, loading, setEditLoading,  setEditImages, userId, callback, setOpenModal, setRespMessage, reduxState } = props
+    // const [loading, setEditLoading] = useState(false)
+    // const [images_loading, setImagesLoading] = useState(false)
     const formRef = useRef(null)
     const [formValue, setFormValue] = useState({
         project_category: "",
@@ -189,18 +189,18 @@ const EditProjectModal = (props) => {
         console.log(formRef.current)
     }
 
-    const clientFiles = async () => {
-        setImagesLoading(true);
-        await apiClient.get("/get-customer-files/" + current_id)
-            .then(({ data }) => {
-                setEditImages(data.filesInfo);
-                setImagesLoading(false);
-            })
-            .catch((err) => {
-                setEditImages([]);
-                setImagesLoading(false);
-            });
-    }
+    // const clientFiles = async () => {
+    //     setImagesLoading(true);
+    //     await apiClient.get("/get-customer-files/" + current_id)
+    //         .then(({ data }) => {
+    //             setEditImages(data.filesInfo);
+    //             setImagesLoading(false);
+    //         })
+    //         .catch((err) => {
+    //             setEditImages([]);
+    //             setImagesLoading(false);
+    //         });
+    // }
 
     const removeSingleFile = async (file) => {
         console.log(file)
@@ -633,7 +633,7 @@ const EditProjectModal = (props) => {
                                                                             />
                                                                         </React.Fragment>
                                                                     ) : (
-                                                                        <React.Fragment>
+                                                                        <React.Fragment key={image.id}>
                                                                             <CloseIcon
                                                                                 fontSize='medium'
                                                                                 onClick={() => removeSingleFile(image)}
@@ -643,7 +643,6 @@ const EditProjectModal = (props) => {
                                                                                     top: '-15px'
                                                                                 }}
                                                                             />
-                                                                            {/* <ShowOtherFiles file={image} /> */}
                                                                             {image.type?.includes(aiLogo) ? (
                                                                                 <img src={AiLogo} width={80} height={80} loading='lazy' />
                                                                             ) : image.type?.includes(pdf) ? (
@@ -720,7 +719,7 @@ const EditProjectModal = (props) => {
                                                 />
                                             </div>
                                         ) : (
-                                            <OtherFilesShow file={image} deleteOtherSingleFile={removeImage} />
+                                            <OtherFilesShow key={index} file={image} deleteOtherSingleFile={removeImage} />
                                         )}
 
                                     </React.Fragment>
