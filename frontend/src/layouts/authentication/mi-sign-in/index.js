@@ -3,7 +3,7 @@ import MiLayoutCover from "../components/Mi-Layout";
 import MDBox from "components/MDBox";
 import MiIcon from "assets/mi-banana-icons/mibanana-logo-1-color 1.png";
 import { Grid, IconButton, } from "@mui/material";
-import CoverImage from "assets/mi-banana-icons/Photo.png";
+import CoverImage from "assets/mi-banana-icons/Frame.jpg";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import { useNavigate } from "react-router-dom";
