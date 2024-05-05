@@ -3,7 +3,6 @@ const { bucket } = require("../../google-cloud-storage/gCloudStorage")
 const User = require("../../models/UsersLogin")
 const path = require('path')
 const { v4: uniqID } = require('uuid')
-const graphicDesignModel = require('../../models/graphic-design-model')
 
 const createBrand = async (req, res) => {
     const { user, name, brand_name, brand_description, web_url, facebook_url, instagram_url, twitter_url, linkedin_url, tiktok_url } = req.body

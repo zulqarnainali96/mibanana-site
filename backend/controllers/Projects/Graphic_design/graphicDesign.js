@@ -1,11 +1,11 @@
 const asyncHandler = require("express-async-handler")
-const User = require('../models/UsersLogin')
-const graphicDesignModel = require("../models/graphic-design-model")
-const { bucket } = require('../google-cloud-storage/gCloudStorage')
-const Projects = require('../models/graphic-design-model')
+const User = require('../../../models/UsersLogin')
+const graphicDesignModel = require("../../../models/graphic-design-model")
+const { bucket } = require('../../../google-cloud-storage/gCloudStorage')
+const Projects = require('../../../models/graphic-design-model')
 const { v4: uniqID } = require('uuid')
 const path = require('path')
-const { sendStatusChangeMailtoCustomer } = require("../utils/sendMail")
+const { sendStatusChangeMailtoCustomer } = require("../../../utils/sendMail")
 
 const createGraphicDesign = asyncHandler(async (req, res) => {
     const {

@@ -9,11 +9,12 @@ const corsOptions = require('./config/corsOptions')
 const { logEvents } = require('./middleware/logs')
 const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
-const path = require('path')
+const task = require('./controllers/Projects/Graphic_design/projects_task_scheduler')
 
 const PORT = process.env.PORT
 //App Config
 ConnectDB()
+
 app.use(cors(corsOptions))
 app.use(logger)
 app.use(cookieParser())
@@ -29,6 +30,7 @@ mongoose.connection.once('open', () => {
     console.log(`Connected to MongoDB`)
     app.listen(PORT, () => {
         console.log(`Server started on Port : ${PORT}`)
+        // task.start()    
     })
 })
 mongoose.connection.on('error', error => {

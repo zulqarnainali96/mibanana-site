@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const parser = require("../storage_service/cloudinary")
-const { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectForReview, deleteFile, projectOngoing, projectCancel, updateDriveLink, updateFigmaLink, getSingleProject, projectWidthRevision, updateGraphicDesign } = require('../controllers/graphicDesign')
+const { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectForReview, deleteFile, projectOngoing, projectCancel, updateDriveLink, updateFigmaLink, getSingleProject, projectWidthRevision, updateGraphicDesign } = require('../controllers/Projects/Graphic_design/graphicDesign')
 const { postCompanyDetails,
     updateProfile,
     getCompanyDetails,
