@@ -216,6 +216,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
 
   const handleClose = () => {
     setOpen(false);
+    setLoading(false)
   };
   const handleOpenCopyWritingClose = () => {
     setOpenCopyWriting(false);

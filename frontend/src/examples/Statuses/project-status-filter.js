@@ -2,7 +2,7 @@ import React from 'react'
 import { Autocomplete, TextField, useMediaQuery, useTheme } from '@mui/material';
 import { mibananaColor } from 'assets/new-images/colors';
 
-const ProjectStatus = ({ data, status, handleChange, value, }) => {
+const ProjectStatus = ({ data, projects, status, handleChange, value, }) => {
     const isLg = useMediaQuery("(max-width:768px)")
     // const theme = useTheme()
     return (
@@ -13,6 +13,7 @@ const ProjectStatus = ({ data, status, handleChange, value, }) => {
             onChange={(event,newValue) => {
                 handleChange(newValue)
             }}
+            getOptionDisabled={options => !projects.length}
             value={value}
             renderInput={(params) => <TextField {...params} label={status} />}
 

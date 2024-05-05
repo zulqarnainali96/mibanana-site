@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import authorsTableData from "layouts/ProjectsTable/data/authorsTableData";
 import ProjectStatus from "examples/Statuses/project-status-filter";
 import CategoryFilter from "examples/Statuses/project-category";
@@ -25,18 +25,16 @@ import { getBrandData, projectStatus } from "redux/global/global-functions";
 const ProjectTable = ({ reduxState, reduxActions }) => {
   const { columns, small_columns } = authorsTableData();
   const navigate = useNavigate();
-  const { project_list } = reduxState;
   const [respMessage, setRespMessage] = useState("");
   const role = currentUserRole(reduxState);
   const [errorSB, setErrorSB] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
-  const [projectList, setProjectList] = useState(reduxState.project_list.CustomerProjects);
-  const user = useSelector((state) => state.userDetails);
+  const [projectList, setProjectList] = useState(reduxState.project_list.CustomerProjects?.filter(list => list.status !== 'Completed' && list.status !== 'Cancel') || []);
   const [status, setStatus] = React.useState("");
   const [brand, setBrand] = React.useState("");
   const [category, setCategory] = React.useState("");
 
-  const [copyProjectList, setCopyProjectList] = useState(reduxState.project_list.CustomerProjects);
+  const [copyProjectList, setCopyProjectList] = useState(reduxState.project_list.CustomerProjects?.filter(list => list.status !== 'Completed' && list.status !== 'Cancel') || []);
 
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
@@ -273,7 +271,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   }, []);
 
   useEffect(() => {
-    setProjectList(reduxState.project_list.CustomerProjects)
+    setProjectList(reduxState.project_list.CustomerProjects?.filter(list => list.status !== 'Completed' && list.status !== 'Cancel'))
   }, [reduxState.project_list])
 
   const renderErrorSB = (
@@ -304,15 +302,13 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   );
   let statuses = [
     "All",
-    // "Archived",
+    "Archive",
     "Assigned",
     "Cancelled",
     "Project manager",
     "Completed",
     "Ongoing",
     "For Review",
-    // "Draft",
-    // "Heads Up!",
   ];
   const filterBrand = reduxState?.customerBrand?.map((item) => item.brand_name);
 
@@ -320,22 +316,23 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     if (value === "All" || value === "" || value === null) {
       setProjectList(copyProjectList);
     }
+    else if (value === "Archive") {
+      setProjectList(reduxState.project_list?.CustomerProjects?.filter(list => list.status === 'Completed' || list.status === 'Cancel'))
+    }
     else if (value === "Cancelled") {
-      setProjectList(copyProjectList);
-      setProjectList(prevList => {
-        return prevList.filter(item => item.status === 'Cancel');
-      });
+      // setProjectList(reduxState.project_list?.CustomerProjects);
+      setProjectList(reduxState.project_list?.CustomerProjects?.filter(list => list.status === 'Cancel'))
     }
     else {
-      setProjectList(copyProjectList);
+      setProjectList(reduxState.project_list?.CustomerProjects);
       setProjectList(prevList => {
         return prevList.filter(item => item.status === value);
       });
     }
 
     setStatus(value);
-  },
-    [copyProjectList]);
+
+  }, [copyProjectList]);
 
 
   const handleCategoryChange = useCallback((value) => {
@@ -366,12 +363,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
       })
     }
     setBrand(value);
+
   }, [copyProjectList])
-
-  // useEffect(() => {
-  //   setProjectList(reduxState.project_list.CustomerProjects)
-  // }, [reduxState.project_list])
-
 
   return (
     <DashboardLayout>
@@ -391,6 +384,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                   <Grid item xl={3} lg={3} md={3} xs={12}>
                     <ProjectStatus
                       data={statuses}
+                      projects={reduxState.project_list?.CustomerProjects}
                       value={status}
                       status={"STATUS"}
                       handleChange={handleStatusChange}
