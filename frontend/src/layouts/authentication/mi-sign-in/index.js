@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MiLayoutCover from "../components/Mi-Layout";
 import MDBox from "components/MDBox";
 import MiIcon from "assets/mi-banana-icons/mibanana-logo-1-color 1.png";
@@ -17,6 +17,8 @@ import { useMediaQuery } from "@mui/material";
 import reduxContainer from "redux/containers/containers";
 import MoonLoader from "react-spinners/MoonLoader";
 import { socket } from "sockets";
+import TransitionsModal from "components/Modal/Modal";
+import TransitionsErrorModal from "components/Modal/ErrorModal";
 
 
 const MiSignIn = ({ reduxActions, reduxState }) => {
@@ -98,7 +100,7 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           setLoading(false);
           setTimeout(() => {
             openErrorSB();
-          }, 1200);
+          }, 800);
           return
         }
         setLoading(false);
@@ -193,7 +195,7 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
     borderRadius: "5px",
     textAlign: "center",
   };
-  
+
   useEffect(() => {
     return () => {
       setEmail("");
@@ -205,7 +207,7 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
   }, []);
   return (
     <MiLayoutCover>
-    {/* <ModalLayout
+      {/* <ModalLayout
     open={open}
     title="Please complete your account setup"
     height="auto"
@@ -223,31 +225,33 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
     formValue={formValue}
     />
   </ModalLayout> */}
-  <MDBox
-  bgColor="white"
-  sx={({ palette: { light } }) => ({
-    width: "calc(100%)",
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-    background: light.cream,
-  })}
-  >
-  <MDBox display="flex" justifyContent="center" alignItems="center" mt={-10} pb={4}>
-  <img src={MiIcon} width={isSmall ? "100%" : "60%"} />
-  </MDBox>
-  {UiChange ? (
-    <div style={noti_msg}>{msg}</div>
-    ) : (
-      <Grid container justifyContent={"center"}>
+      <MDBox
+        bgColor="white"
+        sx={({ palette: { light } }) => ({
+          width: "calc(100%)",
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          background: light.cream,
+        })}
+      >
+        {/* <TransitionsModal message={respMessage} openModal={successSB} setOpenModal={setSuccessSB} /> */}
+        {/* <TransitionsErrorModal message={respMessage} openModal={errorSB} setOpenModal={setErrorSB} /> */}
+        <MDBox display="flex" justifyContent="center" alignItems="center" mt={-10} pb={4}>
+          <img src={MiIcon} width={isSmall ? "100%" : "60%"} />
+        </MDBox>
+        {UiChange ? (
+          <div style={noti_msg}>{msg}</div>
+        ) : (
+          <Grid container justifyContent={"center"}>
             <Grid
               item
               xxl={3}
               xl={4}
               lg={5}
-              sx={{ display: isSmall ? "block" : "none", boxShadow: "4px 3px 7px -2px #cccccc0d", textAlign:"end" }}
+              sx={{ display: isSmall ? "block" : "none", boxShadow: "4px 3px 7px -2px #cccccc0d", textAlign: "end" }}
             >
               <img src={CoverImage} width={"100%"} height={"100%"} />
             </Grid>
@@ -353,8 +357,8 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           </Grid>
         )}
         <MDBox mt={3} mb={1} textAlign="center">
-          {renderErrorSB}
-          {renderSuccessSB}
+          {/* {renderErrorSB} */}
+          {/* {renderSuccessSB} */}
         </MDBox>
       </MDBox>
     </MiLayoutCover>

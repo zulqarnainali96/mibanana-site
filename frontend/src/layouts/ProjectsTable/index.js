@@ -12,15 +12,16 @@ import reduxContainer from "redux/containers/containers";
 import { Action } from "./data/authorsTableData";
 import MDBadge from "components/MDBadge";
 import { getProjectData } from "redux/global/global-functions";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import MDSnackbar from "components/MDSnackbar";
 import { currentUserRole } from "redux/global/global-functions";
 import NewProjectsTable from "examples/new-table";
 import { mibananaColor } from "assets/new-images/colors";
 import { fontsFamily } from "assets/font-family";
-import { useMediaQuery } from "@mui/material";
+import { IconButton, useMediaQuery } from "@mui/material";
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { getBrandData, projectStatus } from "redux/global/global-functions";
+import TransitionsErrorModal from "components/Modal/ErrorModal";
 
 const ProjectTable = ({ reduxState, reduxActions }) => {
   const { columns, small_columns } = authorsTableData();
@@ -189,6 +190,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
             <Action
               item={item}
               resonseMessage={setRespMessage}
+              message={respMessage}
               errorSBNot={openErrorSB}
               successSBNot={openSuccessSB}
               projects={projectList}
@@ -312,6 +314,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   ];
   const filterBrand = reduxState?.customerBrand?.map((item) => item.brand_name);
 
+  const refreshProjects = () => getProjectData(reduxState.userDetails?.id, reduxActions.getCustomerProject)
+
   const handleStatusChange = useCallback((value) => {
     if (value === "All" || value === "" || value === null) {
       setProjectList(copyProjectList);
@@ -368,6 +372,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
 
   return (
     <DashboardLayout>
+      <TransitionsErrorModal message={respMessage} openModal={errorSB} setOpenModal={setErrorSB} />
       <MDBox
         p={"24px 12px"}
         sx={({ breakpoints }) => ({ [breakpoints.only("xs")]: { padding: "24px 24px" } })}
@@ -377,6 +382,9 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
           <Grid item xs={12} pt={0}>
             <MDTypography pl={"15px"} sx={{ ...titleStyles, fontSize: is500 ? '2rem' : '3rem' }}>
               miProjects
+              <IconButton centerRipple={true} onClick={refreshProjects}>
+                <RefreshIcon fontSize="small" sx={{ scale: 1.3 }} titleAccess="Refresh" />
+              </IconButton>
             </MDTypography>
             <Grid container justifyContent={"space-between"} paddingInlineStart={"17px"} alignItems={"center"} width={"100%"}>
               <Grid item xxl={8} xl={12} lg={12} md={12} xs={12} display={"flex"}>
@@ -437,8 +445,8 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
             </Card>
           </Grid>
         </Grid>
-        {renderSuccessSB}
-        {renderErrorSB}
+        {/* {renderSuccessSB} */}
+        {/* {renderErrorSB} */}
       </MDBox>
     </DashboardLayout>
   );

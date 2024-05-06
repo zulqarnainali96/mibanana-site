@@ -32,7 +32,7 @@ export const Job = ({ title, description }) => (
   </MDBox>
 );
 
-export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNot, role, projects, onEditProject }) => {
+export const Action = ({ children, item, resonseMessage, message, errorSBNot, successSBNot, role, projects, onEditProject }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [loading1, setLoading1] = useState(false)
   const [loading2, setLoading2] = useState(false)
@@ -103,6 +103,7 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     setLoading1(true)
     if (!item._id) {
       setRespMessage('ID not provided')
+      resonseMessage('ID not provided')
       setLoading1(false)
       setTimeout(() => {
         openErrorSB()
@@ -112,12 +113,16 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
     const id = item._id
     await apiClient.get('/api/cancel-project/' + id)
       .then(({ data }) => {
-        if (data.message) resonseMessage(data.message)
+        if (data.message) {
+          resonseMessage(data.message)
+          setRespMessage(data.message)
+        }
         setLoading1(false)
         customerSendingNotification(socketIO, item, 'Customer', 'Cancel')
         setTimeout(() => {
           getProjectData(userid, func)
           successSBNot()
+          setOpenModal(true)
         }, 900)
       })
       .catch((err) => {
@@ -352,9 +357,8 @@ export const Action = ({ children, item, resonseMessage, errorSBNot, successSBNo
   return (
     <MDBox>
       <OptionsList {...options_props} />
-
-
-      <TransitionsModal openModal={openModal} setOpenModal={setOpenModal} message="Project Status Updated" />
+      {/* <TransitionsModal openModal={openModal} setOpenModal={setOpenModal} message="Project Status Updated" /> */}
+      <TransitionsModal openModal={openModal} setOpenModal={setOpenModal} message={message} />
     </MDBox >
   )
 }

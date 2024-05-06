@@ -1,11 +1,13 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { styled, css } from '@mui/system';
-import { Modal as BaseModal } from '@mui/material';
+import { Modal as BaseModal, IconButton } from '@mui/material';
 import Fade from '@mui/material/Fade';
 import { fontsFamily } from 'assets/font-family';
+import closeIcon from 'assets/images/close.webp';
+import CloseIcon from '@mui/icons-material/Close';
 
-export default function TransitionsErrorModal({ message, openModal, setOpenModal, close }) {
+export default function TransitionsErrorModal({ message, openModal, setOpenModal }) {
     const handleClose = () => setOpenModal(false);
 
     return (
@@ -22,10 +24,19 @@ export default function TransitionsErrorModal({ message, openModal, setOpenModal
                     style={{ textAlign: "center", padding: "3rem" }}>
                     <ModalContent sx={style}>
                         <div style={{ position: "relative" }}>
-                            <span onClick={() => setOpenModal(false)} style={{ position: "absolute", top: "-45px", right: "-30px", cursor: "pointer", fontSize: "20px" }}>x</span>
-                            {
-                                close && <img src={close} style={{ marginBottom: "1rem" }} width={102} height={102} />
-                            }
+                            <IconButton onClick={() => setOpenModal(false)} sx={
+                                {
+                                    position: "absolute",
+                                    top: "-46px",
+                                    right: "-48px",
+                                    cursor: "pointer",
+                                    fontSize: "20px"
+                                }}
+                            >
+                                <CloseIcon fontSize='medium' />
+                            </IconButton>
+                            {/* <span onClick={() => setOpenModal(false)} style={{ position: "absolute", top: "-45px", right: "-30px", cursor: "pointer", fontSize: "20px" }}>x</span> */}
+                            <img src={closeIcon} style={{ marginBottom: "1rem" }} width={102} height={102} />
                             <h2 id="transition-modal-title" style={{ color: '#333', fontFamily: fontsFamily.poppins }} className="modal-title">
                                 {message}
                             </h2>

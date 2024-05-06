@@ -51,7 +51,6 @@ import SocialMediaManager from "../social-media-form/social-media-manager";
 import WebsiteForm from "../website-form/website-form";
 import WebAppDevForm from "../web-app-form/web-app-dev-form";
 import MobileAppDevForm from "../mobile-app-dev-form/mobile-app-dev-form";
-import { socket } from "sockets";
 import TransitionsModal from "components/Modal/Modal";
 import EditProjectModal from "../Form-modal/editProject";
 import check from '../../../assets/images/check.png'
@@ -140,6 +139,16 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const handleEditProjectClose = () => {
     reduxActions.handle_OpenEditProject(false)
   }
+
+  useEffect(() => {
+    socketIO.current.on('connect', () => {
+      socketIO.current.emit('user_online', true, reduxState?.userDetails?.id, reduxState?.userDetails?.roles)
+    })
+  }, [])
+
+  useEffect(() => {
+    socketIO.current.connect()
+  }, [])
 
   useEffect(() => {
     socketIO.current.emit('user_online', true, reduxState?.userDetails?.id, reduxState?.userDetails?.roles)
@@ -468,6 +477,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     }
   };
 
+
   useEffect(() => {
     if (role?.projectManager) {
       socketIO.current.on('new-project-notification', project_data => {
@@ -493,7 +503,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     }
     if (role?.designer) {
       socketIO.current.on('new-project-assigned', message => {
-        console.log('message', message);
         reduxActions.handleProject_notifications(message)
       })
     }
@@ -519,9 +528,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     }
   }, [socketIO.current])
 
-  useEffect(() => {
-    socket.connect();
-  }, [])
 
   useEffect(() => {
     const id = reduxState.userDetails?.id;
@@ -618,6 +624,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       setReloadProjects(false)
     }
   }, [reduxState.edit_project]);
+
   const renderRoutes = routes?.map(
     ({ type, name, icon, title, noCollapse, collapse, key, href, route }) => {
       let returnValue;

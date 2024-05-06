@@ -17,6 +17,8 @@ import ChatsContainer from "./Chat-container";
 import { SocketContext } from "sockets";
 import { v4 as uuidv4 } from 'uuid';
 import { Action } from 'layouts/ProjectsTable/data/authorsTableData';
+import TransitionsModal from "components/Modal/Modal";
+import TransitionsErrorModal from "components/Modal/ErrorModal";
 // https://socket-dot-mi-banana-401205.uc.r.appspot.com
 // http://34.125.239.154
 
@@ -212,7 +214,10 @@ const Chating = ({ reduxState, reduxActions }) => {
   return (
     <DashboardLayout>
       <FileModal title="Files" open={modalState} setOpen={setModalState} />
-      <SuccessModal
+      <TransitionsModal message={respMessage} openModal={successSB} setOpenModal={setSuccessSB} />
+      <TransitionsErrorModal message={respMessage} openModal={errorSB} setOpenModal={setErrorSB} />
+
+      {/* <SuccessModal
         open={open}
         msg={respMessage}
         onClose={handleClose}
@@ -220,7 +225,7 @@ const Chating = ({ reduxState, reduxActions }) => {
         title="SUCCESS"
         color="#333"
         sideRadius={false}
-      />
+      /> */}
       <Grid
         container
         spacing={2}
@@ -285,8 +290,8 @@ const Chating = ({ reduxState, reduxActions }) => {
             getChatMessage={getChatMessage}
           />
         </Grid>
-        {renderSuccessSB}
-        {renderErrorSB}
+        {/* {renderSuccessSB} */}
+        {/* {renderErrorSB} */}
       </Grid>
     </DashboardLayout>
   );

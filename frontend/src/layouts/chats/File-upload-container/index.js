@@ -6,7 +6,6 @@ import {
   TextField,
   IconButton,
 } from "@mui/material";
-// import { UploadIcon } from "assets/mi-banana-icons/upload-icon";
 import CircularProgress from "@mui/material/CircularProgress";
 import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
 // import ImageViewer from "react-simple-image-viewer";
@@ -184,6 +183,8 @@ const FileUploadContainer = ({
       })
       .catch((err) => {
         setFileMsg("No Files Found");
+        setRespMessage("No Files Found")
+        // openErrorSB()
         setVersion([]);
         setLoading(false);
       });
@@ -203,6 +204,8 @@ const FileUploadContainer = ({
       })
       .catch((err) => {
         setFileMsg("No Files Found");
+        setRespMessage("No Files Found");
+        // openErrorSB()
         setVersion([]);
         setLoading(false);
       });
@@ -363,22 +366,6 @@ const FileUploadContainer = ({
     if (role?.designer || role?.projectManager || role?.admin) {
       const latest_version = [...fileVersion]?.pop()
       versionUploads(fileType, latest_version)
-      // if (selectedFilePeople === "All Files" || selectedFilePeople === "") {
-      //   setRespMessage("Please select version in which you want to upload files")
-      //   setTimeout(() => {
-      //     openErrorSB()
-      //   }, 400)
-      //   return
-      // }
-      // else if (selectedFilePeople === "Latest design") {
-      //   const latest_version = [...fileVersion]?.pop()
-      //   versionUploads(fileType, latest_version)
-      // }
-      // else {
-      //   versionUploads(fileType, selectedFilePeople)
-      //   // console.log('version')
-
-      // }
     }
     else if (role?.customer) {
       setSelectedFilePeople("customer")
@@ -397,12 +384,12 @@ const FileUploadContainer = ({
         setDesignerLoading(false);
         getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject);
         if (data.message) {
-          // setRespMessage(data.message)
-          setsuccessMessage(data.message)
+          setRespMessage(data.message)
+          // setsuccessMessage(data.message)
           setTimeout(() => {
             setTeamMembers([])
-            setsuccessOpen(true)
-            // openSuccessSB()
+            // setsuccessOpen(true)
+            openSuccessSB()
           }, 500)
         }
       })
@@ -607,8 +594,10 @@ const FileUploadContainer = ({
           }
           socketIO.emit('project-assigned', value._id, message)
           setTeamMembers(save?.team_members)
-          setsuccessMessage(data?.message);
-          setsuccessOpen(true);
+          // setsuccessMessage(data?.message);
+          // setsuccessOpen(true);
+          setRespMessage(data?.message);
+          openSuccessSB()
           setDesignerLoading(false)
         })
         .catch((e) => {
@@ -737,7 +726,7 @@ const FileUploadContainer = ({
           height: showMore ? undefined : '100%'
         }}
       >
-        <SuccessModal
+        {/* <SuccessModal
           open={successOpen}
           msg={successMessage}
           onClose={handleClose}
@@ -745,7 +734,7 @@ const FileUploadContainer = ({
           color="#333"
           title="SUCCESS"
           sideRadius={false}
-        />
+        /> */}
         <Grid container justifyContent="space-arround" alignItems="center" sx={{ borderBottom: `2px solid ${mibananaColor.tableHeaderColor}` }}>
           <Grid item xs={6} md={6} lg={6} xl={6}>
             <MDTypography
