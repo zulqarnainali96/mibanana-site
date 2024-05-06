@@ -2,7 +2,7 @@ const Cron = require('node-cron');
 const Projects = require('../../../models/graphic-design-model');
 
 // Task for Graphic Design Project
-const task = Cron.schedule('*/1 * * * *', async () => {
+const task = Cron.schedule('*/10 * * * *', async () => {
     try {
         const projects = await Projects.find({ status: 'For Review' }).lean();
         if (projects) {

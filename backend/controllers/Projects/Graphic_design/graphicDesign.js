@@ -305,7 +305,7 @@ const duplicateProject = async (req, res) => {
             }
             const creatingNewProject = await graphicDesignModel.create(obj)
             if (creatingNewProject) {
-                return res.status(201).send({ message: 'Project Duplicate Done', project: creatingNewProject })
+                return res.status(201).send({ message: 'Project Duplicated', project: creatingNewProject })
             } else {
                 return res.status(400).send({ message: 'Found error while creating project' })
 
