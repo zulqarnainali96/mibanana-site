@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react';
 import { styled } from "@mui/material/styles";
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -49,33 +49,33 @@ const initialValues = {
     project_description: "",
 };
 
-
 const MobileAppDevForm = (props) => {
     const { open, handleClose, setRespMessage, openErrorSB, openSuccessSB, loading, setLoading } = props;
     const classes = reactQuillStyles()
 
     const handleMobileFormSubmit = async (values, { resetForm }) => {
-        setLoading(true)
+        setLoading(true);
         const dataToSend = {
             ...values,
             user: user,
             name: name,
         };
-        console.log(dataToSend)
+        console.log(dataToSend);
+        // Uncomment the following lines to enable form submission to the backend
         // try {
-        //     const { data } = await apiClient.post('/api/create-mobile-app-project', dataToSend)
-        //     setLoading(false)
+        //     const { data } = await apiClient.post('/api/create-mobile-app-project', dataToSend);
+        //     setLoading(false);
         //     if (data.message) {
         //         handleClose();
-        //         setRespMessage(data.message)
+        //         setRespMessage(data.message);
         //         resetForm(clearForm());
         //         setTimeout(() => {
         //             openSuccessSB();
         //         }, 500);
         //     }
         // } catch (error) {
-        //     setLoading(false)
-        //     setRespMessage(error.message)
+        //     setLoading(false);
+        //     setRespMessage(error.message);
         //     setTimeout(() => {
         //         openErrorSB();
         //     }, 500);
@@ -83,74 +83,25 @@ const MobileAppDevForm = (props) => {
         // }
 
         function clearForm() {
-            var projectTitle = document.getElementById('project_title');
-            projectTitle.value = "";
-            var projectDescription = document.getElementById('project_description');
-            projectDescription.value = "";
+            document.getElementById('project_title').value = "";
+            quilRef.current.getEditor().setText('');
         }
 
-        // Optionally, reset the form after submission
         resetForm(clearForm());
-    }
-    const {
-        values,
-        errors,
-        handleSubmit,
-        handleChange,
-        handleBlur,
-        touched,
-    } = useFormik({
+    };
+
+    const formik = useFormik({
         initialValues: initialValues,
         validationSchema: mobileAppSchema,
-        onSubmit: values => {
-            console.log(values)
-        },
+        onSubmit: handleMobileFormSubmit,
     });
-    const quilRef = useRef()
-    // const handleMobileAppDevFormSubmit = async (values, { resetForm }) => {
-    //     const dataToSend = {
-    //         ...values,
-    //         user: user,
-    //         name: name,
-    //     };
-    //     try {
-    //         const { data } = await apiClient.post('/api/create-mobile-app-project', dataToSend)
-    //         if (data.message) {
-    //             handleClose();
-    //             setRespMessage(data.message)
-    //             resetForm(clearForm());
-    //             setTimeout(() => {
-    //                 openSuccessSB();
-    //                 // setOpenModal(true)
-    //             }, 500);
-    //         }
-    //     } catch (error) {
-    //         setRespMessage(error.message)
-    //         setTimeout(() => {
-    //             openErrorSB();
-    //         }, 500);
-    //         console.error('Mobile form error:', error);
-    //     }
 
-    //     function clearForm() {
-    //         var projectTitle = document.getElementById('project_title');
-    //         projectTitle.value = "";
-    //         var projectDescription = document.getElementById('project_description');
-    //         projectDescription.value = "";
-    //     }
-
-    //     // Optionally, reset the form after submission
-    //     resetForm(clearForm());
-    // }
+    const quilRef = useRef();
 
     const onClose = () => {
-        handleClose()
-        setLoading(false)
-    }
-
-    const quilName = () => {
-        console.log(quilRef.current.props.name)
-    }
+        handleClose();
+        setLoading(false);
+    };
 
     return (
         <BootstrapDialog open={open} sx={{ width: '100% !important' }} >
@@ -168,9 +119,8 @@ const MobileAppDevForm = (props) => {
                 </MDButton>
             </DialogTitle>
 
-
             <DialogContent>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={formik.handleSubmit}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <MDTypography variant="h6" pb={1} className="">
@@ -181,15 +131,14 @@ const MobileAppDevForm = (props) => {
                                 id="project_title"
                                 name="project_title"
                                 type="text"
-                                value={values.project_title}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                touched={touched.project_title}
-                                errors={errors.project_title}
+                                value={formik.values.project_title}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                touched={formik.touched.project_title}
+                                errors={formik.errors.project_title}
                             />
                         </Grid>
 
-                        { /*platform*/}
                         <Grid item xs={12}>
                             <MDTypography variant={"h6"} pb={1} className="">
                                 Platform
@@ -199,10 +148,10 @@ const MobileAppDevForm = (props) => {
                                     <Select
                                         id="platform"
                                         name="platform"
-                                        onBlur={handleBlur}
-                                        value={values.platform}
-                                        error={touched.platform && Boolean(errors.platform)}
-                                        onChange={handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.platform}
+                                        error={formik.touched.platform && Boolean(formik.errors.platform)}
+                                        onChange={formik.handleChange}
                                         fullWidth
                                         displayEmpty
                                     >
@@ -210,45 +159,27 @@ const MobileAppDevForm = (props) => {
                                         <MenuItem value="android">Android App Development</MenuItem>
                                         <MenuItem value="ios">IOS App Development</MenuItem>
                                     </Select>
-
-
                                 </Grid>
                             </Grid>
-
                         </Grid>
 
-                        {/*description*/}
                         <Grid item xs={12}>
                             <MDTypography variant="h6" pb={1} className="">
                                 Project Description
                             </MDTypography>
-                            {/* <TextField
-                                placeholder="Enter your Project Description"
-                                id="project_description"
-                                name="project_description"
-                                type="text"
-                                multiline
-                                rows={4}
-                                style={{ width: '100%' }}
-                                value={values.project_description}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                touched={touched.project_description}
-                                error={touched.project_description && Boolean(errors.project_)}
-                            /> */}
                             <ReactQuill
                                 theme="snow"
                                 name="project_description"
                                 id='project_description'
-                                value={values.project_description}
-                                onChange={handleChange}
+                                value={formik.values.project_description}
+                                onChange={(value) => formik.setFieldValue('project_description', value)}
+                                onBlur={formik.handleBlur}
                                 modules={modules}
                                 formats={formats}
                                 className={classes.quill}
                                 ref={quilRef}
                             />
                         </Grid>
-                        <button onClick={quilName}>Access</button>
                         <Grid item xs={12}>
                             <MDButton
                                 type="submit"
@@ -262,11 +193,10 @@ const MobileAppDevForm = (props) => {
                     </Grid>
                 </form>
             </DialogContent>
-
         </BootstrapDialog>
-    )
-}
+    );
+};
 
-export const submitButtonStyle = { width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }
+export const submitButtonStyle = { width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" };
 
-export default MobileAppDevForm
+export default MobileAppDevForm;
