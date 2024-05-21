@@ -8,8 +8,6 @@ import {
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
-// import ImageViewer from "react-simple-image-viewer";
-// import SelectMembers from "../team-members/select-members";
 import pdffile from "assets/images/pdffile.svg";
 import xls from "assets/images/xls.svg";
 import eps from "assets/images/eps.svg";
@@ -18,7 +16,6 @@ import ai_logo from "assets/mi-banana-icons/ai-logo.png"
 
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
-// import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import { useDropzone } from "react-dropzone";
 import React, { useContext } from "react";

@@ -21,6 +21,7 @@ const initialState = {
     ],
     category: [
         "Graphic Design",
+        "Mobile App Development",
         "Copywriting",
         "Illustration",
         "Video Editing",

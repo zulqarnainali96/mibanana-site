@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { styled } from "@mui/material/styles";
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -10,9 +10,12 @@ import { Grid, MenuItem, Select, TextField } from '@mui/material';
 import Input from 'components/Input/Input';
 import { useFormik } from 'formik';
 import { mobileAppSchema } from 'Schema/Index';
-import TransitionsModal from 'components/Modal/Modal';
-import axios from 'axios';
-
+import apiClient from 'api/apiClient';
+import ReactQuill from "react-quill";
+import { MoonLoader } from 'react-spinners';
+import { modules } from 'assets/react-quill-settings/react-quill-settings';
+import { formats } from 'assets/react-quill-settings/react-quill-settings';
+import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings';
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
     '& .MuiPaper-root': {
@@ -43,13 +46,52 @@ const initialValues = {
     name: name,
     project_title: '',
     platform: '',
-    project_details: "",
+    project_description: "",
 };
 
-const MobileAppDevForm = (props) => {
-    const { open, handleClose } = props;
-    const [openModal, setOpenModal] = useState(false);
 
+const MobileAppDevForm = (props) => {
+    const { open, handleClose, setRespMessage, openErrorSB, openSuccessSB, loading, setLoading } = props;
+    const classes = reactQuillStyles()
+
+    const handleMobileFormSubmit = async (values, { resetForm }) => {
+        setLoading(true)
+        const dataToSend = {
+            ...values,
+            user: user,
+            name: name,
+        };
+        console.log(dataToSend)
+        // try {
+        //     const { data } = await apiClient.post('/api/create-mobile-app-project', dataToSend)
+        //     setLoading(false)
+        //     if (data.message) {
+        //         handleClose();
+        //         setRespMessage(data.message)
+        //         resetForm(clearForm());
+        //         setTimeout(() => {
+        //             openSuccessSB();
+        //         }, 500);
+        //     }
+        // } catch (error) {
+        //     setLoading(false)
+        //     setRespMessage(error.message)
+        //     setTimeout(() => {
+        //         openErrorSB();
+        //     }, 500);
+        //     console.error('Mobile form error:', error);
+        // }
+
+        function clearForm() {
+            var projectTitle = document.getElementById('project_title');
+            projectTitle.value = "";
+            var projectDescription = document.getElementById('project_description');
+            projectDescription.value = "";
+        }
+
+        // Optionally, reset the form after submission
+        resetForm(clearForm());
+    }
     const {
         values,
         errors,
@@ -60,37 +102,55 @@ const MobileAppDevForm = (props) => {
     } = useFormik({
         initialValues: initialValues,
         validationSchema: mobileAppSchema,
-        onSubmit: async (values, { resetForm }) => {
-            const dataToSend = {
-                ...values,
-                user: user,
-                name: name,
-            };
-            try {
-                // const response = await axios.post('http://localhost:8000/api/create-mobile-app-project', dataToSend);
-                console.log(dataToSend)
-                // handleClose();
-                resetForm(clearForm());
-                setOpenModal(true)
-                setTimeout(() => {
-                    handleClose();
-                }, 5000);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-            function clearForm() {
-                var projectTitle = document.getElementById('project_title');
-                projectTitle.value = "";
-                var projectDetail = document.getElementById('project_details');
-                projectDetail.value = "";
-            }
-
-            // Optionally, reset the form after submission
-            resetForm(clearForm());
+        onSubmit: values => {
+            console.log(values)
         },
     });
+    const quilRef = useRef()
+    // const handleMobileAppDevFormSubmit = async (values, { resetForm }) => {
+    //     const dataToSend = {
+    //         ...values,
+    //         user: user,
+    //         name: name,
+    //     };
+    //     try {
+    //         const { data } = await apiClient.post('/api/create-mobile-app-project', dataToSend)
+    //         if (data.message) {
+    //             handleClose();
+    //             setRespMessage(data.message)
+    //             resetForm(clearForm());
+    //             setTimeout(() => {
+    //                 openSuccessSB();
+    //                 // setOpenModal(true)
+    //             }, 500);
+    //         }
+    //     } catch (error) {
+    //         setRespMessage(error.message)
+    //         setTimeout(() => {
+    //             openErrorSB();
+    //         }, 500);
+    //         console.error('Mobile form error:', error);
+    //     }
 
+    //     function clearForm() {
+    //         var projectTitle = document.getElementById('project_title');
+    //         projectTitle.value = "";
+    //         var projectDescription = document.getElementById('project_description');
+    //         projectDescription.value = "";
+    //     }
 
+    //     // Optionally, reset the form after submission
+    //     resetForm(clearForm());
+    // }
+
+    const onClose = () => {
+        handleClose()
+        setLoading(false)
+    }
+
+    const quilName = () => {
+        console.log(quilRef.current.props.name)
+    }
 
     return (
         <BootstrapDialog open={open} sx={{ width: '100% !important' }} >
@@ -99,13 +159,12 @@ const MobileAppDevForm = (props) => {
                     Mobile App Development Form
                 </MDTypography>
                 <MDButton
-                    onClick={handleClose}
+                    onClick={onClose}
                     sx={{ position: "absolute", right: 4, padding: '1.4rem !important' }}
                 >
-                    <CloseOutlined sx={
-                        {
-                            fill: '#444'
-                        }} />
+                    <CloseOutlined sx={{
+                        fill: '#444'
+                    }} />
                 </MDButton>
             </DialogTitle>
 
@@ -163,28 +222,43 @@ const MobileAppDevForm = (props) => {
                             <MDTypography variant="h6" pb={1} className="">
                                 Project Description
                             </MDTypography>
-                            <TextField
+                            {/* <TextField
                                 placeholder="Enter your Project Description"
-                                id="project_details"
-                                name="project_details"
+                                id="project_description"
+                                name="project_description"
                                 type="text"
                                 multiline
                                 rows={4}
                                 style={{ width: '100%' }}
-                                value={values.project_details}
+                                value={values.project_description}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                touched={touched.project_details}
-                                error={touched.project_details && Boolean(errors.project_details)}
+                                touched={touched.project_description}
+                                error={touched.project_description && Boolean(errors.project_)}
+                            /> */}
+                            <ReactQuill
+                                theme="snow"
+                                name="project_description"
+                                id='project_description'
+                                value={values.project_description}
+                                onChange={handleChange}
+                                modules={modules}
+                                formats={formats}
+                                className={classes.quill}
+                                ref={quilRef}
                             />
                         </Grid>
-
+                        <button onClick={quilName}>Access</button>
                         <Grid item xs={12}>
-                            <MDButton type="submit" style={{ width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }}>Submit</MDButton>
+                            <MDButton
+                                type="submit"
+                                style={submitButtonStyle}
+                                disabled={loading}
+                                endIcon={<MoonLoader loading={loading} size={18} color='#fff' />}
+                            >
+                                Submit
+                            </MDButton>
                         </Grid>
-
-                        <TransitionsModal message="hello there!" openModal={openModal} setOpenModal=
-                            {setOpenModal} />
                     </Grid>
                 </form>
             </DialogContent>
@@ -192,5 +266,7 @@ const MobileAppDevForm = (props) => {
         </BootstrapDialog>
     )
 }
+
+export const submitButtonStyle = { width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }
 
 export default MobileAppDevForm

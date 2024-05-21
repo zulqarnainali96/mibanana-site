@@ -33,5 +33,5 @@ export const webAppSchema = Yup.object({
 export const mobileAppSchema = Yup.object({
     project_title: Yup.string().min(3).required("Please enter your project title"),
     platform: Yup.string().required('Service type is required'),
-    project_details: Yup.string().required('Project details is required'),
+    project_description: Yup.string().required('Project description is required'),
 });

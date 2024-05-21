@@ -2,10 +2,10 @@ import styled from '@emotion/styled'
 import { Button } from '@mui/material'
 import apiClient from 'api/apiClient'
 import { fontsFamily } from 'assets/font-family'
-import MDSnackbar from 'components/MDSnackbar'
+// import MDSnackbar from 'components/MDSnackbar'
 import React, { useState, useRef, useEffect } from 'react'
 import { currentUserRole } from 'redux/global/global-functions'
-import { getBrandData } from 'redux/global/global-functions'
+// import { getBrandData } from 'redux/global/global-functions'
 
 const useBrandData = (props) => {
     const { reduxState, reduxActions } = props
@@ -15,6 +15,10 @@ const useBrandData = (props) => {
     const [other, setOther] = useState(1)
     const [addMoreField, setAddMore] = useState([])
     const [editMoreImage, setEditMoreImages] = useState([])
+    const quillRef = useRef(null);
+    const editQuillRef = useRef(null);
+    const [isContentEmpty, setIsContentEmpty] = useState(false);
+
 
     const role = currentUserRole(reduxState)
 
@@ -37,12 +41,14 @@ const useBrandData = (props) => {
     })
     const [image, setImage] = useState({
         upload_logo: [],
+        upload_raw_logo: [],
         upload_moodboard: [],
         replace_brand_guidelines: [],
         upload_more: []
     })
     const [checkState, setCheckState] = useState({
         isLogochk: true,
+        is_raw_logo_check: true,
         isMoodBoardchk: true,
         isBrandGuidechk: true,
         isothers: true,
@@ -112,7 +118,12 @@ const useBrandData = (props) => {
             const logoFile = new File([updatedFiles], fileName, { type, size, lastModified });
             setImage(prev => ({ ...prev, [name]: logoFile }))
             setFilesArray(prev => [...prev, { name: name, files: logoFile }])
-        } else {
+        }
+        else if (name === 'upload_raw_logo') {
+            setImage(prev => ({ ...prev, [name]: files[0] }))
+            setFilesArray(prev => [...prev, { name: name, files: files }])
+        }
+        else {
             setImage(prev => ({ ...prev, [name]: files }))
             setFilesArray(prev => [...prev, { name: name, files: files }])
         }
@@ -125,63 +136,82 @@ const useBrandData = (props) => {
             }).catch(err => console.log(err))
     }
 
-    const onSubmit = async () => {
-        setLoading(true)
-        let formData = new FormData()
-        formData.append('brand_name', formValue.brand_name)
-        formData.append('brand_description', formValue.brand_description)
-        formData.append('web_url', formValue.web_url)
-        formData.append('facebook_url', formValue.facebook_url)
-        formData.append('instagram_url', formValue.instagram_url)
-        formData.append('twitter_url', formValue.twitter_url)
-        formData.append('linkedin_url', formValue.linkedin_url)
-        formData.append('tiktok_url', formValue.tiktok_url)
-        formData.append('user', reduxState.userDetails?.id)
-        formData.append('name', reduxState.userDetails?.name)
-
-        for (let i = 0; i < filesArray.length; i++) {
-            const updatedFiles = filesArray[i]
-            if (updatedFiles.name === 'upload_logo') {
-                formData.append('files', filesArray[i].files)
-            } else {
-                formData.append('files', filesArray[i].files[0])
-            }
+    const onSubmit = (event) => {
+        event.preventDefault()
+        if (filesArray.length === 0) {
+            alert("Plese Upload atleast your brand logo")
+            return
         }
-        await apiClient.post("/api/brand", formData)
-            .then(({ data }) => {
-                setRespMessage(data?.message)
-                setLoading(false)
-                setAddMore([])
-                setImage({
-                    upload_logo: [],
-                    upload_moodboard: [],
-                    replace_brand_guidelines: [],
-                    upload_more: [],
-                })
-                setFilesArray([])
-                closeAddBrandModal()
-                getBrandData(reduxState?.userDetails?.id, reduxActions.getCustomerBrand)
-                // getSingleBrandFile(data?.customerBrand?._id)
-                // reduxActions.getNew_Brand(!reduxState.new_brand)
+        if (quillRef.current) {
+            const editor = quillRef.current.getEditor();
+            const editorContent = editor.root.innerHTML;
+            // Check if the content is empty (or contains only empty tags)
+            const isEmpty = !editorContent || editorContent === '<p><br></p>';
+            setIsContentEmpty(isEmpty);
+            if (isEmpty) { return }
+            setLoading(true)
+            let formData = new FormData()
+            formData.append('brand_name', formValue.brand_name)
+            formData.append('brand_description', formValue.brand_description)
+            formData.append('web_url', formValue.web_url)
+            formData.append('facebook_url', formValue.facebook_url)
+            formData.append('instagram_url', formValue.instagram_url)
+            formData.append('twitter_url', formValue.twitter_url)
+            formData.append('linkedin_url', formValue.linkedin_url)
+            formData.append('tiktok_url', formValue.tiktok_url)
+            formData.append('user', reduxState.userDetails?.id)
+            formData.append('name', reduxState.userDetails?.name)
 
-                setTimeout(() => {
-                    setOpenModal(true)
-                    document.location.reload()
-                }, 700)
-
-            })
-            .catch((error) => {
-                if (error?.response) {
-                    setRespMessage(error.response?.data?.message)
-                    setLoading(false)
-                    setTimeout(() => {
-                        openErrorSB()
-                    }, 500)
-                    return
+            for (let i = 0; i < filesArray.length; i++) {
+                const updatedFiles = filesArray[i]
+                if (updatedFiles.name === 'upload_logo') {
+                    formData.append('files', filesArray[i].files)
                 }
-                setLoading(false)
-            })
+                else {
+                    formData.append('files', filesArray[i].files[0])
+                }
+            }
+            apiClient.post("/api/brand", formData)
+                .then(({ data }) => {
+                    setRespMessage(data?.message)
+                    setLoading(false)
+                    setAddMore([])
+                    setImage({
+                        upload_logo: [],
+                        upload_raw_logo: [],
+                        upload_moodboard: [],
+                        replace_brand_guidelines: [],
+                        upload_more: [],
+                    })
+                    setFilesArray([])
+                    closeAddBrandModal()
+                    // getBrandData(reduxState?.userDetails?.id, reduxActions.getCustomerBrand)
+                    // getSingleBrandFile(data?.customerBrand?._id)
+                    // reduxActions.getNew_Brand(!reduxState.new_brand)
+
+                    // setOpenModal(true)
+                    openSuccessSB()
+                    setTimeout(() => {
+                        reduxActions.getNew_Brand(!reduxState.new_brand)
+                        // document.location.reload()
+                    }, 4000)
+
+                })
+                .catch((error) => {
+                    if (error?.response) {
+                        setRespMessage(error.response?.data?.message)
+                        setLoading(false)
+                        setTimeout(() => {
+                            openErrorSB()
+                        }, 500)
+                        return
+                    }
+                    setLoading(false)
+                })
+        }
+
     }
+
 
     const handleFileUploadEdit = (event) => {
         const files = event.target.files
@@ -200,32 +230,6 @@ const useBrandData = (props) => {
         setEditMoreImages(result)
     }
 
-    const renderErrorSB = (
-        <MDSnackbar
-            color="error"
-            icon="warning"
-            title="Error"
-            content={respMessage}
-            dateTime={new Date().toLocaleTimeString('pk')}
-            open={errorSB}
-            onClose={closeErrorSB}
-            close={closeErrorSB}
-            bgWhite
-        />
-    );
-    const renderSuccessSB = (
-        <MDSnackbar
-            color="success"
-            icon="check"
-            title="SUCCESS"
-            content={respMessage}
-            dateTime={new Date().toLocaleTimeString('pk')}
-            open={successSB}
-            onClose={closeSuccessSB}
-            close={closeSuccessSB}
-            bgWhite
-        />
-    );
     const BrandButton = styled(Button)(({ theme: { palette } }) => {
         const { primary } = palette
         return {
@@ -247,6 +251,7 @@ const useBrandData = (props) => {
         return () => {
             setAddMore([])
             setEditMoreImages([])
+            setIsContentEmpty(false)
         }
     }, [])
 
@@ -267,14 +272,12 @@ const useBrandData = (props) => {
         role,
         image,
         loading,
-        openAddModal : reduxState.openBrandModel,
+        openAddModal: reduxState.openBrandModel,
         addMoreField,
         openEditModal,
-        renderSuccessSB,
         BrandButton,
         respMessage,
         formValue,
-        renderErrorSB,
         showSuccessModal,
         checkState,
         filesArray,
@@ -308,6 +311,10 @@ const useBrandData = (props) => {
         setSuccessSB,
         setErrorSB,
         errorSB,
+        quillRef,
+        editQuillRef,
+        isContentEmpty,
+        setIsContentEmpty
     }
 }
 

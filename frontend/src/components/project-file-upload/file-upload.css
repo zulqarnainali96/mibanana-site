@@ -1,0 +1,52 @@
+.uploaded-file-main-div {
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.file-div2 {
+  margin: "5px 10px";
+}
+.drop-file-div {
+  width: 97.5%;
+  margin: 5px auto;
+  padding: 10px;
+  border: 1px solid gray;
+  border-style: dotted;
+  text-align: center;
+  color: gray;
+  background: #c6c3b6;
+}
+.description-div {
+  width: 100%;
+  padding-inline: 10px;
+}
+.description-div > p,
+ol,
+ul {
+  padding-inline: 14px;
+}
+
+.admin-div1h2 {
+  color: #c6c3b6;
+  font-size: 13px;
+}
+
+.admin-div1h2 {
+  color: #c6c3b6;
+  font-size: 13px;
+}
+.admin-div-2h3 {
+  font-size: 13px;
+}
+.admin-div-1h2 {
+  color: #c6c3b6;
+  font-size: 13px;
+}
+.file-div-2p {
+  text-align: center;
+  font-size: 11px;
+}

@@ -79,6 +79,9 @@ const EditBrand = (props) => {
     removeEditFiles,
     getDescriptionText,
     setEditMoreImages,
+    isContentEmpty,
+    editQuillRef,
+    setIsContentEmpty,
   } = props
 
   const [loading, setLoading] = useState(false);
@@ -91,77 +94,84 @@ const EditBrand = (props) => {
   const smallScreen = useMediaQuery("(max-width:768px)");
 
 
-  async function handleUpdateFiles() {
-    if (!formValue.brand_name || !formValue.brand_description) {
-      setRespMessage("Please provide brand name, brand description")
-      openErrorSB()
-      return
-    }
-    setLoading(true);
-    const data = {
-      brand_name: formValue.brand_name,
-      brand_description: formValue.brand_description,
-      web_url: formValue.web_url,
-      facebook_url: formValue.facebook_url,
-      instagram_url: formValue.instagram_url,
-      twitter_url: formValue.twitter_url,
-      linkedin_url: formValue.linkedin_url,
-      tiktok_url: formValue.tiktok_url,
-      user: formValue.user,
-      _id: formValue._id,
-      name: name,
-      files_name: del_brand_files,
-    };
-    await apiClient
-      .patch("/api/brand", data)
-      .then(async ({ data }) => {
-        const { message, brandData } = data;
-        setRespMessage(message);
-        setFormValue({ ...formValue, ...brandData })
-        dispatch(getNew_Brand(!new_brand));
-        setLoading(false);
-        if (editMoreImage.length > 0) {
-          setLoading(true);
-          const formdata = new FormData();
-          formdata.append("brandName", formValue.brand_name);
-          formdata.append("brand_id", formValue?._id);
-          for (let u = 0; u < editMoreImage?.length; u++) {
-            formdata.append("files", editMoreImage[u]);
+  const handleUpdateFiles = async (event) => {
+    event.preventDefault();
+    if (editQuillRef.current) {
+      const editor = editQuillRef.current.getEditor();
+      const editorContent = editor.root.innerHTML;
+
+      // Check if the content is empty (or contains only empty tags)
+      const isEmpty = !editorContent || editorContent === '<p><br></p>';
+      setIsContentEmpty(isEmpty);
+      if (isEmpty) { return }
+      setLoading(true);
+      const data = {
+        brand_name: formValue.brand_name,
+        brand_description: formValue.brand_description,
+        web_url: formValue.web_url,
+        facebook_url: formValue.facebook_url,
+        instagram_url: formValue.instagram_url,
+        twitter_url: formValue.twitter_url,
+        linkedin_url: formValue.linkedin_url,
+        tiktok_url: formValue.tiktok_url,
+        user: formValue.user,
+        _id: formValue._id,
+        name: name,
+        files_name: del_brand_files,
+      };
+      await apiClient.patch("/api/brand", data)
+        .then(async ({ data }) => {
+          setRespMessage(data.message || "Brand Updated")
+          if (editMoreImage.length > 0) {
+            const formdata = new FormData();
+            formdata.append("brandName", formValue.brand_name);
+            formdata.append("brand_id", formValue?._id);
+            for (let u = 0; u < editMoreImage?.length; u++) {
+              formdata.append("files", editMoreImage[u]);
+            }
+            await apiClient
+              .post("/api/add-more-files/" + formValue?.user, formdata)
+              .then((resp) => {
+                setFormValue({ ...formValue, ...resp.data?.brandData })
+                setEditMoreImages([]);
+                // setRespMessage(data.message || "Brand Updated")
+                dispatch(getNew_Brand(!new_brand));
+                setLoading(false)
+                openSuccessSB()
+              })
+              .catch((err) => {
+                setLoading(false);
+                throw err
+              });
           }
-          await apiClient
-            .post("/api/add-more-files/" + formValue?.user, formdata)
-            .then((resp) => {
-              console.log(resp?.data);
-              setFormValue({ ...formValue, ...resp.data?.brandData })
-              setEditMoreImages([]);
-              dispatch(getNew_Brand(!new_brand));
-              setLoading(false);
-            })
-            .catch((err) => {
-              console.log("found error");
-              setLoading(false);
-            });
-        }
-        setTimeout(() => {
-          openSuccessSB();
-        }, 800);
-      })
-      .catch((err) => {
-        if (err.response) {
-          const { message } = err.response.data;
-          setRespMessage(message);
-          setLoading(false);
-          setTimeout(() => {
-            openErrorSB();
-          }, 800);
-          return;
-        }
-        setRespMessage(err.message);
-        setLoading(false);
-        setTimeout(() => {
-          openErrorSB();
-        }, 800);
-      });
+          else {
+            setLoading(false);
+            dispatch(getNew_Brand(!new_brand));
+            onClose()
+            setTimeout(() => {
+              openSuccessSB()
+            }, 500)
+          }
+        }).catch((err) => {
+          if (err.response) {
+            const { message } = err.response.data;
+            setRespMessage(message);
+            setLoading(false);
+            onClose()
+            setTimeout(() => {
+              openErrorSB();
+            }, 800);
+            return;
+          } else {
+            setRespMessage(err.message);
+            setLoading(false);
+            onClose()
+            setTimeout(() => {
+              openErrorSB();
+            }, 800);
+          }
+        });
+    }
   }
 
 
@@ -220,7 +230,7 @@ const EditBrand = (props) => {
         <Divider light={false} />
       </DialogTitle>
       <DialogContent>
-        <Grid container component={"form"} spacing={2} justifyContent={"center"}  >
+        <Grid container component={"form"} spacing={2} justifyContent={"center"} onSubmit={handleUpdateFiles}>
           <Grid item xxl={12} lg={12} xs={12} md={12}>
             <MDBox>
               <label style={Styles} htmlFor="Name">
@@ -261,8 +271,10 @@ const EditBrand = (props) => {
                 value={formValue.brand_description}
                 formats={formats}
                 className={quillClasses.quill}
+                ref={editQuillRef}
               />
             </MDBox>
+            {isContentEmpty && <span style={{ color: 'red', fontFamily: 'arial' }}>Brand description field is required.</span>}
           </Grid>
           <Grid item xxl={6} lg={6} xs={12} md={12}>
             <MDBox>
@@ -689,30 +701,30 @@ const EditBrand = (props) => {
               />
             </label>
           </Grid>
-        </Grid>
-        <DialogActions>
-          <MDButton
-            type="button"
-            onClick={handleUpdateFiles}
-            disabled={loading}
-            endIcon={
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <ArrowForward fontSize="medium" />
-                &nbsp;
-                <MoonLoader loading={loading} size={20} color="#121212" />
-              </div>
-            }
+          <DialogActions>
+            <MDButton
+              type="submit"
+              // onClick={handleUpdateFiles}
+              disabled={loading}
+              endIcon={
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <ArrowForward fontSize="medium" />
+                  &nbsp;
+                  <MoonLoader loading={loading} size={20} color="#121212" />
+                </div>
+              }
 
-            size="large"
-            color="warning"
-            sx={{
-              ...buttonStyles,
-              ...submitButton,
-            }}
-          >
-            Update
-          </MDButton>
-        </DialogActions>
+              size="large"
+              color="warning"
+              sx={{
+                ...buttonStyles,
+                ...submitButton,
+              }}
+            >
+              Update
+            </MDButton>
+          </DialogActions>
+        </Grid>
       </DialogContent>
     </BrandModal>
   );

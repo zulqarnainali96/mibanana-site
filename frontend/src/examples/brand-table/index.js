@@ -68,25 +68,32 @@ const MIBrandTable = (props) => {
         setSuccessSB,
         errorSB,
         setErrorSB,
+        quillRef,
+        editQuillRef,
+        isContentEmpty,
+        setIsContentEmpty,
     } = useBrandData(props)
 
-    // const [errorSB, setErrorSB] = useState(false);
-    // const [successSB, setSuccessSB] = useState(false);
-    // const [message, setRespMessage] = useState("")
-
-    // const openSuccessSB = () => setSuccessSB(true);
-    // const closeSuccessSB = () => setSuccessSB(false);
-
-    // const openErrorSB = () => setErrorSB(true);
-    // const closeErrorSB = () => setErrorSB(false);
-
+    const { reduxState, reduxActions } = props
     const currentRole = (role?.admin || role?.projectManager || role?.designer) ? true : false
     const is768 = useMediaQuery("(max-width:768px)")
     const is500 = useMediaQuery("(max-width:500px)")
-    const { rows, small_rows, columns, small_columns } = brandData(setFormValue, openEditBrandModal, openSuccessSB, openErrorSB, setRespMessage)
+    const { rows, small_rows, columns, small_columns } = brandData(setFormValue, openEditBrandModal, openSuccessSB, openErrorSB, setRespMessage, reduxState, reduxActions)
 
     return (
         <DashboardLayout>
+            <TransitionsModal
+                message={respMessage}
+                openModal={successSB}
+                setOpenModal={setSuccessSB}
+                check={check}
+            />
+            <TransitionsErrorModal
+                message={respMessage}
+                openModal={errorSB}
+                setOpenModal={setErrorSB}
+                closeIcon={closeIcon}
+            />
             <BrandForm
                 openAddModal={openAddModal}
                 onChangeText={onChangeText}
@@ -106,6 +113,8 @@ const MIBrandTable = (props) => {
                 getDescriptionText={getDescriptionText}
                 openModal={openModal}
                 setOpenModal={setOpenModal}
+                quillRef={quillRef}
+                isContentEmpty={isContentEmpty}
             />
             <EditBrand
                 onChange={onChangeText}
@@ -123,6 +132,10 @@ const MIBrandTable = (props) => {
                 removeEditFiles={removeEditFiles}
                 setEditMoreImages={setEditMoreImages}
                 getDescriptionText={getDescriptionText}
+                editQuillRef={editQuillRef}
+                isContentEmpty={isContentEmpty}
+                setIsContentEmpty={setIsContentEmpty}
+
             />
             <SuccessModal
                 msg={respMessage}
@@ -132,8 +145,7 @@ const MIBrandTable = (props) => {
                 color="#333"
                 sideRadius={false}
             />
-            <TransitionsModal message={respMessage} successSB={successSB} setSuccessSB={setSuccessSB} check={check} />
-            <TransitionsErrorModal message={respMessage} errorSB={errorSB} setErrorSB={setErrorSB} closeIcon={closeIcon} />
+
             <MDBox ml={4} pt={2} pb={3}>
                 <Grid container pt={currentRole && "0px"} justifyContent={"flex-end"} alignItems={"center"} spacing={2}>
                     <Grid item xxl={12} xl={12} md={12} xs={12}>
@@ -179,8 +191,6 @@ const MIBrandTable = (props) => {
                     </Grid>
                 </Grid>
             </MDBox>
-            {/* {renderErrorSB} */}
-            {/* {renderSuccessSB} */}
         </DashboardLayout>
 
 

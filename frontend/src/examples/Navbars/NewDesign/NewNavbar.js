@@ -55,6 +55,7 @@ import TransitionsModal from "components/Modal/Modal";
 import EditProjectModal from "../Form-modal/editProject";
 import check from '../../../assets/images/check.png'
 import closeIcon from 'assets/images/close.webp'
+import TransitionsErrorModal from "components/Modal/ErrorModal";
 
 let image = "image/"
 
@@ -717,6 +718,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
 
   return (
     <>
+      <TransitionsModal message={respMessage} openModal={successSB} setOpenModal={setSuccessSB} />
+      <TransitionsErrorModal message={respMessage} openModal={errorSB} setOpenModal={setErrorSB} />
       <CreateProject1
         formValue={formValue}
         setFormValue={setFormValue}
@@ -767,6 +770,13 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       <CopyWritingForm
         open={openCopyWriting}
         handleClose={handleOpenCopyWritingClose}
+        reduxState={reduxState}
+        setRespMessage={setRespMessage}
+        respMessage={respMessage}
+        openErrorSB={openErrorSB}
+        openSuccessSB={openSuccessSB}
+        loading={loading}
+        setLoading={setLoading}
       />
 
       <SocialMediaManager
@@ -788,11 +798,21 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       <WebAppDevForm
         open={openWebApp}
         handleClose={handleCloseWebAppDev}
+        setRespMessage={setRespMessage}
+        respMessage={respMessage}
+        openErrorSB={openErrorSB}
+        openSuccessSB={openSuccessSB}
       />
 
       <MobileAppDevForm
         open={openMobileApp}
         handleClose={handleCloseMobileAppDev}
+        setRespMessage={setRespMessage}
+        respMessage={respMessage}
+        openErrorSB={openErrorSB}
+        openSuccessSB={openSuccessSB}
+        loading={loading}
+        setLoading={setLoading}
       />
 
 
@@ -828,6 +848,18 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             </div>
             {renderUserMenu()}
             {role?.customer &&
+              // (
+              //   <ProjectButton
+              //     variant="contained"
+              //     size="medium"
+              //     className="create-project-btn"
+              //     startIcon={projectIcon}
+              //     onClick={handleClickOpen}
+
+              //   >
+              //     Create Project
+              //   </ProjectButton>
+              // )
               <ProjectMenuOptions
                 size="medium"
                 handleClickOpen={handleClickOpen}
@@ -869,7 +901,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
           )}
         </Grid>
       </Grid>
-      <TransitionsModal message={respMessage} openModal={openModal} setOpenModal={setOpenModal} />
+
       <div className="small-navbar-container">
         <List className="headesidebar">{renderRoutes}</List>
       </div>

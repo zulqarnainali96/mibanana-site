@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 /** 
   All of the routes for the Material Dashboard 2 React are added here,
   You can add a new route, customize the routes and delete the routes here.
@@ -45,6 +30,12 @@ import CompanyProfile from "layouts/settings/company-profile/company-profile";
 import ChangePassword from "layouts/settings/change-password";
 import Chating from "layouts/chats";
 import MibananTeam from "layouts/mibanana-team";
+import ProjectsDetails from "layouts/project-details/project_details";
+import MobileAppDevelopment from "layouts/Projects/mobile-app-development/mobile-app-development";
+import WebApp from "layouts/Projects/web-app/web-app";
+import CopyWriting from "layouts/Projects/copy-writing/copy-writing";
+import SocialMediaManager from "layouts/Projects/social-media-manager/social-media-manager";
+import WebsiteDevelopment from "layouts/Projects/website-development/website-development";
 const routes = [
   {
     type: "collapse",
@@ -76,6 +67,11 @@ const routes = [
     component: <Chating />,
   },
   {
+    key: 'project',
+    route: `/:project/:id`,
+    component: <ProjectsDetails />
+  },
+  {
     type: "collapse",
     name: "MiBanana Team",
     key: "mibanana-team",
@@ -83,6 +79,38 @@ const routes = [
     route: "/mibanana-team",
     component: <MibananTeam />,
   },
+  // New Project form route
+  {
+    name : 'Mobile App Development',
+    key : 'mobile-app-development',
+    route: "/mobile-app-development/:id",
+    component: <MobileAppDevelopment />,
+  },
+  {
+    name : 'Web App',
+    key : 'web-app',
+    route: "/web-app/:id",
+    component: <WebApp />,
+  },
+  {
+    name : 'CopyWriting',
+    key : 'copy-writing',
+    route: "/copy-writing/:id",
+    component: <CopyWriting />,
+  },
+  {
+    name : 'Social Media Manager',
+    key : 'social-media-manager',
+    route: "/social-media-manager/:id",
+    component: <SocialMediaManager />,
+  },
+  {
+    name : 'Website Development',
+    key : 'website-development',
+    route: "/website-development/:id",
+    component: <WebsiteDevelopment />,
+  },
+
   {
     type: "collapse-dropdown",
     name: "Settings",

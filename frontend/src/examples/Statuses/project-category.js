@@ -12,7 +12,7 @@ const CategoryFilter = ({ data, status, handleChange, personName, clearValue }) 
             onChange={(event,newValue) => {
                 handleChange(newValue)
             }}
-            getOptionDisabled={(options) => options !== 'Graphic Design'}
+            // getOptionDisabled={(options) => options !== 'Graphic Design' || options !==  'Mobile App Development'}
             value={personName}
             renderInput={(params) => <TextField {...params} label={status} />}
         />

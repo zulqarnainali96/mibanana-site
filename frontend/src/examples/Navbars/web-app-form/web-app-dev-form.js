@@ -13,6 +13,7 @@ import check from '../../../assets/images/check.png'
 import axios from 'axios';
 import { webAppSchema } from 'Schema/Index';
 import { useFormik } from 'formik';
+import apiClient from 'api/apiClient';
 
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
@@ -45,11 +46,11 @@ const initialValues = {
     project_title: '',
     preferred_stack: "",
     backend_tech: "",
-    project_details: "",
+    project_description: "",
 };
 
 const WebAppDevForm = (props) => {
-    const { open, handleClose } = props;
+    const { open, handleClose, setRespMessage, openErrorSB, openSuccessSB } = props;
     const [openModal, setOpenModal] = useState(false);
 
     const {
@@ -62,28 +63,35 @@ const WebAppDevForm = (props) => {
     } = useFormik({
         initialValues: initialValues,
         validationSchema: webAppSchema,
-        onSubmit: async (values, { resetForm }) => {
+        onSubmit: (values, { resetForm }) => {
             const dataToSend = {
                 ...values,
                 user: user,
                 name: name,
             };
-            try {
-                const response = await axios.post('http://localhost:8000/api/create-web-app-project', dataToSend);
-                // console.log(dataToSend)
-                // handleClose();
-                resetForm(clearForm());
-                setOpenModal(true)
-                setTimeout(() => {
-                    handleClose();
-                }, 5000);
-            } catch (error) {
-                console.error('Error:', error);
-            }
+            console.log(dataToSend)
+            // try {
+            //     const { data } = await apiClient.post('/api/create-web-app-project', dataToSend)
+            //     if (data.message) {
+            //         handleClose();
+            //         setRespMessage(data.message)
+            //         resetForm(clearForm());
+            //         setTimeout(() => {
+            //             openSuccessSB();
+            //             // setOpenModal(true)
+            //         }, 500);
+            //     }
+            // } catch (error) {
+            //     setRespMessage(error.message)
+            //     setTimeout(() => {
+            //         openErrorSB();
+            //     }, 500);
+            //     console.error('Web app form error:', error);
+            // }
             function clearForm() {
                 var projectTitle = document.getElementById('project_title');
                 projectTitle.value = "";
-                var projectDetail = document.getElementById('project_details');
+                var projectDetail = document.getElementById('project_description');
                 projectDetail.value = "";
             }
 
@@ -102,10 +110,7 @@ const WebAppDevForm = (props) => {
                     onClick={handleClose}
                     sx={{ position: "absolute", right: 4, padding: '1.4rem !important' }}
                 >
-                    <CloseOutlined sx={
-                        {
-                            fill: '#444'
-                        }} />
+                    <CloseOutlined sx={{ fill: '#444' }} />
                 </MDButton>
             </DialogTitle>
 
@@ -190,13 +195,13 @@ const WebAppDevForm = (props) => {
                             </MDTypography>
                             <TextField
                                 placeholder="Enter your Project Description"
-                                id="project_details"
-                                name="project_details"
+                                id="project_description"
+                                name="project_description"
                                 type="text"
-                                value={values.project_details}
+                                value={values.project_description}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                error={touched.project_details && Boolean(errors.project_details)}
+                                error={touched.project_description && Boolean(errors.project_description)}
                                 multiline
                                 rows={4}
                                 style={{ width: '100%' }}
@@ -204,7 +209,12 @@ const WebAppDevForm = (props) => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <MDButton type="submit" style={{ width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }}>Submit</MDButton>
+                            <MDButton
+                                type="submit"
+                                style={submitButtonStyle}
+                            >
+                                Submit
+                            </MDButton>
                         </Grid>
                     </Grid>
                 </form>
@@ -214,5 +224,8 @@ const WebAppDevForm = (props) => {
         </BootstrapDialog>
     )
 }
+
+const submitButtonStyle = { width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }
+
 
 export default WebAppDevForm

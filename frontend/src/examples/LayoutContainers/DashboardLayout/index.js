@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import MDBox from "components/MDBox";
 import { useMaterialUIController, setLayout } from "context";
-import MDSnackbar from "components/MDSnackbar";
 
 function DashboardLayout(props) {
   const { children, respMessage, closeErrorSB, closeSuccessSB, successSB, errorSB } = props
@@ -15,34 +14,6 @@ function DashboardLayout(props) {
   useEffect(() => {
     setLayout(dispatch, "dashboard");
   }, [pathname]);
-
-  const renderErrorSB = (
-    <MDSnackbar
-      color="error"
-      icon="warning"
-      title="Error"
-      content={respMessage}
-      dateTime={new Date().toLocaleTimeString('pk')}
-      open={errorSB}
-      onClose={closeErrorSB}
-      close={closeErrorSB}
-      bgWhite
-    />
-  );
-
-  const renderSuccessSB = (
-    <MDSnackbar
-      color="success"
-      icon="check"
-      title="SUCCESS"
-      content={respMessage}
-      dateTime={new Date().toLocaleTimeString('pk')}
-      open={successSB}
-      onClose={closeSuccessSB}
-      close={closeSuccessSB}
-      bgWhite
-    />
-  );
 
   return (
     <MDBox
@@ -63,10 +34,6 @@ function DashboardLayout(props) {
       })}
     >
       {children}
-      <>
-        {renderSuccessSB}
-        {renderErrorSB}
-      </>
     </MDBox>
   );
 }

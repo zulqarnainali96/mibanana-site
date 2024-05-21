@@ -20,7 +20,7 @@ function convertCreatedAtToDate(createdAt) {
   return new Date(`${year}-${month - 1}-${day}T${hours}:${minutes}:${seconds}`);
 }
 
-const orderOfStatus = ['For Review', 'Ongoing', 'Assigned','Project manager', 'Completed', 'Revision', 'Cancel'];
+const orderOfStatus = ['For Review', 'Ongoing', 'Assigned', 'Project manager', 'Completed', 'Revision', 'Cancel'];
 
 function sortByStatus(arr) {
   return arr.sort((a, b) => {
@@ -84,6 +84,10 @@ const currentUserRole = (state) => {
       return {
         projectManager: true,
         designer: false,
+        mobile_app_developer: false,
+        copywriter: false,
+        web_developer: false,
+        social_media_manager: false,
         customer: false,
         admin: false
       }
@@ -92,14 +96,71 @@ const currentUserRole = (state) => {
       return {
         projectManager: false,
         designer: true,
+        mobile_app_developer: false,
+        copywriter: false,
+        web_developer: false,
+        social_media_manager: false,
         customer: false,
         admin: false
       }
     }
+    else if (roles?.includes("Mobile-App-Developer")) {
+      return {
+        projectManager: false,
+        designer: false,
+        mobile_app_developer: true,
+        copywriter: false,
+        web_developer: false,
+        social_media_manager: false,
+        customer: false,
+        admin: false
+      }
+    }
+    else if (roles?.includes("CopyWriter")) {
+      return {
+        projectManager: false,
+        designer: false,
+        mobile_app_developer: false,
+        copywriter: true,
+        web_developer: false,
+        social_media_manager: false,
+        customer: false,
+        admin: false
+      }
+    }
+    else if (roles?.includes("Web-Developer")) {
+      return {
+        projectManager: false,
+        designer: false,
+        mobile_app_developer: false,
+        copywriter: false,
+        web_developer: true,
+        social_media_manager: false,
+        customer: false,
+        admin: false
+      }
+    }
+    else if (roles?.includes("Social-Media-Manager")) {
+      return {
+        projectManager: false,
+        designer: false,
+        mobile_app_developer: false,
+        copywriter: false,
+        web_developer: false,
+        social_media_manager: true,
+        customer: false,
+        admin: false
+      }
+    }
+
     else if (roles?.includes("Customer")) {
       return {
         projectManager: false,
         designer: false,
+        mobile_app_developer: false,
+        copywriter: false,
+        web_developer: false,
+        social_media_manager: false,
         customer: true,
         admin: false
       }
@@ -108,6 +169,10 @@ const currentUserRole = (state) => {
       return {
         projectManager: false,
         designer: false,
+        mobile_app_developer: false,
+        copywriter: false,
+        web_developer: false,
+        social_media_manager: false,
         customer: false,
         admin: true
       }
@@ -194,5 +259,14 @@ const projecStatusNotifications = async (id, callback) => {
     });
 };
 
+const openProjectByFormType = (project_category) => {
+  console.log(project_category)
+  if (project_category === 'mobile-app-development') { return true }
+  else if (project_category === 'web-app') { return true }
+  else if (project_category === 'copy-writing') { return true }
+  else if (project_category === 'social-media-manager') { return true }
+  else if (project_category === 'website-development') { return true }
+}
 
-export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus, getProjectById, projectNotifications, projecStatusNotifications, getSingleProjectById }
+
+export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus, getProjectById, projectNotifications, projecStatusNotifications, getSingleProjectById, openProjectByFormType }

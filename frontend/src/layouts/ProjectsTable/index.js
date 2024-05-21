@@ -22,6 +22,7 @@ import { IconButton, useMediaQuery } from "@mui/material";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { getBrandData, projectStatus } from "redux/global/global-functions";
 import TransitionsErrorModal from "components/Modal/ErrorModal";
+import { openProjectByFormType } from "redux/global/global-functions";
 
 const ProjectTable = ({ reduxState, reduxActions }) => {
   const { columns, small_columns } = authorsTableData();
@@ -51,14 +52,21 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
 
   function openProjectChat(id) {
     reduxActions.getID(id);
-    setTimeout(() => {
-      navigate("/chat/" + id);
-    }, 400)
+    const filterProject = projectList.find(proj => proj._id === id)
+    console.log(filterProject)
+    if (openProjectByFormType(filterProject.project_category)) {
+      setTimeout(() => {
+        navigate(`/${filterProject.project_category}/${filterProject._id}`);
+      }, 400)
+    } else {
+      setTimeout(() => {
+        navigate(`/chat/${id}`);
+      }, 400)
+    }
   }
 
   const rows = projectList?.length
     ? projectList?.map((item, i) => {
-
       return {
         project_title: <MDBox lineHeight={1}>
           <MDTypography
@@ -312,6 +320,17 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     "Ongoing",
     "For Review",
   ];
+  const projectCategory = [
+    "Graphic Design",
+    "Mobile App Development",
+    // "Copywriting",
+    // "Illustration",
+    // "Video Editing",
+    // "Motion Graphic",
+    // "Web Development",
+    // "Voice Over",
+    // "Social Media Management Lite",
+  ]
   const filterBrand = reduxState?.customerBrand?.map((item) => item.brand_name);
 
   const refreshProjects = () => getProjectData(reduxState.userDetails?.id, reduxActions.getCustomerProject)
@@ -403,7 +422,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                     <CategoryFilter
                       projectList={projectList}
                       setProjectList={setProjectList}
-                      data={reduxState.category}
+                      data={projectCategory} s
                       personName={category}
                       handleChange={handleCategoryChange}
                       status={"CATEGORY"}

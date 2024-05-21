@@ -7,7 +7,6 @@ import Grid from '@mui/material/Grid'
 import { Close, CloseOutlined, Remove } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
 import MDInput from 'components/MDInput'
-import PropTypes from 'prop-types'
 import MDTypography from 'components/MDTypography'
 import MDBox from 'components/MDBox'
 import { Checkbox, DialogActions, Divider, FormControlLabel } from '@mui/material'
@@ -26,7 +25,7 @@ const BrandModal = styled(Dialog)(({ theme }) => ({
     //     paddingBlock: '15px'
     // },
     '& .MuiPaper-root': {
-        maxWidth: '45% !important'
+        maxWidth: '48% !important'
     },
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -71,10 +70,13 @@ const BrandForm = (props) => {
         setCheckState,
         getDescriptionText,
         setOpenModal,
-        openModal
+        openModal,
+        quillRef,
+        isContentEmpty
     } = props
-    
+
     const logoRef = useRef(null)
+    const RawlogoRef = useRef(null)
     const moodboard = useRef(null)
     const brandGuide = useRef(null)
     const isOthers = useRef(null)
@@ -129,11 +131,11 @@ const BrandForm = (props) => {
                 <Divider light={false} />
             </DialogTitle>
             <DialogContent>
-                <Grid container component={"form"} spacing={2} justifyContent={"center"}>
+                <Grid container component={"form"} spacing={2} justifyContent={"center"} onSubmit={onSubmit}>
                     <Grid item xxl={12} lg={12} xs={12} md={12}>
                         <MDBox>
                             <label style={Styles} htmlFor='Name'>Brand Name</label>
-                            <MDInput type="text" name="brand_name" placeholder="Brand Name" variant="outlined" fullWidth onChange={onChangeText} />
+                            <MDInput type="text" name="brand_name" id="Name" placeholder="Brand Name" variant="outlined" fullWidth onChange={onChangeText} required />
                         </MDBox>
                     </Grid>
                     <Grid item xxl={12} lg={12} xs={12} md={12}>
@@ -151,10 +153,13 @@ const BrandForm = (props) => {
                                 modules={modules}
                                 formats={formats}
                                 className={quillClasses.quill}
+                                ref={quillRef}
+
                             />
                             {/* <textarea style={textareaStyles}
                                 type="text" rows={5} cols={100} name="brand_description" onChange={onChange} placeholder="Brand Description and links" variant="outlined" /> */}
                         </MDBox>
+                        {isContentEmpty && <span style={{ color: 'red', fontFamily: 'arial' }}>Brand description field is required.</span>}
                     </Grid>
                     <Grid item xxl={6} lg={6} xs={12} md={12}>
                         <MDBox>
@@ -200,7 +205,7 @@ const BrandForm = (props) => {
                         <Grid container margin={1} justifyContent={"space-between"}
                             sx={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '8px', overflowY: 'scroll', height: '260px' }}
                         >
-                            <Grid item xxl={3} xl={3}>
+                            <Grid item xxl={4} xl={4} lg={4}>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
                                     <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox
                                         // classes={{ checked: classes.checkedCheckbox }}
@@ -216,6 +221,22 @@ const BrandForm = (props) => {
                                         onChange={() => handleCheckboxes('isLogochk')} />}
                                     />
                                     <label style={Styles} htmlFor='logo' aria-label='logo'>Logo</label>
+                                </AlignGrid>
+                                <AlignGrid item xxl={5} xl={5} mb={1.5}>
+                                    <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox
+                                        // classes={{ checked: classes.checkedCheckbox }}
+                                        checked={checkState?.is_raw_logo_check}
+                                        sx={{
+                                            width: 30,
+                                            height: 30,
+                                            marginRight: '0px',
+                                            marginTop: '5px',
+
+                                        }}
+                                        inputProps={{ 'aria-label': 'controlled' }}
+                                        onChange={() => handleCheckboxes('is_raw_logo_check')} />}
+                                    />
+                                    <label style={Styles} htmlFor='logo' aria-label='logo'>Raw Logo</label>
                                 </AlignGrid>
                                 <AlignGrid item xxl={4} xl={4} mb={1.5}>
                                     <FormControlLabel sx={{ mr: 0, ml: 0 }} control={<Checkbox checked={checkState?.isMoodBoardchk} sx={{ width: 30, height: 30 }}
@@ -237,17 +258,10 @@ const BrandForm = (props) => {
                                     <label style={Styles} htmlFor='Others' aria-label='others'>Others</label>
                                 </AlignGrid>
                             </Grid>
-                            <Grid item xxl={9} xl={9} lg={9} mb={1.5}>
+                            <Grid item xxl={8} xl={8} lg={8} mb={1.5}>
                                 <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
                                     {image?.upload_logo?.name ? <Close fontSize='medium'
-                                        sx={{
-                                            position: 'absolute', cursor: 'pointer',
-                                            left: '-29px',
-                                            fill: '#000 !important',
-                                            background: '#adff2f',
-                                            borderRadius: '20px',
-                                            padding: '2px',
-                                        }}
+                                        sx={removeStyle}
                                         onClick={() => removeImage('upload_logo')} /> : null}
                                     <MDBox display="flex" flexDirection="column">
                                         <MDInput
@@ -274,7 +288,7 @@ const BrandForm = (props) => {
                                             onClick={() => openLogo(logoRef)}
                                             disabled={!checkState?.isLogochk}
                                         >
-                                            Upload Logo
+                                            Upload Logo &nbsp; <span style={{ fontSize: '10px' }}>(jpg, png, svg)</span>
                                         </MDButton>
                                         <input
                                             type="file"
@@ -282,7 +296,7 @@ const BrandForm = (props) => {
                                             hidden={true}
                                             name="upload_logo"
                                             style={uploadImage}
-                                            accept=".ai, .eps, .psd, .jpg, .png, .pdf, .svg"
+                                            accept=".jpg,.png,.svg"
                                             id="upload-logo"
                                             onChange={handleFileUpload}
                                             disabled={!checkState?.isLogochk}
@@ -291,15 +305,53 @@ const BrandForm = (props) => {
 
                                 </AlignGrid>
                                 <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
+                                    {image?.upload_raw_logo.name ? <Close fontSize='medium'
+                                        sx={removeStyle}
+                                        onClick={() => removeImage('upload_raw_logo')} /> : null}
+                                    <MDBox display="flex" flexDirection="column">
+                                        <MDInput
+                                            type="text"
+                                            sx={{
+                                                ...inputStyles,
+                                                "& fieldset": {
+                                                    opacity: checkState?.is_raw_logo_check ? 1 : '0.2',
+                                                    backgroundColor: '#cccccca1'
+                                                },
+                                            }}
+                                            value={image?.upload_raw_logo.name ? image.upload_raw_logo.name : ''}
+                                            disabled
+                                        />
+                                    </MDBox>
+                                    &nbsp; &nbsp;
+                                    <label htmlFor='upload_raw_logo' style={{ position: 'relative' }}>
+                                        <MDButton
+                                            py={1}
+                                            height="10px"
+                                            color="warning"
+                                            type="button"
+                                            sx={buttonStyles}
+                                            onClick={() => openLogo(RawlogoRef)}
+                                            disabled={!checkState?.is_raw_logo_check}
+                                        >
+                                            Upload Logo &nbsp; <span style={{ fontSize: '10px' }}>(ai, eps, psd)</span>
+                                        </MDButton>
+                                        <input
+                                            type="file"
+                                            ref={RawlogoRef}
+                                            hidden={true}
+                                            name="upload_raw_logo"
+                                            style={uploadImage}
+                                            accept=".ai, .eps, .psd"
+                                            id="upload_raw_logo"
+                                            onChange={handleFileUpload}
+                                            disabled={!checkState?.is_raw_logo_check}
+                                        />
+                                    </label>
+
+                                </AlignGrid>
+                                <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
                                     {image?.upload_moodboard[0]?.name ? <Close fontSize='medium'
-                                        sx={{
-                                            position: 'absolute', cursor: 'pointer',
-                                            left: '-29px',
-                                            fill: '#000 !important',
-                                            background: '#adff2f',
-                                            borderRadius: '20px',
-                                            padding: '2px',
-                                        }}
+                                        sx={removeStyle}
                                         onClick={() => removeImage('upload_moodboard')} /> : null}
                                     <MDBox display="flex" flexDirection="column">
                                         <MDInput
@@ -341,14 +393,7 @@ const BrandForm = (props) => {
                                 </AlignGrid>
                                 <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
                                     {image?.replace_brand_guidelines[0]?.name ? <Close fontSize='medium'
-                                        sx={{
-                                            position: 'absolute', cursor: 'pointer',
-                                            left: '-29px',
-                                            fill: '#000 !important',
-                                            background: '#adff2f',
-                                            borderRadius: '20px',
-                                            padding: '2px',
-                                        }}
+                                        sx={removeStyle}
                                         onClick={() => removeImage('replace_brand_guidelines')} /> : null}
                                     <MDBox display="flex" flexDirection="column">
                                         <MDInput
@@ -393,14 +438,7 @@ const BrandForm = (props) => {
                                 </AlignGrid>
                                 <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
                                     {image?.upload_more[0]?.name ? <Close fontSize='medium'
-                                        sx={{
-                                            position: 'absolute', cursor: 'pointer',
-                                            left: '-29px',
-                                            fill: '#000 !important',
-                                            background: '#adff2f',
-                                            borderRadius: '20px',
-                                            padding: '2px',
-                                        }}
+                                        sx={removeStyle}
                                         onClick={() => removeImage('upload_more')} /> : null}
                                     <MDBox display="flex" flexDirection="column">
                                         <MDInput
@@ -449,28 +487,20 @@ const BrandForm = (props) => {
                                 let value = image[item.name]?.length ? image[item.name][0].name : ''
                                 return (
                                     <React.Fragment key={i}>
-                                        <Grid item xxl={3} xl={3}>
+                                        <Grid item xxl={4} xl={4} lg={4}>
                                             <AlignGrid item xxl={4} xl={4} mb={1.5}>
                                                 <Checkbox sx={{ width: 30, height: 30 }} defaultChecked />
                                                 <label style={Styles} htmlFor={`logo${item.name}`} aria-label='logo'>{item.name}</label>
                                             </AlignGrid>
                                         </Grid>
-                                        <Grid item xxl={9} xl={9} lg={9} mb={1.5}>
+                                        <Grid item xxl={8} xl={8} lg={8} mb={1.5}>
                                             <AlignGrid item xxl={12} xl={12} lg={12} sx={{ height: '45px', position: 'relative' }}>
                                                 <Remove
                                                     fontSize='medium'
-                                                    sx={{
-                                                        position: 'absolute', cursor: 'pointer',
-                                                        left: '-29px',
-                                                        fill: '#000 !important',
-                                                        background: '#adff2f',
-                                                        borderRadius: '20px',
-                                                        padding: '2px',
-                                                        // top : '0px'
-                                                    }}
+                                                    sx={removeStyle}
                                                     onClick={() => removeAddField(item)} />
                                                 <MDInput
-                                                    sx={inputStyles}
+                                                    sx={{ ...inputStyles, backgroundColor: '#cccccca1 !important' }}
                                                     type="text"
                                                     value={value}
                                                     disabled
@@ -517,48 +547,46 @@ const BrandForm = (props) => {
                             </Grid>
                         </Grid>
                     </Grid>
+                    <DialogActions>
+                        <MDButton
+                            type="submit"
+                            disabled={loading}
+                            endIcon={<div
+                                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <ArrowForward fontSize='medium' />&nbsp;
+                                <MoonLoader loading={loading} size={20} color='#121212' />
+                            </div>}
+                            // onClick={onSubmit}
+                            size="large"
+                            color="warning"
+                            sx={{
+                                ...buttonStyles,
+                                ...submitButton
+                            }}>
+                            Submit
+                        </MDButton>
+                    </DialogActions>
                 </Grid>
-                <DialogActions>
-                    <MDButton
-                        type="button"
-                        disabled={loading}
-                        endIcon={<div
-                            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <ArrowForward fontSize='medium' />&nbsp;
-                            <MoonLoader loading={loading} size={20} color='#121212' />
-                        </div>}
-                        onClick={onSubmit}
-                        size="large"
-                        color="warning"
-                        sx={{
-                            ...buttonStyles,
-                            ...submitButton
-                        }}>
-                        Submit
-                    </MDButton>
-                </DialogActions>
             </DialogContent>
             <TransitionsModal message="Brand created successfully!" check={check} openModal={openModal} setOpenModal=
-        {setOpenModal} />
+                {setOpenModal} />
         </BrandModal >
     )
 }
 
-// BrandForm.prototype = {
-//     state: PropTypes.object.isRequired,
-//     open: PropTypes.bool.isRequired,
-//     loading: PropTypes.bool.isRequired,
-//     onChange: PropTypes.func.isRequired,
-//     onClose: PropTypes.func.isRequired,
-//     onSubmit: PropTypes.func.isRequired,
-
-// }
+const removeStyle = {
+    position: 'absolute', cursor: 'pointer',
+    left: '-29px',
+    fill: '#000 !important',
+    background: '#adff2f',
+    borderRadius: '20px',
+    padding: '2px',
+}
 
 const uploadImage = {
     position: 'absolute',
     left: 0,
     bottom: '-7px',
-    // height: '44px',
     top: 0,
     height: '27px',
     opacity: 0,
@@ -613,76 +641,3 @@ const textareaStyles = {
     fontWeight: '400',
 }
 export default BrandForm
-
-
-{/* <Grid item xxl={3} xl={4} lg={5} md={6} xs={10} sx={{ background: 'white', boxShadow: "4px 3px 7px -2px #cccccc0d" }}>
-<MDBox pt={4} pb={3} px={3} >
-    <MDBox component="form" role="form" >
-        <Grid container spacing={2}>
-            <Grid item lg={6} xs={12} md={12}>
-                <MDBox mb={2}>
-                    <label style={Styles} htmlFor='Name'>Name</label>
-                    <MDInput type="text" placeholder="Full Name" variant="outlined" fullWidth />
-                </MDBox>
-            </Grid>
-            <Grid item lg={6} xs={12} md={12}>
-                <MDBox mb={2}>
-                    <label style={Styles} htmlFor='Email'>Email</label>
-                    <MDInput type="email" placeholder="Email address" variant="outlined" fullWidth />
-                </MDBox>
-            </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-            <Grid item xxl={12} lg={12} xs={12} md={12}>
-                <MDBox mb={2} sx={{ position: "relative" }}>
-                    <label style={Styles} htmlFor='Password'>Password</label>
-                    <MDInput type="text" placeholder="Password" variant="outlined" fullWidth />
-                    <IconButton
-                        // onClick={handleClickShowPassword}
-                        sx={{
-                            position: "absolute",
-                            right: 0,
-                        }}
-                    >
-                        {/* {showPassword ? <Visibility /> : <VisibilityOff />} */}
-//             </IconButton>
-//         </MDBox>
-//     </Grid>
-// </Grid>
-// <Grid container>
-//     <Grid item xl={12} xs={12} lg={12} md={12}>
-//         <MDBox mb={2} sx={{ position: "relative" }}>
-//             <label style={Styles} htmlFor='ConfirmPassword'>Confirm Password</label>
-//             <MDInput type={"text"} placeholder="Confirm Password" variant="outlined" fullWidth />
-//             <IconButton
-//                 // onClick={handleClickConfirmPassword}
-//                 sx={{
-//                     position: "absolute",
-//                     right: 0,
-//                 }}
-// >
-{/* {showConfirmPassword ? <Visibility /> : <VisibilityOff />} */ }
-// </IconButton>
-// </MDBox>
-// </Grid>
-// </Grid>
-{/* <MDBox display="flex" alignItems="center" ml={-1}>
-            <Checkbox />
-        </MDBox>
-        <MDBox mt={4} mb={1} pt={3}>
-            <MDButton type="submit" color="warning" fullWidth
-                circular={true}
-                sx={{
-                    color: '#000 !important',
-                    fontSize: 14,
-                    textTransform: "capitalize"
-                }}
-            >
-                Submit &nbsp; <ArrowForward fontSize='large' />
-
-            </MDButton>
-        </MDBox> */}
-
-//     </MDBox>
-// </MDBox>
-// </Grid>

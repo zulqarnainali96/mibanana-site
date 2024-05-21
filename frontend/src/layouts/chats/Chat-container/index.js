@@ -16,7 +16,6 @@ import MDBox from 'components/MDBox';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import MDButton from 'components/MDButton';
 import apiClient from 'api/apiClient';
