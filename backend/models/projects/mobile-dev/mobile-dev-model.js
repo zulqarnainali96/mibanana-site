@@ -20,7 +20,7 @@ const MobileDevSchema = mongoose.Schema({
         required : true,
         default : ""
     },
-    project_details: {
+    project_description: {
         type: String,
         required: false,
         default: ""
@@ -34,6 +34,11 @@ const MobileDevSchema = mongoose.Schema({
         type: String,
         required: true,
         default: 'Project manager'
+    },
+    project_category : {
+        type: String,
+        required: false,
+        default: 'mobile-app-development'
     },
     version: [{
         type: String,

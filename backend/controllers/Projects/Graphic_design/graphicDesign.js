@@ -2,10 +2,13 @@ const asyncHandler = require("express-async-handler")
 const User = require('../../../models/UsersLogin')
 const graphicDesignModel = require("../../../models/graphic-design-model")
 const { bucket } = require('../../../google-cloud-storage/gCloudStorage')
-const Projects = require('../../../models/graphic-design-model')
-const { v4: uniqID } = require('uuid')
-const path = require('path')
 const { sendStatusChangeMailtoCustomer } = require("../../../utils/sendMail")
+const mobileAppModel = require('../../../models/projects/mobile-dev/mobile-dev-model')
+const webappModel = require('../../../models/projects/web-app/web-app-model')
+const copyWritingModel = require('../../../models/projects/copy-writing/copy-writing-model')
+const socialMediaModal = require('../../../models/projects/social-media-modal/social-media-modal')
+const websiteModal = require('../../../models/projects/website-model/website-model')
+const webAppModel = require("../../../models/projects/web-app/web-app-model")
 
 const createGraphicDesign = asyncHandler(async (req, res) => {
     const {
@@ -83,47 +86,6 @@ const updateGraphicDesign = async (req, res) => {
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
-
-const upadteProject = asyncHandler(async (req, res) => {
-    const { project_id, project_data } = req.body
-    if (!project_id) {
-        return res.status(400).json({ message: "id not provided Try Login again" })
-    }
-    const { team_members, is_active, status } = project_data
-    if (project_id) {
-        const findingProj = await graphicDesignModel.findById(project_id)
-        if (findingProj) {
-            if (findingProj.team_members.length > 0) {
-                // findingProj.team_members = [...findingProj.team_members, ...team_members]
-                return res.status(201).send({ message: 'Already Assigned to Designer', })
-            } else {
-                findingProj.team_members = team_members
-                findingProj.status = status
-                findingProj.is_active = is_active
-                const save = await findingProj.save()
-                return res.status(201).send({ message: 'Project Updated', save })
-            }
-        }
-    }
-    res.status(404).send({ message: "No Project Found" })
-})
-const getSingleProject = async (req, res) => {
-    const _id = req.params.id
-    if (!_id) {
-        return res.status(400).json({ message: "id not provided Try Login again" })
-    }
-    try {
-        const findProject = await graphicDesignModel.findOne({ _id })
-        if (findProject) {
-            return res.status(200).json({ message: "Project Found", project: findProject })
-        } else {
-            return res.status(404).json({ message: "Project Not Found" })
-        }
-    } catch (err) {
-        res.status(500).send({ message: "Internal Server Error" })
-    }
-}
-
 // Api Needs to be updated 
 const deleteGraphicProject = async (req, res) => {
     const _id = req.params.id
@@ -206,33 +168,77 @@ const deleteFile = async (req, res) => {
 const getGraphicProject = asyncHandler(async (req, res) => {
     const id = req.params.id
     if (!id) {
-        return res.status(400).json({ message: "id not provided Try Login again" })
+        return res.status(400).json({ message: "ID not provided Try Login again" })
     }
     if (id) {
         const findUser = await User.findOne({ _id: id }).exec()
         if (findUser) {
             const Roles = findUser.roles
+            // Project-Manager
             if (Roles.includes("Project-Manager")) {
-                const CustomerProjects = await graphicDesignModel.find().lean()
-                return res.status(200).send({
-                    message: 'hello Project manager', CustomerProjects
-                })
-            }
-            else if (Roles.includes("Admin")) {
-                const CustomerProjects = await graphicDesignModel.find().lean()
-                return res.status(200).send({
-                    message: 'hello Admin', CustomerProjects
-                })
-            }
-            else if (Roles.includes("Customer")) {
-                const CustomerProjects = await graphicDesignModel.find({ user: id }).exec()
-                if (CustomerProjects) {
+                const graphic_projects = await graphicDesignModel.find().exec()
+                const mobile_app_projects = await mobileAppModel.find().exec()
+                const web_app_projects = await webappModel.find().exec()
+
+                const website_projects = await websiteModal.find().exec()
+                const social_media_projects = await socialMediaModal.find().exec()
+                const copy_write_projects = await copyWritingModel.find().exec()
+
+                let CustomerProjects = [...graphic_projects, ...mobile_app_projects, ...web_app_projects, ...website_projects, ...social_media_projects, ...copy_write_projects]
+                if (CustomerProjects.length > 0) {
                     return res.status(200).send({
-                        message: 'hello customer',
+                        message: 'hello Manager',
                         CustomerProjects
+                    })
+                } else {
+                    return res.status(200).send({
+                        message: 'no projects found', CustomerProjects: []
                     })
                 }
             }
+            // Admin
+            else if (Roles.includes("Admin")) {
+                const graphic_projects = await graphicDesignModel.find().exec()
+                const mobile_app_projects = await mobileAppModel.find().exec()
+                const web_app_projects = await webappModel.find().exec()
+                const website_projects = await websiteModal.find().exec()
+                const social_media_projects = await socialMediaModal.find().exec()
+                const copy_write_projects = await copyWritingModel.find().exec()
+                let CustomerProjects = [...graphic_projects, ...mobile_app_projects, ...web_app_projects, ...website_projects, ...social_media_projects, ...copy_write_projects]
+
+                if (CustomerProjects.length > 0) {
+                    return res.status(200).send({
+                        message: 'Hello Admin',
+                        CustomerProjects
+                    })
+                } else {
+                    return res.status(200).send({
+                        message: 'no projects found', CustomerProjects: []
+                    })
+                }
+            }
+            // Customer
+            else if (Roles.includes("Customer")) {
+                const graphic_projects = await graphicDesignModel.find({ user: id }).exec()
+                const mobile_app_projects = await mobileAppModel.find({ user: id }).exec()
+                const web_app_projects = await webappModel.find().exec()
+                const website_projects = await websiteModal.find({ user: id }).exec()
+                const social_media_projects = await socialMediaModal.find({ user: id }).exec()
+                const copy_write_projects = await copyWritingModel.find({ user: id }).exec()
+                let CustomerProjects = [...graphic_projects, ...mobile_app_projects, ...web_app_projects, ...website_projects, ...social_media_projects, ...copy_write_projects]
+
+                if (CustomerProjects.length > 0) {
+                    return res.status(200).send({
+                        message: 'Hello customer',
+                        CustomerProjects
+                    })
+                } else {
+                    return res.status(200).send({
+                        message: 'no projects found', CustomerProjects: []
+                    })
+                }
+            }
+            // Graphic-Designer
             else if (Roles.includes("Graphic-Designer")) {
                 const getList = await graphicDesignModel.find().lean().exec()
                 if (getList) {
@@ -246,48 +252,71 @@ const getGraphicProject = asyncHandler(async (req, res) => {
                     })
                 }
             }
+            // Mobile-App-Developer
+            else if (Roles.includes("Mobile-App-Developer")) {
+                const getList = await mobileAppModel.find().lean().exec()
+                if (getList) {
+                    // console.log(id)
+                    const filteredData = getList.filter(item =>
+                        item.team_members.some(member => member._id === id)
+                    );
+                    // console.log(filteredData);
+                    return res.status(200).send({
+                        message: 'hello Mobile-App-Developer', CustomerProjects: filteredData
+                    })
+                }
+            }
+            else if (Roles.includes("CopyWriter")) {
+                const getList = await copyWritingModel.find().lean().exec()
+                if (getList) {
+                    // console.log(id)
+                    const filteredData = getList.filter(item =>
+                        item.team_members.some(member => member._id === id)
+                    );
+                    // console.log(filteredData);
+                    return res.status(200).send({
+                        message: 'hello Mobile-App-Developer', CustomerProjects: filteredData
+                    })
+                }
+            }
+            else if (Roles.includes("Social-Media-Manager")) {
+                const getList = await copyWritingModel.find().lean().exec()
+                if (getList) {
+                    // console.log(id)
+                    const filteredData = getList.filter(item =>
+                        item.team_members.some(member => member._id === id)
+                    );
+                    // console.log(filteredData);
+                    return res.status(200).send({
+                        message: 'hello Mobile-App-Developer', CustomerProjects: filteredData
+                    })
+                }
+            }
+            else if (Roles.includes("Web-Developer")) {
+                let filtered_website_project = []
+                let filtered_web_app_project = []
+                const website_projects = await websiteModal.find().lean().exec()
+                const web_app_projects = await webAppModel.find().lean().exec()
+
+                if (website_projects) {
+                    filtered_website_project = website_projects.filter(item =>
+                        item.team_members.some(member => member._id === id)
+                    );
+                }
+                if (web_app_projects) {
+                    filtered_web_app_project = web_app_projects.filter(item =>
+                        item.team_members.some(member => member._id === id)
+                    );
+                }
+                return res.status(200).send({
+                    message: 'hello Mobile-App-Developer', CustomerProjects: [...filtered_website_project, ...filtered_web_app_project]
+                })
+            }
         }
     }
     return res.status(404).send('Data not available')
 
 })
-const getCustomerFiles = async (req, res) => {
-    const _id = req.params.id
-    if (!_id) {
-        return res.status(400).send({ message: 'ID not found' })
-    }
-    try {
-        const currentProject = await Projects.findById(_id)
-        if (currentProject) {
-            let { user } = currentProject
-            const prefix = `${user}/projects/${_id}/customer-upload/`
-            const [files] = await bucket.getFiles({ prefix })
-            let filesInfo = files?.map((file) => {
-                let obj = {}
-                    obj.id = uniqID(),
-                    obj.name = path.basename(file.name),
-                    obj.url = encodeURI(file.storage.apiEndpoint + '/' + file.bucket.name + '/' + file.name),
-                    obj.download_link = file.metadata.mediaLink
-                    obj.type = file.metadata.contentType
-                    obj.size = file.metadata.size
-                    obj.time = file.metadata.timeCreated
-                    obj.upated_time = file.metadata.updated
-                    obj.folder_name = prefix
-                    obj.folder_dir = "Customer"
-                return obj
-            })
-            if (filesInfo.length > 0) {
-                return res.status(200).send({ message: 'Files fount', filesInfo })
-            }
-            if (filesInfo.length === 0 && files.length === 0) {
-                return res.status(404).send({ message: 'No Files Found' })
-            }
-        }
-    } catch (error) {
-        // console.log(error.message)
-        res.status(500).send({ message: 'Internal Server error' })
-    }
-}
 const duplicateProject = async (req, res) => {
     const id = req.params.id
     const { user } = req.body
@@ -484,57 +513,6 @@ const projectForReview = async (req, res) => {
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
-const updateDriveLink = async (req, res) => {
-    const id = req.body.id
-    const drive_link = req.body.drive_link
-    if (!id) {
-        return res.status(400).send({ message: 'ID not found' })
-    }
-    try {
-        const findproject = await graphicDesignModel.findById(id)
-        if (findproject) {
-            const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { drive_link })
-            if (updatingStatus) {
-                const link = await graphicDesignModel.findById(id)
-                return res.status(201).send({ message: 'Drive Link Updated', drive_link: link.drive_link })
-            }
-            else {
-                return res.status(400).send({ message: 'Found error while Updating Drive Link' })
 
-            }
-        } else {
-            return res.status(404).send({ messsage: 'Project Not Found' })
-        }
 
-    } catch (err) {
-        res.status(500).send({ message: "Internal Server Error" })
-    }
-}
-const updateFigmaLink = async (req, res) => {
-    const id = req.body.id
-    const figma_link = req.body.figma_link
-    if (!id) {
-        return res.status(400).send({ message: 'ID not found' })
-    }
-    try {
-        const findproject = await graphicDesignModel.findById(id)
-        if (findproject) {
-            const updatingStatus = await graphicDesignModel.findByIdAndUpdate(id, { figma_link })
-            if (updatingStatus) {
-                const link = await graphicDesignModel.findById(id)
-                return res.status(201).send({ message: 'Figma Link Updated', figma_link: link.figma_link })
-            }
-            else {
-                return res.status(400).send({ message: 'Found error while Updating Figma Link' })
-
-            }
-        } else {
-            return res.status(404).send({ messsage: 'Project Not Found' })
-        }
-
-    } catch (err) {
-        res.status(500).send({ message: "Internal Server Error" })
-    }
-}
-
-module.exports = { createGraphicDesign, getGraphicProject, upadteProject, deleteGraphicProject, getCustomerFiles, duplicateProject, projectCompleted, projectAttend, projectForReview, deleteFile, projectOngoing, projectCancel, updateDriveLink, updateFigmaLink, getSingleProject, projectWidthRevision, updateGraphicDesign }
+module.exports = { createGraphicDesign, getGraphicProject, deleteGraphicProject, duplicateProject, projectCompleted, projectAttend, projectForReview, deleteFile, projectOngoing, projectCancel, projectWidthRevision, updateGraphicDesign }

@@ -227,7 +227,7 @@ const addMoreImages = async (req, res) => {
             const username = user.name.replace(/\s/g, '')
             const brand_name = brandName.replace(/\s/g, '')
             // const prefix = `${username}-${user._id}/brands/${brand_name}-${brand_id}/`
-            const prefix = `${user._id}/brands/${brand_name}-${brand_id}/`
+            const prefix = `${user._id}/brands/${brand_id}/`
 
             await Promise.all(files.map(file => {
                 const options = {

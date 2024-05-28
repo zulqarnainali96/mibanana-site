@@ -1,5 +1,6 @@
 const { Storage } = require('@google-cloud/storage')
 const path = require('path')
+const bcrypt = require('bcrypt')
 const uniqID = require('uuid').v4
 const gCloudStorage = new Storage({
     projectId: 'mibanana-app',
@@ -27,67 +28,7 @@ const createFolder = async () => {
     })
     return { path }
 }
-let generationMatchPreCondition = 0
 
-const uploadFile = async (req, res) => {
-    let { user_id, project_id } = req.body
-    const prefix = `${user_id}/projects/${project_id}/customer-upload/`
-    await Promise.all(req.files.map(file => {
-        const options = {
-            resumable: false,
-            preconditionOpts: {
-                ifGenerationMatch: generationMatchPreCondition
-            },
-            // public : true
-        }
-        const blob = bucket.file(prefix + file.originalname)
-        blob.createWriteStream(options).on('error', (err) => console.log('err=> ', err))
-            .on('finish', async () => {
-                // console.log('files uploaded')
-                // await bucket.file(file.originalname).makePublic()
-            }).end(file.buffer)
-    }))
-        .then(() => {
-            res.status(201).send({ message: 'files uploaded' })
-        })
-        .catch((err) => {
-            res.status(500).send({ message: 'Internal Server error' })
-            // console.log('resp =>', err)
-        })
-}
-
-const getFiles = async (req, res) => {
-    let { user_id, project_id } = req.body
-    const prefix = `${user_id}/projects/${project_id}/customer-upload/`
-    try {
-        const [files] = await bucket.getFiles({ prefix })
-        let filesInfo = files.map((file) => {
-            let obj = {}
-                obj.id = uniqID(),
-                obj.name = path.basename(file.name),
-                obj.url = encodeURI(file.storage.apiEndpoint + '/' + file.bucket.name + '/' + file.name),
-                obj.download_link = file.metadata.mediaLink,
-                obj.type = file.metadata.contentType,
-                obj.size = file.metadata.size,
-                obj.time = file.metadata.timeCreated,
-                obj.upated_time = file.metadata.updated,
-                obj.folder_name = prefix
-                obj.folder_dir = "Customer"
-            return obj
-        })
-        const findProject = await graphicProjectsModel.findById({ _id: project_id }).exec()
-
-        if (findProject) {
-            findProject.add_files = [{ version1: filesInfo }]
-            findProject.save()
-            return res.status(201).send({ message: 'Project Created Successfully' })
-        } else {
-            return res.status(404).send({ message: 'Project not found' })
-        }
-    } catch (err) {
-        return res.status(500).send({ message: 'Internal Server error' })
-    }
-}
 
 const downloadFile = async (req, res) => {
     try {
@@ -100,4 +41,4 @@ const downloadFile = async (req, res) => {
     }
 }
 
-module.exports = { downloadFile, getFiles, uploadFile, bucket }
+module.exports = { downloadFile, bucket }

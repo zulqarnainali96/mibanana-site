@@ -25,7 +25,7 @@ const websiteSchema = mongoose.Schema({
         required: true,
         default: ""
     },
-    project_details: {
+    project_description: {
         type: String,
         required: true,
         default: ""
@@ -34,6 +34,11 @@ const websiteSchema = mongoose.Schema({
         type: Boolean,
         default: false,
         required: true
+    },
+    project_category : {
+        type: String,
+        required: false,
+        default: 'website-development'
     },
     status: {
         type: String,

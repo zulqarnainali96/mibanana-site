@@ -282,33 +282,7 @@ const updateCustomerDetails = async (req, res) => {
         return res.status(500).send({ message: "Internal Server Error" })
     }
 }
-const createUserRole = async (req, res) => {
-    const { username, is_active, roles, verified, password, email } = req.body
-    if (!username || !roles || !password || !email) {
-        return res.status(402).send({ message: 'Please provide all req fields' })
-    }
-    try {
-        const duplicate = await User.findOne({ email }).lean().exec()
-        if (duplicate) {
-            return res.status(409).json({ message: 'Email already exists' })
-        }
-        const hashPassword = await bcrypt.hash(password, 10)
-        if (hashPassword) {
-            const created_at = new Date().toDateString() + " " + new Date().toLocaleTimeString()
-            const obj = { name: username, is_active, created_at, roles, 'password': hashPassword, verified, email, avatar: '', notifications: [] }
-            const user = await User.create(obj)
-            if (user !== null) {
-                return res.status(201).send({ message: 'User Created' })
-            } else {
-                return res.status(404).send({ message: 'Found error try again!' })
-            }
-        } else {
-            return res.status(500).send({ message: 'Internal Server Error' })
-        }
-    } catch (error) {
-        res.status(500).send({ message: "Internal Server Error" });
-    }
-}
+
 
 const validate = (data) => {
     const schema = Joi.object({
@@ -319,4 +293,4 @@ const validate = (data) => {
 }
 
 
-module.exports = { createUsers, LoginUser, getNewCustomerDetails, getAllRequiredFields, createUserRole, getNonActiveCustomer, getCompanyDetails, deleteCurrentCustomer, updateCustomerDetails } 
+module.exports = { createUsers, LoginUser, getNewCustomerDetails, getAllRequiredFields, getNonActiveCustomer, getCompanyDetails, deleteCurrentCustomer, updateCustomerDetails } 

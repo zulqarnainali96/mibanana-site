@@ -54,10 +54,6 @@ const UserSchema = mongoose.Schema({
         required: false,
         default: []
     }],
-    created_at: {
-        type: String,
-        required: false
-    }
 }, {
     timestamps: true
 })

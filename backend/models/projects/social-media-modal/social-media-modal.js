@@ -31,10 +31,15 @@ const SocialMediaSchema = mongoose.Schema({
         required: true,
         default: ""
     },
-    project_details: {
+    project_description: {
         type: String,
         required: false,
         default: ""
+    },
+    project_category : {
+        type: String,
+        required: false,
+        default: 'social-media-manager'
     },
     is_active: {
         type: Boolean,

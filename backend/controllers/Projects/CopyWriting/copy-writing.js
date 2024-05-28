@@ -5,22 +5,22 @@ const path = require('path')
 const uniqID = require('uuid').v4
 
 const createCopyWritingProject = async (req, res) => {
-    const { user, name, project_title, copy_writing_service, word_count, project_details, } = req.body;
+    const { user, name, project_title, copy_writing_service, word_count, project_description, } = req.body;
 
     if (!user) {
         return res.status(400).send({ message: "id not provided Try Login again!" })
     }
-    if (!project_title || !copy_writing_service || !word_count || !project_details) {
+    if (!project_title || !copy_writing_service || !word_count || !project_description) {
         return res.status(400).send({ message: "Please provide all required fields" })
     }
     try {
         const obj = {
-            user, name, project_title, team_members: [], copy_writing_service, word_count, project_details,
+            user, name, project_title, team_members: [], copy_writing_service, word_count, project_description,
             status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
         const copyWriting = new copyWritingModel({ ...obj }).save()
         if (copyWriting) {
-            return res.status(201).send({ message: "Project Created Successfully" })
+            return res.status(201).send({ message: "Project Created Successfully", copyWriting })
         } else {
             return res.status(500).send({ message: "Failed to create project" })
         }
@@ -73,25 +73,25 @@ const getCopyWritingProject = async (req, res) => {
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
-const deleteCopyWritingProject = async (req, res) => {
-    const _id = req.params.id
-    if (!_id) {
-        return res.status(400).json({ message: "id not provided Try Login again!" })
-    }
-    try {
-        const copyWritingProjects = await copyWritingModel.findByIdAndRemove(_id)
-        if (copyWritingProjects) {
-            return res.status(200).json({ message: "Project Deleted" })
-        } else {
-            return res.status(500).json({ message: "Failed to delete project" })
-        }
-    } catch (err) {
-        res.status(500).send({ message: "Internal Server Error" })
-    }
-}
+// const deleteCopyWritingProject = async (req, res) => {
+//     const _id = req.params.id
+//     if (!_id) {
+//         return res.status(400).json({ message: "id not provided Try Login again!" })
+//     }
+//     try {
+//         const copyWritingProjects = await copyWritingModel.findByIdAndRemove(_id)
+//         if (copyWritingProjects) {
+//             return res.status(200).json({ message: "Project Deleted" })
+//         } else {
+//             return res.status(500).json({ message: "Failed to delete project" })
+//         }
+//     } catch (err) {
+//         res.status(500).send({ message: "Internal Server Error" })
+//     }
+// }
 const uploadFilesCopywrite = async (req, res) => {
     const _id = req.params.id;
-    const userId = req.params.user;
+    const userId = req.params.userId;
     const files = req.files
     if (!files) {
         return res.status(400).send({ message: "No files uploaded" })
@@ -101,9 +101,9 @@ const uploadFilesCopywrite = async (req, res) => {
         if (user) {
             const copyWritingProject = await copyWritingModel.findById(_id).lean()
             if (copyWritingProject) {
-                const { _id: userID, } = user
+                // const { _id: userID, } = user
                 const { _id: project_id } = copyWritingProject
-                const prefix = `${userID}/${project_id}/`
+                const prefix = `${userId}/projects/${project_id}/customer-upload/`
                 const options = {
                     resumable: false,
                     preconditionOpts: {
@@ -120,7 +120,7 @@ const uploadFilesCopywrite = async (req, res) => {
                             const [files] = await bucket.getFiles({ prefix })
                             let filesInfo = files.map((file) => {
                                 let obj = {}
-                                    obj.id = uniqID(),
+                                obj.id = uniqID(),
                                     obj.name = path.basename(file.name),
                                     obj.url = encodeURI(file.storage.apiEndpoint + '/' + file.bucket.name + '/' + file.name),
                                     obj.download_link = file.metadata.mediaLink,
@@ -156,5 +156,233 @@ const uploadFilesCopywrite = async (req, res) => {
     }
 }
 
+const projectCopyWriteWidthRevision = async (req, res) => {
+    const id = req.params.id
+    if (!id) {
+        return res.status(400).send({ message: 'ID not found' })
+    }
+    try {
+        const findproject = await copyWritingModel.findById(id)
+        if (findproject) {
+            const updatingStatus = await copyWritingModel.findByIdAndUpdate(id, { status: 'With Revision' })
+            if (updatingStatus) {
+                const project_user = await User.findById({ _id: updatingStatus.user })
+                if (project_user) {
+                    const { email } = project_user
+                    const { project_title } = updatingStatus
 
-module.exports = { createCopyWritingProject, getCopyWritingProject, deleteCopyWritingProject, uploadFilesCopywrite }
+                    const msg = `Mobile App Developer change project status to <b>With Revision</b>`
+                    // await sendStatusChangeMailtoCustomer(project_title, email, msg, 'With Revision')
+                }
+                return res.status(201).send({ message: 'Project status updated' })
+            }
+            else {
+                return res.status(400).send({ message: 'Found error while Updating Project' })
+
+            }
+        } else {
+            return res.status(404).send({ messsage: 'Project Not Found' })
+        }
+
+    } catch (err) {
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+}
+const projectCopyWriteForReview = async (req, res) => {
+    const id = req.params.id
+    if (!id) {
+        return res.status(400).send({ message: 'ID not found' })
+    }
+    try {
+        const findproject = await copyWritingModel.findById(id)
+        if (findproject) {
+            const updatingStatus = await copyWritingModel.findByIdAndUpdate(id, { status: 'For Review' })
+            if (updatingStatus) {
+                const project_user = await User.findById({ _id: updatingStatus.user })
+                if (project_user) {
+                    const { email } = project_user
+                    const { project_title } = updatingStatus
+
+                    const msg = `Mobile App Developer change project status to <b>For Review</b>`
+                    // await sendStatusChangeMailtoCustomer(project_title, email, msg, 'For Review')
+                }
+                return res.status(201).send({ message: 'Project status updated' })
+            }
+            else {
+                return res.status(400).send({ message: 'Found error while Updating Project' })
+
+            }
+        } else {
+            return res.status(404).send({ messsage: 'Project Not Found' })
+        }
+
+    } catch (err) {
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+}
+const projectCopyWriteAttend = async (req, res) => {
+    const id = req.params.id
+    if (!id) {
+        return res.status(400).send({ message: 'ID not found' })
+    }
+    try {
+        const findproject = await copyWritingModel.findById(id)
+        if (findproject) {
+            const updatingStatus = await copyWritingModel.findByIdAndUpdate(id, { status: 'Ongoing' })
+            if (updatingStatus) {
+                const project_user = await User.findById({ _id: updatingStatus.user })
+                if (project_user) {
+                    const { email } = project_user
+                    const { project_title } = updatingStatus
+
+                    const msg = `Mobile App Developer change project status to <b>Ongoing</b>`
+                    // await sendStatusChangeMailtoCustomer(project_title, email, msg, 'Ongoing')
+                }
+                return res.status(201).send({ message: 'Project status updated' })
+            }
+            else {
+                return res.status(400).send({ message: 'Found error while Updating Project' })
+
+            }
+        } else {
+            return res.status(404).send({ messsage: 'Project Not Found' })
+        }
+
+    } catch (err) {
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+}
+
+const duplicateCopyWritingProject = async (req, res) => {
+    const id = req.params.id
+    const { user } = req.body
+    if (!id) {
+        return res.status(400).send({ message: 'ID not found' })
+    }
+    try {
+        const findproject = await copyWritingModel.findById(id)
+        if (findproject) {
+            const { project_category, name, project_title, project_description, word_count, copy_writing_service } = findproject
+            const copy_project_title = project_title + " Copy"
+            const obj = {
+                user, name, project_category, project_title: copy_project_title, project_description,  word_count, copy_writing_service,
+                is_active: false, version: ["1"], status: 'Project manager', team_members: [], figma_link: '', drive_link: ''
+            }
+            const creatingNewProject = await copyWritingModel.create(obj)
+            if (creatingNewProject) {
+                return res.status(201).send({ message: 'Project Duplicated', project: creatingNewProject })
+            } else {
+                return res.status(400).send({ message: 'Found error while creating project' })
+
+            }
+        } else {
+            return res.status(404).send({ messsage: 'Project Not Found' })
+        }
+    } catch (err) {
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+}
+const projectCopyWritingCompleted = async (req, res) => {
+    const id = req.params.id
+    if (!id) {
+        return res.status(400).send({ message: 'ID not found' })
+    }
+    try {
+        const findproject = await copyWritingModel.findById(id)
+        if (findproject) {
+            const updatingStatus = await copyWritingModel.findByIdAndUpdate(id, { status: 'Completed' })
+            if (updatingStatus) {
+                return res.status(201).send({ message: 'Project Completed' })
+            }
+            else {
+                return res.status(400).send({ message: 'Found error while Updating Project' })
+
+            }
+        } else {
+            return res.status(404).send({ messsage: 'Project Not Found' })
+        }
+
+    } catch (err) {
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+
+}
+const projectCopyWritingCancel = async (req, res) => {
+    const id = req.params.id
+    if (!id) {
+        return res.status(400).send({ message: 'ID not found' })
+    }
+    try {
+        const findproject = await copyWritingModel.findById(id)
+        if (findproject) {
+            const updatingStatus = await copyWritingModel.findByIdAndUpdate(id, { status: 'Cancel' })
+            if (updatingStatus) {
+                return res.status(201).send({ message: 'Project Cancelled' })
+            }
+            else {
+                return res.status(400).send({ message: 'Found error while Updating Project' })
+            }
+        } else {
+            return res.status(404).send({ messsage: 'Project Not Found' })
+        }
+
+    } catch (err) {
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+}
+const deleteCopyWritingProject = async (req, res) => {
+    const _id = req.params.id
+    if (!_id) {
+        return res.status(400).json({ message: "Project not provided Try Login again" })
+    }
+    try {
+        const findProject = await copyWritingModel.findById(_id)
+        if (findProject) {
+            let { user, _id } = findProject
+            const prefix = `${user}/${_id}/customer-upload`
+            const copy_write_projects = `${user}/${_id}/designer_upload/`
+
+            const [files] = await bucket.getFiles({ prefix })
+            const [copy_wtiting_files] = await bucket.getFiles({ prefix: copy_write_projects })
+
+            await Promise.all(
+                files?.map(async (file) => {
+                    try {
+                        await file.delete();
+                    } catch (error) {
+                        throw error
+                    }
+                })
+            ).then(async () => {
+                if (copy_wtiting_files.length > 0) {
+                    await Promise.all(
+                        copy_wtiting_files?.map(async (file) => {
+                            try {
+                                await file.delete();
+                            } catch (error) {
+                                throw error
+                            }
+                        })
+                    ).then(async () => {
+                        await copyWritingModel.findByIdAndRemove(_id)
+                        return res.status(200).send({ message: 'Project Deleted' })
+                    }).catch(err => { throw err })
+                } else {
+                    await copyWritingModel.findByIdAndRemove(_id)
+                    return res.status(200).send({ message: 'Project Deleted' })
+                }
+            }).catch((err) => { throw err })
+
+        } else {
+            res.status(400).send({ message: 'Project not found' })
+        }
+
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({ message: 'Internal Server error' })
+    }
+}
+
+
+
+module.exports = { createCopyWritingProject, getCopyWritingProject, deleteCopyWritingProject, uploadFilesCopywrite, projectCopyWriteWidthRevision, projectCopyWriteForReview, projectCopyWriteAttend, projectCopyWritingCancel, projectCopyWritingCompleted, duplicateCopyWritingProject }

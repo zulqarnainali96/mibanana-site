@@ -25,7 +25,7 @@ const CopyWritingSchemas = mongoose.Schema({
         required: true,
         default: ""
     },
-    project_details: {
+    project_description: {
         type: String,
         required: true,
         default: ""
@@ -39,6 +39,11 @@ const CopyWritingSchemas = mongoose.Schema({
         type: String,
         required: true,
         default: 'Project manager'
+    },
+    project_category : {
+        type: String,
+        required: false,
+        default: 'copy-writing'
     },
     version: [{
         type: String,

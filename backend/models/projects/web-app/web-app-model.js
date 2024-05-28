@@ -25,7 +25,7 @@ const WebAppSchema = mongoose.Schema({
         required: true,
         default: ""
     },
-    project_details: {
+    project_description: {
         type: String,
         required: false,
         default: ""
@@ -39,6 +39,11 @@ const WebAppSchema = mongoose.Schema({
         type: String,
         required: true,
         default: 'Project manager'
+    },
+    project_category : {
+        type: String,
+        required: false,
+        default: 'web-app'
     },
     version: [{
         type: String,
