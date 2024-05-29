@@ -104,7 +104,7 @@ const projectWebsiteWidthRevision = async (req, res) => {
                     const { email } = project_user
                     const { project_title } = updatingStatus
 
-                    const msg = `Mobile App Developer change project status to <b>With Revision</b>`
+                    const msg = `Web Developer change project status to <b>With Revision</b>`
                     // await sendStatusChangeMailtoCustomer(project_title, email, msg, 'With Revision')
                 }
                 return res.status(201).send({ message: 'Project status updated' })
@@ -136,8 +136,8 @@ const projectWebsiteForReview = async (req, res) => {
                     const { email } = project_user
                     const { project_title } = updatingStatus
 
-                    const msg = `Mobile App Developer change project status to <b>For Review</b>`
-                    // await sendStatusChangeMailtoCustomer(project_title, email, msg, 'For Review')
+                    const msg = `Web Developer change project status to <b>For Review</b>`
+                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'For Review')
                 }
                 return res.status(201).send({ message: 'Project status updated' })
             }
@@ -168,8 +168,8 @@ const projectWebsiteAttend = async (req, res) => {
                     const { email } = project_user
                     const { project_title } = updatingStatus
 
-                    const msg = `Mobile App Developer change project status to <b>Ongoing</b>`
-                    // await sendStatusChangeMailtoCustomer(project_title, email, msg, 'Ongoing')
+                    const msg = `Web Developer change project status to <b>Ongoing</b>`
+                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'Ongoing')
                 }
                 return res.status(201).send({ message: 'Project status updated' })
             }

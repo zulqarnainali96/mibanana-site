@@ -118,7 +118,7 @@ const projectMobileForReview = async (req, res) => {
                     const { project_title } = updatingStatus
 
                     const msg = `Mobile App Developer change project status to <b>For Review</b>`
-                    // await sendStatusChangeMailtoCustomer(project_title, email, msg, 'For Review')
+                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'For Review')
                 }
                 return res.status(201).send({ message: 'Project status updated' })
             }
@@ -150,7 +150,7 @@ const projectMobileAttend = async (req, res) => {
                     const { project_title } = updatingStatus
 
                     const msg = `Mobile App Developer change project status to <b>Ongoing</b>`
-                    // await sendStatusChangeMailtoCustomer(project_title, email, msg, 'Ongoing')
+                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'Ongoing')
                 }
                 return res.status(201).send({ message: 'Project status updated' })
             }

@@ -134,8 +134,8 @@ const projecSocialMediaForReview = async (req, res) => {
                     const { email } = project_user
                     const { project_title } = updatingStatus
 
-                    const msg = `Mobile App Developer change project status to <b>For Review</b>`
-                    // await sendStatusChangeMailtoCustomer(project_title, email, msg, 'For Review')
+                    const msg = `Social Media Manager change project status to <b>For Review</b>`
+                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'For Review')
                 }
                 return res.status(201).send({ message: 'Project status updated' })
             }
@@ -166,8 +166,8 @@ const projectSocialMediaAttend = async (req, res) => {
                     const { email } = project_user
                     const { project_title } = updatingStatus
 
-                    const msg = `Mobile App Developer change project status to <b>Ongoing</b>`
-                    // await sendStatusChangeMailtoCustomer(project_title, email, msg, 'Ongoing')
+                    const msg = `Social Media Manager change project status to <b>Ongoing</b>`
+                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'Ongoing')
                 }
                 return res.status(201).send({ message: 'Project status updated' })
             }

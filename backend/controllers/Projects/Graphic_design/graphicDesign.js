@@ -466,7 +466,7 @@ const projectWidthRevision = async (req, res) => {
                     const { email } = project_user
                     const { project_title } = updatingStatus
                     const msg = `Designer change project status to <b>With Revision</b>`
-                    await sendStatusChangeMailtoCustomer(project_title, email, msg, 'With Revision')
+                    // await sendStatusChangeMailtoCustomer(project_title, email, msg, 'With Revision')
                 }
                 return res.status(201).send({ message: 'Project status updated for changes' })
             }
