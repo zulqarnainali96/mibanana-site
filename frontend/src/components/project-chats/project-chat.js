@@ -21,7 +21,7 @@ const basicStyle = { display: "flex", alignItems: "center" }
 
 const ProjectChat = (props) => {
     const is500 = useMediaQuery("(max-width:500px)")
-    const { role, userId, chatContainerRef, withRevision, handleRole, handleClick, anchorEl, loading, id, handleClose, projectAttend1, projectForReview1, msgArray, onSendMessage, sendMessage, avatar, message } = props
+    const { userId, chatContainerRef, withRevision, handleRole, handleClick, anchorEl, loading, id, handleClose, projectForReview, projectOngoing, msgArray, onSendMessage, sendMessage, avatar, message, } = props
 
     const classes = reactQuillStyles2()
     const chatTitle = ({ palette: { primary } }) => ({
@@ -42,7 +42,7 @@ const ProjectChat = (props) => {
                 pb={1}
             >
                 <Grid xs={6} style={basicStyle}>Activity</Grid>
-                {handleRole().teamMember && (
+                {handleRole().teamMember && handleRole().projectManager && (
                     <Grid
                         id="dropdown-btn"
                         aria-controls={anchorEl ? 'dropdown-menu' : undefined}
@@ -96,8 +96,8 @@ const ProjectChat = (props) => {
                     <MenuList>
                         {handleRole().teamMember && (
                             <div>
-                                <MenuItem onClick={projectAttend1}>Ongoing</MenuItem>
-                                <MenuItem onClick={projectForReview1}>For Review</MenuItem>
+                                <MenuItem onClick={projectOngoing}>Ongoing</MenuItem>
+                                <MenuItem onClick={projectForReview}>For Review</MenuItem>
                             </div>
                         )}
                     </MenuList>
@@ -115,7 +115,7 @@ const ProjectChat = (props) => {
                 <Grid item xxl={12} xl={12} lg={12} width={"100%"}>
                     <Box className="chat" >
                         {msgArray?.map((item, index) => (
-                            <ChatList key={index} index={index} chats={msgArray} _is500={is500} userId={userId} />
+                            <ChatList key={index} index={index} chats={item} _is500={is500} userId={userId} />
                         ))}
                     </Box>
                 </Grid>

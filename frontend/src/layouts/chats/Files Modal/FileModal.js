@@ -76,7 +76,6 @@ const FileModal = ({ title, open, setOpen }) => {
     const [imageView, setImageView] = useState([])
     const [loading, setLoading] = useState(false)
     const { id } = useParams()
-    // const { id : userId } = useSelector(state=>state.userDetails)
     const project = projects?.find(item => item._id === id)
     const version1 = project?.add_files[0]?.version1
     const [version, setVersion] = useState(version1)

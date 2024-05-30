@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useRef } from 'react';
 import { styled } from "@mui/material/styles";
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -6,7 +6,7 @@ import Dialog from '@mui/material/Dialog';
 import MDTypography from 'components/MDTypography';
 import MDButton from 'components/MDButton';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
-import { Grid, MenuItem, Select, TextField } from '@mui/material';
+import { Grid, MenuItem, Select } from '@mui/material';
 import Input from 'components/Input/Input';
 import { useFormik } from 'formik';
 import { mobileAppSchema } from 'Schema/Index';
@@ -37,51 +37,50 @@ const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => 
     },
 }));
 
-const userDetailsString = localStorage.getItem('user_details');
-const name = userDetailsString ? JSON.parse(userDetailsString).name : '';
-const user = userDetailsString ? JSON.parse(userDetailsString).id : "";
 
 const initialValues = {
-    user: user,
-    name: name,
     project_title: '',
     platform: '',
     project_description: "",
 };
 
-const MobileAppDevForm = (props) => {
-    const { open, handleClose, setRespMessage, openErrorSB, openSuccessSB, loading, setLoading } = props;
+const MobileAppDevForm = ({
+    open, handleClose, reduxState, reduxActions, setRespMessage, openErrorSB, openSuccessSB, loading, setLoading, socketIO
+}) => {
     const classes = reactQuillStyles()
+    const quilRef = useRef();
 
     const handleMobileFormSubmit = async (values, { resetForm }) => {
         setLoading(true);
         const dataToSend = {
             ...values,
-            user: user,
-            name: name,
+            user: reduxState.userDetails?.id,
+            name: reduxState.userDetails?.name,
         };
-        console.log(dataToSend);
-        // Uncomment the following lines to enable form submission to the backend
-        // try {
-        //     const { data } = await apiClient.post('/api/create-mobile-app-project', dataToSend);
-        //     setLoading(false);
-        //     if (data.message) {
-        //         handleClose();
-        //         setRespMessage(data.message);
-        //         resetForm(clearForm());
-        //         setTimeout(() => {
-        //             openSuccessSB();
-        //         }, 500);
-        //     }
-        // } catch (error) {
-        //     setLoading(false);
-        //     setRespMessage(error.message);
-        //     setTimeout(() => {
-        //         openErrorSB();
-        //     }, 500);
-        //     console.error('Mobile form error:', error);
-        // }
-
+        try {
+            const { data } = await apiClient.post('/api/create-mobile-app-project', dataToSend);
+            setLoading(false);
+            if (data.message) {
+                handleClose();
+                setRespMessage(data.message);
+                resetForm(clearForm());
+                setTimeout(() => {
+                    reduxActions.handleGetAllProjects(!reduxState.project_call)
+                    socketIO.current.emit('new-project', dataToSend)
+                    openSuccessSB();
+                }, 500);
+            }
+        } catch (error) {
+            if (error.response.data) {
+                setRespMessage(error.response.data.message)
+            } else {
+                setRespMessage(error.message)
+            }
+            setLoading(false)
+            setTimeout(() => {
+                openErrorSB();
+            }, 500);
+        }
         function clearForm() {
             document.getElementById('project_title').value = "";
             quilRef.current.getEditor().setText('');
@@ -96,7 +95,6 @@ const MobileAppDevForm = (props) => {
         onSubmit: handleMobileFormSubmit,
     });
 
-    const quilRef = useRef();
 
     const onClose = () => {
         handleClose();
@@ -173,7 +171,11 @@ const MobileAppDevForm = (props) => {
                                 id='project_description'
                                 value={formik.values.project_description}
                                 onChange={(value) => formik.setFieldValue('project_description', value)}
-                                onBlur={formik.handleBlur}
+                                onBlur={()=> formik.handleBlur({
+                                    target : {
+                                        name : 'project_description'
+                                    }
+                                })}
                                 modules={modules}
                                 formats={formats}
                                 className={classes.quill}

@@ -63,7 +63,7 @@ const CustomerList = (props) => {
 }
 
 const OptionsList = (props) => {
-    const { item, children, handleMenuOpen, anchorEl, handleMenuClose, role, loading1, loading2, loading3, loading4, loading5, projectAttend, projectCancel, duplicateProject, projectCompleted, projectForReview, renderErrorSB, renderSuccessSB, deleteProject, loading6, onEditProject } = props
+    const { item, children, handleMenuOpen, anchorEl, handleMenuClose, role, loading1, loading2, loading3, loading4, loading5, projectAttend, projectCancel, duplicateProject, projectCompleted, projectForReview, deleteProject, loading6, onEditProject } = props
 
     const customer_props = { item, loading1, loading2, loading3, projectCancel, duplicateProject, projectCompleted, onEditProject }
     const auth_member_list = { item, loading4, loading5, projectAttend, projectForReview, role, deleteProject, loading6 }
@@ -86,9 +86,6 @@ const OptionsList = (props) => {
                 >
                     {role?.customer ? (
                         <CustomerList {...customer_props} />) : <AuthMembersList {...auth_member_list} />}
-
-                    {/* {renderSuccessSB} */}
-                    {/* {renderErrorSB} */}
                 </Menu>
             }
         </React.Fragment>

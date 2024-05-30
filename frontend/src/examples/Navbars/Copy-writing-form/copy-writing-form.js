@@ -13,6 +13,10 @@ import { useFormik } from 'formik';
 import apiClient from 'api/apiClient';
 import { MoonLoader } from 'react-spinners';
 import { submitButtonStyle } from '../mobile-app-dev-form/mobile-app-dev-form';
+import ReactQuill from "react-quill";
+import { modules } from 'assets/react-quill-settings/react-quill-settings';
+import { formats } from 'assets/react-quill-settings/react-quill-settings';
+import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings';
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints } }) => ({
     '& .MuiPaper-root': {
@@ -34,13 +38,7 @@ const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints } }) => ({
     },
 }));
 
-const userDetailsString = localStorage.getItem('user_details');
-const name = userDetailsString ? JSON.parse(userDetailsString).name : '';
-const user = userDetailsString ? JSON.parse(userDetailsString).id : "";
-
 const initialValues = {
-    user: user,
-    name: name,
     project_title: '',
     copy_writing_service: '',
     word_count: "",
@@ -48,117 +46,53 @@ const initialValues = {
     otherServiceType: "",
     otherWordCount: "",
 };
-
-const CopyWritingForm = (props) => {
-    const { open, handleClose, reduxState, setRespMessage, openErrorSB, openSuccessSB, loading, setLoading } = props;
+const CopyWritingForm = ({
+    open, handleClose, reduxState, reduxActions, setRespMessage, openErrorSB, openSuccessSB, loading, setLoading, socketIO
+}) => {
     const [uploadedImages, setUploadedImages] = useState([]);
     const fileInputRef = useRef(null);
-
+    const classes = reactQuillStyles()
+    const quilRef = useRef();
 
     const uploadCopyWriteFile = async () => {
-
     }
-
     const handleCopywritingFormSubmit = async (values, { resetForm }) => {
-        console.log(values)
-        if (uploadedImages.length === 8) {
-            alert("Maximum 7 file allowed");
-            return;
-        }
         setLoading(true);
-        const formData = {
+        const dataToSend = {
             ...values,
-            user: user,
-            name: name,
+            user: reduxState.userDetails?.id,
+            name: reduxState.userDetails?.name,
         };
-        console.log(formData)
-        console.log(uploadedImages)
-        await apiClient.post("api/create-copywriting-project", formData)
-            .then(({ data }) => {
-                console.log(data)
-                setLoading(false);
-
-                // if (resp.status === 201) {
-                //     const projectData = {
-                //         ...formData,
-                //         user: reduxState.userDetails?.id,
-                //         project_id: resp.data?.project._id,
-                //     };
-                //     socketIO.current.emit('new-project', projectData)
-                //     // setRespMessage("Project Created Successfully");
-                //     reduxActions.getNew_Brand(!reduxState.new_brand);
-                //     let param = [
-                //         reduxState.userDetails?.id,
-                //         reduxState.userDetails?.name,
-                //         resp.data?.project._id,
-                //         resp.data?.project.project_title,
-                //     ];
-                //     if (uploadedImages.length > 0 ) {
-                //         uploadCopyWriteFile(...param);
-                //     }
-                //     // getProjectData(reduxState.userDetails?.id, reduxActions.getCustomerProject);
-                //     setOpen(false);
-                //     setTimeout(() => {
-                //         // openSuccessSB()
-                //         setLoading(false);
-                //         setRespMessage()
-                //         setOpenModal(true);
-                //         setRespMessage("Project created successfully!")
-                //     }, 300);
-                // }
-                // setLoading(false);
-                // setReloadProjects(true)
-            })
-            .catch((error) => {
-                // setLoading(false);
-                // setRespMessage(error.message);
-                // setTimeout(() => {
-                //     openErrorSB();
-                // }, 1000);
-                console.log(error.message)
-            });
-
-
-
-        // setLoading(true)
-        // const dataToSend = {
-        //     ...values,
-        //     user: user,
-        //     name: name,
-        // };
-        // console.log(dataToSend)
-        // try {
-        //     const { data } = await apiClient.post('/api/create-copywriting-project', dataToSend)
-        //     setLoading(false)
-        //     if (data.message) {
-        //         console.log(data)
-        //         handleClose();
-        //         setRespMessage(data.message)
-        //         resetForm(clearForm());
-        //         setTimeout(() => {
-        //             openSuccessSB();
-        //         }, 500);
-        //     }
-        // } catch (error) {
-        //     setLoading(false)
-        //     setRespMessage(error.message)
-        //     setTimeout(() => {
-        //         openErrorSB();
-        //     }, 500);
-        //     console.error('Copy form error:', error);
-        // }
-
-        function clearForm() {
-            var projectTitle = document.getElementById('project_title');
-            projectTitle.value = "";
-            var projectDescription = document.getElementById('project_description');
-            projectDescription.value = "";
+        try {
+            const { data } = await apiClient.post('/api/create-copywriting-project', dataToSend);
+            setLoading(false);
+            if (data.message) {
+                handleClose();
+                setRespMessage(data.message);
+                resetForm(clearForm());
+                setTimeout(() => {
+                    reduxActions.handleGetAllProjects(!reduxState.project_call)
+                    socketIO.current.emit('new-project', dataToSend)
+                    openSuccessSB();    
+                }, 500);
+            }
+        } catch (error) {
+            if (error.response.data) {
+                setRespMessage(error.response.data.message)
+            } else {
+                setRespMessage(error.message)
+            }
+            setLoading(false)
+            setTimeout(() => {
+                openErrorSB();
+            }, 500);
         }
-
-        // Optionally, reset the form after submission
+        function clearForm() {
+            document.getElementById('project_title').value = "";
+            quilRef.current.getEditor().setText('');
+        }
         resetForm(clearForm());
     }
-
     const {
         values,
         errors,
@@ -170,37 +104,7 @@ const CopyWritingForm = (props) => {
     } = useFormik({
         initialValues: initialValues,
         validationSchema: copyWritingSchema,
-        onSubmit: (values) => {
-            console.log('values')
-        },
-        // onSubmit: handleCopywritingFormSubmit(),
-        //async (values, { resetForm }) => {
-        //     const dataToSend = {
-        //         ...values,
-        //         user: user,
-        //         name: name,
-        //     };
-        //     try {
-        //         const response = await axios.post('http://localhost:8000/api/create-copywriting-project', dataToSend);
-        //         // handleClose();
-        //         resetForm(clearForm());
-        //         setOpenModal(true)
-        //         setTimeout(() => {
-        //             handleClose();
-        //         }, 5000);
-        //     } catch (error) {
-        //         console.error('Error:', error);
-        //     }
-        //     function clearForm() {
-        //         var projectTitle = document.getElementById('project_title');
-        //         projectTitle.value = "";
-        //         var projectDetail = document.getElementById('project_description');
-        //         projectDetail.value = "";
-        //     }
-
-        //     // Optionally, reset the form after submission
-        //     resetForm(clearForm());
-        // },
+        onSubmit: handleCopywritingFormSubmit
     });
 
     const handleDrop = (e) => {
@@ -381,16 +285,21 @@ const CopyWritingForm = (props) => {
                             </MDTypography>
                             <Grid container>
                                 <Grid item xs={12}>
-                                    <Input
-                                        placeholder="Enter your project details"
-                                        id="project_description"
+                                    <ReactQuill
+                                        theme="snow"
                                         name="project_description"
-                                        type="text"
+                                        id='project_description'
                                         value={values.project_description}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        touched={touched.project_description}
-                                        errors={errors.project_description}
+                                        onChange={(value) => setFieldValue('project_description', value)}
+                                        onBlur={() => handleBlur({
+                                            target: {
+                                                name: 'project_description'
+                                            }
+                                        })}
+                                        modules={modules}
+                                        formats={formats}
+                                        className={classes.quill}
+                                        ref={quilRef}
                                     />
                                 </Grid>
                             </Grid>
@@ -427,9 +336,6 @@ const CopyWritingForm = (props) => {
                                 </div>
                             ))}
                         </Grid>
-                        <button type='submit'>
-                            Submit
-                        </button>
                         <Grid item xs={12}>
                             <MDButton
                                 type="submit"

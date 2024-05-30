@@ -7,12 +7,12 @@ import React from 'react'
 import ShowingFilesContainer from './components/showing-files'
 import "./file-upload.css"
 import CircularProgressLoader from './components/circular-progress-loader'
-import ProjectDescription from './components/project-description'
 import { Link } from 'react-router-dom'
 import { Typography } from '@mui/material'
 import CachedIcon from "@mui/icons-material/Cached";
 import IconButton from "@mui/material/IconButton";
 import MDTypography from 'components/MDTypography'
+import ImageViewModal from 'examples/image-modal'
 import GetLatestFiles from './components/get-latest-files'
 
 const FileUploadButtons = ({
@@ -26,9 +26,9 @@ const FileUploadButtons = ({
 
     return <Grid container>
         <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>
-            <div 
-            {...getRootProps()} 
-            className="drop-file-div" onClick={openFileSelect}>
+            <div
+                {...getRootProps()}
+                className="drop-file-div" onClick={openFileSelect}>
                 <input
                     {...getInputProps()}
                     id="new-file-upload"
@@ -71,19 +71,26 @@ const ProjectFileUpload = ({
     role,
     fileRef,
     project,
+    openImage,
+    children,
+    currentImage,
+    DownloadFile,
+    handleDeleteFile,
+    closeImageViewer,
+    isViewerOpen,
+    setIsViewerOpen,
+    getDate,
     version,
     loading,
     showMore,
     handleRole,
-    teamMembers,
-    reloadAllData,
+    reload,
     openFileSelect,
     toggleShowMore,
     getRootProps,
     getInputProps,
     handleFileUpload,
     isDragActive,
-    designerLoading,
     truncatedDescription,
     latestButtonProps,
 }) => {
@@ -108,7 +115,7 @@ const ProjectFileUpload = ({
                         </MDTypography>
                     </Grid>
                     <Grid item xs={6} md={6} lg={6} xl={6} textAlign={"right"}>
-                        <IconButton onClick={reloadAllData}>
+                        <IconButton onClick={reload}>
                             <CachedIcon size="medium" />
                         </IconButton>
                     </Grid>
@@ -119,6 +126,10 @@ const ProjectFileUpload = ({
                         <ShowingFilesContainer
                             version={version}
                             handleRole={handleRole}
+                            DownloadFile={DownloadFile}
+                            handleDeleteFile={handleDeleteFile}
+                            getDate={getDate}
+                            openImage={openImage}
                         />
                     ) : (
                         <CircularProgressLoader />
@@ -131,13 +142,7 @@ const ProjectFileUpload = ({
                         handleFileUpload={handleFileUpload}
                         isDragActive={isDragActive}
                     />
-                    <ProjectDescription
-                        project={project}
-                        loading={designerLoading}
-                        teamMembers={teamMembers}
-                        role={role}
-
-                    />
+                    {children}
                 </Box>
                 <div className="project-details project-details-3">
                     <div className="description-div">
@@ -160,6 +165,15 @@ const ProjectFileUpload = ({
                         )}
                     </div>
                 </div>
+                {isViewerOpen && (
+                    <ImageViewModal
+                        open={isViewerOpen}
+                        onClose={closeImageViewer}
+                        allImages={version}
+                        currentImage={currentImage}
+                        onOpen={() => setIsViewerOpen(true)}
+                    />
+                )}
             </MDBox>
         </MDBox>
     )

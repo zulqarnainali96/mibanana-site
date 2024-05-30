@@ -8,6 +8,11 @@ import ViewBrand from "examples/brand-table/view-brand/view-brand";
 import MibananTeam from "layouts/mibanana-team";
 import MIBrandTable from "examples/brand-table";
 import Chating from "layouts/chats";
+import MobileAppDevelopment from "layouts/Projects/mobile-app-development/mobile-app-development";
+import WebApp from "layouts/Projects/web-app/web-app";
+import CopyWriting from "layouts/Projects/copy-writing/copy-writing";
+import SocialMediaManager from "layouts/Projects/social-media-manager/social-media-manager";
+import WebsiteDevelopment from "layouts/Projects/website-development/website-development";
 
 
 // const Chating = lazy( () => import("layouts/chats"))
@@ -41,7 +46,7 @@ const routes = [
     route: "/mi-brands",
     // component: <div><h1>Hello</h1></div>,
     component: <MIBrandTable />,
-    
+
   },
   {
     key: "chat",
@@ -59,9 +64,39 @@ const routes = [
     key: "mibanana-team",
     icon: <Icon fontSize="small">handshake_outlined</Icon>,
     route: "/mibanana-team",
-    component : <MibananTeam />
-},
-  
+    component: <MibananTeam />
+  },
+  {
+    name: 'Mobile App Development',
+    key: 'mobile-app-development',
+    route: "/mobile-app-development/:id",
+    component: <MobileAppDevelopment />,
+  },
+  {
+    name: 'Web App',
+    key: 'web-app',
+    route: "/web-app/:id",
+    component: <WebApp />,
+  },
+  {
+    name: 'CopyWriting',
+    key: 'copy-writing',
+    route: "/copy-writing/:id",
+    component: <CopyWriting />,
+  },
+  {
+    name: 'Social Media Manager',
+    key: 'social-media-manager',
+    route: "/social-media-manager/:id",
+    component: <SocialMediaManager />,
+  },
+  {
+    name: 'Website Development',
+    key: 'website-development',
+    route: "/website-development/:id",
+    component: <WebsiteDevelopment />,
+  },
+
   {
     type: "collapse-dropdown",
     name: "Settings",
@@ -88,6 +123,6 @@ const routes = [
       },
     ],
   },
-  
+
 ];
 export default routes;

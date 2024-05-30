@@ -20,6 +20,7 @@ export const PROJECT_NOTIFICATIONS = "PROJECT_NOTIFICATIONS";
 export const STATUS_NOTIFICATIONS = "STATUS_NOTIFICATIONS";
 export const EDIT_PROJECT = "EDIT_PROJECT";
 export const CURRENT_PROJECT_ID = "CURRENT_PROJECT_ID";
+export const PROJECT_CALL = "PROJECT_CALL";
 
 export const getUserDetails = (payload) => ({
   type: USER_DETAILS,
@@ -128,6 +129,11 @@ export const handle_OpenEditProject = (payload) => ({
 export const handle_CurrentProjectId = (payload) => ({
   type: CURRENT_PROJECT_ID,
   payload: payload,
+}
+);
+export const handleGetAllProjects = (payload) => ({
+  type: PROJECT_CALL,
+  payload: payload,
 });
 
 export const reduxFunctions = {
@@ -153,4 +159,5 @@ export const reduxFunctions = {
   handleStatusProject_notifications,
   handle_OpenEditProject,
   handle_CurrentProjectId,
+  handleGetAllProjects,
 };

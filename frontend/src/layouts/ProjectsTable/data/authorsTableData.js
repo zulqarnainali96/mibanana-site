@@ -2,7 +2,6 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { useContext, useRef, useState } from "react";
 import apiClient from "api/apiClient";
-import MDSnackbar from "components/MDSnackbar";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getCustomerProject } from "redux/actions/actions";
@@ -13,7 +12,7 @@ import { sendingStatusNotification } from "socket-events/socket-event";
 import { customerSendingNotification } from "socket-events/socket-event";
 import { SocketContext } from "sockets";
 import TransitionsModal from "components/Modal/Modal";
-// import { getSingleProjectById } from "redux/global/global-functions";
+import { getForReviewApiAccordingToProject, getOngoingApiAccordingToProject, getCompletedApiAccordingToProject, getDuplicateApiAccordingToProject, getDeleteApiAccordingToProject, getCancelApiAccordingToProject } from "redux/global/global-functions";
 
 export const Author = ({ name, }) => (
   <MDBox lineHeight={1}>
@@ -32,7 +31,7 @@ export const Job = ({ title, description }) => (
   </MDBox>
 );
 
-export const Action = ({ children, item, resonseMessage, message, errorSBNot, successSBNot, role, projects, onEditProject }) => {
+export const Action = ({ children, item, resonseMessage, message, errorSBNot, successSBNot, role, onEditProject }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [loading1, setLoading1] = useState(false)
   const [loading2, setLoading2] = useState(false)
@@ -41,9 +40,7 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
   const [loading5, setLoading5] = useState(false)
   const [loading6, setLoading6] = useState(false)
   const [openModal, setOpenModal] = useState(false)
-  // const socketIO = useRef(useSocket())
   const socketIO = useRef(useContext(SocketContext));
-
 
   const handleMenuOpen = (event) => {
     event.preventDefault()
@@ -53,27 +50,20 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
   const userid = useSelector(state => state.userDetails.id)
   const dispatch = useDispatch()
 
-  const [errorSB, setErrorSB] = useState(false);
-  const [successSB, setSuccessSB] = useState(false);
-  const [respMessage, setRespMessage] = useState("")
-  const openSuccessSB = () => setSuccessSB(true);
-  const closeSuccessSB = () => setSuccessSB(false);
-
-  const openErrorSB = () => setErrorSB(true);
-  const closeErrorSB = () => setErrorSB(false);
   const func = (value) => dispatch(getCustomerProject(value))
 
   const deleteProject = async () => {
+    const id = item._id
     setLoading6(true)
     if (!item._id) {
-      setRespMessage('ID not provided')
+      resonseMessage('ID not provided')
       setTimeout(() => {
         setLoading6(false)
-        openErrorSB()
+        errorSBNot()
       }, 1000)
       return
     }
-    await apiClient.delete('/graphic-project/' + item._id)
+    await apiClient.delete(getDeleteApiAccordingToProject(item.project_category, id))
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
         setLoading6(false)
@@ -102,20 +92,18 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
   const projectCancel = async () => {
     setLoading1(true)
     if (!item._id) {
-      setRespMessage('ID not provided')
       resonseMessage('ID not provided')
       setLoading1(false)
       setTimeout(() => {
-        openErrorSB()
+        errorSBNot()
       }, 1000)
       return
     }
     const id = item._id
-    await apiClient.get('/api/cancel-project/' + id)
+    await apiClient.get(getCancelApiAccordingToProject(item.project_category, id))
       .then(({ data }) => {
         if (data.message) {
           resonseMessage(data.message)
-          setRespMessage(data.message)
         }
         setLoading1(false)
         customerSendingNotification(socketIO, item, 'Customer', 'Cancel')
@@ -145,10 +133,10 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
   const duplicateProject = async () => {
     setLoading2(true)
     if (!item._id) {
-      setRespMessage('ID not provided')
+      resonseMessage('ID not provided')
       setLoading2(false)
       setTimeout(() => {
-        openErrorSB()
+        errorSBNot()
       }, 1000)
       return
     }
@@ -156,7 +144,7 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
     const data = {
       user: item.user
     }
-    await apiClient.post('/api/duplicate-project/' + id, data)
+    await apiClient.post(getDuplicateApiAccordingToProject(item.project_category, id), data)
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
         setLoading2(false)
@@ -185,10 +173,10 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
   const projectAttend = async () => {
     setLoading5(true)
     if (!item._id) {
-      setRespMessage('ID not provided')
+      resonseMessage('ID not provided')
       setLoading5(false)
       setTimeout(() => {
-        openErrorSB()
+        errorSBNot()
       }, 1000)
       return
     }
@@ -196,20 +184,12 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
     const data = {
       user: item.user
     }
-    await apiClient.get('/api/attend-project/' + id, data)
+    await apiClient.get(getOngoingApiAccordingToProject(item.project_category, id), data)
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
         setLoading5(false)
 
         sendingStatusNotification(socketIO, role, item, userid, 'Ongoing')
-
-        // const updatedProjects = projects.map(item => {
-        //   if (item._id === id) {
-        //     return { ...item, status: 'Ongoing' }
-        //   }
-        //   return item
-        // })
-
         setTimeout(() => {
           // console.log(updatedProjects)
           getProjectData(userid, func)
@@ -236,10 +216,10 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
   const projectForReview = async () => {
     setLoading4(true)
     if (!item._id) {
-      setRespMessage('ID not provided')
+      resonseMessage('ID not provided')
       setLoading4(false)
       setTimeout(() => {
-        openErrorSB()
+        errorSBNot()
       }, 1000)
       return
     }
@@ -247,19 +227,12 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
     const data = {
       user: item.user
     }
-    await apiClient.get('/api/for-review-project/' + id, data)
+    await apiClient.get(getForReviewApiAccordingToProject(item.project_category, id), data)
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
         setLoading4(false)
 
         sendingStatusNotification(socketIO, role, item, userid, 'For Review')
-
-        // const updatedProjects = projects.map(item => {
-        //   if (item._id === id) {
-        //     return { ...item, status: 'For Review' }
-        //   }
-        //   return item
-        // })
 
         setTimeout(() => {
           // func(updatedProjects)
@@ -287,15 +260,15 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
   const projectCompleted = async () => {
     setLoading3(true)
     if (!item._id) {
-      setRespMessage('ID not provided')
+      resonseMessage('ID not provided')
       setLoading3(false)
       setTimeout(() => {
-        openErrorSB()
+        errorSBNot()
       }, 1000)
       return
     }
     const id = item._id
-    await apiClient.get('/api/project-completed/' + id)
+    await apiClient.get(getCompletedApiAccordingToProject(item.project_category, id))
       .then(({ data }) => {
         if (data.message) resonseMessage(data.message)
         setLoading3(false)
@@ -324,40 +297,13 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
         }, 900)
       })
   }
-  const renderErrorSB = (
-    <MDSnackbar
-      color="error"
-      icon="warning"
-      title="Error"
-      content={respMessage}
-      dateTime={new Date().toLocaleTimeString('pk')}
-      open={errorSB}
-      onClose={closeErrorSB}
-      close={closeErrorSB}
-      bgWhite
-    />
-  );
-  const renderSuccessSB = (
-    <MDSnackbar
-      color="success"
-      icon="check"
-      title="SUCCESS"
-      content={respMessage}
-      dateTime={new Date().toLocaleTimeString('pk')}
-      open={successSB}
-      onClose={closeSuccessSB}
-      close={closeSuccessSB}
-      bgWhite
-    />
-  );
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const options_props = { item, children, handleMenuOpen, handleMenuClose, anchorEl, role, loading1, loading2, loading3, loading4, loading5, renderErrorSB, renderSuccessSB, projectForReview, projectCompleted, duplicateProject, projectCancel, projectAttend, deleteProject, loading6, onEditProject };
+  const options_props = { item, children, handleMenuOpen, handleMenuClose, anchorEl, role, loading1, loading2, loading3, loading4, loading5, projectForReview, projectCompleted, duplicateProject, projectCancel, projectAttend, deleteProject, loading6, onEditProject };
   return (
     <MDBox>
       <OptionsList {...options_props} />
-      {/* <TransitionsModal openModal={openModal} setOpenModal={setOpenModal} message="Project Status Updated" /> */}
       <TransitionsModal openModal={openModal} setOpenModal={setOpenModal} message={message} />
     </MDBox >
   )

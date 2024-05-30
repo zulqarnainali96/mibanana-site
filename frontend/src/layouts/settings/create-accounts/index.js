@@ -11,9 +11,10 @@ import React, { useState } from 'react'
 import { MoonLoader } from 'react-spinners'
 import apiClient from 'api/apiClient'
 import { useSelector } from 'react-redux'
-import MDSnackbar from 'components/MDSnackbar'
 import { mibananaColor } from 'assets/new-images/colors'
 import { fontsFamily } from 'assets/font-family'
+import TransitionsModal from 'components/Modal/Modal'
+import TransitionsErrorModal from 'components/Modal/ErrorModal'
 
 const CreateAccounts = () => {
     const [loading, setLoading] = useState(false)
@@ -25,10 +26,7 @@ const CreateAccounts = () => {
     const [successSB, setSuccessSB] = useState(false);
 
     const openSuccessSB = () => setSuccessSB(true);
-    const closeSuccessSB = () => setSuccessSB(false);
-
     const openErrorSB = () => setErrorSB(true);
-    const closeErrorSB = () => setErrorSB(false);
 
     const [formValue, setFormValue] = useState({
         username: '',
@@ -48,13 +46,11 @@ const CreateAccounts = () => {
             [name]: value
         })
     }
-    const handleSignUp = (event) => {
+    const handleCreateMember = (event) => {
         event.preventDefault()
         const data = {
             ...formValue,
             roles: [formValue.roles],
-            verified: true,
-            is_active: true,
         }
         setLoading(true)
         apiClient.post('/api/create-user', data).then(({ data }) => {
@@ -83,41 +79,24 @@ const CreateAccounts = () => {
 
     }
 
-    const renderErrorSB = (
-        <MDSnackbar
-            color="error"
-            icon="warning"
-            title="Error"
-            content={respMessage}
-            dateTime={new Date().toLocaleTimeString('pk')}
-            open={errorSB}
-            onClose={closeErrorSB}
-            close={closeErrorSB}
-            bgWhite
-        />
-    );
-
-    const renderSuccessSB = (
-        <MDSnackbar
-            color="success"
-            icon="check"
-            title="SUCCESS"
-            content={respMessage}
-            dateTime={new Date().toLocaleTimeString('pk')}
-            open={successSB}
-            onClose={closeSuccessSB}
-            close={closeSuccessSB}
-            bgWhite
-        />
-    );
-
     const Styles = {
         fontWeight: "bold",
         fontSize: "15px",
         marginLeft: 4
     }
+    const options = [
+        "Project-Manager",
+        "Graphic-Designer",
+        "Mobile-App-Developer",
+        "Copy-Writer",
+        "Web-Developer",
+        "Social-Media-Manager",
+    ]
+
     return (
         <DashboardLayout>
+            <TransitionsModal message={respMessage} openModal={successSB} setOpenModal={setSuccessSB} />
+            <TransitionsErrorModal message={respMessage} openModal={errorSB} setOpenModal={setErrorSB} />
             <MDBox pt={6} pb={3} sx={({ breakpoints }) => ({
                 [breakpoints.down('md')]: {
                     width: '98%',
@@ -130,7 +109,7 @@ const CreateAccounts = () => {
                     <Grid container >
                         <Grid item xxl={10} xl={10} lg={10} md={12} xs={12}>
                             <MDBox pt={4} px={3} >
-                                <MDBox component="form" role="form" onSubmit={handleSignUp} >
+                                <MDBox component="form" role="form" onSubmit={handleCreateMember} >
                                     <MDTypography
                                         sx={({ breakpoints }) => ({
                                             [breakpoints.down('md')]: {
@@ -175,7 +154,7 @@ const CreateAccounts = () => {
                                                     }}
                                                     // onClick={moveToBrandPage}
                                                     id="select-role-demo"
-                                                    options={["Project-Manager", "Graphic-Designer","Social-Media-Manager"]}
+                                                    options={options}
                                                     sx={{ width: '100%' }}
                                                     renderInput={(params) => <TextField required placeholder='Select Role' {...params} />}
 
@@ -218,8 +197,6 @@ const CreateAccounts = () => {
                                             Save &nbsp;
                                         </MDButton>
                                     </MDBox>
-                                    {renderErrorSB}
-                                    {renderSuccessSB}
                                 </MDBox>
                             </MDBox>
                         </Grid>

@@ -94,9 +94,7 @@ const ChatList = (props) => {
                             <Box
                                 sx={{ p: 2, ...nameStyle, fontWeight: "300", fontSize: "12px" }}
                                 className="message-content"
-                                dangerouslySetInnerHTML={{ __html: chats.message }}
-                            >
-
+                                dangerouslySetInnerHTML={{ __html: chats.message }}>
                             </Box>
                         </Box>
                     </Box>

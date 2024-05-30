@@ -10,7 +10,6 @@ import ImageAvatar from "assets/mi-banana-icons/default-profile.png";
 import "./style.css";
 import MDSnackbar from "components/MDSnackbar";
 import FileModal from "./Files Modal/FileModal";
-import SuccessModal from "components/SuccessBox/SuccessModal";
 import FileUploadContainer from "./File-upload-container";
 import { currentUserRole } from "redux/global/global-functions";
 import ChatsContainer from "./Chat-container";
@@ -19,15 +18,22 @@ import { v4 as uuidv4 } from 'uuid';
 import { Action } from 'layouts/ProjectsTable/data/authorsTableData';
 import TransitionsModal from "components/Modal/Modal";
 import TransitionsErrorModal from "components/Modal/ErrorModal";
-// https://socket-dot-mi-banana-401205.uc.r.appspot.com
-// http://34.125.239.154
+import { getUserRoles } from "redux/global/global-functions";
 
 const Chating = ({ reduxState, reduxActions }) => {
   // const socketIO = useSocket()
   const socketRef = useRef(useContext(SocketContext));
   const role = currentUserRole(reduxState);
+  const options = {
+    timeZone: 'Europe/Berlin',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false // Use 24-hour format
+  };
+  
   const currentTime = new Date(); // Get the current date and time
-  const formattedTime = currentTime.toLocaleTimeString();
+  const formattedTime = new Intl.DateTimeFormat('en-GB', options).format(currentTime);
   const formattedDate = currentTime.toLocaleDateString();
   const [msgArray, setMsgArray] = useState([]);
   const [message, sendMessage] = useState("");
@@ -52,12 +58,12 @@ const Chating = ({ reduxState, reduxActions }) => {
   let avatar = useSelector((state) => state.userDetails?.avatar);
 
 
-  const getUserRoles = () => {
-    if (role?.designer) return "Graphic-Designer";
-    if (role?.projectManager) return "Project-Manager";
-    if (role?.admin) return "Admin";
-    if (role?.customer) return "Customer";
-  };
+  // const getUserRoles = (role) => {
+  //   if (role?.designer) return "Graphic-Designer";
+  //   if (role?.projectManager) return "Project-Manager";
+  //   if (role?.admin) return "Admin";
+  //   if (role?.customer) return "Customer";
+  // };
 
   const personProject = () => {
     if (reduxState.project_list?.CustomerProjects) {
@@ -92,7 +98,7 @@ const Chating = ({ reduxState, reduxActions }) => {
         time_data: formattedTime,
         date: formattedDate,
         message: user_message,
-        role: getUserRoles(),
+        role: getUserRoles(role),
         view: true,
       },
     };
@@ -169,35 +175,6 @@ const Chating = ({ reduxState, reduxActions }) => {
     }
   }, [msgArray]);
 
-  const renderSuccessSB = (
-    <MDSnackbar
-      color="success"
-      icon="check"
-      title="SUCCESS"
-      content={respMessage}
-      dateTime={new Date().toLocaleTimeString("pk")}
-      open={successSB}
-      onClose={closeSuccessSB}
-      close={closeSuccessSB}
-      delay={3000}
-      bgWhite
-    />
-  );
-  const renderErrorSB = (
-    <MDSnackbar
-      color="error"
-      icon="warning"
-      title="Error"
-      content={respMessage}
-      dateTime={new Date().toLocaleTimeString("pk")}
-      open={errorSB}
-      onClose={closeErrorSB}
-      close={closeErrorSB}
-      delay={3000}
-      bgWhite
-    />
-  );
-
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
@@ -217,15 +194,6 @@ const Chating = ({ reduxState, reduxActions }) => {
       <TransitionsModal message={respMessage} openModal={successSB} setOpenModal={setSuccessSB} />
       <TransitionsErrorModal message={respMessage} openModal={errorSB} setOpenModal={setErrorSB} />
 
-      {/* <SuccessModal
-        open={open}
-        msg={respMessage}
-        onClose={handleClose}
-        width="35%"
-        title="SUCCESS"
-        color="#333"
-        sideRadius={false}
-      /> */}
       <Grid
         container
         spacing={2}
@@ -291,8 +259,6 @@ const Chating = ({ reduxState, reduxActions }) => {
             getChatMessage={getChatMessage}
           />
         </Grid>
-        {/* {renderSuccessSB} */}
-        {/* {renderErrorSB} */}
       </Grid>
     </DashboardLayout>
   );

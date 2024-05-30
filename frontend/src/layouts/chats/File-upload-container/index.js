@@ -65,7 +65,7 @@ const FileUploadContainer = ({
   setShowMore,
   getChatMessage,
 }) => {
-  const person_id = useSelector((state) => state.userDetails?.id);
+  const userId = useSelector((state) => state.userDetails?.id);
   const projects = reduxState?.project_list?.CustomerProjects;
   const classes = useStyles();
   // const [previewAllImages, setPreviewAllImages] = useState([])
@@ -171,7 +171,7 @@ const FileUploadContainer = ({
     setFileMsg("");
     setLoading(true);
     await apiClient
-      .get("/get-customer-files/" + id)
+      .get(`/api/get-customer-files/graphic-design/${id}`)
       .then(({ data }) => {
         setVersion(data.filesInfo);
         handlePreviewImages(data?.filesInfo)
@@ -192,7 +192,7 @@ const FileUploadContainer = ({
     setFileMsg("");
     setLoading(true);
     await apiClient
-      .get(`/api/get-version-uploads/${value}/${id}`)
+      .get(`/api/get-version-uploads/${value}/${project.project_category}/${id}`)
       .then(({ data }) => {
         // setVersion(data.filesInfo);
         handlePreviewImages(data?.filesInfo)
@@ -271,11 +271,10 @@ const FileUploadContainer = ({
       formdata.append("files", filType[i]);
     }
     formdata.append("user_id", reduxState?.userDetails.id);
-    formdata.append("name", reduxState?.userDetails.name);
-    formdata.append("project_title", project.project_title);
+    // formdata.append("name", reduxState?.userDetails.name);
+    // formdata.append("project_title", project.project_title);
     formdata.append("project_id", project?._id);
-    await apiClient
-      .post("/file/google-cloud", formdata)
+    await apiClient.post("/file/google-cloud", formdata)
       .then(() => {
         const data = {
           user_id: reduxState?.userDetails.id,
@@ -292,7 +291,6 @@ const FileUploadContainer = ({
             await getProjectData(reduxState.userDetails.id, reduxActions.getCustomerProject);
             await clientFiles();
             setTimeout(() => {
-              // openSuccessSB();
               setOpenModal(true)
             }, 1000);
           })
@@ -327,7 +325,7 @@ const FileUploadContainer = ({
     for (let i = 0; i < filType.length; i++) {
       formdata.append("files", filType[i]);
     }
-    await apiClient.post(`/api/version-uploads/${current_version}/${id}`, formdata)
+    await apiClient.post(`/api/version-uploads/${current_version}/${project.project_category}/${id}`, formdata)
       .then(async ({ data }) => {
         setLoading(false);
         setFiles([]);
@@ -376,7 +374,7 @@ const FileUploadContainer = ({
       user: val?._id,
       project_id: id
     }
-    apiClient.put(`/api/delete-designer`, formdata)
+    apiClient.put(`/api/delete-team-member/${project.project_category}`, formdata)
       .then(({ data }) => {
         setDesignerLoading(false);
         getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject);
@@ -451,7 +449,7 @@ const FileUploadContainer = ({
     for (let b = 0; b < fileVersion?.length; b++) {
       const current_version = fileVersion[b]
       try {
-        const { data } = await apiClient.get(`/api/get-version-uploads/${current_version}/${id}`);
+        const { data } = await apiClient.get(`/api/get-version-uploads/${current_version}/${project.project_category}/${id}`);
         if (allversionfiles.length > 0) {
           const files = [...allversionfiles, ...data?.filesInfo]
           allversionfiles = files
@@ -494,7 +492,6 @@ const FileUploadContainer = ({
 
   const getAllfiles = async () => {
     setLoading(true);
-
     if (!navigator.onLine) {
       // Handle offline state
       setRespMessage("You are currently offline. Please check your internet connection.");
@@ -506,8 +503,6 @@ const FileUploadContainer = ({
     }
 
     try {
-      // const clientFilesData = await clientFilesforAll();
-      // const designerFiles = await designerFilesforAll();
       const get_all_version_Files = await getAllVersionFiles();
       const combinedData = [...get_all_version_Files];
       handlePreviewImages(combinedData);
@@ -534,9 +529,9 @@ const FileUploadContainer = ({
     }
   };
   const getAllDesignersList = async () => {
-    await apiClient.get("/api/get-designer-list/" + person_id)
+    await apiClient.get(`/api/get-team-member-list/graphic-design/${userId}`)
       .then(({ data }) => {
-        setDesignerList(data?.designerlist)
+        setDesignerList(data?.list)
 
       })
       .catch((e) => {
@@ -548,7 +543,7 @@ const FileUploadContainer = ({
     setSelectedFilePeople("Latest design")
     let lastIndex = [...fileVersion]?.pop()
     getFilesOnVerion(lastIndex)
-    getProjectById(id, setProject, setFileVersionList)
+    getProjectById(id, setProject, project.project_category, setFileVersionList)
   }, [id]);
 
 
@@ -572,10 +567,11 @@ const FileUploadContainer = ({
       project.is_active = true;
 
       let data = {
+        category: project.project_category,
         project_id: personProject()?._id,
         project_data: project,
       };
-      await apiClient.patch("/graphic-project", data)
+      await apiClient.patch(`/api/projects/update-team`, data)
         .then(({ data }) => {
           const { save } = data;
           const message = {
@@ -696,20 +692,45 @@ const FileUploadContainer = ({
     selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState, getLatestDesign
   }
 
-  function getDate(localDate) {
-    const date = new Date(localDate);
-    const year = date.getFullYear().toString().slice(-2);
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    let hours = date.getHours();
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    let ampm = "AM";
-    if (hours >= 12) {
-      ampm = "PM";
-      hours = hours % 12;
-    }
-    hours = String(hours).padStart(2, "0");
-    let formattedDate = `${hours}:${minutes} ${ampm} ${day}-${month}-${year}`;
+  // function getDate(localDate) {
+  //   const date = new Date(localDate);
+  //   const year = date.getFullYear().toString().slice(-2);
+  //   const month = String(date.getMonth() + 1).padStart(2, "0");
+  //   const day = String(date.getDate()).padStart(2, "0");
+  //   let hours = date.getHours();
+  //   const minutes = String(date.getMinutes()).padStart(2, "0");
+  //   let ampm = "AM";
+  //   if (hours >= 12) {
+  //     ampm = "PM";
+  //     hours = hours % 12;
+  //   }
+  //   hours = String(hours).padStart(2, "0");
+  //   let formattedDate = `${hours}:${minutes} ${ampm} ${day}-${month}-${year}`;
+  //   return { formattedDate };
+  // }
+  function getDate(timestamp) {
+    const date = new Date(timestamp);
+    const options = {
+      timeZone: 'Europe/Berlin',
+      year: '2-digit',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    };
+
+    const formatter = new Intl.DateTimeFormat('en-GB', options);
+    const parts = formatter.formatToParts(date);
+
+    const formattedDateParts = parts.reduce((acc, part) => {
+      acc[part.type] = part.value;
+      return acc;
+    }, {});
+
+    const formattedDate = `${formattedDateParts.hour}:${formattedDateParts.minute} ${formattedDateParts.day}-${formattedDateParts.month}-${formattedDateParts.year}`;
+
     return { formattedDate };
   }
 

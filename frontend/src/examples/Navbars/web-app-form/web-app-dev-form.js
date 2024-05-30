@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { styled } from "@mui/material/styles";
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -6,14 +6,17 @@ import Dialog from '@mui/material/Dialog';
 import MDTypography from 'components/MDTypography';
 import MDButton from 'components/MDButton';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
-import { Grid, MenuItem, Select, TextField } from '@mui/material';
+import { Grid, MenuItem, Select } from '@mui/material';
 import Input from 'components/Input/Input';
 import TransitionsModal from 'components/Modal/Modal';
-import check from '../../../assets/images/check.png'
-import axios from 'axios';
+import ReactQuill from "react-quill";
 import { webAppSchema } from 'Schema/Index';
 import { useFormik } from 'formik';
 import apiClient from 'api/apiClient';
+import { MoonLoader } from 'react-spinners';
+import { modules } from 'assets/react-quill-settings/react-quill-settings';
+import { formats } from 'assets/react-quill-settings/react-quill-settings';
+import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings';
 
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
@@ -36,68 +39,71 @@ const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => 
     },
 }));
 
-const userDetailsString = localStorage.getItem('user_details');
-const name = userDetailsString ? JSON.parse(userDetailsString).name : '';
-const user = userDetailsString ? JSON.parse(userDetailsString).id : "";
 
 const initialValues = {
-    user: user,
-    name: name,
     project_title: '',
     preferred_stack: "",
     backend_tech: "",
     project_description: "",
 };
 
-const WebAppDevForm = (props) => {
-    const { open, handleClose, setRespMessage, openErrorSB, openSuccessSB } = props;
-    const [openModal, setOpenModal] = useState(false);
+const WebAppDevForm = ({
+    open, handleClose, setRespMessage, setLoading, loading, reduxState, reduxActions, openErrorSB, openSuccessSB, socketIO
+}) => {
+    const classes = reactQuillStyles()
+    const quilRef = useRef();
 
+    const handleWebFormSubmit = async (values, { resetForm }) => {
+        const dataToSend = {
+            ...values,
+            user: reduxState.userDetails?.id,
+            name: reduxState.userDetails?.name,
+        };
+        setLoading(true)
+        try {
+            const { data } = await apiClient.post('/api/create-web-app-project', dataToSend)
+            if (data.message) {
+                handleClose();
+                setLoading(false)
+                setRespMessage(data.message)
+                resetForm(clearForm());
+                setTimeout(() => {
+                    reduxActions.handleGetAllProjects(!reduxState.project_call)
+                    socketIO.current.emit('new-project', dataToSend)
+                    openSuccessSB();
+                }, 500);
+            }
+        } catch (error) {
+            if (error.response.data) {
+                setRespMessage(error.response.data.message)
+            } else {
+                setRespMessage(error.message)
+            }
+            setLoading(false)
+            setTimeout(() => {
+                openErrorSB();
+            }, 500);
+        }
+        function clearForm() {
+            document.getElementById('project_title').value = "";
+            quilRef.current.getEditor().setText('');
+        }
+        // Optionally, reset the form after submission
+        resetForm(clearForm());
+    }
     const {
         values,
         errors,
         handleSubmit,
         handleChange,
         handleBlur,
+        setFieldValue,
+        isSubmitting,
         touched,
     } = useFormik({
         initialValues: initialValues,
         validationSchema: webAppSchema,
-        onSubmit: (values, { resetForm }) => {
-            const dataToSend = {
-                ...values,
-                user: user,
-                name: name,
-            };
-            console.log(dataToSend)
-            // try {
-            //     const { data } = await apiClient.post('/api/create-web-app-project', dataToSend)
-            //     if (data.message) {
-            //         handleClose();
-            //         setRespMessage(data.message)
-            //         resetForm(clearForm());
-            //         setTimeout(() => {
-            //             openSuccessSB();
-            //             // setOpenModal(true)
-            //         }, 500);
-            //     }
-            // } catch (error) {
-            //     setRespMessage(error.message)
-            //     setTimeout(() => {
-            //         openErrorSB();
-            //     }, 500);
-            //     console.error('Web app form error:', error);
-            // }
-            function clearForm() {
-                var projectTitle = document.getElementById('project_title');
-                projectTitle.value = "";
-                var projectDetail = document.getElementById('project_description');
-                projectDetail.value = "";
-            }
-
-            // Optionally, reset the form after submission
-            resetForm(clearForm());
-        },
+        onSubmit: handleWebFormSubmit,
     });
 
     return (
@@ -193,18 +199,21 @@ const WebAppDevForm = (props) => {
                             <MDTypography variant="h6" pb={1} className="">
                                 Project Description
                             </MDTypography>
-                            <TextField
-                                placeholder="Enter your Project Description"
-                                id="project_description"
+                            <ReactQuill
+                                theme="snow"
                                 name="project_description"
-                                type="text"
+                                id='project_description'
                                 value={values.project_description}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                error={touched.project_description && Boolean(errors.project_description)}
-                                multiline
-                                rows={4}
-                                style={{ width: '100%' }}
+                                onChange={(value) => setFieldValue('project_description', value)}
+                                onBlur={() => handleBlur({
+                                    target: {
+                                        name: 'project_description'
+                                    }
+                                })}
+                                modules={modules}
+                                formats={formats}
+                                className={classes.quill}
+                                ref={quilRef}
                             />
                         </Grid>
 
@@ -212,6 +221,7 @@ const WebAppDevForm = (props) => {
                             <MDButton
                                 type="submit"
                                 style={submitButtonStyle}
+                                endIcon={<MoonLoader size={22} loading={loading} color='#fff' />}
                             >
                                 Submit
                             </MDButton>
@@ -219,8 +229,6 @@ const WebAppDevForm = (props) => {
                     </Grid>
                 </form>
             </DialogContent>
-            <TransitionsModal message="Project created successfully!" check={check} openModal={openModal} setOpenModal=
-                {setOpenModal} />
         </BootstrapDialog>
     )
 }

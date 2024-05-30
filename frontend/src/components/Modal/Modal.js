@@ -9,8 +9,6 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 export default function TransitionsModal({ message, openModal, setOpenModal }) {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpenModal(false);
   return (
     <div>

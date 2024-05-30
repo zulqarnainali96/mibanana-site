@@ -25,7 +25,6 @@ export default () => {
 
     const project_notifications = useSelector(state => state.project_notifications)
 
-
     const list = (anchor) => (
         <Box
             sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : "100%", marginTop: '3rem' }}

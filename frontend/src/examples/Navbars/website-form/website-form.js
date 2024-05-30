@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { styled } from "@mui/material/styles";
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -12,7 +12,13 @@ import { useFormik } from 'formik';
 import axios from 'axios';
 import { webDevelopmentSchema } from 'Schema/Index';
 import TransitionsModal from 'components/Modal/Modal';
-import check from 'assets/images/check.png'
+import apiClient from 'api/apiClient';
+import { submitButtonStyle } from '../mobile-app-dev-form/mobile-app-dev-form';
+import { MoonLoader } from 'react-spinners';
+import ReactQuill from "react-quill";
+import { modules } from 'assets/react-quill-settings/react-quill-settings';
+import { formats } from 'assets/react-quill-settings/react-quill-settings';
+import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings';
 
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
@@ -36,61 +42,70 @@ const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => 
 }));
 
 
-const userDetailsString = localStorage.getItem('user_details');
-const name = userDetailsString ? JSON.parse(userDetailsString).name : '';
-const user = userDetailsString ? JSON.parse(userDetailsString).id : "";
-
 const initialValues = {
-    user: user,
-    name: name,
     project_title: '',
     website_type: '',
     preferred_stack: "",
-    project_details: "",
+    project_description: "",
 };
 
-const WebsiteForm = (props) => {
-    const { open, handleClose } = props;
-    const [openModal, setOpenModal] = useState(false);
+const WebsiteForm = ({
+    open, handleClose, openSuccessSB, openErrorSB, reduxState, reduxActions, setLoading, loading, setRespMessage, socketIO
+}) => {
+    const classes = reactQuillStyles()
+    const quilRef = useRef()
 
+    const handleWebsiteForm = async (values, { resetForm }) => {
+        setLoading(true)
+        const dataToSend = {
+            ...values,
+            user: reduxState.userDetails?.id,
+            name: reduxState.userDetails?.name,
+        };
+        try {
+            const { data } = await apiClient.post('/api/create-website-project', dataToSend);
+            setLoading(false);
+            if (data.message) {
+                handleClose();
+                setRespMessage(data.message);
+                resetForm(clearForm());
+                setTimeout(() => {
+                    reduxActions.handleGetAllProjects(!reduxState.project_call)
+                    socketIO.current.emit('new-project', dataToSend)
+                    openSuccessSB();
+                }, 500);
+            }
+        } catch (error) {
+            if (error.response.data) {
+                setRespMessage(error.response.data.message)
+            } else {
+                setRespMessage(error.message)
+            }
+            setLoading(false)
+            setTimeout(() => {
+                openErrorSB();
+            }, 500);
+        }
+        function clearForm() {
+            var projectTitle = document.getElementById('project_title');
+            projectTitle.value = "";
+            quilRef.current.getEditor().setText('');
+        }
+        // Optionally, reset the form after submission
+        resetForm(clearForm());
+    }
     const {
         values,
         errors,
         handleSubmit,
+        setFieldValue,
         handleChange,
         handleBlur,
         touched,
     } = useFormik({
         initialValues: initialValues,
         validationSchema: webDevelopmentSchema,
-        onSubmit: async (values, { resetForm }) => {
-            const dataToSend = {
-                ...values,
-                user: user,
-                name: name,
-            };
-            try {
-                const response = await axios.post('http://localhost:8000/api/create-website-project', dataToSend);
-                // console.log(dataToSend)
-                // handleClose();
-                resetForm(clearForm());
-                setOpenModal(true)
-                setTimeout(() => {
-                    handleClose();
-                }, 5000);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-            function clearForm() {
-                var projectTitle = document.getElementById('project_title');
-                projectTitle.value = "";
-                var projectDetail = document.getElementById('project_details');
-                projectDetail.value = "";
-            }
-
-            // Optionally, reset the form after submission
-            resetForm(clearForm());
-        },
+        onSubmit: handleWebsiteForm,
     });
 
     return (
@@ -196,7 +211,7 @@ const WebsiteForm = (props) => {
                             <MDTypography variant="h6" pb={1} className="">
                                 Project Description
                             </MDTypography>
-                            <TextField
+                            {/* <TextField
                                 placeholder="Enter your Project Description"
                                 id="project_details"
                                 name="project_details"
@@ -208,17 +223,37 @@ const WebsiteForm = (props) => {
                                 multiline
                                 rows={4}
                                 style={{ width: '100%' }}
+                            /> */}
+                            <ReactQuill
+                                theme="snow"
+                                name="project_description"
+                                id='project_description'
+                                value={values.project_description}
+                                onChange={(value) => setFieldValue('project_description', value)}
+                                onBlur={ () => handleBlur({
+                                    target: {
+                                        name: 'project_description'
+                                    }
+                                })}
+                                modules={modules}
+                                formats={formats}
+                                className={classes.quill}
+                                ref={quilRef}
                             />
                         </Grid>
 
                         <Grid item xs={12}>
-                            <MDButton type="submit" style={{ width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }}>Submit</MDButton>
+                            <MDButton
+                                type="submit"
+                                style={submitButtonStyle}
+                                disabled={loading}
+                                endIcon={<MoonLoader loading={loading} size={18} color='#fff' />}>
+                                Submit
+                            </MDButton>
                         </Grid>
                     </Grid>
                 </form>
             </DialogContent>
-            <TransitionsModal message="Project created successfully!" check={check} openModal={openModal} setOpenModal=
-                {setOpenModal} />
         </BootstrapDialog>
     )
 }

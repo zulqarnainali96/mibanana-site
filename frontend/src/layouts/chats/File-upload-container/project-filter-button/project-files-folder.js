@@ -9,7 +9,7 @@ import MDButton from 'components/MDButton';
 
 
 const ProjectFilesFolder = (props) => {
-    const { selectedFilePeople, handleFilePeopleChange, activebtn, clientFiles, role, addFileVerion, addVersionStyle, versionHandler, getFullFolderArray, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState, getLatestDesign } = props
+    const { selectedFilePeople, clientFiles, role, addFileVerion, addVersionStyle, versionHandler, getFullFolderArray, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState, getLatestDesign } = props
 
     const [loading, setLoading] = useState(false)
     const [editModal, setEditModal] = useState(null);
@@ -111,6 +111,7 @@ const ProjectFilesFolder = (props) => {
 
     const updateDriveLink = () => {
         const driveLink = {
+            category : project.project_category,
             drive_link,
             id: project._id
         }
@@ -149,6 +150,7 @@ const ProjectFilesFolder = (props) => {
     
     const updateFigmaLink = () => {
         const figmaLink = {
+            category : project.project_category,
             figma_link,
             id: project._id
         }

@@ -28,7 +28,7 @@ const GetLatestFiles = ({ latestButtonProps }) => {
         editModal,
         openFigma,
         showFigmaMenu,
-        loading,
+        driveLoading,
         figma_link,
         showMenu
     } = latestButtonProps
@@ -45,11 +45,11 @@ const GetLatestFiles = ({ latestButtonProps }) => {
                         type="button"
                         onClick={updateDriveLink}
                         color="warning"
-                        disabled={loading}
+                        disabled={driveLoading}
                         circular={true}
                         endIcon={
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <MoonLoader loading={loading} size={18} color="#121212" />
+                                <MoonLoader loading={driveLoading} size={18} color="#121212" />
                             </div>}
                         sx={buttonStyle}
                     >
@@ -68,11 +68,11 @@ const GetLatestFiles = ({ latestButtonProps }) => {
                         type="button"
                         color="warning"
                         onClick={updateFigmaLink}
-                        disabled={loading}
+                        disabled={driveLoading}
                         circular={true}
                         endIcon={
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <MoonLoader loading={loading} size={18} color="#121212" />
+                                <MoonLoader loading={driveLoading} size={18} color="#121212" />
                             </div>}
                         sx={buttonStyle}
                     >

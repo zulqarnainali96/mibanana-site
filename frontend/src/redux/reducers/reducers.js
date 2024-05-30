@@ -3,7 +3,7 @@ import { EDIT_PROJECT } from "redux/actions/actions"
 import { CURRENT_PROJECT_ID } from "redux/actions/actions"
 import { STATUS_NOTIFICATIONS } from "redux/actions/actions"
 import { PROJECT_NOTIFICATIONS } from "redux/actions/actions"
-import { USER_DETAILS, SHOW_MODAL, PROJECT_CATEGORY, CUSTOMER_BRAND, NEW_BRAND, STATUS, IS_ALERT, CUSTOMER_PROJECTS, USER_AVATAR_URL, PROJECT_ID, IS_EDIT_BRAND, OPEN_BRAND_MODAL, RIGHTSIDEDRAWER, CURRENT_INDEX, RE_RENDER_CHAT, NON_ACTIVE_CUSTOMER, TOGGLE_CHATS } from "redux/actions/actions"
+import { USER_DETAILS, SHOW_MODAL, PROJECT_CATEGORY, CUSTOMER_BRAND, NEW_BRAND, STATUS, IS_ALERT, CUSTOMER_PROJECTS, USER_AVATAR_URL, PROJECT_ID, IS_EDIT_BRAND, OPEN_BRAND_MODAL, RIGHTSIDEDRAWER, CURRENT_INDEX, RE_RENDER_CHAT, NON_ACTIVE_CUSTOMER, TOGGLE_CHATS, PROJECT_CALL } from "redux/actions/actions"
 
 const initialState = {
     userDetails: {},
@@ -55,7 +55,8 @@ const initialState = {
     project_notifications: [],
     status_notifications: [],
     edit_project : false,
-    currentProjectId : ""
+    currentProjectId : "",
+    project_call : false,
 
 }
 const UserReducers = (state = initialState, action) => {
@@ -200,6 +201,12 @@ const UserReducers = (state = initialState, action) => {
             return {
                 ...state,
                 currentProjectId: payload
+            }
+        }
+        case PROJECT_CALL : {
+            return {
+                ...state,
+                project_call : payload
             }
         }
         default:

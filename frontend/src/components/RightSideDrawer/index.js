@@ -10,10 +10,6 @@ const RightSideDrawer = memo(({ list }) => {
     const dispatch = useDispatch()
     const setState = (payload) => dispatch(setRightSideBar(payload))
 
-    // const openSideBar = () => {
-    //     toggleDrawer('right', true, setState, rightSideDrawer)
-    // }
-
     const sx = {
         "& .MuiPaper-root": {
             margin: '0px',

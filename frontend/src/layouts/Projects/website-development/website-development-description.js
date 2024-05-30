@@ -4,9 +4,8 @@ import MoonLoader from 'react-spinners/MoonLoader'
 import Autocomplete from '@mui/material/Autocomplete'
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { TextField, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
 
-const ProjectDescription = ({
+const WebsiteProjectDescription = ({
     loading,
     teamMembers,
     project,
@@ -69,11 +68,9 @@ const ProjectDescription = ({
                     </div>
                 </div>
                 <div className="project-details-div">
-                    <h2 className="admin-div1h2">Brand</h2>
+                    <h2 className="admin-div1h2">Website Type</h2>
                     <div className="adminDiv2">
-                        <Link to="/mi-brands">
-                            <h3 className="admin-div-2h3" style={{ textDecoration: 'underline', color: '#344767' }} >{(typeof project?.brand === 'string' ? project?.brand : project?.brand?.brand_name)}</h3>
-                        </Link>
+                        <h3 className="admin-div-2h3" style={{ color: '#344767' }} >{project.website_type}</h3>
                     </div>
                 </div>
                 <div className="project-details-div">
@@ -92,21 +89,9 @@ const ProjectDescription = ({
                     </Typography>
                 </div>
                 <div className="project-details-div">
-                    <h2 className="admin-div1h2">Type</h2>
+                    <h2 className="admin-div1h2">Preferred Stack</h2>
                     <Typography variant="h6" className="desc1">
-                        {project?.design_type}
-                    </Typography>
-                </div>
-                <div className="project-details-div">
-                    <h2 className="admin-div1h2">File Formats</h2>
-                    {project?.file_formats?.map(item => <Typography sx={{ display: 'inline' }} variant="h6" className="desc1">{item},</Typography>)}
-                    <Typography sx={{ display: 'inline' }} variant="h6" className="desc1">{project?.specific_software_names}</Typography>
-                </div>
-
-                <div className="project-details-div">
-                    <h2 className="admin-div1h2">Size</h2>
-                    <Typography variant="h6" className="desc1">
-                        {project?.sizes}
+                        {project?.preferred_stack}
                     </Typography>
                 </div>
                 <div className="project-details-div">
@@ -120,4 +105,4 @@ const ProjectDescription = ({
     )
 }
 
-export default ProjectDescription
+export default WebsiteProjectDescription

@@ -23,6 +23,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { getBrandData, projectStatus } from "redux/global/global-functions";
 import TransitionsErrorModal from "components/Modal/ErrorModal";
 import { openProjectByFormType } from "redux/global/global-functions";
+import { getProjectCategory } from "redux/global/global-functions";
 
 const ProjectTable = ({ reduxState, reduxActions }) => {
   const { columns, small_columns } = authorsTableData();
@@ -53,7 +54,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   function openProjectChat(id) {
     reduxActions.getID(id);
     const filterProject = projectList.find(proj => proj._id === id)
-    console.log(filterProject)
     if (openProjectByFormType(filterProject.project_category)) {
       setTimeout(() => {
         navigate(`/${filterProject.project_category}/${filterProject._id}`);
@@ -166,7 +166,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
               color: mibananaColor.yellowTextColor,
             }}
           >
-            {item.project_category}
+            {getProjectCategory(item.project_category)}
           </MDTypography>
         ),
         active: (
@@ -201,7 +201,6 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
               message={respMessage}
               errorSBNot={openErrorSB}
               successSBNot={openSuccessSB}
-              projects={projectList}
               role={role}
               onEditProject={() => onEditProject(item?._id)}
             />

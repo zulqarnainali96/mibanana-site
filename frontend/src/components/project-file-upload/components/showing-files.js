@@ -29,7 +29,6 @@ const ShowingFilesContainer = ({
     handleDeleteFile,
     downloadFile,
     getDate,
-    role,
     openImage
 }) => {
     return (
@@ -48,11 +47,12 @@ const ShowingFilesContainer = ({
                                 height={version?.length < 5 ? "147px" : undefined}
                             >
                                 <div className="upload-file-main uploaded-file-main-div">
-                                    {(handleRole().teamMember && role?.admin) && (
-                                        <IconButton onClick={handleDeleteFile} className="deleteIcon">
+                                    {(handleRole().teamMember || handleRole().admin || handleRole().projectManager) && (
+                                        <IconButton onClick={() => handleDeleteFile(ver)} className="deleteIcon">
                                             <CloseIcon fontSize="small" />
                                         </IconButton>
                                     )}
+
 
                                     <DownloadForOfflineIcon
                                         onClick={downloadFile}

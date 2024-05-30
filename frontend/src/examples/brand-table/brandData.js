@@ -7,9 +7,6 @@ import MDBox from "components/MDBox";
 import { getBrandData } from "redux/global/global-functions";
 import { getCustomerBrand } from "redux/actions/actions";
 import { useDispatch } from "react-redux";
-import MDSnackbar from "components/MDSnackbar";
-// import { openEditBrandModal } from "redux/actions/actions";
-import fileImage from "assets/mi-banana-icons/file-image.png";
 import { MoonLoader } from "react-spinners";
 import "../../examples/new-table/table-style.css";
 import { fontsFamily } from "assets/font-family";
@@ -102,8 +99,8 @@ export const Action = ({ item, setFormValue, openEditBrandModal, openSuccessSB, 
         >
           <path
             stroke="inherit"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"
           />
         </svg>

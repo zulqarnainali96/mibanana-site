@@ -6,7 +6,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { TextField, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-const ProjectDescription = ({
+const MobileProjectDescription = ({
     loading,
     teamMembers,
     project,
@@ -69,11 +69,9 @@ const ProjectDescription = ({
                     </div>
                 </div>
                 <div className="project-details-div">
-                    <h2 className="admin-div1h2">Brand</h2>
+                    <h2 className="admin-div1h2">Platform</h2>
                     <div className="adminDiv2">
-                        <Link to="/mi-brands">
-                            <h3 className="admin-div-2h3" style={{ textDecoration: 'underline', color: '#344767' }} >{(typeof project?.brand === 'string' ? project?.brand : project?.brand?.brand_name)}</h3>
-                        </Link>
+                            <h3 className="admin-div-2h3" style={{ textDecoration: 'underline', color: '#344767' }}>{project.platform}</h3>
                     </div>
                 </div>
                 <div className="project-details-div">
@@ -92,24 +90,6 @@ const ProjectDescription = ({
                     </Typography>
                 </div>
                 <div className="project-details-div">
-                    <h2 className="admin-div1h2">Type</h2>
-                    <Typography variant="h6" className="desc1">
-                        {project?.design_type}
-                    </Typography>
-                </div>
-                <div className="project-details-div">
-                    <h2 className="admin-div1h2">File Formats</h2>
-                    {project?.file_formats?.map(item => <Typography sx={{ display: 'inline' }} variant="h6" className="desc1">{item},</Typography>)}
-                    <Typography sx={{ display: 'inline' }} variant="h6" className="desc1">{project?.specific_software_names}</Typography>
-                </div>
-
-                <div className="project-details-div">
-                    <h2 className="admin-div1h2">Size</h2>
-                    <Typography variant="h6" className="desc1">
-                        {project?.sizes}
-                    </Typography>
-                </div>
-                <div className="project-details-div">
                     <h2 className="admin-div1h2">Status</h2>
                     <Typography variant="h6" className="desc1">
                         {project?.is_active ? "Active" : "Not Active"}
@@ -120,4 +100,4 @@ const ProjectDescription = ({
     )
 }
 
-export default ProjectDescription
+export default MobileProjectDescription

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useLayoutEffect, useRef } from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 import MDBox from "components/MDBox";
 import {
   Avatar,
@@ -38,7 +38,7 @@ import RightSideDrawer from "components/RightSideDrawer";
 import { useMaterialUIController } from "context";
 import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 import List from "@mui/material/List";
-import { setMiniSidenav } from 'context'
+// import { setMiniSidenav } from 'context'
 import "./navbar-style.css"
 import MenuIcon from "@mui/icons-material/Menu"
 
@@ -53,8 +53,6 @@ import WebAppDevForm from "../web-app-form/web-app-dev-form";
 import MobileAppDevForm from "../mobile-app-dev-form/mobile-app-dev-form";
 import TransitionsModal from "components/Modal/Modal";
 import EditProjectModal from "../Form-modal/editProject";
-import check from '../../../assets/images/check.png'
-import closeIcon from 'assets/images/close.webp'
 import TransitionsErrorModal from "components/Modal/ErrorModal";
 
 let image = "image/"
@@ -109,6 +107,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
 
   const [images_loading, setImagesLoading] = useState(false)
   const [edit_loading, setEditLoading] = useState(false)
+  const quilRef = useRef();
 
   // edit modal state
   const [editImages, setEditImages] = useState([])
@@ -159,7 +158,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
 
   const [reloadProject, setReloadProjects] = useState(false)
   const [controller, dispatch] = useMaterialUIController();
-  const [openModal, setOpenModal] = useState(false)
+  const [quillError, setQuillError] = useState(false);
   const {
     miniSidenav,
     darkMode,
@@ -167,8 +166,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     transparentSidenav,
   } = controller;
   const [anchorEl, setAnchorEl] = useState(null);
-
-  // const [openProjectMenu, setOpenProjectMenu] = useState(false);
 
   let textColor = "white";
   const handleMenuOpen = (event) => {
@@ -178,8 +175,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  // const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -227,7 +222,9 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const handleClose = () => {
     setOpen(false);
     setLoading(false)
+    // quilRef.current.getEditor().setText('');
   };
+
   const handleOpenCopyWritingClose = () => {
     setOpenCopyWriting(false);
   };
@@ -257,6 +254,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     if (role?.admin) return "(Admin)";
     if (role?.designer) return "(Graphic-Designer)";
     if (role?.customer) return "(Customer)";
+
+    if (role?.web_developer) return "(Web Developer)";
+    if (role?.mobile_app_developer) return "(Mobile App Developer)";
+    if (role?.social_media_manager) return "(Social Media Manager)";
+    if (role?.copywriter) return "(CopyWriter)";
   }
   function showRoles() {
     const { name } = reduxState.userDetails
@@ -301,44 +303,28 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   const onRemoveChange = (state) => {
     setFormValue({ ...formValue, state: "" });
   };
-  const uploadFile = (user_id, name, project_id, project_title) => {
+  const uploadFile = (user_id, project_id) => {
     const formdata = new FormData();
     setUploadProgress(0);
     for (let i = 0; i < upload_files.length; i++) {
       formdata.append("files", upload_files[i]);
     }
-    // formdata.append("name", name);
-    // formdata.append("project_title", project_title);
     formdata.append("user_id", user_id);
     formdata.append("project_id", project_id);
-    apiClient
-      .post("/file/google-cloud", formdata, {
+    apiClient.post("/file/google-cloud", formdata, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setUploadProgress(percentCompleted);
         },
       })
       .then(() => {
-        const data = {
-          user_id,
-          name,
-          project_id,
-          project_title,
-        };
-        apiClient
-          .post("/file/get-files", data)
-          .then(({ data }) => {
-            removeFiles();
-            setLoading(false);
-            // handleClose()
-            setRespMessage(data?.message);
-            setTimeout(() => {
-              openSuccessSB();
-            }, 2000);
-          })
-          .catch((err) => {
-            throw err;
-          });
+        setRespMessage('Project Created Successfully');
+        setLoading(false);
+        handleClose()
+        setTimeout(() => {
+          openSuccessSB();
+        }, 1000);
+
       })
       .catch((err) => {
         setLoading(false);
@@ -363,12 +349,15 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (add_files.length > 0 && upload_files.length > 0) {
-      if (add_files.length === 8 && upload_files.length === 8) {
-        alert("Maximum seven file allowed");
-        return;
-      }
+    if (upload_files.length === 8) {
+      alert("Maximum seven file allowed");
+      return;
     }
+    if (quilRef.current.getEditor().getText().trim() === '') {
+      setQuillError(true);
+      return;
+    }
+    setQuillError(false);
     setLoading(true);
     let data = {
       id: reduxState.userDetails?.id,
@@ -394,26 +383,20 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             project_id: resp.data?.project._id,
           };
           socketIO.current.emit('new-project', projectData)
-          // setRespMessage("Project Created Successfully");
+          setRespMessage("Project Created Successfully");
           reduxActions.getNew_Brand(!reduxState.new_brand);
           let param = [
             reduxState.userDetails?.id,
-            reduxState.userDetails?.name,
             resp.data?.project._id,
-            resp.data?.project.project_title,
           ];
-          if (add_files.length > 0 && upload_files.length > 0) {
-            uploadFile(...param);
+          if (upload_files.length > 0) {
+            uploadFile(...param)
+          } else {
+            openSuccessSB()
           }
           getProjectData(reduxState.userDetails?.id, reduxActions.getCustomerProject);
           setOpen(false);
-          setTimeout(() => {
-            // openSuccessSB()
-            setLoading(false);
-            setRespMessage()
-            setOpenModal(true);
-            setRespMessage("Project created successfully!")
-          }, 300);
+          setLoading(false);
         }
         setLoading(false);
         setReloadProjects(true)
@@ -619,12 +602,13 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   }
 
   useEffect(() => {
-    clientFiles()
+    // clientFiles()
 
     return () => {
       setReloadProjects(false)
+      handleClose()
     }
-  }, [reduxState.edit_project]);
+  }, []);
 
   const renderRoutes = routes?.map(
     ({ type, name, icon, title, noCollapse, collapse, key, href, route }) => {
@@ -716,6 +700,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     setShowAccountsBtn(prev => !prev)
   }, [showAccountsbtn])
 
+  useEffect(() => {
+    const id = reduxState.userDetails?.id;
+    getProjectData(id, reduxActions.getCustomerProject);
+  }, [reduxState.project_call])
+
   return (
     <>
       <TransitionsModal message={respMessage} openModal={successSB} setOpenModal={setSuccessSB} />
@@ -737,6 +726,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         upload_files={upload_files}
         uploadProgress={uploadProgress}
         loading={loading}
+        quillError={quillError}
+        quilRef={quilRef}
         handleFileUpload={handleFileUpload}
         removeFiles={removeFiles}
         reduxState={reduxState}
@@ -756,21 +747,21 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         setEditImages={setEditImages}
         userId={reduxState.userDetails?.id}
         callback={reduxActions.getCustomerProject}
-        setOpenModal={setOpenModal}
+        // setOpenModal={setOpenModal}
         setRespMessage={setRespMessage}
         reduxState={reduxState}
         setEditLoading={setEditLoading}
         images_loading={images_loading}
         loading={edit_loading}
         clientFiles={clientFiles}
-
-
       />
 
       <CopyWritingForm
         open={openCopyWriting}
         handleClose={handleOpenCopyWritingClose}
+        socketIO={socketIO}
         reduxState={reduxState}
+        reduxActions={reduxActions}
         setRespMessage={setRespMessage}
         respMessage={respMessage}
         openErrorSB={openErrorSB}
@@ -782,32 +773,59 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       <SocialMediaManager
         open={openSocialMediaForm}
         handleClose={handleCloseSocialMedia}
+        socketIO={socketIO}
+
         formValue={formValue}
         setFormValue={setFormValue}
         add_files={add_files}
         upload_files={upload_files}
         handleFileUpload={handleFileUpload}
         removeFiles={removeFiles}
+
+        setLoading={setLoading}
+        setRespMessage={setRespMessage}
+        openErrorSB={openErrorSB}
+        openSuccessSB={openSuccessSB}
+        reduxState={reduxState}
+        reduxActions={reduxActions}
+        loading={loading}
       />
 
       <WebsiteForm
         open={openWebsite}
+        socketIO={socketIO}
         handleClose={handleCloseWebsite}
+        setRespMessage={setRespMessage}
+        openErrorSB={openErrorSB}
+        openSuccessSB={openSuccessSB}
+        reduxState={reduxState}
+        reduxActions={reduxActions}
+        loading={loading}
+        setLoading={setLoading}
+
       />
 
       <WebAppDevForm
         open={openWebApp}
+        socketIO={socketIO}
         handleClose={handleCloseWebAppDev}
         setRespMessage={setRespMessage}
         respMessage={respMessage}
         openErrorSB={openErrorSB}
         openSuccessSB={openSuccessSB}
+        reduxState={reduxState}
+        reduxActions={reduxActions}
+        loading={loading}
+        setLoading={setLoading}
       />
 
       <MobileAppDevForm
         open={openMobileApp}
+        socketIO={socketIO}
         handleClose={handleCloseMobileAppDev}
         setRespMessage={setRespMessage}
+        reduxState={reduxState}
+        reduxActions={reduxActions}
         respMessage={respMessage}
         openErrorSB={openErrorSB}
         openSuccessSB={openSuccessSB}
@@ -848,27 +866,27 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             </div>
             {renderUserMenu()}
             {role?.customer &&
-              // (
-              //   <ProjectButton
-              //     variant="contained"
-              //     size="medium"
-              //     className="create-project-btn"
-              //     startIcon={projectIcon}
-              //     onClick={handleClickOpen}
+              (
+                <ProjectButton
+                  variant="contained"
+                  size="medium"
+                  className="create-project-btn"
+                  startIcon={projectIcon}
+                  onClick={handleClickOpen}
 
-              //   >
-              //     Create Project
-              //   </ProjectButton>
-              // )
-              <ProjectMenuOptions
-                size="medium"
-                handleClickOpen={handleClickOpen}
-                handleCopyWriting={handleOpenCopyWriting}
-                handleSocialMedia={handleOpenSocialMedia}
-                handleWebsite={handleWebsite}
-                handleWebAppDev={handleWebAppDev}
-                handleMobileAppDev={handleMobileAppDev}
-              />
+                >
+                  Create Project
+                </ProjectButton>
+              )
+              // <ProjectMenuOptions
+              //   size="medium"
+              //   handleClickOpen={handleClickOpen}
+              //   handleCopyWriting={handleOpenCopyWriting}
+              //   handleSocialMedia={handleOpenSocialMedia}
+              //   handleWebsite={handleWebsite}
+              //   handleWebAppDev={handleWebAppDev}
+              //   handleMobileAppDev={handleMobileAppDev}
+              // />
             }
           </MDBox>
         </Grid>

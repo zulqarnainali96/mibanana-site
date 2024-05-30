@@ -7,13 +7,14 @@ import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
 import React from 'react'
 import "./style.css"
 
-const ProjectsDetails = ({ reduxState, projectState }) => {
-    const userId = reduxState.userDetails?.id;
-    const { role,
-        handleRole, chatContainerRef, respMessage, successSB, errorSB, setSuccessSB, setErrorSB, showMore, getChatMessage, setRespMessage, setShowMore, openErrorSB, openSuccessSB, getInputProps, getRootProps, isDragActive, latestButtonProps,
-
+const ProjectsDetails = ({ children, reduxState, projectState }) => {
+    const userId = reduxState?.userDetails?.id;
+    const { msgArray, sendMessage, message, onSendMessage, reload, loading, fileRef, openFileSelect, handleFileUpload, version, getDate, DownloadFile, openImage, handleDeleteFile, handleRole, chatContainerRef, respMessage, successSB, errorSB, setSuccessSB, setErrorSB, showMore, getChatMessage, setRespMessage, setShowMore, openErrorSB, openSuccessSB, getInputProps, SubmitProject, truncatedDescription,
+        project, memberName, teamMemberList, teamLoading, teamMembers, deleteTeamMember, getRootProps, isDragActive, latestButtonProps, isSendChanges, setSendChanges, currentImage, isViewerOpen, setIsViewerOpen, closeImageViewer, toggleShowMore,
+        withRevision, handleClick, anchorEl, handleClose, projectOngoing, projectForReview
     } = projectState
 
+    console.log(projectState)
     return (
         <DashboardLayout>
             <TransitionsModal message={respMessage} openModal={successSB} setOpenModal={setSuccessSB} />
@@ -30,7 +31,6 @@ const ProjectsDetails = ({ reduxState, projectState }) => {
                     }
                 })}
             >
-
                 <Grid item
                     xxl={6}
                     xl={6}
@@ -41,10 +41,20 @@ const ProjectsDetails = ({ reduxState, projectState }) => {
                     sx={GridStyle}
                 >
                     <ProjectChat
-                        role={role}
                         handleRole={handleRole}
                         chatContainerRef={chatContainerRef}
                         userId={userId}
+                        loading={isSendChanges}
+                        withRevision={withRevision}
+                        handleClick={handleClick}
+                        anchorEl={anchorEl}
+                        handleClose={handleClose}
+                        projectForReview={projectForReview}
+                        projectOngoing={projectOngoing}
+                        msgArray={msgArray}
+                        sendMessage={sendMessage}
+                        onSendMessage={onSendMessage}
+                        message={message}
                     />
                 </Grid>
                 <Grid item xxl={6} xl={6} lg={12} md={12} sm={12} xs={12} pt="0 !important" height="100%" sx={({ breakpoints }) => ({
@@ -54,6 +64,17 @@ const ProjectsDetails = ({ reduxState, projectState }) => {
                 })}>
 
                     <ProjectFileUpload
+                        reload={reload}
+                        version={version}
+                        openImage={openImage}
+                        DownloadFile={DownloadFile}
+                        handleDeleteFile={handleDeleteFile}
+                        fileRef={fileRef}
+                        loading={loading}
+                        getDate={getDate}
+                        handleRole={handleRole}
+                        handleFileUpload={handleFileUpload}
+                        openFileSelect={openFileSelect}
                         setRespMessage={setRespMessage}
                         respMessage={respMessage}
                         openSuccessSB={openSuccessSB}
@@ -65,8 +86,23 @@ const ProjectsDetails = ({ reduxState, projectState }) => {
                         getRootProps={getRootProps}
                         isDragActive={isDragActive}
                         latestButtonProps={latestButtonProps}
+                        isViewerOpen={isViewerOpen}
+                        setIsViewerOpen={setIsViewerOpen}
+                        closeImageViewer={closeImageViewer}
+                        currentImage={currentImage}
+                        toggleShowMore={toggleShowMore}
+                        truncatedDescription={truncatedDescription}
 
-                    />
+                        project={project}
+                        teamLoading={teamLoading}
+                        teamMemberList={teamMemberList}
+                        teamMembers={teamMembers}
+                        memberName={memberName}
+                        SubmitProject={SubmitProject}
+                        deleteTeamMember={deleteTeamMember}
+                    >
+                        {children}
+                    </ProjectFileUpload>
                 </Grid>
             </Grid>
         </DashboardLayout>

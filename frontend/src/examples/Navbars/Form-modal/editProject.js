@@ -72,8 +72,6 @@ const category = ["Graphic Design"]
 
 const EditProjectModal = (props) => {
     const { open, handleClose, current_id, projects, brandOption, images_loading, clientFiles, files, loading, setEditLoading,  setEditImages, userId, callback, setOpenModal, setRespMessage, reduxState } = props
-    // const [loading, setEditLoading] = useState(false)
-    // const [images_loading, setImagesLoading] = useState(false)
     const formRef = useRef(null)
     const [formValue, setFormValue] = useState({
         project_category: "",
@@ -186,21 +184,7 @@ const EditProjectModal = (props) => {
         if (formRef.current) {
             formRef.current.submit();
         }
-        console.log(formRef.current)
     }
-
-    // const clientFiles = async () => {
-    //     setImagesLoading(true);
-    //     await apiClient.get("/get-customer-files/" + current_id)
-    //         .then(({ data }) => {
-    //             setEditImages(data.filesInfo);
-    //             setImagesLoading(false);
-    //         })
-    //         .catch((err) => {
-    //             setEditImages([]);
-    //             setImagesLoading(false);
-    //         });
-    // }
 
     const removeSingleFile = async (file) => {
         console.log(file)
@@ -212,11 +196,6 @@ const EditProjectModal = (props) => {
             .then(({ data }) => {
                 if (data?.message) {
                     setEditImages(files?.filter(item => item?.id !== file?.id))
-                    console.log('file deleted')
-                    // setRespMessage(data.message)
-                    // setTimeout(() => {
-                    //     openSuccessSB()
-                    // }, 500)
                 }
             })
             .catch((err) => {

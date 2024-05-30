@@ -152,7 +152,6 @@ const currentUserRole = (state) => {
         admin: false
       }
     }
-
     else if (roles?.includes("Customer")) {
       return {
         projectManager: false,
@@ -180,8 +179,15 @@ const currentUserRole = (state) => {
   }
 }
 
-const getProjectById = (id, callback, setFileVersionList) => {
-  apiClient.get("/api/get-project-by/" + id)
+const getUserRoles = (role) => {
+  if (role?.designer) return "Graphic-Designer";
+  if (role?.projectManager) return "Project-Manager";
+  if (role?.admin) return "Admin";
+  if (role?.customer) return "Customer";
+};
+
+const getProjectById = (id, callback, category, setFileVersionList) => {
+  apiClient.get(`/api/get-project-by/${category}/${id}`)
     .then(({ data }) => {
       callback(data.project)
       setFileVersionList(data.project?.version)
@@ -193,7 +199,6 @@ const getProjectById = (id, callback, setFileVersionList) => {
       }
     })
 }
-
 const getSingleProjectById = (id, callback, status) => {
   apiClient.get("/api/get-project-by/" + id)
     .then(({ data }) => {
@@ -211,7 +216,6 @@ const getSingleProjectById = (id, callback, status) => {
       }
     })
 }
-
 const projectStatus = (status) => {
   switch (status) {
     case "Project manager":
@@ -258,15 +262,173 @@ const projecStatusNotifications = async (id, callback) => {
       console.log(err);
     });
 };
-
 const openProjectByFormType = (project_category) => {
-  console.log(project_category)
   if (project_category === 'mobile-app-development') { return true }
   else if (project_category === 'web-app') { return true }
   else if (project_category === 'copy-writing') { return true }
   else if (project_category === 'social-media-manager') { return true }
   else if (project_category === 'website-development') { return true }
 }
+const getForReviewApiAccordingToProject = (category, id) => {
+  if (category === 'mobile-app-development') {
+    return `/api/mobile-app/for-review/${id}`
+  }
+  else if (category === 'Graphic Design' || category === 'graphic-design') {
+    return `/api/for-review-project/${id}`
+  }
+  else if (category === 'social-media-manager') {
+    return `/api/social-media/for-review/${id}`
+  }
+  else if (category === 'copy-writing') {
+    return `/api/copy-writer/for-review/${id}`
+  }
+  else if (category === 'web-app') {
+    return `/api/web-app/for-review/${id}`
+  }
+  else if (category === 'website-development') {
+    return `/api/website/for-review/${id}`
+  }
+}
+const getWithRevisionApiAccordingToProject = (category, id) => {
+  if (category === 'mobile-app-development') {
+    return `/api/mobile-app/with-revision/${id}`
+  }
+  else if (category === 'Graphic Design' || category === 'graphic-design') {
+    return `/api/with-revision/${id}`
+  }
+  else if (category === 'social-media-manager') {
+    return `/api/social-media/with-revision/${id}`
+  }
+  else if (category === 'copy-writing') {
+    return `/api/copy-writer/with-revision/${id}`
+  }
+  else if (category === 'web-app') {
+    return `/api/web-app/with-revision/${id}`
+  }
+  else if (category === 'website-development') {
+    return `/api/website/with-revision/${id}`
+  }
+}
+const getCompletedApiAccordingToProject = (category, id) => {
+  if (category === 'mobile-app-development') {
+    return `/api/mobile-app/completed/${id}`
+  }
+  else if (category === 'Graphic Design' || category === 'graphic-design') {
+    return `/api/project-completed/${id}`
+  }
+  else if (category === 'social-media-manager') {
+    return `/api/social-media/completed/${id}`
+  }
+  else if (category === 'copy-writing') {
+    return `/api/copy-writer/completed/${id}`
+  }
+  else if (category === 'web-app') {
+    return `/api/web-app/completed/${id}`
+  }
+  else if (category === 'website-development') {
+    return `/api/website/completed/${id}`
+  }
+}
+const getOngoingApiAccordingToProject = (category, id) => {
+  if (category === 'mobile-app-development') {
+    return `/api/mobile-app/ongoing/${id}`
+  }
+  else if (category === 'Graphic Design' || category === 'graphic-design') {
+    return `/api/attend-project/${id}`
+  }
+  else if (category === 'social-media-manager') {
+    return `/api/social-media/ongoing/${id}`
+  }
+  else if (category === 'copy-writing') {
+    return `/api/copy-writer/ongoing/${id}`
+  }
+  else if (category === 'web-app') {
+    return `/api/web-app/ongoing/${id}`
+  }
+  else if (category === 'website-development') {
+    return `/api/website/ongoing/${id}`
+  }
+}
+const getDeleteApiAccordingToProject = (category, id) => {
+  if (category === 'mobile-app-development') {
+    return `/api/mobile-app/delete-project/${id}`
+  }
+  else if (category === 'Graphic Design' || category === 'graphic-design') {
+    return `/graphic-project/${id}`
+  }
+  else if (category === 'social-media-manager') {
+    return `/api/social-media/delete-project/${id}`
+  }
+  else if (category === 'copy-writing') {
+    return `/api/copy-writer/delete-project/${id}`
+  }
+  else if (category === 'web-app') {
+    return `/api/web-app/delete-project/${id}`
+  }
+  else if (category === 'website-development') {
+    return `/api/website/delete-project/${id}`
+  }
+}
+const getDuplicateApiAccordingToProject = (category, id) => {
+  if (category === 'mobile-app-development') {
+    return `/api/mobile-app/duplicate-project/${id}`
+  }
+  else if (category === 'Graphic Design' || category === 'graphic-design') {
+    return `/api/duplicate-project/${id}`
+  }
+  else if (category === 'social-media-manager') {
+    return `/api/social-media/duplicate-project/${id}`
+  }
+  else if (category === 'copy-writing') {
+    return `/api/copy-writer/duplicate-project/${id}`
+  }
+  else if (category === 'web-app') {
+    return `/api/web-app/duplicate-project/${id}`
+  }
+  else if (category === 'website-development') {
+    return `/api/website/duplicate-project/${id}`
+  }
+}
+const getCancelApiAccordingToProject = (category, id) => {
+  if (category === 'mobile-app-development') {
+    return `/api/mobile-app/cancel/${id}`
+  }
+  else if (category === 'Graphic Design' || category === 'graphic-design') {
+    return `/api/cancel-project/${id}`
+  }
+  else if (category === 'social-media-manager') {
+    return `/api/social-media/cancel/${id}`
+  }
+  else if (category === 'copy-writing') {
+    return `/api/copy-writer/cancel/${id}`
+  }
+  else if (category === 'web-app') {
+    return `/api/web-app/cancel/${id}`
+  }
+  else if (category === 'website-development') {
+    return `/api/website/cancel/${id}`
+  }
+}
+const getProjectCategory = (category) => {
+  if (category === 'mobile-app-development') {
+    return "Mobile App Development"
+  }
+  else if (category === 'Graphic Design' || category === 'graphic-design') {
+    return "Graphic Design"
+  }
+  else if (category === 'social-media-manager') {
+    return "Social Media Manager"
+  }
+  else if (category === 'copy-writing') {
+    return "CopyWriting"
+  }
+  else if (category === 'web-app') {
+    return "Web App"
+  }
+  else if (category === 'website-development') {
+    return "Website Development"
+  }
+}
 
 
-export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus, getProjectById, projectNotifications, projecStatusNotifications, getSingleProjectById, openProjectByFormType }
+export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus, getProjectById, projectNotifications, projecStatusNotifications, getSingleProjectById, openProjectByFormType, getUserRoles, getForReviewApiAccordingToProject, getWithRevisionApiAccordingToProject, getOngoingApiAccordingToProject, getCancelApiAccordingToProject, getDuplicateApiAccordingToProject, getDeleteApiAccordingToProject, getCompletedApiAccordingToProject, getProjectCategory }

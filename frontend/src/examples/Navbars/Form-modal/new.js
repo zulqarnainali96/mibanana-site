@@ -29,7 +29,6 @@ import psdFile from "assets/images/psdfile.svg";
 import pdffile from "assets/images/pdffile.svg";
 import { modules } from 'assets/react-quill-settings/react-quill-settings';
 import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings';
-// import { useSocket } from 'sockets';
 import { useContext, useRef } from 'react';
 import { SocketContext } from 'sockets';
 
@@ -82,7 +81,7 @@ export const OtherFilesShow = ({ file, deleteOtherSingleFile }) => {
                                         sx={{
                                             fontSize: '6rem !important',
                                         }} /> */}
-                                        
+
                                 </div>
                             ) : null
             }
@@ -170,7 +169,7 @@ const CreateProject1 = ({
     selectedOption, onRemoveChange, add_files,
     upload_files, uploadProgress, setFormValue,
     brandOption, handleFileUpload, removeFiles,
-    removeSingleFile, deleteOtherSingleFile
+    removeSingleFile, deleteOtherSingleFile, quillError, quilRef
 }) => {
     const navigate = useNavigate()
     const is768 = useMediaQuery("(min-width:768px)")
@@ -204,7 +203,6 @@ const CreateProject1 = ({
             margin: '0px'
         }
     })
-
     return (
         <BootstrapDialog open={open} sx={{ width: '100% !important' }} >
             <DialogTitle display={"flex"} position={"relative"} width={'100%'} justifyContent={"space-between"} alignItems={"center"} >
@@ -339,8 +337,14 @@ const CreateProject1 = ({
                                     modules={modules}
                                     formats={formats}
                                     className={classes.quill}
+                                    ref={quilRef}
                                 />
                             </MDBox>
+                            {quillError && (
+                                <div style={{ color: 'red', marginTop: '0.5rem' }}>
+                                    Project Description is required
+                                </div>
+                            )}
                         </Grid>
                         <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
                             <Typography variant="h4" size="medium">Custom width</Typography>

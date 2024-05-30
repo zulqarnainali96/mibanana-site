@@ -56,6 +56,7 @@ const ChatsContainer = ({
     // handle dropdown menu for change status in chat
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+    
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -111,14 +112,6 @@ const ChatsContainer = ({
             })
 
     };
-    // const withRevision = async (id) => {
-    //     try {
-    //         const response = await axios.get(`http://localhost:8000/api/with-revision/${id}`);
-    //         console.log(response)
-    //     } catch (error) {
-    //         console.error('Error:', error.message);
-    //     }
-    // };
     const withRevision = async () => {
         setLoading(true)
         await apiClient.get('/api/with-revision/' + id)
@@ -140,6 +133,7 @@ const ChatsContainer = ({
 
             })
     }
+    console.log(msgArray)
 
     return (
         <React.Fragment>

@@ -8,11 +8,15 @@ import MDButton from "components/MDButton";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import { useFormik } from "formik";
 import Input from "components/Input/Input";
-import { Grid, MenuItem, Select, TextField } from "@mui/material";
+import { Grid, MenuItem, Select } from "@mui/material";
 import { socialMediaSchema } from "Schema/Index";
-import axios from "axios";
-import TransitionsModal from "components/Modal/Modal";
-import check from '../../../assets/images/check.png';
+import ReactQuill from "react-quill";
+import { modules } from 'assets/react-quill-settings/react-quill-settings';
+import { formats } from 'assets/react-quill-settings/react-quill-settings';
+import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settings';
+import apiClient from "api/apiClient";
+import { MoonLoader } from "react-spinners";
+import { submitButtonStyle } from "../mobile-app-dev-form/mobile-app-dev-form";
 
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
@@ -35,28 +39,63 @@ const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => 
   },
 }));
 
-const userDetailsString = localStorage.getItem('user_details');
-const name = userDetailsString ? JSON.parse(userDetailsString).name : '';
-const user = userDetailsString ? JSON.parse(userDetailsString).id : "";
-
 const initialValues = {
-  user: user,
-  name: name,
   project_title: "",
   service_type: "",
   platforms: "",
   plan: "",
   project_details: "",
-  otherServiceType:"",
-  otherPlatform:"",
-  otherPlan:""
+  otherServiceType: "",
+  otherPlatform: "",
+  otherPlan: ""
 }
 
-const SocialMediaManager = (props) => {
-  const { open, handleClose } = props;
+const SocialMediaManager = ({
+  open, handleClose, reduxState, reduxActions, openSuccessSB, openErrorSB, setRespMessage, setLoading, loading, socketIO,
+}) => {
   const [uploadedImages, setUploadedImages] = useState([]);
-  const [openModal, setOpenModal] = useState(false);
   const fileInputRef = useRef(null);
+  const classes = reactQuillStyles()
+  const quilRef = useRef();
+
+  const handleSocialMediForm = async (values, { resetForm }) => {
+    setLoading(true);
+    const dataToSend = {
+      ...values,
+      user: reduxState.userDetails?.id,
+      name: reduxState.userDetails?.name,
+    };
+    try {
+      const { data } = await apiClient.post('/api/create-social-media-project', dataToSend);
+      setLoading(false);
+      if (data.message) {
+        handleClose();
+        setRespMessage(data.message);
+        resetForm(clearForm());
+        setTimeout(() => {
+          reduxActions.handleGetAllProjects(!reduxState.project_call)
+          socketIO.current.emit('new-project', dataToSend)
+          openSuccessSB();
+        }, 500);
+      }
+    } catch (error) {
+      if (error.response.data) {
+        setRespMessage(error.response.data.message)
+      } else {
+        setRespMessage(error.message)
+      }
+      setLoading(false)
+      setTimeout(() => {
+        openErrorSB();
+      }, 500);
+    }
+    function clearForm() {
+      document.getElementById('project_title').value = "";
+      quilRef.current.getEditor().setText('');
+    }
+
+    resetForm(clearForm());
+  }
 
   const {
     values,
@@ -69,59 +108,33 @@ const SocialMediaManager = (props) => {
   } = useFormik({
     initialValues: initialValues,
     validationSchema: socialMediaSchema,
-    onSubmit: async (values,{resetForm}) => {
-      const dataToSend = {
-          ...values,
-          user: user,
-          name: name,
-      };
-      try {
-          const response = await axios.post('http://localhost:8000/api/create-social-media-project', dataToSend);
-          // handleClose();
-          resetForm(clearForm());
-          setOpenModal(true)
-          setTimeout(() => {
-              handleClose();
-          }, 5000);
-      } catch (error) {
-          console.error('Error:', error);
-      }
-      function clearForm() {
-          var projectTitle = document.getElementById('project_title');
-          projectTitle.value = "";
-          var projectDetail = document.getElementById('project_details');
-          projectDetail.value = "";
-      }
-
-      // Optionally, reset the form after submission
-      resetForm(clearForm());
-  },
+    onSubmit: handleSocialMediForm
   })
 
   const customChangeService = (e) => {
     handleChange(e)
     if (handleChange(e) !== "other") {
-        setFieldValue("otherServiceType", "");
-        var serviceType = document.getElementById("otherServiceType");
-        serviceType.value = "";
+      setFieldValue("otherServiceType", "");
+      var serviceType = document.getElementById("otherServiceType");
+      serviceType.value = "";
     }
-}
-const customChangePlatform = (e) => {
+  }
+  const customChangePlatform = (e) => {
     handleChange(e)
     if (handleChange(e) !== "other") {
-        setFieldValue("otherPlatform", "");
-        var wordCount = document.getElementById("otherPlatform");
-        wordCount.value = "";
+      setFieldValue("otherPlatform", "");
+      var wordCount = document.getElementById("otherPlatform");
+      wordCount.value = "";
     }
-}
-const customChangePlan = (e) => {
+  }
+  const customChangePlan = (e) => {
     handleChange(e)
     if (handleChange(e) !== "other") {
-        setFieldValue("otherPlan", "");
-        var wordCount = document.getElementById("otherPlan");
-        wordCount.value = "";
+      setFieldValue("otherPlan", "");
+      var wordCount = document.getElementById("otherPlan");
+      wordCount.value = "";
     }
-}
+  }
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -151,8 +164,6 @@ const customChangePlan = (e) => {
     const filteredImages = uploadedImages.filter((image, index) => index !== indexToRemove);
     setUploadedImages(filteredImages);
   };
-
-
 
   return (
     <BootstrapDialog open={open} sx={{ width: "100% !important" }}>
@@ -298,9 +309,7 @@ const customChangePlan = (e) => {
               </Grid>
 
             </Grid>
-
             {/*choose plan*/}
-
             <Grid item xs={6}>
               <MDTypography variant={"h6"} pb={1} className="">
                 Choose Plan
@@ -329,7 +338,6 @@ const customChangePlan = (e) => {
               </Grid>
 
             </Grid>
-
             <Grid item xs={6}>
               <MDTypography variant={"h6"} pb={1} className="">
                 Others
@@ -357,20 +365,21 @@ const customChangePlan = (e) => {
               <MDTypography variant="h6" pb={1} className="">
                 Project Description
               </MDTypography>
-              <TextField
-                placeholder="Enter your Project Description"
-                id="project_details"
-                name="project_details"
-                type="text"
-                value={values.project_details}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                touched={touched.project_details}
-                errors={errors.project_details}
-                multiline
-                rows={4}
-                style={{ width: '100%' }}
-                className={touched.project_details && Boolean(errors.project_details) ? 'border-color-red' : ''}
+              <ReactQuill
+                theme="snow"
+                name="project_description"
+                id='project_description'
+                value={values.project_description}
+                onChange={(value) => setFieldValue('project_description', value)}
+                onBlur={() => handleBlur({
+                  target: {
+                    name: 'project_description'
+                  }
+                })}
+                modules={modules}
+                formats={formats}
+                className={classes.quill}
+                ref={quilRef}
               />
             </Grid>
 
@@ -406,21 +415,22 @@ const customChangePlan = (e) => {
                 </div>
               ))}
             </Grid>
-
-
-
-
             <Grid item xs={12}>
-              <MDButton type="submit" style={{ width: '100%', backgroundColor: "#FBDD34", color: "#000", fontWeight: "600" }}>Submit</MDButton>
+              <MDButton
+                type="submit"
+                style={submitButtonStyle}
+                disabled={loading}
+                endIcon={<MoonLoader loading={loading} size={18} color='#fff' />}
+              >
+                Submit
+              </MDButton>
             </Grid>
 
           </Grid>
         </form>
       </DialogContent>
-      <TransitionsModal message="Project created successfully!" check={check} openModal={openModal} setOpenModal=
-        {setOpenModal} />
     </BootstrapDialog>
   );
-};
+}
 
 export default SocialMediaManager;
