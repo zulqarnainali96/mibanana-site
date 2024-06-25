@@ -47,15 +47,50 @@ const initialValues = {
     otherWordCount: "",
 };
 const CopyWritingForm = ({
-    open, handleClose, reduxState, reduxActions, setRespMessage, openErrorSB, openSuccessSB, loading, setLoading, socketIO
+    open, 
+    handleClose, 
+    reduxState, 
+    reduxActions, 
+    setRespMessage, 
+    openErrorSB, 
+    openSuccessSB, 
+    loading, 
+    setLoading, 
+    socketIO
 }) => {
     const [uploadedImages, setUploadedImages] = useState([]);
     const fileInputRef = useRef(null);
     const classes = reactQuillStyles()
     const quilRef = useRef();
 
-    const uploadCopyWriteFile = async () => {
-    }
+    const customerUploadFiles = async (filType, project_id) => {
+        const formdata = new FormData();
+        for (let i = 0; i < filType.length; i++) {
+            formdata.append("files", filType[i]);
+        }
+        formdata.append("user_id", reduxState?.userDetails.id);
+        formdata.append("project_id", project_id);
+        await apiClient.post("/file/google-cloud", formdata)
+            .then(() => { 
+                setUploadedImages([]);
+            })
+            .catch((err) => {
+                if (err.response) {
+                    const { message } = err.response.data
+                    setRespMessage(message)
+                    setTimeout(() => {
+                        openErrorSB()
+                    }, 400)
+                    return
+                } else {
+                    setRespMessage(err.message)
+                    setTimeout(() => {
+                        openErrorSB()
+                    }, 400)
+                }
+            })
+    };
+
     const handleCopywritingFormSubmit = async (values, { resetForm }) => {
         setLoading(true);
         const dataToSend = {
@@ -67,13 +102,20 @@ const CopyWritingForm = ({
             const { data } = await apiClient.post('/api/create-copywriting-project', dataToSend);
             setLoading(false);
             if (data.message) {
+                if (uploadedImages.length > 0) {
+                    customerUploadFiles(uploadedImages, data.copyWriting._id)
+                }
                 handleClose();
                 setRespMessage(data.message);
                 resetForm(clearForm());
+                const socketMsg = {
+                    ...dataToSend,
+                    project_id: data.copyWriting._id
+                }
                 setTimeout(() => {
                     reduxActions.handleGetAllProjects(!reduxState.project_call)
-                    socketIO.current.emit('new-project', dataToSend)
-                    openSuccessSB();    
+                    socketIO.current.emit('new-project', socketMsg)
+                    openSuccessSB();
                 }, 500);
             }
         } catch (error) {

@@ -26,6 +26,7 @@ const mapStateToProps = (state) => ({
         currentProjectId: state.currentProjectId,
         edit_project: state.edit_project,
         project_call: state.project_call,
+        onlineUser: state.onlineUser,
     }
 })
 
@@ -51,6 +52,7 @@ const mapDispatchToProps = (dispatch) => ({
         handle_OpenEditProject: (payload) => dispatch(reduxFunctions.handle_OpenEditProject(payload)),
         handle_CurrentProjectId: (payload) => dispatch(reduxFunctions.handle_CurrentProjectId(payload)),
         handleGetAllProjects: (payload) => dispatch(reduxFunctions.handleGetAllProjects(payload)),
+        handleOnlineUsers: (payload) => dispatch(reduxFunctions.handleOnlineUsers(payload)),
     }
 })
 

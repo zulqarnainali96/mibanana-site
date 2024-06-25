@@ -15,13 +15,12 @@ const createWebsiteProject = async (req, res) => {
             user, name, project_title, team_members: [], website_type, preferred_stack, project_description,
             status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
-        const webisteProject = new websiteModal({ ...obj }).save()
-        if (webisteProject) {
-            return res.status(201).send({ message: "Project Created Successfully" })
+        const websiteProject = await websiteModal.create(obj)
+        if (websiteProject) {
+            return res.status(201).send({ message: "Project Created Successfully", websiteProject })
         } else {
             return res.status(500).send({ message: "Failed to create project" })
         }
-
     } catch (error) {
         return res.status(500).send({ message: "Internal Server Error" })
     }

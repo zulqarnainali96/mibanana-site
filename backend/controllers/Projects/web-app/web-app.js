@@ -14,9 +14,9 @@ const createWebAppProject = async (req, res) => {
         const obj = {
             user, name, project_title, team_members: [], preferred_stack, backend_tech, project_description, status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
-        const webAppProject = new webappModel({ ...obj }).save()
+        const webAppProject = await webappModel.create(obj)
         if (webAppProject) {
-            return res.status(201).send({ message: "Project Created Successfully" })
+            return res.status(201).send({ message: "Project Created Successfully", webAppProject })
         } else {
             return res.status(500).send({ message: "Failed to create project" })
         }

@@ -18,7 +18,7 @@ const updateAndSendingStatusNotifications = async (data, project) => {
     }
 }
 
-const sendingNotificationsToDesigner = async (data, _id) => {
+const sendingNotificationsToTeamMember = async (data, _id) => {
     try {
         const team_member = await User.findById(_id)
         if (team_member) {
@@ -53,4 +53,4 @@ const sendingNotificationsCurrentManager = async (data, _id) => {
 }
 
 
-module.exports = { updateAndSendingStatusNotifications, sendingNotificationsToDesigner, sendingNotificationsCurrentManager }
+module.exports = { updateAndSendingStatusNotifications, sendingNotificationsToTeamMember, sendingNotificationsCurrentManager }

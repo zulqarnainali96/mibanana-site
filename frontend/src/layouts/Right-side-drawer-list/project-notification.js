@@ -40,11 +40,12 @@ const ProjectNotification = (props) => {
         navigate("/chat/" + item?.project_id)
     }
     const handleNotificationsOpen = (item) => {
-        if (item.view) {
-            onChangeProjectView(item)
-        } else {
-            onChangeScreenToChats(item)
-        }
+        console.log(item)
+        // if (item.view) {
+        //     onChangeProjectView(item)
+        // } else {
+        //     onChangeScreenToChats(item)
+        // }
     }
 
     const handleNotificationDelete = (item) => {

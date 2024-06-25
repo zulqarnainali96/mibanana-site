@@ -14,9 +14,9 @@ const createSocialMediaProject = async (req, res) => {
         const obj = {
             user, name, project_title, team_members: [], service_type, platforms, plan, project_description, status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
-        const socialMedia = new socialMediaModel({ ...obj }).save()
+        const socialMedia = await socialMediaModel.create(obj)
         if (socialMedia) {
-            return res.status(201).send({ message: "Project Created Successfully" })
+            return res.status(201).send({ message: "Project Created Successfully", socialMedia })
         } else {
             return res.status(500).send({ message: "Failed to create project" })
         }

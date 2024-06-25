@@ -18,7 +18,7 @@ export const useUpdateProjectNotifications = (reduxActions, reduxState, project_
                     reduxActions.handleProject_notifications(arr);
                 } 
             }
-        })
+        })  
 
     }
     

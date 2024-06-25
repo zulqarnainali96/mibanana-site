@@ -16,9 +16,9 @@ const createMobileAppProject = async (req, res) => {
         const obj = {
             user, name, project_title, team_members: [], platform, project_description, status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
-        const mobileAppProject = new mobileAppModel({ ...obj }).save()
+        const mobileAppProject = await mobileAppModel.create(obj)
         if (mobileAppProject) {
-            return res.status(201).send({ message: "Project Created Successfully" })
+            return res.status(201).send({ message: "Project Created Successfully", mobileAppProject })
         } else {
             return res.status(500).send({ message: "Failed to create project" })
         }
@@ -312,4 +312,4 @@ const deleteMobileAppProject = async (req, res) => {
     }
 }
 
-module.exports = { createMobileAppProject, getMobileAppProjects, projectMobileWidthRevision, deleteMobileAppProject, projectMobileAttend, projectMobileForReview, projectMobileAppCancel, projectMobileAppCompleted, duplicateMobileAppProject}
+module.exports = { createMobileAppProject, getMobileAppProjects, projectMobileWidthRevision, deleteMobileAppProject, projectMobileAttend, projectMobileForReview, projectMobileAppCancel, projectMobileAppCompleted, duplicateMobileAppProject }

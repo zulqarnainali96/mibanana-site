@@ -14,8 +14,7 @@ const ProjectsDetails = ({ children, reduxState, projectState }) => {
         withRevision, handleClick, anchorEl, handleClose, projectOngoing, projectForReview
     } = projectState
 
-    console.log(projectState)
-    return (
+        return (
         <DashboardLayout>
             <TransitionsModal message={respMessage} openModal={successSB} setOpenModal={setSuccessSB} />
             <TransitionsErrorModal message={respMessage} openModal={errorSB} setOpenModal={setErrorSB} />

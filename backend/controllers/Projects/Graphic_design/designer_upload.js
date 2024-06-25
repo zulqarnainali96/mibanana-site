@@ -248,6 +248,8 @@ const getFilesOnVersionBasis = async (req, res) => {
                 if (filesInfo.length === 0 && files.length === 0) {
                     return res.status(404).send({ message: 'No Files Found' })
                 }
+            } else {
+                return res.status(404).send({ message: 'No Project Found' })
             }
         }
         else if (category === 'web-app') {
@@ -276,6 +278,8 @@ const getFilesOnVersionBasis = async (req, res) => {
                 if (filesInfo.length === 0 && files.length === 0) {
                     return res.status(404).send({ message: 'No Files Found' })
                 }
+            } else {
+                return res.status(404).send({ message: 'No Project Found' })
             }
         }
         else if (category === 'social-media-manager') {
@@ -304,6 +308,8 @@ const getFilesOnVersionBasis = async (req, res) => {
                 if (filesInfo.length === 0 && files.length === 0) {
                     return res.status(404).send({ message: 'No Files Found' })
                 }
+            } else {
+                return res.status(404).send({ message: 'No Project Found' })
             }
         }
         else if (category === 'copy-writing') {
@@ -332,6 +338,8 @@ const getFilesOnVersionBasis = async (req, res) => {
                 if (filesInfo.length === 0 && files.length === 0) {
                     return res.status(404).send({ message: 'No Files Found' })
                 }
+            } else {
+                return res.status(404).send({ message: 'No Project Found' })
             }
         }
         else if (category === 'website-development') {
@@ -360,6 +368,8 @@ const getFilesOnVersionBasis = async (req, res) => {
                 if (filesInfo.length === 0 && files.length === 0) {
                     return res.status(404).send({ message: 'No Files Found' })
                 }
+            } else {
+                return res.status(404).send({ message: 'No Project Found' })
             }
         }
         else if (category === 'Graphic Design' || category === 'graphic-design') {
@@ -388,6 +398,8 @@ const getFilesOnVersionBasis = async (req, res) => {
                 if (filesInfo.length === 0 && files.length === 0) {
                     return res.status(404).send({ message: 'No Files Found' })
                 }
+            } else {
+                return res.status(404).send({ message: 'No Project Found' })
             }
         }
     } catch (error) {

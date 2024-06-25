@@ -21,6 +21,7 @@ export const STATUS_NOTIFICATIONS = "STATUS_NOTIFICATIONS";
 export const EDIT_PROJECT = "EDIT_PROJECT";
 export const CURRENT_PROJECT_ID = "CURRENT_PROJECT_ID";
 export const PROJECT_CALL = "PROJECT_CALL";
+export const ONLINE_USER = "ONLINE_USER";
 
 export const getUserDetails = (payload) => ({
   type: USER_DETAILS,
@@ -136,6 +137,11 @@ export const handleGetAllProjects = (payload) => ({
   payload: payload,
 });
 
+export const handleOnlineUsers = (payload) => ({
+  type: ONLINE_USER,
+  payload: payload,
+});
+
 export const reduxFunctions = {
   getUserDetails,
   showModal,
@@ -160,4 +166,5 @@ export const reduxFunctions = {
   handle_OpenEditProject,
   handle_CurrentProjectId,
   handleGetAllProjects,
+  handleOnlineUsers,
 };

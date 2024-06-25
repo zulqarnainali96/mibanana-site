@@ -13,7 +13,7 @@ const SignUp = ({ reduxState }) => {
     const [respMessage, setRespMessage] = useState("")
     const [errorSB, setErrorSB] = useState(false);
     const [successSB, setSuccessSB] = useState(false);
-    const openSuccessSB = () => setSuccessSB(true);
+    // const openSuccessSB = () => setSuccessSB(true);ds
     const closeSuccessSB = () => setSuccessSB(false);
     const openErrorSB = () => setErrorSB(true);
     const closeErrorSB = () => setErrorSB(false);

@@ -7,7 +7,7 @@ import { io } from "socket.io-client";
 // https://chat.mibanana.com live site url for socket
 // 34.118.52.166
 
-export const socket = io(process.env.REACT_APP_SOCKET_URL, {
+export const socket = io('http://localhost:4000', {
     withCredentials: true,
     autoConnect: false
 })

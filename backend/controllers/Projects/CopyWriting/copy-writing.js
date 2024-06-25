@@ -19,7 +19,7 @@ const createCopyWritingProject = async (req, res) => {
             user, name, project_title, team_members: [], copy_writing_service, word_count, project_description,
             status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
-        const copyWriting = new copyWritingModel({ ...obj }).save()
+        const copyWriting = await copyWritingModel.create(obj)
         if (copyWriting) {
             return res.status(201).send({ message: "Project Created Successfully", copyWriting })
         } else {

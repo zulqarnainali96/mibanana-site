@@ -3,6 +3,7 @@ const Projects = require('../../models/graphic-design-model')
 const { v4: uniqID } = require('uuid')
 const path = require('path')
 const mobileAppModel = require('../../models/projects/mobile-dev/mobile-dev-model')
+const graphicDesignModel = require('../../models/graphic-design-model')
 const webappModel = require('../../models/projects/web-app/web-app-model')
 const websiteModal = require("../../models/projects/website-model/website-model")
 const copyWritingModel = require("../../models/projects/copy-writing/copy-writing-model");
@@ -396,7 +397,6 @@ const updateFigmaLink = async (req, res) => {
                 }
                 else {
                     return res.status(400).send({ message: 'Found error while Updating Figma Link' })
-
                 }
             } else {
                 return res.status(404).send({ messsage: 'Project Not Found' })
@@ -414,7 +414,7 @@ const getSingleProject = async (req, res) => {
     }
     try {
         if (category === 'mobile-app-development') {
-            const mobileProject = await mobileAppModel.findOne({ _id })
+            const mobileProject = await mobileAppModel.findById(_id)
             if (mobileProject) {
                 return res.status(200).json({ message: "Project Found", project: mobileProject })
             } else {
@@ -422,7 +422,7 @@ const getSingleProject = async (req, res) => {
             }
         }
         else if (category === 'web-app') {
-            const webApp = await webappModel.findOne({ _id })
+            const webApp = await webappModel.findById(_id)
             if (webApp) {
                 return res.status(200).json({ message: "Project Found", project: webApp })
             } else {
@@ -430,7 +430,7 @@ const getSingleProject = async (req, res) => {
             }
         }
         else if (category === 'social-media-manager') {
-            const socialMediaManager = await socialMediaModel.findOne({ _id })
+            const socialMediaManager = await socialMediaModel.findById(_id)
             if (socialMediaManager) {
                 return res.status(200).json({ message: "Project Found", project: socialMediaManager })
             } else {
@@ -438,7 +438,7 @@ const getSingleProject = async (req, res) => {
             }
         }
         else if (category === 'copy-writing') {
-            const copyWriter = await copyWritingModel.findOne({ _id })
+            const copyWriter = await copyWritingModel.findById(_id)
             if (copyWriter) {
                 return res.status(200).json({ message: "Project Found", project: copyWriter })
             } else {
@@ -446,7 +446,7 @@ const getSingleProject = async (req, res) => {
             }
         }
         else if (category === 'website-development') {
-            const websiteDevlopment = await websiteModal.findOne({ _id })
+            const websiteDevlopment = await websiteModal.findById(_id)
             if (websiteDevlopment) {
                 return res.status(200).json({ message: "Project Found", project: websiteDevlopment })
             } else {
@@ -454,7 +454,8 @@ const getSingleProject = async (req, res) => {
             }
         }
         else if (category === 'Graphic Design' || category === 'graphic-design') {
-            const findProject = await graphicDesignModel.findOne({ _id })
+            console.log('working')
+            const findProject = await graphicDesignModel.findById(_id)
             if (findProject) {
                 return res.status(200).json({ message: "Project Found", project: findProject })
             } else {
@@ -462,6 +463,7 @@ const getSingleProject = async (req, res) => {
             }
         }
     } catch (err) {
+        console.log('500')
         res.status(500).send({ message: "Internal Server Error" })
     }
 }
@@ -782,6 +784,7 @@ const designerUploadsOnVersion = async (req, res) => {
 let generationMatchPreCondition = 0
 const uploadFile = async (req, res) => {
     let { user_id, project_id } = req.body
+    console.log('user_id=> ', user_id, project_id)
     const prefix = `${user_id}/projects/${project_id}/customer-upload/`
     await Promise.all(req.files.map(file => {
         const options = {

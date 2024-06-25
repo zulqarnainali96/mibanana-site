@@ -58,6 +58,34 @@ const SocialMediaManager = ({
   const classes = reactQuillStyles()
   const quilRef = useRef();
 
+  const customerUploadFiles = async (filType, project_id) => {
+    const formdata = new FormData();
+    for (let i = 0; i < filType.length; i++) {
+      formdata.append("files", filType[i]);
+    }
+    formdata.append("user_id", reduxState?.userDetails.id);
+    formdata.append("project_id", project_id);
+    await apiClient.post("/file/google-cloud", formdata)
+      .then(() => {
+        setUploadedImages([]);
+      })
+      .catch((err) => {
+        if (err.response) {
+          const { message } = err.response.data
+          setRespMessage(message)
+          setTimeout(() => {
+            openErrorSB()
+          }, 400)
+          return
+        } else {
+          setRespMessage(err.message)
+          setTimeout(() => {
+            openErrorSB()
+          }, 400)
+        }
+      })
+  };
+
   const handleSocialMediForm = async (values, { resetForm }) => {
     setLoading(true);
     const dataToSend = {
@@ -69,12 +97,19 @@ const SocialMediaManager = ({
       const { data } = await apiClient.post('/api/create-social-media-project', dataToSend);
       setLoading(false);
       if (data.message) {
+        if (uploadedImages.length > 0) {
+          customerUploadFiles(uploadedImages, data.socialMedia._id)
+        }
         handleClose();
         setRespMessage(data.message);
         resetForm(clearForm());
+        const socketMsg = {
+          ...dataToSend,
+          project_id: data.socialMedia._id
+        }
         setTimeout(() => {
           reduxActions.handleGetAllProjects(!reduxState.project_call)
-          socketIO.current.emit('new-project', dataToSend)
+          socketIO.current.emit('new-project', socketMsg)
           openSuccessSB();
         }, 500);
       }

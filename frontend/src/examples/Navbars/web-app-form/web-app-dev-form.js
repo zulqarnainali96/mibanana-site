@@ -67,9 +67,13 @@ const WebAppDevForm = ({
                 setLoading(false)
                 setRespMessage(data.message)
                 resetForm(clearForm());
+                const socketMsg = {
+                    ...dataToSend,
+                    project_id: data.webAppProject._id
+                }
                 setTimeout(() => {
                     reduxActions.handleGetAllProjects(!reduxState.project_call)
-                    socketIO.current.emit('new-project', dataToSend)
+                    socketIO.current.emit('new-project', socketMsg)
                     openSuccessSB();
                 }, 500);
             }

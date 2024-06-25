@@ -53,11 +53,6 @@ const createGraphicDesign = asyncHandler(async (req, res) => {
                 version: ["1"],
                 drive_link: "",
                 status: 'Project manager',
-
-                // resources,
-                // reference_example,
-                // describe_audience,
-                // add_files,
             }
             const creating_data = await graphicDesignModel.create(obj)
             if (!creating_data) {

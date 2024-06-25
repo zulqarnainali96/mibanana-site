@@ -5,7 +5,7 @@ const cors = require('cors');
 const ConnectDB = require('./dbConfig/mongo-connection');
 const { getValue, getStatusChange } = require('./utility/utility');
 const { UpdateProjectNotifications, UpdateWithoutOnline, updateCurrentNotificationsStatus, handleNotificationDelete } = require('./controllers/new-project-notifications');
-const { updateAndSendingStatusNotifications, sendingNotificationsCurrentManager, sendingNotificationsToDesigner } = require('./controllers/status-change-notifications');
+const { updateAndSendingStatusNotifications, sendingNotificationsCurrentManager, sendingNotificationsToTeamMember } = require('./controllers/status-change-notifications');
 const { sendMessage, sendManagerMessage } = require('./controllers/team-member-notification')
 const { v4: uniqeID } = require('uuid')
 const PORT = 4000
@@ -28,20 +28,22 @@ mongoose.connection.once('open', () => {
 })
 
 io.on('connection', function (socket) {
-  socket.on('user_online', (status, id, role) => {
+  // io.emit('active_users', connectedUser)
+  socket.on('user_online', (status, id, role, name) => {
     if (role, id) {
-      console.log("User Connected ", socket.id)
+      // console.log("User Connected ", socket.id)
       // socket.join(id)
       let obj = {
         socketID: socket.id,
         id,
         status,
-        role
+        role,
+        name,
       }
       connectedUser.push(obj)
       connectedUser = Array.from(new Set(connectedUser.map(obj => obj.id))).map(id => connectedUser.find(obj => obj.id === id));
-      console.log(connectedUser)
-      socket.emit('active_users', connectedUser)
+      // console.log(connectedUser)
+      socket.broadcast.emit('active_users', connectedUser)
     }
   })
   socket.on('new-project', (project_data) => {
@@ -66,14 +68,13 @@ io.on('connection', function (socket) {
       unique_key: uniqeID(),
       ...msg
     }
-    console.log('team id ', id)
     if (id) {
-      const designer = connectedUser.find(user => user.id === String(id));
-      if (designer) {
-        socket.to(designer.socketID).emit('new-project-assigned', message);
+      const team_member = connectedUser.find(user => user.id === String(id));
+      if (team_member) {
+        socket.to(team_member.socketID).emit('new-project-assigned', message);
         const t = String(id)
         sendMessage(t, message)
-        console.log('Designer received message')
+        console.log('Team member received a message')
       } else {
         const t = String(id)
         sendMessage(t, message)
@@ -92,7 +93,6 @@ io.on('connection', function (socket) {
     }
   })
   socket.on('sending-status-change', (item, role, id, status) => {
-
     // console.log("socket ===================>>>>", item)
     const msg = `${role} change status to ${status}`
     const statusData = getStatusChange(item, role, item.user, msg, status)
@@ -114,16 +114,15 @@ io.on('connection', function (socket) {
     const isManger = connectedUser.some(onlineUser => onlineUser.role?.includes('Project-Manager'))
     if (item?.team_members?.length > 0) {
       const team_member_id = item?.team_members[0]?._id
-      const designer = connectedUser.find(onlineUser => onlineUser.id === team_member_id)
-      const designerData = getStatusChange(item, role, team_member_id, msg, status)
-      if (designer) {
-        console.log('Designer Online')
-        console.log(designer)
-        socket.join(designer.socketID)
-        socket.to(designer.socketID).emit('getting-customer-notifications', designerData, item._id, status)
-        sendingNotificationsToDesigner(designerData, team_member_id)
+      const team_member = connectedUser.find(onlineUser => onlineUser.id === team_member_id)
+      const teamMemberData = getStatusChange(item, role, team_member_id, msg, status)
+      if (team_member) {
+        console.log('Team member Online')
+        socket.join(team_member.socketID)
+        socket.to(team_member.socketID).emit('getting-customer-notifications', teamMemberData, item._id, status)
+        sendingNotificationsToTeamMember(teamMemberData, team_member_id)
       } else {
-        sendingNotificationsToDesigner(designerData, team_member_id)
+        sendingNotificationsToTeamMember(teamMemberData, team_member_id)
       }
     }
     if (isManger) {
@@ -168,7 +167,6 @@ io.on('connection', function (socket) {
         socket.to(manager.id).emit('project-completed-notification', data);
       }
     }
-
     socket.emit('project-completed-ack', data);
   })
   socket.on('join-room', (room) => {
@@ -280,14 +278,15 @@ io.on('connection', function (socket) {
 
     // sendChatsNotifications(connectedUser, message, room, roomsArray, teamId, rooms, socket)
   })
-  socket.on('leave-room',(room) => {
+  socket.on('leave-room', (room) => {
     socket.leave(room)
   })
-  socket.on('connect',() => {
+  socket.on('connect', () => {
     console.log('user connected ', socket.id);
   })
   socket.on('disconnect', () => {
     connectedUser = connectedUser.filter(user => user.socketID !== socket.id)
-    console.log('User disconnected', connectedUser);
+    // console.log('User disconnected', connectedUser);
+    socket.broadcast.emit('active_users', connectedUser)
   })
 });

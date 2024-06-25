@@ -189,6 +189,99 @@ const getTeamMemberList = async (req, res) => {
         }
     }
 }
+const getTeamMemberListForChat = async (req, res) => {
+    const category = req.params.category
+    try {
+        const allUser = await User.find().select('-password').lean().exec()
+        if (category === 'mobile-app-development') {
+            const list = allUser.filter(item =>
+                item.roles.includes("Mobile-App-Developer")
+            ).map(item => {
+                return {
+                    _id: item._id,
+                    name: item.name,
+                    email: item.email,
+                    roles: item.roles,
+                    avatar: item.avatar
+                };
+            });
+            return res.status(200).send({ list })
+        }
+        else if (category === 'web-app') {
+            const list = allUser.filter(item =>
+                item.roles.includes("Web-Developer")
+            ).map(item => {
+                return {
+                    _id: item._id,
+                    name: item.name,
+                    email: item.email,
+                    roles: item.roles,
+                    avatar: item.avatar
+                };
+            });
+            return res.status(200).send({ list })
+        }
+        else if (category === 'social-media-manager') {
+            const list = allUser.filter(item =>
+                item.roles.includes("Social-Media-Manager")
+            ).map(item => {
+                return {
+                    _id: item._id,
+                    name: item.name,
+                    email: item.email,
+                    roles: item.roles,
+                    avatar: item.avatar
+                };
+            });
+            return res.status(200).send({ list })
+        }
+        else if (category === 'copy-writing') {
+            const list = allUser.filter(item =>
+                item.roles.includes("Copy-Writer")
+            ).map(item => {
+                return {
+                    _id: item._id,
+                    name: item.name,
+                    email: item.email,
+                    roles: item.roles,
+                    avatar: item.avatar
+                };
+            });
+            return res.status(200).send({ list })
+        }
+        else if (category === 'website-development') {
+            const list = allUser.filter(item =>
+                item.roles.includes("Web-Developer")
+            ).map(item => {
+                return {
+                    _id: item._id,
+                    name: item.name,
+                    email: item.email,
+                    roles: item.roles,
+                    avatar: item.avatar
+                };
+            });
+            return res.status(200).send({ list })
+        }
+        else if (category === 'graphic-design' || category === 'Graphic Design') {
+            const list = allUser.filter(item =>
+                item.roles.includes("Graphic-Designer")
+            ).map(item => {
+                return {
+                    _id: item._id,
+                    name: item.name,
+                    email: item.email,
+                    roles: item.roles,
+                    avatar: item.avatar
+                };
+            });
+            return res.status(200).send({ list })
+        }
+    }
+    catch (error) {
+        return res.status(500).send({ message : 'Internal Server Error'})
+    }
+}
 
 
 // const getAssignGraphicProject = async (req, res) => {
@@ -223,4 +316,4 @@ const getTeamMemberList = async (req, res) => {
 //     }
 // };
 
-module.exports = { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList }
+module.exports = { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList, getTeamMemberListForChat }

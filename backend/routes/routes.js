@@ -11,7 +11,7 @@ const uploadFiles = multer({
     storage: multer.memoryStorage()
 })
 
-const { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList } = require('../controllers/Team-Members/Designers/designerProjects')
+const { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList, getTeamMemberListForChat } = require('../controllers/Team-Members/Designers/designerProjects')
 const { createChatController, getProjectChat, findChatWithIDs } = require('../controllers/chat/chat_controller')
 const { fileUploader, getProfileData, updateCustomerProfile } = require('../controllers/cloudinary_control')
 const { getBrandList, createBrand, deleteBrandList, updateBrandList, addMoreImages, UpdateAllBrandDetails, getSingleBrandFile } = require('../controllers/Brand/brandController')
@@ -29,6 +29,7 @@ const { createWebsiteProject, getWebsiteProjects, deleteWebsiteProject, projectW
 const { createWebAppProject, getWebAppProjects, deleteWebAppProject, projectWebAppWidthRevision, projectWebAppForReview, projectWebAppAttend, duplicateWebAppProject, projectWebAppCompleted, projectWebAppCancel } = require('../controllers/Projects/web-app/web-app')
 const { createMobileAppProject, getMobileAppProjects, deleteMobileAppProject, projectMobileWidthRevision, projectMobileForReview, projectMobileAttend, duplicateMobileAppProject, projectMobileAppCompleted, projectMobileAppCancel } = require('../controllers/Projects/mobile-dev/mobile-dev')
 const { getCustomerFiles, updateDriveLink, updateFigmaLink, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, updateProject, createMemberAccounts } = require('../controllers/global/global-controllers')
+const { createPersonalChat, getPersonalChat } = require('../controllers/chat/personal-chat')
 
 
 // Project Manager Route
@@ -76,6 +77,7 @@ router.get("/assign-graphic-project/:id", getAssignGraphicProject) // Not added 
 // get Designer List ===> project manager route
 router.get("/api/get-designer-list/:id", getDesignerList)
 router.get("/api/get-team-member-list/:category/:id", getTeamMemberList)
+router.get("/api/get-team-member-list/:category", getTeamMemberListForChat)
 router.delete("/api/del-designer-files/:id/:filename", deleteDesignerFiles) // Not added on api documentation
 router.post("/api/delete-file", deleteFile)
 router.put('/api/delete-team-member/:category', deleteTeamMember)
@@ -214,5 +216,9 @@ router.get("/api/mobile-app/cancel/:id", projectMobileAppCancel)
 router.get("/api/mobile-app/completed/:id", projectMobileAppCompleted)
 router.post("/api/mobile-app/duplicate-project/:id", duplicateMobileAppProject)
 router.delete("/api/mobile-app/delete-project/:id", deleteMobileAppProject)
+
+// Personal chat routes
+router.post('/api/create-personal-chat/:user_id/:receiver', createPersonalChat)
+router.get('/api/get-personal-chat/:user_id/:receiver', getPersonalChat)
 
 module.exports = router 

@@ -142,16 +142,31 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
 
   useEffect(() => {
     socketIO.current.on('connect', () => {
-      socketIO.current.emit('user_online', true, reduxState?.userDetails?.id, reduxState?.userDetails?.roles)
+      const userId = reduxState?.userDetails?.id
+      const user_name = reduxState?.userDetails?.name
+      const roles = reduxState?.userDetails?.roles
+      socketIO.current.emit('user_online', true, userId, roles, user_name)
     })
   }, [])
+
+  useEffect(() => {
+    socketIO.current.on('active_users', (online_users) => {
+      const filterUserArray = online_users.filter(user => user.id !== reduxState?.userDetails?.id)
+      console.log(filterUserArray)
+      reduxActions.handleOnlineUsers(filterUserArray)
+    })
+  }, [socketIO.current])
 
   useEffect(() => {
     socketIO.current.connect()
   }, [])
 
   useEffect(() => {
-    socketIO.current.emit('user_online', true, reduxState?.userDetails?.id, reduxState?.userDetails?.roles)
+    const userId = reduxState?.userDetails?.id
+    const user_name = reduxState?.userDetails?.name
+    const roles = reduxState?.userDetails?.roles
+
+    socketIO.current.emit('user_online', true, userId, roles, user_name)
     const id = reduxState?.userDetails?.id;
     projectNotifications(id, reduxActions.handleProject_notifications)
   }, [])
@@ -312,11 +327,11 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
     formdata.append("user_id", user_id);
     formdata.append("project_id", project_id);
     apiClient.post("/file/google-cloud", formdata, {
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          setUploadProgress(percentCompleted);
-        },
-      })
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        setUploadProgress(percentCompleted);
+      },
+    })
       .then(() => {
         setRespMessage('Project Created Successfully');
         setLoading(false);
@@ -866,27 +881,27 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             </div>
             {renderUserMenu()}
             {role?.customer &&
-              (
-                <ProjectButton
-                  variant="contained"
-                  size="medium"
-                  className="create-project-btn"
-                  startIcon={projectIcon}
-                  onClick={handleClickOpen}
+              // (
+              //   <ProjectButton
+              //     variant="contained"
+              //     size="medium"
+              //     className="create-project-btn"
+              //     startIcon={projectIcon}
+              //     onClick={handleClickOpen}
 
-                >
-                  Create Project
-                </ProjectButton>
-              )
-              // <ProjectMenuOptions
-              //   size="medium"
-              //   handleClickOpen={handleClickOpen}
-              //   handleCopyWriting={handleOpenCopyWriting}
-              //   handleSocialMedia={handleOpenSocialMedia}
-              //   handleWebsite={handleWebsite}
-              //   handleWebAppDev={handleWebAppDev}
-              //   handleMobileAppDev={handleMobileAppDev}
-              // />
+              //   >
+              //     Create Project
+              //   </ProjectButton>
+              // )
+              <ProjectMenuOptions
+                size="medium"
+                handleClickOpen={handleClickOpen}
+                handleCopyWriting={handleOpenCopyWriting}
+                handleSocialMedia={handleOpenSocialMedia}
+                handleWebsite={handleWebsite}
+                handleWebAppDev={handleWebAppDev}
+                handleMobileAppDev={handleMobileAppDev}
+              />
             }
           </MDBox>
         </Grid>
@@ -899,23 +914,23 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             <RightSideDrawer list={list} />
           </div>
           {role?.customer && (
-            <ProjectButton2
-              variant="contained"
-              size="small"
-              startIcon={projectIcon}
-              onClick={handleClickOpen}
-            >
-              Create Project
-            </ProjectButton2>
-            // <ProjectMenuOptions
-            //   size={"small"}
-            //   handleClickOpen={handleClickOpen}
-            //   handleCopyWriting={handleOpenCopyWriting}
-            //   handleSocialMedia={handleOpenSocialMedia}
-            //   handleWebsite={handleWebsite}
-            //   handleWebAppDev={handleWebAppDev}
-            //   handleMobileAppDev={handleMobileAppDev}
-            // />
+            // <ProjectButton2
+            //   variant="contained"
+            //   size="small"
+            //   startIcon={projectIcon}
+            //   onClick={handleClickOpen}
+            // >
+            //   Create Project
+            // </ProjectButton2>
+            <ProjectMenuOptions
+              size={"small"}
+              handleClickOpen={handleClickOpen}
+              handleCopyWriting={handleOpenCopyWriting}
+              handleSocialMedia={handleOpenSocialMedia}
+              handleWebsite={handleWebsite}
+              handleWebAppDev={handleWebAppDev}
+              handleMobileAppDev={handleMobileAppDev}
+            />
           )}
         </Grid>
       </Grid>

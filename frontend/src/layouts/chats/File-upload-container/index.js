@@ -191,8 +191,7 @@ const FileUploadContainer = ({
     setVersion([]);
     setFileMsg("");
     setLoading(true);
-    await apiClient
-      .get(`/api/get-version-uploads/${value}/${project.project_category}/${id}`)
+    await apiClient.get(`/api/get-version-uploads/${value}/graphic-design/${id}`)
       .then(({ data }) => {
         // setVersion(data.filesInfo);
         handlePreviewImages(data?.filesInfo)
@@ -579,6 +578,7 @@ const FileUploadContainer = ({
             user: reduxState.userDetails.id,
             name: reduxState.userDetails.name,
             type: 'project-assigned',
+            project_category: personProject().project_category,
             project_id: personProject()._id,
             project_title: personProject().project_title,
             role: 'Project-Manager',

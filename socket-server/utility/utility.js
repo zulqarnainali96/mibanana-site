@@ -18,11 +18,12 @@ const getValue = (data, id) => {
 }
 
 const getStatusChange = (data, role, id, msg, status) => {
-    const { _id, user, name, project_title } = data
+    const { _id, user, name, project_title, project_category } = data
     let obj = {
-        id : id ? id : '',
+        id: id ? id : '',
         unique_key: uniqeID(),
         type: 'status-change',
+        project_category: project_category,
         project_title,
         project_id: _id,
         status,
