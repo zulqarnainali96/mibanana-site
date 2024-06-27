@@ -9,9 +9,18 @@ const useMibananaTeam = (reduxState) => {
     const [socialMediaManagerList, setSocialMediaManagerList] = useState([])
     const [openSingleChat, setOpenSingleChat] = useState(false)
     const [singleChat, setSingleChat] = useState({})
+    const [filter, setFilter] = useState('');
     const user_id = reduxState?.userDetails?.id
     const username = reduxState?.userDetails?.name
     const user_avatar = reduxState?.userDetails?.avatar
+
+    const allMembers = [
+        ...mobileDevList,
+        ...graphicDesignerList,
+        ...copyWriterList,
+        ...webDeveloperList,
+        ...socialMediaManagerList
+    ];
 
     const handleSingleChat = (item) => {
         if (item._id === user_id) {
@@ -67,6 +76,11 @@ const useMibananaTeam = (reduxState) => {
             .catch((e) => {
             });
     }
+    const handleFilterChange = (event) => {
+        setFilter(event.target.value);
+    };
+
+    const filteredMembers = filter ? allMembers.filter(member => member.roles.includes(filter)) : allMembers;
 
     useEffect(() => {
         getGraphicDesignerList()
@@ -89,6 +103,10 @@ const useMibananaTeam = (reduxState) => {
         username,
         singleChat,
         user_id,
+        handleFilterChange,
+        filteredMembers,
+        allMembers,
+        filter
     }
 }
 
