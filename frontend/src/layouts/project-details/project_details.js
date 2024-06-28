@@ -11,7 +11,7 @@ const ProjectsDetails = ({ children, reduxState, projectState }) => {
     const userId = reduxState?.userDetails?.id;
     const { msgArray, sendMessage, message, onSendMessage, reload, loading, fileRef, openFileSelect, handleFileUpload, version, getDate, DownloadFile, openImage, handleDeleteFile, handleRole, chatContainerRef, respMessage, successSB, errorSB, setSuccessSB, setErrorSB, showMore, getChatMessage, setRespMessage, setShowMore, openErrorSB, openSuccessSB, getInputProps, SubmitProject, truncatedDescription,
         project, memberName, teamMemberList, teamLoading, teamMembers, deleteTeamMember, getRootProps, isDragActive, latestButtonProps, isSendChanges, setSendChanges, currentImage, isViewerOpen, setIsViewerOpen, closeImageViewer, toggleShowMore,
-        withRevision, handleClick, anchorEl, handleClose, projectOngoing, projectForReview
+        withRevision, handleClick, anchorEl, handleClose, projectOngoing, projectForReview, makePriorityHigh
     } = projectState
 
         return (
@@ -53,6 +53,7 @@ const ProjectsDetails = ({ children, reduxState, projectState }) => {
                         msgArray={msgArray}
                         sendMessage={sendMessage}
                         onSendMessage={onSendMessage}
+                        makePriorityHigh={makePriorityHigh}
                         message={message}
                     />
                 </Grid>

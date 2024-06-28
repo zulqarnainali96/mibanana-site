@@ -21,7 +21,7 @@ const basicStyle = { display: "flex", alignItems: "center" }
 
 const ProjectChat = (props) => {
     const is500 = useMediaQuery("(max-width:500px)")
-    const { userId, chatContainerRef, withRevision, handleRole, handleClick, anchorEl, loading, id, handleClose, projectForReview, projectOngoing, msgArray, onSendMessage, sendMessage, avatar, message, } = props
+    const { userId, chatContainerRef, withRevision, handleRole, handleClick, anchorEl, loading, id, handleClose, projectForReview, projectOngoing, msgArray, onSendMessage, sendMessage, avatar, message, makePriorityHigh } = props
 
     const classes = reactQuillStyles2()
     const chatTitle = ({ palette: { primary } }) => ({
@@ -34,6 +34,7 @@ const ProjectChat = (props) => {
         display: "flex",
     })
 
+    console.log(handleRole())
     return (
         <React.Fragment >
             <MDTypography
@@ -42,7 +43,7 @@ const ProjectChat = (props) => {
                 pb={1}
             >
                 <Grid xs={6} style={basicStyle}>Activity</Grid>
-                {handleRole().teamMember && handleRole().projectManager && (
+                {handleRole().teamMember || handleRole().projectManager ? (
                     <Grid
                         id="dropdown-btn"
                         aria-controls={anchorEl ? 'dropdown-menu' : undefined}
@@ -56,7 +57,7 @@ const ProjectChat = (props) => {
                         Change Status
                         <MoreVertIcon fontSize='small' />
                     </Grid>
-                )}
+                ) : null}
                 {handleRole().customer && (
                     <MDBox display="flex" justifyContent="flex-end" alignItems="center" width="100%" onClick={() => withRevision(id)}>
                         <MDButton
@@ -94,12 +95,18 @@ const ProjectChat = (props) => {
                     style={{ top: "10px" }}
                 >
                     <MenuList>
-                        {handleRole().teamMember && (
+                        {handleRole().teamMember ? (
                             <div>
                                 <MenuItem onClick={projectOngoing}>Ongoing</MenuItem>
                                 <MenuItem onClick={projectForReview}>For Review</MenuItem>
                             </div>
-                        )}
+                        ) : handleRole().projectManager ? (
+                            <div>
+                                <MenuItem onClick={projectOngoing}>Ongoing</MenuItem>
+                                <MenuItem onClick={projectForReview}>For Review</MenuItem>
+                                <MenuItem onClick={makePriorityHigh}>Make High Priority</MenuItem>
+                            </div>
+                        ) : null}
                     </MenuList>
                 </Menu>
             </MDTypography>

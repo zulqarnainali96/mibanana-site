@@ -694,6 +694,20 @@ const useSocialMediaHook = (reduxState, reduxActions) => {
     const toggleShowMore = () => {
         setShowMore(!showMore);
     };
+    const makePriorityHigh = async () => {
+        await apiClient.post("/api/set-project-priority", { project_id: id, priority: "High" })
+            .then(({ data }) => {
+                setRespMessage(data.message)
+                getProjectById(id, setProject, project.project_category, setFileVersionList)
+                setTimeout(() => {
+                    openSuccessSB()
+                }, 500)
+            })
+            .catch((err) => {
+                setRespMessage(err.response.data.message)
+                openErrorSB()
+            })
+    }
     const deleteTeamMember = (val) => {
         setTeamLoading(true)
         const formdata = {
@@ -889,6 +903,7 @@ const useSocialMediaHook = (reduxState, reduxActions) => {
         handleFileUpload,
         reload: reloadAllData,
         closeImageViewer,
+        makePriorityHigh,
         SubmitProject,
         sendMessage,
         currentImage,

@@ -262,8 +262,8 @@ const getTeamMemberListForChat = async (req, res) => {
                 };
             });
             return res.status(200).send({ list })
-        }
-        else if (category === 'graphic-design' || category === 'Graphic Design') {
+        } 
+        else if (category === 'graphic-design') {
             const list = allUser.filter(item =>
                 item.roles.includes("Graphic-Designer")
             ).map(item => {

@@ -52,6 +52,11 @@ const projectModel = mongoose.Schema({
         required: false,
         default : [],
     }],
+    priority : {
+        type : String,
+        required : false,
+        default : "Low"
+    },
     specific_software_names: {
         type: String,
         required: false

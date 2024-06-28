@@ -823,6 +823,20 @@ const useWebsiteHook = (reduxState, reduxActions) => {
                 }
             })
     };
+    const makePriorityHigh = async () => {
+        await apiClient.post("/api/set-project-priority", { project_id: id, priority: "High" })
+            .then(({ data }) => {
+                setRespMessage(data.message)
+                getProjectById(id, setProject, project.project_category, setFileVersionList)
+                setTimeout(() => {
+                    openSuccessSB()
+                }, 500)
+            })
+            .catch((err) => {
+                setRespMessage(err.response.data.message)
+                openErrorSB()
+            })
+    }
     const truncatedDescription = project?.project_description?.substring(0, 240);
 
     const latestButtonProps = {
@@ -868,8 +882,8 @@ const useWebsiteHook = (reduxState, reduxActions) => {
 
 
     useEffect(() => {
-        if (handleRole().projectManager || handleRole().admin) { 
-            getWebAppDevList() 
+        if (handleRole().projectManager || handleRole().admin) {
+            getWebAppDevList()
         }
         joinChatRoom();
         return () => {
@@ -893,7 +907,7 @@ const useWebsiteHook = (reduxState, reduxActions) => {
         teamMemberList,
         teamLoading,
         deleteTeamMember,
-
+        makePriorityHigh,
         toggleShowMore,
         truncatedDescription,
 

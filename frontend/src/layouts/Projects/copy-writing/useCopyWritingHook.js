@@ -265,18 +265,18 @@ const useCopyWritingHook = (reduxState, reduxActions) => {
     }
 
     const handleRole = () => {
-        if (role.designer || role.mobile_app_developer || role.web_developer || role.social_media_manager || role.copywriter) {
+        if (role?.designer || role?.mobile_app_developer || role?.web_developer || role?.social_media_manager || role?.copywriter) {
             return {
                 teamMember: true
             }
         }
-        else if (role.projectManager) {
+        else if (role?.projectManager) {
             return { projectManager: true }
         }
-        else if (role.customer) {
+        else if (role?.customer) {
             return { customer: true }
         }
-        else if (role.admin) {
+        else if (role?.admin) {
             return { admin: true }
         }
     }
@@ -343,6 +343,21 @@ const useCopyWritingHook = (reduxState, reduxActions) => {
                 setVersion([]);
                 setLoading(false);
             });
+    }
+
+    const makePriorityHigh = async () => {
+        await apiClient.post("/api/set-project-priority", { project_id: id, priority: "High" })
+            .then(({ data }) => {
+                setRespMessage(data.message)
+                getProjectById(id, setProject, project.project_category, setFileVersionList)
+                setTimeout(() => {
+                    openSuccessSB()
+                }, 500)
+            })
+            .catch((err) => {
+                setRespMessage(err.response.data.message)
+                openErrorSB()
+            })
     }
     const getLatestDesign = () => {
         const latestDesign = [...fileVersion].pop()
@@ -845,8 +860,8 @@ const useCopyWritingHook = (reduxState, reduxActions) => {
 
 
     useEffect(() => {
-        if (handleRole().projectManager || handleRole().admin) { 
-            getMobileAppDevList() 
+        if (handleRole().projectManager || handleRole().admin) {
+            getMobileAppDevList()
         }
         joinChatRoom();
         return () => {
@@ -899,6 +914,7 @@ const useCopyWritingHook = (reduxState, reduxActions) => {
         handleRole,
         projectOngoing,
         projectForReview,
+        makePriorityHigh,
         respMessage,
         openErrorSB,
         closeErrorSB,

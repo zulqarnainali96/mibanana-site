@@ -64,6 +64,8 @@ const FileUploadContainer = ({
   showMore,
   setShowMore,
   getChatMessage,
+  setFileVersionList,
+  fileVersion,
 }) => {
   const userId = useSelector((state) => state.userDetails?.id);
   const projects = reduxState?.project_list?.CustomerProjects;
@@ -91,7 +93,6 @@ const FileUploadContainer = ({
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [previewimg, setpreviewimg] = useState("");
   const [currentVersion, setSelectVersion] = useState("");
-  const [fileVersion, setFileVersionList] = useState(project?.version.length > 0 ? project?.version : []);
   const [designerList, setDesignerList] = useState([]);
   const [successOpen, setsuccessOpen] = useState(false);
   const [successMessage, setsuccessMessage] = useState("");

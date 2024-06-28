@@ -992,7 +992,7 @@ const updateProject = async (req, res) => {
         }
         else if (category === 'copy-writing') {
             const copyWriter = await copyWritingModel.findById(project_id)
-            if(copyWriter){
+            if (copyWriter) {
                 if (copyWriter.team_members.length > 0) {
                     // copyWriter.team_members = [...copyWriter.team_members, ...team_members]
                     return res.status(201).send({ message: 'Already Assigned to Designer', })
@@ -1007,7 +1007,7 @@ const updateProject = async (req, res) => {
         }
         else if (category === 'website-development') {
             const websiteDevlopment = await websiteModal.findById(project_id)
-            if(websiteDevlopment){
+            if (websiteDevlopment) {
                 if (websiteDevlopment.team_members.length > 0) {
                     // websiteDevlopment.team_members = [...websiteDevlopment.team_members, ...team_members]
                     return res.status(201).send({ message: 'Already Assigned to Designer', })
@@ -1038,7 +1038,7 @@ const createMemberAccounts = async (req, res) => {
         const hashPassword = await bcrypt.hash(password, 10)
         console.log(hashPassword)
         if (hashPassword) {
-            const obj = { name: username, is_active : true, roles, 'password': hashPassword, verified : true, email, avatar: '', notifications: [] }
+            const obj = { name: username, is_active: true, roles, 'password': hashPassword, verified: true, email, avatar: '', notifications: [] }
             const user = await User.create(obj)
             if (user !== null) {
                 return res.status(201).send({ message: 'User Created' })
@@ -1054,5 +1054,72 @@ const createMemberAccounts = async (req, res) => {
         res.status(500).send({ message: "Internal Server Error" });
     }
 }
+const updateProjectPriority = async (req, res) => {
+    const { project_id, priority, category } = req.body
+    try {
+        if (category === 'mobile-app-development') {
+            const mobProject = await mobileAppModel.findById(project_id)
+            if (mobProject) {
+                mobProject.priority = priority
+                const project = await mobProject.save()
+                return res.status(201).send({ message: 'Project Updated', project })
+            } else {
+                return res.status(404).send({ message: 'Project not found' })
+            }
+        }
+        else if (category === 'web-app') {
+            const webAppProject = await webappModel.findById(project_id)
+            if (webAppProject) {
+                webAppProject.priority = priority
+                const project = await webAppProject.save()
+                return res.status(201).send({ message: 'Project Updated', project })
+            } else {
+                return res.status(404).send({ message: 'Project not found' })
+            }
+        }
+        else if (category === 'social-media-manager') {
+            const socialMediaManager = await socialMediaModel.findById(project_id)
+            if (socialMediaManager) {
+                socialMediaManager.priority = priority
+                const project = await socialMediaManager.save()
+                return res.status(201).send({ message: 'Project Updated', project })
+            } else {
+                return res.status(404).send({ message: 'Project not found' })
+            }
+        }
+        else if (category === 'copy-writing') {
+            const copyWriter = await copyWritingModel.findById(project_id)
+            if (copyWriter) {
+                copyWriter.priority = priority
+                const project = await copyWriter.save()
+                return res.status(201).send({ message: 'Project Updated', project })
+            } else {
+                return res.status(404).send({ message: 'Project not found' })
+            }
+        }
+        else if (category === 'website-development') {
+            const websiteDevlopment = await websiteModal.findById(project_id)
+            if (websiteDevlopment) {
+                websiteDevlopment.priority = priority
+                const project = await websiteDevlopment.save()
+                return res.status(201).send({ message: 'Project Updated', project })
+            } else {
+                return res.status(404).send({ message: 'Project not found' })
+            }
+        }
+        else if (category === 'Graphic Design' || category === 'graphic-design') {
+            const currentProject = await Projects.findById(project_id)
+            if (currentProject) {
+                currentProject.priority = priority
+                const project = await currentProject.save()
+                return res.status(201).send({ message: 'Project Updated', project })
+            } else {
+                return res.status(404).send({ message: 'Project not found' })
+            }
+        }
+    } catch (error) {
+        res.status(500).send({ message: 'Internal Server error' })
+    }
+}
 
-module.exports = { getCustomerFiles, updateDriveLink, updateFigmaLink, updateProject, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, createMemberAccounts }
+module.exports = { getCustomerFiles, updateDriveLink, updateFigmaLink, updateProject, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, createMemberAccounts, updateProjectPriority }

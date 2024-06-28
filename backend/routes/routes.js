@@ -28,7 +28,7 @@ const { createSocialMediaProject, getSocialMediaProjects, deleteSocialMediaProje
 const { createWebsiteProject, getWebsiteProjects, deleteWebsiteProject, projectWebsiteForReview, projectWebsiteAttend, projectWebsiteWidthRevision, duplicateWebsiteProject, projectWebsiteCompleted, projectWebsiteCancel } = require('../controllers/Projects/website/website')
 const { createWebAppProject, getWebAppProjects, deleteWebAppProject, projectWebAppWidthRevision, projectWebAppForReview, projectWebAppAttend, duplicateWebAppProject, projectWebAppCompleted, projectWebAppCancel } = require('../controllers/Projects/web-app/web-app')
 const { createMobileAppProject, getMobileAppProjects, deleteMobileAppProject, projectMobileWidthRevision, projectMobileForReview, projectMobileAttend, duplicateMobileAppProject, projectMobileAppCompleted, projectMobileAppCancel } = require('../controllers/Projects/mobile-dev/mobile-dev')
-const { getCustomerFiles, updateDriveLink, updateFigmaLink, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, updateProject, createMemberAccounts } = require('../controllers/global/global-controllers')
+const { getCustomerFiles, updateDriveLink, updateFigmaLink, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, updateProject, createMemberAccounts, updateProjectPriority } = require('../controllers/global/global-controllers')
 const { createPersonalChat, getPersonalChat } = require('../controllers/chat/personal-chat')
 
 
@@ -220,5 +220,8 @@ router.delete("/api/mobile-app/delete-project/:id", deleteMobileAppProject)
 // Personal chat routes
 router.post('/api/create-personal-chat/:user_id/:receiver', createPersonalChat)
 router.get('/api/get-personal-chat/:user_id/:receiver', getPersonalChat)
+
+// Project Priority Set 
+router.post('/api/set-project-priority', updateProjectPriority)
 
 module.exports = router 

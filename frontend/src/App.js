@@ -26,6 +26,7 @@ import { useMediaQuery } from "@mui/material";
 import MainComponent from "main-comp";
 import { SocketContext, socket } from "sockets";
 import { io } from 'socket.io-client';
+import { handleRole } from "redux/global/global-functions";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -107,7 +108,7 @@ export default function App() {
       if (role?.admin) {
         route = AdminRoutes
       }
-      else if (role?.projectManager || role?.designer) {
+      else if (role?.projectManager || handleRole(role)?.teamMember) {
         route = [...routes, projectManager]
       }
       else {
@@ -156,20 +157,22 @@ export default function App() {
             <>
               {user !== null ? (
                 <>
-                  {is1200 ? null : <Sidenav
-                    color={sidenavColor}
-                    brand={
-                      (transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo
-                    }
-                    brandName="MiBanana"
-                    routes={
-                      role?.admin
-                        ? AdminRoutes
-                        : [...routes, role?.projectManager || (role?.designer && manager_router)]
-                    }
-                    onMouseEnter={handleOnMouseEnter}
-                    onMouseLeave={handleOnMouseLeave}
-                  />}
+                  {is1200 ? null : (
+                    <Sidenav
+                      color={sidenavColor}
+                      brand={
+                        (transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo
+                      }
+                      brandName="MiBanana"
+                      routes={
+                        role?.admin
+                          ? AdminRoutes
+                          : [...routes, role?.projectManager || (handleRole(role).teamMember && manager_router)]
+                      }
+                      onMouseEnter={handleOnMouseEnter}
+                      onMouseLeave={handleOnMouseLeave}
+                    />
+                  )}
                 </>
               ) : null}
             </>

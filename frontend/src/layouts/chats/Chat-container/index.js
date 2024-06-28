@@ -28,14 +28,22 @@ import { useDispatch } from 'react-redux';
 import { getCustomerProject } from 'redux/actions/actions';
 import { currentUserRole } from 'redux/global/global-functions';
 import TransitionsModal from 'components/Modal/Modal';
+import { handleRole } from 'redux/global/global-functions';
+import { getProjectById } from 'redux/global/global-functions';
 
 const ChatsContainer = ({
     chatContainerRef,
     msgArray,
+    setProject,
+    project,
+    setRespMessage,
+    openSuccessSB,
+    openErrorSB,
     onSendMessage,
     reduxState,
     sendMessage,
     message,
+    setFileVersionList,
     projectAttend,
     projectForReview
 }) => {
@@ -49,14 +57,13 @@ const ChatsContainer = ({
     const { id } = useParams();
     const currentProject = reduxState?.project_list?.CustomerProjects?.find(item => item._id === id);
     const dispatch = useDispatch()
-    // const projectId = reduxState?.project_list?.CustomerProjects?._id;
     const func = (value) => dispatch(getCustomerProject(value))
     const [openModal, setOpenModal] = useState(false)
 
     // handle dropdown menu for change status in chat
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-    
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -133,8 +140,20 @@ const ChatsContainer = ({
 
             })
     }
-    console.log(msgArray)
-
+    const makePriorityHigh = async () => {
+        await apiClient.post("/api/set-project-priority", { project_id: id, priority: "High" })
+            .then(({ data }) => {
+                setRespMessage(data.message)
+                getProjectById(id, setProject, project.project_category, setFileVersionList)
+                setTimeout(() => {
+                    openSuccessSB()
+                }, 800)
+            })
+            .catch((err) => {
+                setRespMessage(err.response.data.message)
+                openErrorSB()
+            })
+    }
     return (
         <React.Fragment>
             <MDTypography
@@ -151,7 +170,7 @@ const ChatsContainer = ({
                 pb={1}
             >
                 <Grid xs={6} style={{ display: "flex", alignItems: "center" }}>Activity</Grid>
-                {userRole === 'Graphic-Designer' && (
+                {handleRole(role)?.teamMember || handleRole(role)?.projectManager ? (
                     <Grid
                         id="dropdown-btn"
                         aria-controls={anchorEl ? 'dropdown-menu' : undefined}
@@ -165,7 +184,7 @@ const ChatsContainer = ({
                         Change Status
                         <MoreVertIcon fontSize='small' />
                     </Grid>
-                )}
+                ) : null}
                 {userRole === 'Customer' && (
                     // <Grid
                     //     id="dropdown-btn-customer"
@@ -219,15 +238,18 @@ const ChatsContainer = ({
                     style={{ top: "10px" }}
                 >
                     <MenuList>
-                        {userRole === 'Graphic-Designer' && (
+                        {handleRole(role).teamMember ? (
                             <div>
                                 <MenuItem onClick={projectAttend1}>Ongoing</MenuItem>
                                 <MenuItem onClick={projectForReview1}>For Review</MenuItem>
                             </div>
-                        )}
-                        {/* {userRole === 'Customer' && (
-                            <MenuItem onClick={() => { handleClose(); withRevision(id) }}>Revisions</MenuItem>
-                        )} */}
+                        ) : handleRole(role).projectManager ? (
+                            <div>
+                                <MenuItem onClick={projectAttend1}>Ongoing</MenuItem>
+                                <MenuItem onClick={projectForReview1}>For Review</MenuItem>
+                                <MenuItem onClick={makePriorityHigh}>Make High Priority</MenuItem>
+                            </div>
+                        ) : null}
                     </MenuList>
                 </Menu>
 

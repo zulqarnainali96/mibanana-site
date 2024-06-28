@@ -11,7 +11,7 @@ export const sendingStatusNotification = (socket, role, item, userId, status) =>
         return socket.current.emit('sending-status-change', item, mobile_app_developer, userId, status)
     } 
     else if (role?.copywriter) {
-        const copywriter = 'CopyWriter'
+        const copywriter = 'Copy-Writer'
         return socket.current.emit('sending-status-change', item, copywriter, userId, status)
     } 
     else if (role?.social_media_manager) {

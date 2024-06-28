@@ -31,7 +31,10 @@ const Chating = ({ reduxState, reduxActions }) => {
     second: '2-digit',
     hour12: false // Use 24-hour format
   };
-  
+  const { id } = useParams();
+  const [project, setProject] = useState(reduxState.project_list.CustomerProjects?.find(item => item._id === id || {}))
+  const [fileVersion, setFileVersionList] = useState(project?.version.length > 0 ? project?.version : []);
+
   const currentTime = new Date(); // Get the current date and time
   const formattedTime = new Intl.DateTimeFormat('en-GB', options).format(currentTime);
   const formattedDate = currentTime.toLocaleDateString();
@@ -52,30 +55,21 @@ const Chating = ({ reduxState, reduxActions }) => {
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
 
-  const { id } = useParams();
   const { id: user, name } = reduxState?.userDetails;
 
   let avatar = useSelector((state) => state.userDetails?.avatar);
 
-
-  // const getUserRoles = (role) => {
-  //   if (role?.designer) return "Graphic-Designer";
-  //   if (role?.projectManager) return "Project-Manager";
-  //   if (role?.admin) return "Admin";
-  //   if (role?.customer) return "Customer";
+  // const personProject = () => {
+  //   if (reduxState.project_list?.CustomerProjects) {
+  //     const singleProject = reduxState.project_list?.CustomerProjects?.find(
+  //       (item) => item?._id === id
+  //     );
+  //     return singleProject;
+  //   } else {
+  //     return {};
+  //   }
   // };
-
-  const personProject = () => {
-    if (reduxState.project_list?.CustomerProjects) {
-      const singleProject = reduxState.project_list?.CustomerProjects?.find(
-        (item) => item?._id === id
-      );
-      return singleProject;
-    } else {
-      return {};
-    }
-  };
-  const team_members = personProject()?.team_members?.length > 0 ? personProject()?.team_members[0]?._id : "";
+  const team_members = project?.team_members?.length > 0 ? project?.team_members[0]?._id : "";
 
   const onSendMessage = async (event) => {
     const user_message = message
@@ -89,9 +83,8 @@ const Chating = ({ reduxState, reduxActions }) => {
       chat_message: {
         type: "chat-message",
         project_id: id,
-        project_title: personProject().project_title ? personProject().
-          project_title : "",
-        authorId: personProject() ? personProject()?.user : "",
+        project_title: project?.project_title,
+        authorId: project?.user,
         user,
         name: name,
         avatar: avatar ? avatar : ImageAvatar,
@@ -118,7 +111,7 @@ const Chating = ({ reduxState, reduxActions }) => {
       message: {
         unique: uuidv4(),
         project_id: id,
-        project_title: personProject().project_title ? personProject().project_title : "",
+        project_title: project.project_title,
         user,
         name: name,
         avatar: avatar ? avatar : ImageAvatar,
@@ -222,8 +215,8 @@ const Chating = ({ reduxState, reduxActions }) => {
             padding: 0,
             height: "100%",
             overflow: "scroll",
-            overflowX:"hidden",
-            paddingRight:"16px",
+            overflowX: "hidden",
+            paddingRight: "16px",
             "::-webkit-scrollbar": {
               width: "0",
               height: "0",
@@ -233,15 +226,21 @@ const Chating = ({ reduxState, reduxActions }) => {
         >
           <ChatsContainer
             chatContainerRef={chatContainerRef}
+            setRespMessage={setRespMessage}
+            setFileVersion={setFileVersionList}
+            openSuccessSB={openSuccessSB}
+            openErrorSB={openErrorSB}
             msgArray={msgArray}
             onSendMessage={onSendMessage}
+            setProject={setProject}
+            project={project}
             sendMessage={sendMessage}
             message={message}
             reduxState={reduxState}
-            projectAttend={()=>Action.projectAttend(id)}
-            projectForReview={()=> Action.projectForReview(id)}
+            projectAttend={() => Action.projectAttend(id)}
+            projectForReview={() => Action.projectForReview(id)}
           />
-          
+
         </Grid>
         <Grid item xxl={6} xl={6} lg={12} md={12} sm={12} xs={12} pt="0 !important" height="100%" sx={({ breakpoints }) => ({
           [breakpoints.down('xl')]: {
@@ -255,6 +254,8 @@ const Chating = ({ reduxState, reduxActions }) => {
             openSuccessSB={openSuccessSB}
             openErrorSB={openErrorSB}
             showMore={showMore}
+            fileVersion={fileVersion}
+            setFileVersionList={setFileVersionList}
             setShowMore={setShowMore}
             getChatMessage={getChatMessage}
           />

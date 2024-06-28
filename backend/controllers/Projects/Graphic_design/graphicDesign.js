@@ -261,7 +261,7 @@ const getGraphicProject = asyncHandler(async (req, res) => {
                     })
                 }
             }
-            else if (Roles.includes("CopyWriter")) {
+            else if (Roles.includes("Copy-Writer")) {
                 const getList = await copyWritingModel.find().lean().exec()
                 if (getList) {
                     // console.log(id)

@@ -49,7 +49,7 @@ const activeStyle = {
     top: '3px',
     right: '5px',
     color: 'yellow-green',
-    borderRadius : '30px',
+    borderRadius: '30px',
     color: 'yellowgreen',
     fontWeight: 500,
     fontFamily: 'Poppins',
@@ -59,7 +59,7 @@ const offlineStyle = {
     top: '3px',
     right: '5px',
     color: 'red',
-    borderRadius : '30px',
+    borderRadius: '30px',
     fontWeight: 500,
     fontFamily: 'Poppins',
 }

@@ -116,7 +116,7 @@ const currentUserRole = (state) => {
         admin: false
       }
     }
-    else if (roles?.includes("CopyWriter")) {
+    else if (roles?.includes("Copy-Writer")) {
       return {
         projectManager: false,
         designer: false,
@@ -167,7 +167,7 @@ const currentUserRole = (state) => {
     else if (roles?.includes("Admin")) {
       return {
         projectManager: false,
-        designer: false,  
+        designer: false,
         mobile_app_developer: false,
         copywriter: false,
         web_developer: false,
@@ -430,5 +430,28 @@ const getProjectCategory = (category) => {
   }
 }
 
+const makeTaskPriorityHigh = async (data, setRespMessage, openSuccessSB, openErrorSB, projectCallback, id, setProject, category, setFileVersionList) => {
+  await apiClient.post("/api/set-project-priority", data)
+    .then(({ data }) => {
+      setRespMessage(data.message)
+      getProjectById(id, setProject, category, setFileVersionList)
+      setTimeout(() => {
+        openSuccessSB()
+      }, 500)
+    })
+    .catch((err) => {
+      setRespMessage(err.response.data.message)
+      openErrorSB()
+    })
+}
 
-export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus, getProjectById, projectNotifications, projecStatusNotifications, getSingleProjectById, openProjectByFormType, getUserRoles, getForReviewApiAccordingToProject, getWithRevisionApiAccordingToProject, getOngoingApiAccordingToProject, getCancelApiAccordingToProject, getDuplicateApiAccordingToProject, getDeleteApiAccordingToProject, getCompletedApiAccordingToProject, getProjectCategory }
+const handleRole = (role) => {
+  if (role?.designer || role?.mobile_app_developer || role?.web_developer || role?.social_media_manager || role?.copywriter) {
+    return {
+      teamMember: true
+    }
+  }
+}
+
+
+export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus, getProjectById, projectNotifications, projecStatusNotifications, getSingleProjectById, openProjectByFormType, getUserRoles, getForReviewApiAccordingToProject, getWithRevisionApiAccordingToProject, getOngoingApiAccordingToProject, getCancelApiAccordingToProject, getDuplicateApiAccordingToProject, getDeleteApiAccordingToProject, getCompletedApiAccordingToProject, getProjectCategory, handleRole, makeTaskPriorityHigh }

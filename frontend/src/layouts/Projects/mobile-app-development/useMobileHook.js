@@ -753,6 +753,20 @@ const useMobileHook = (reduxState, reduxActions) => {
             })
 
     }
+    const makePriorityHigh = async () => {
+        await apiClient.post("/api/set-project-priority", { project_id: id, priority: "High" })
+            .then(({ data }) => {
+                setRespMessage(data.message)
+                getProjectById(id, setProject, project.project_category, setFileVersionList)
+                setTimeout(() => {
+                    openSuccessSB()
+                }, 500)
+            })
+            .catch((err) => {
+                setRespMessage(err.response.data.message)
+                openErrorSB()
+            })
+    }
     const SubmitProject = async (value) => {
         setMemberName(value);
         if (value) {
@@ -882,8 +896,8 @@ const useMobileHook = (reduxState, reduxActions) => {
 
 
     useEffect(() => {
-        if (handleRole().projectManager || handleRole().admin) { 
-            getMobileAppDevList() 
+        if (handleRole().projectManager || handleRole().admin) {
+            getMobileAppDevList()
         }
         joinChatRoom();
         return () => {
@@ -925,6 +939,7 @@ const useMobileHook = (reduxState, reduxActions) => {
         reload: reloadAllData,
         closeImageViewer,
         SubmitProject,
+        makePriorityHigh,
         sendMessage,
         currentImage,
         onSendMessage,
