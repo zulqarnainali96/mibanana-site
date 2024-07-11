@@ -215,7 +215,7 @@ const getTeamMemberList = async (req, res) => {
         }
 
     } catch (error) {
-
+        return res.status(500).send('Interal Server Error')
     }
 }
 const getTeamMemberListForChat = async (req, res) => {
