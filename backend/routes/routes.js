@@ -76,7 +76,8 @@ router.get("/assign-graphic-project/:id", getAssignGraphicProject) // Not added 
 
 // get Designer List ===> project manager route
 router.get("/api/get-designer-list/:id", getDesignerList)
-router.get("/api/get-team-member-list/:category/:id", getTeamMemberList)
+// router.get("/api/get-team-member-list/:category/:id", getTeamMemberList)
+router.get("/api/get-team-member-list", getTeamMemberList)
 router.get("/api/get-team-member-list/:category", getTeamMemberListForChat)
 router.delete("/api/del-designer-files/:id/:filename", deleteDesignerFiles) // Not added on api documentation
 router.post("/api/delete-file", deleteFile)
