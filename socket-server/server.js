@@ -32,7 +32,7 @@ io.on('connection', function (socket) {
   socket.on('user_online', (status, id, role, name) => {
     if (role, id) {
       // console.log("User Connected ", socket.id)
-      // socket.join(id)
+      socket.join(socket.id)
       let obj = {
         socketID: socket.id,
         id,
@@ -42,7 +42,7 @@ io.on('connection', function (socket) {
       }
       connectedUser.push(obj)
       connectedUser = Array.from(new Set(connectedUser.map(obj => obj.id))).map(id => connectedUser.find(obj => obj.id === id));
-      // console.log(connectedUser)
+      console.log(connectedUser)
       socket.broadcast.emit('active_users', connectedUser)
     }
   })
@@ -182,7 +182,7 @@ io.on('connection', function (socket) {
       roomId,
       users: Array.from(usersSet)
     }));
-
+    console.log('roomsArray', roomsArray)
     // Graphic Designer
     if (message.role === 'Graphic-Designer') {
       const customer = connectedUser.find(user => user.id === String(message.authorId));
@@ -276,13 +276,31 @@ io.on('connection', function (socket) {
       }
     }
 
-    // sendChatsNotifications(connectedUser, message, room, roomsArray, teamId, rooms, socket)
   })
+
+  // Join private chat
+  socket.on('join-private-chat', () => {
+    console.log('join-private-chat',)
+    socket.join(socket.id);
+  })
+  socket.on('send-private-message', (msg) => {
+    console.log(msg)
+    const activeOrNot = connectedUser.find(item => item.id === msg.receiver);
+    if (activeOrNot) {
+      socket.to(activeOrNot.socketID).emit('receive-private-message', msg);
+    } else {
+      sendMessage(msg.receiver, msg)
+    }
+  })
+  // socket.on('leave-private-chat', (room) => {
+  //   console.log('leaving chat', room)
+  //   socket.leave(socket.id, room);
+  // })
   socket.on('leave-room', (room) => {
     socket.leave(room)
   })
   socket.on('connect', () => {
-    console.log('user connected ', socket.id);
+    // console.log('user connected ', socket.id);
   })
   socket.on('disconnect', () => {
     connectedUser = connectedUser.filter(user => user.socketID !== socket.id)
