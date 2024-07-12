@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
-// react-router-dom components
-import { useLocation, NavLink, Navigate, useNavigate } from "react-router-dom";
-// prop-types is a library for typechecking of props.
+import { useContext, useEffect, useRef, useState } from "react";
+import { useLocation, NavLink, useNavigate, } from "react-router-dom";
 import PropTypes from "prop-types";
-// @mui material components
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
@@ -12,14 +9,12 @@ import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
-// Material Dashboard 2 React example components
 import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 
 // Custom styles for the Sidenav
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
 
-// Material Dashboard 2 React context
 import {
   useMaterialUIController,
   setMiniSidenav,
@@ -27,6 +22,7 @@ import {
   setWhiteSidenav,
 } from "context";
 import { Button, ListItem, Menu, MenuItem, Toolbar } from "@mui/material";
+import { SocketContext } from "sockets";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -35,6 +31,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const navigate = useNavigate();
   const collapseName = location.pathname.replace("/", "");
   const [anchorEl, setAnchorEl] = useState(null);
+  
 
   let textColor = "white";
 
@@ -77,91 +74,84 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
 
   const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, collapse, key, href, route }) => {
-      let returnValue;
-      if (type === "collapse") {
-        returnValue = href ? (
-          <Link
-            href={href}
-            key={key}
-            target="_blank"
-            rel="noreferrer"
-            sx={{ textDecoration: "none" }}
-          >
-            <SidenavCollapse
-              name={name}
-              icon={icon}
-              active={key === collapseName}
-              noCollapse={noCollapse}
-            />
-          </Link>
-        ) : (
-          <NavLink key={key} to={route}>
-            <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
-          </NavLink>
-        );
-      } else if (type === "collapse-dropdown" && collapse) {
-        returnValue = (
-          <div key={key}>
-            <SidenavCollapse
-              name={name}
-              icon={icon}
-              active={key === collapseName}
-              onClick={handleMenuOpen}
-            />
-            <Menu
-              id="dropdown-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-            >
-              {collapse.map(({ name, key, route, icon }) => (
-                <MenuItem key={key} onClick={() => navigate(route)} selected={key === collapseName}>
-                  {name}
-                </MenuItem>
-              ))}
-              {/* {isAdmin && 
-              <MenuItem
-                onClick={() => navigate("/settings/create-accounts")}
-              // selected={}
-              >
-                Create accounts
-              </MenuItem>
-
-            } */}
-            </Menu>
-          </div>
-        );
-      } else if (type === "title") {
-        returnValue = (
-          <MDTypography
-            key={key}
-            color={textColor}
-            display="block"
-            variant="caption"
-            fontWeight="bold"
-            textTransform="uppercase"
-            pl={3}
-            mt={2}
-            mb={1}
-            ml={1}
-          >
-            {title}
-          </MDTypography>
-        );
-      } else if (type === "divider") {
-        returnValue = (
-          <Divider
-            key={key}
-            light={
-              (!darkMode && !whiteSidenav && !transparentSidenav) ||
-              (darkMode && !transparentSidenav && whiteSidenav)
-            }
+    let returnValue;
+    if (type === "collapse") {
+      returnValue = href ? (
+        <Link
+          href={href}
+          key={key}
+          target="_blank"
+          rel="noreferrer"
+          sx={{ textDecoration: "none" }}
+        >
+          <SidenavCollapse
+            name={name}
+            icon={icon}
+            active={key === collapseName}
+            noCollapse={noCollapse}
           />
-        );
-      }
-
-      return returnValue;
+        </Link>
+      ) : (
+        <NavLink key={key} to={route}>
+          <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
+        </NavLink>
+      );
+    } else if (type === "collapse-dropdown" && collapse) {
+      returnValue = (
+        <div key={key}>
+          <SidenavCollapse
+            name={name}
+            icon={icon}
+            active={key === collapseName}
+            onClick={handleMenuOpen}
+          />
+          <Menu
+            id="dropdown-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            {collapse.map(({ name, key, route, icon }) => (
+              <MenuItem key={key} onClick={() => {
+                navigate(route) 
+              }} selected={key === collapseName}>
+                {name}
+              </MenuItem>
+            ))}
+          </Menu>
+        </div>
+      );
+    } else if (type === "title") {
+      returnValue = (
+        <MDTypography
+          key={key}
+          color={textColor}
+          display="block"
+          variant="caption"
+          fontWeight="bold"
+          textTransform="uppercase"
+          pl={3}
+          mt={2}
+          mb={1}
+          ml={1}
+        >
+          {title}
+        </MDTypography>
+      );
+    } else if (type === "divider") {
+      returnValue = (
+        <Divider
+          key={key}
+          light={
+            (!darkMode && !whiteSidenav && !transparentSidenav) ||
+            (darkMode && !transparentSidenav && whiteSidenav)
+          }
+        />
+      );
     }
+
+    return returnValue;
+  }
   );
 
   return (
@@ -172,7 +162,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     >
       <MDBox pt={"19px"} pb={1} px={4} textAlign="center">
         <MDBox
-          // display={{ xs: "block", xl: "none" }}
           position="absolute"
           top={0}
           right={0}
@@ -185,14 +174,10 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           </MDTypography>
         </MDBox>
         <MDBox component={NavLink} to="/" display="flex" alignItems="center">
-          {/* {brand && <MDBox component="img" src={brand} alt="Brand" width="96%" />} */}
           <MDBox
             width={!brandName && "100%"}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
-            {/* <MDTypography component="h6" variant="button" fontWeight="medium" color={textColor}>
-              {brandName}
-            </MDTypography> */}
           </MDBox>
         </MDBox>
       </MDBox>
@@ -203,38 +188,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         }
       />
       <List>{renderRoutes}</List>
-      {/* <SidenavCollapse
-        key="settings"
-        name={"Settings"}
-        routes="settings"
-        icon={<ArrowDropDownCircleOutlined />}
-        active={'' === collapseName}
-        onClick={handleMenuOpen}
-      />
-      <Menu
-        id="dropdown-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-
-        <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-        <MenuItem onClick={() => navigate("/company-profile")}>Company Profile</MenuItem>
-        <MenuItem onClick={() => navigate("/forget-password")}>Forget Password</MenuItem>
-      </Menu> */}
-      {/* <MDBox p={2} mt="auto">
-        <MDButton
-          component="a"
-          href="https://www.creative-tim.com/product/material-dashboard-pro-react"
-          target="_blank"
-          rel="noreferrer"
-          variant="gradient"
-          color={sidenavColor}
-          fullWidth
-        >
-          upgrade to pro
-        </MDButton>
-      </MDBox> */}
     </SidenavRoot>
   );
 }

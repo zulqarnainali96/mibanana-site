@@ -152,7 +152,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
   useEffect(() => {
     socketIO.current.on('active_users', (online_users) => {
       const filterUserArray = online_users.filter(user => user.id !== reduxState?.userDetails?.id)
-      console.log(filterUserArray)
+      // console.log(filterUserArray)
       reduxActions.handleOnlineUsers(filterUserArray)
     })
   }, [socketIO.current])
@@ -351,6 +351,23 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       });
   };
 
+  const handleRole = () => {
+    if (role?.designer || role?.mobile_app_developer || role?.web_developer || role?.social_media_manager || role?.copywriter) {
+      return {
+        teamMember: true
+      }
+    }
+    else if (role?.projectManager) {
+      return { projectManager: true }
+    }
+    else if (role?.customer) {
+      return { customer: true }
+    }
+    else if (role?.admin) {
+      return { admin: true }
+    }
+  }
+
   function setSizes() {
     let size = ""
     if (formValue.width && formValue.height && formValue.unit) {
@@ -478,20 +495,20 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
 
 
   useEffect(() => {
-    if (role?.projectManager) {
+    if (handleRole()?.projectManager) {
       socketIO.current.on('new-project-notification', project_data => {
         getProjectData(reduxState.userDetails?.id, reduxActions.getCustomerProject)
         notificationSound()
         reduxActions.handleProject_notifications(project_data)
       })
     }
-    if (role?.customer) {
+    if (handleRole()?.customer) {
       socketIO.current.on('status-change-notification', project_data => {
         reduxActions.handleProject_notifications(project_data)
       })
     }
 
-    if (role?.projectManager || role?.designer) {
+    if (handleRole()?.projectManager || handleRole()?.teamMember) {
       socketIO.current.on('getting-customer-notifications', (project_data, id, status) => {
         const filterProject = reduxState.project_list.CustomerProjects?.map(project => {
           return project._id === id ? { ...project, status: status } : project
@@ -500,7 +517,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         reduxActions.handleProject_notifications(project_data)
       })
     }
-    if (role?.designer) {
+    if (handleRole()?.teamMember) {
       socketIO.current.on('new-project-assigned', message => {
         reduxActions.handleProject_notifications(message)
       })
@@ -526,7 +543,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       }
     }
   }, [socketIO.current])
-
 
   useEffect(() => {
     const id = reduxState.userDetails?.id;

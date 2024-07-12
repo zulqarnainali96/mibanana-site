@@ -29,7 +29,7 @@ import EditProfile from "layouts/settings/edit-profile";
 import CompanyProfile from "layouts/settings/company-profile/company-profile";
 import ChangePassword from "layouts/settings/change-password";
 import Chating from "layouts/chats";
-import MibananTeam from "layouts/mibanana-team";
+import MibananaTeam from "layouts/mibanana-team";
 import ProjectsDetails from "layouts/project-details/project_details";
 import MobileAppDevelopment from "layouts/Projects/mobile-app-development/mobile-app-development";
 import WebApp from "layouts/Projects/web-app/web-app";
@@ -77,7 +77,7 @@ const routes = [
     key: "mibanana-team",
     icon: <Icon fontSize="small">handshake_outlined</Icon>,
     route: "/mibanana-team",
-    component: <MibananTeam />,
+    component: <MibananaTeam />,
   },
   // New Project form route
   {

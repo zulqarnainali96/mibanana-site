@@ -17,6 +17,7 @@ import ImageAvatar from "assets/mi-banana-icons/default-profile.png";
 import { SocketContext } from 'sockets'
 import { getUserRoles } from 'redux/global/global-functions'
 import { getProjectById } from 'redux/global/global-functions'
+import { makeTaskPriorityHigh } from 'redux/global/global-functions'
 
 
 const useCopyWritingHook = (reduxState, reduxActions) => {
@@ -346,18 +347,12 @@ const useCopyWritingHook = (reduxState, reduxActions) => {
     }
 
     const makePriorityHigh = async () => {
-        await apiClient.post("/api/set-project-priority", { project_id: id, priority: "High" })
-            .then(({ data }) => {
-                setRespMessage(data.message)
-                getProjectById(id, setProject, project.project_category, setFileVersionList)
-                setTimeout(() => {
-                    openSuccessSB()
-                }, 500)
-            })
-            .catch((err) => {
-                setRespMessage(err.response.data.message)
-                openErrorSB()
-            })
+        const data = {
+            project_id: id,
+            priority: "High",
+            category: project.project_category
+        }
+        makeTaskPriorityHigh(data, setRespMessage, openSuccessSB, openErrorSB, id, setProject, project.project_category, setFileVersionList)
     }
     const getLatestDesign = () => {
         const latestDesign = [...fileVersion].pop()

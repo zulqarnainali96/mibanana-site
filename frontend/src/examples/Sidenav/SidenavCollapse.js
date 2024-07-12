@@ -19,16 +19,19 @@ import {
 import { useMaterialUIController } from "context";
 import { useSelector } from "react-redux";
 import { currentUserRole } from "redux/global/global-functions";
+import { handleRole } from "redux/global/global-functions";
+import ChatMessageNo from "./ChatMessageNo";
 
 function SidenavCollapse({ icon, name, active, ...rest }) {
   const [controller] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   let path = window.location.pathname;
-  const role = currentUserRole(useSelector(state=>state))
+  const role = currentUserRole(useSelector(state => state))
+
   return (
     <ListItem component="li">
       {
-        (role?.customer || role?.designer || role?.projectManager) && name === "Settings" ? null : (
+        (handleRole(role)?.customer || handleRole(role)?.teamMember || role?.projectManager) && name === "Settings" ? null : (
           <MDBox
             style={{ margin: 0, borderRadius: 0, color: "#626C70", fontWeight: "500 !important" }}
             {...rest}
@@ -67,7 +70,9 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
                 })
               }
             />
-            {name === 'Settings' && <Icon  className="side-nav-text" fontSize="small"><ArrowDropDownCircleOutlined /></Icon>}
+            {name === 'MiBanana Team' && <ChatMessageNo />}
+
+            {name === 'Settings' && <Icon className="side-nav-text" fontSize="small"><ArrowDropDownCircleOutlined /></Icon>}
           </MDBox>
         )
       }

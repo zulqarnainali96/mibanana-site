@@ -9,7 +9,7 @@ import CreateAccounts from "layouts/settings/create-accounts";
 import CreateCustomer from "layouts/settings/customer/customer";
 import CurrentCustomerDetails from "layouts/settings/customer/current-customer/current-customer";
 import SignUp from "layouts/settings/sign-up/sign-up";
-import MibananTeam from "layouts/mibanana-team";
+import MibananaTeam from "layouts/mibanana-team";
 import MobileAppDevelopment from "layouts/Projects/mobile-app-development/mobile-app-development";
 import WebApp from "layouts/Projects/web-app/web-app";
 import CopyWriting from "layouts/Projects/copy-writing/copy-writing";
@@ -52,7 +52,7 @@ const AdminRoutes = [
         key: "mibanana-team",
         icon: <Icon fontSize="small">handshake_outlined</Icon>,
         route: "/mibanana-team",
-        component: <MibananTeam />
+        component: <MibananaTeam />
     },
     {
         name: 'Mobile App Development',

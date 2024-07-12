@@ -1,111 +1,61 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import apiClient from 'api/apiClient'
+import { SocketContext } from 'sockets'
 
 const useMibananaTeam = (reduxState) => {
-    const [mobileDevList, setMobileDevList] = useState([])
-    const [graphicDesignerList, setGraphicDesignerList] = useState([])
-    const [copyWriterList, setCopyWriterList] = useState([])
-    const [webDeveloperList, setWebDeveloperList] = useState([])
-    const [socialMediaManagerList, setSocialMediaManagerList] = useState([])
+    const [teamMemberList, setTeamMemberList] = useState([])
+    const [loading, setLoading] = useState(false)
     const [openSingleChat, setOpenSingleChat] = useState(false)
-    const [singleChat, setSingleChat] = useState({})
+    const [singleChat, setSingleChat] = useState(null)
     const [filter, setFilter] = useState('');
     const user_id = reduxState?.userDetails?.id
     const username = reduxState?.userDetails?.name
     const user_avatar = reduxState?.userDetails?.avatar
-
-    const allMembers = [
-        ...mobileDevList,
-        ...graphicDesignerList,
-        ...copyWriterList,
-        ...webDeveloperList,
-        ...socialMediaManagerList
-    ];
+    const socketIO = useRef(useContext(SocketContext));
 
     const handleSingleChat = (item) => {
-        if (item._id === user_id) {
-            alert('You can not chat with yourself')
-            return
-        }
-        setOpenSingleChat(true)
+        // setOpenSingleChat(true)
         setSingleChat(item)
+        socketIO.current.emit('join-private-chat', item._id)
+        socketIO.current.emit('join-private-chat', user_id)
     }
     const closeSingleChat = () => {
         setOpenSingleChat(false)
         // setSingleChat({})
     }
 
-
-    const getGraphicDesignerList = async () => {
-        await apiClient.get(`/api/get-team-member-list/graphic-design`)
+    const getTeamMemberList = async () => {
+        setLoading(true)
+        await apiClient.get(`/api/get-team-member-list`)
             .then(({ data }) => {
-                setGraphicDesignerList(data?.list)
+                const filterCurrrentUser = data?.list.filter(item => item._id !== user_id)
+                setTeamMemberList(filterCurrrentUser)
+                setLoading(false)
             })
             .catch((e) => {
-            });
-    }
-    const getMobileAppDevList = async () => {
-        await apiClient.get(`/api/get-team-member-list/mobile-app-development`)
-            .then(({ data }) => {
-                setMobileDevList(data?.list)
-            })
-            .catch((e) => {
-            });
-    }
-    const getCopyWriterList = async () => {
-        await apiClient.get(`/api/get-team-member-list/copy-writing`)
-            .then(({ data }) => {
-                setCopyWriterList(data?.list)
-            })
-            .catch((e) => {
-            });
-    }
-    const getSocialMediaManagerList = async () => {
-        await apiClient.get(`/api/get-team-member-list/social-media-manager`)
-            .then(({ data }) => {
-                setSocialMediaManagerList(data?.list)
-            })
-            .catch((e) => {
-            });
-    }
-    const getWebDeveloperList = async () => {
-        await apiClient.get(`/api/get-team-member-list/web-app`)
-            .then(({ data }) => {
-                setWebDeveloperList(data?.list)
-            })
-            .catch((e) => {
+                setLoading(false)
+                console.log(e.message)
             });
     }
     const handleFilterChange = (event) => {
         setFilter(event.target.value);
     };
-
-    const filteredMembers = filter ? allMembers.filter(member => member.roles.includes(filter)) : allMembers;
+    const filteredMembers = filter ? teamMemberList.filter(member => member.roles.includes(filter)) : teamMemberList;
 
     useEffect(() => {
-        getGraphicDesignerList()
-        getMobileAppDevList()
-        getCopyWriterList()
-        getSocialMediaManagerList()
-        getWebDeveloperList()
+        getTeamMemberList()
     }, [])
 
     return {
-        mobileDevList,
-        graphicDesignerList,
-        copyWriterList,
-        webDeveloperList,
-        socialMediaManagerList,
-        openSingleChat,
         handleSingleChat,
         closeSingleChat,
+        loading,
         user_avatar,
         username,
         singleChat,
         user_id,
         handleFilterChange,
         filteredMembers,
-        allMembers,
         filter
     }
 }

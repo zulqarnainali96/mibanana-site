@@ -5,7 +5,7 @@ import EditProfile from "layouts/settings/edit-profile";
 import CompanyProfile from "layouts/settings/company-profile/company-profile";
 import ChangePassword from "layouts/settings/change-password";
 import ViewBrand from "examples/brand-table/view-brand/view-brand";
-import MibananTeam from "layouts/mibanana-team";
+import MibananaTeam from "layouts/mibanana-team";
 import MIBrandTable from "examples/brand-table";
 import Chating from "layouts/chats";
 import MobileAppDevelopment from "layouts/Projects/mobile-app-development/mobile-app-development";
@@ -64,7 +64,7 @@ const routes = [
     key: "mibanana-team",
     icon: <Icon fontSize="small">handshake_outlined</Icon>,
     route: "/mibanana-team",
-    component: <MibananTeam />
+    component: <MibananaTeam />
   },
   {
     name: 'Mobile App Development',

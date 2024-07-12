@@ -48,7 +48,7 @@ const SingleChat = ({ userId, handleSingleChat, item, username, user_avatar }) =
                     className={`message ${item.receiver === _id ? "left" : "right"}`}
                     style={{ position: "relative" }}>
                     <Box
-                        sx={{ mt: 1, p: '7px', ...nameStyle, fontWeight: "300", fontSize: "13px" }}
+                        sx={{ mt: 1, p: '7px', ...nameStyle, fontWeight: "300", fontSize: "13px" }} 
                         className="message-content"
                         dangerouslySetInnerHTML={{ __html: item.message }}
                     >

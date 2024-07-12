@@ -172,9 +172,9 @@ const Chating = ({ reduxState, reduxActions }) => {
 
   useEffect(() => {
     joinChatRoom();
-    return () => {
-      socketRef.current.emit('leave-room', id)
-    }
+    // return () => {
+    //   socketRef.current.emit('leave-room', id)
+    // }
   }, []);
 
   useEffect(() => {

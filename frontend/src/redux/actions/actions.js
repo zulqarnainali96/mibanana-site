@@ -22,6 +22,8 @@ export const EDIT_PROJECT = "EDIT_PROJECT";
 export const CURRENT_PROJECT_ID = "CURRENT_PROJECT_ID";
 export const PROJECT_CALL = "PROJECT_CALL";
 export const ONLINE_USER = "ONLINE_USER";
+export const PRIVATE_CHAT_MESSAGE = "PRIVATE_CHAT_MESSAGE";
+export const UNREAD_CHAT_MESSAGE = "UNREAD_CHAT_MESSAGE";
 
 export const getUserDetails = (payload) => ({
   type: USER_DETAILS,
@@ -142,8 +144,20 @@ export const handleOnlineUsers = (payload) => ({
   payload: payload,
 });
 
+export const privateChatMesage = (payload) => ({
+  type: PRIVATE_CHAT_MESSAGE,
+  payload: payload,
+});
+
+export const handleUnreadChatMessage = (payload) => ({
+  type: UNREAD_CHAT_MESSAGE,
+  payload: payload,
+});
+
 export const reduxFunctions = {
   getUserDetails,
+  privateChatMesage,
+  handleUnreadChatMessage,
   showModal,
   getProject,
   getCustomerProject,

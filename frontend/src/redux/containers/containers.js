@@ -27,6 +27,8 @@ const mapStateToProps = (state) => ({
         edit_project: state.edit_project,
         project_call: state.project_call,
         onlineUser: state.onlineUser,
+        private_chat_message : state.private_chat_message,
+        unread_chat_message : state.unread_chat_message,
     }
 })
 
@@ -53,6 +55,9 @@ const mapDispatchToProps = (dispatch) => ({
         handle_CurrentProjectId: (payload) => dispatch(reduxFunctions.handle_CurrentProjectId(payload)),
         handleGetAllProjects: (payload) => dispatch(reduxFunctions.handleGetAllProjects(payload)),
         handleOnlineUsers: (payload) => dispatch(reduxFunctions.handleOnlineUsers(payload)),
+        privateChatMesage: (payload) => dispatch(reduxFunctions.privateChatMesage(payload)),
+        handleUnreadChatMessage: (payload) => dispatch(reduxFunctions.handleUnreadChatMessage(payload)),
+
     }
 })
 

@@ -71,13 +71,27 @@ export const reactQuillStyles2 = makeStyles({
             }
         },
         "& > .ql-toolbar": {
-            borderTopLeftRadius: 8,
-            borderTopRightRadius: 8,
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            "& > .ql-formats:first-child": {
+                marginLeft : 20,
+            },
         },
         "& > .ql-container": {
-            borderBottomLeftRadius: 8,
-            borderBottomRightRadius: 8,
-            height: '50px'
-        }
+            borderBottomLeftRadius: 30,
+            borderBottomRightRadius: 30,
+            height: '60px'
+        },
     }
 })
+
+// old style
+// "& > .ql-toolbar": {
+//             borderTopLeftRadius: 8,
+//             borderTopRightRadius: 8,
+//         },
+//         "& > .ql-container": {
+//             borderBottomLeftRadius: 8,
+//             borderBottomRightRadius: 8,
+//             height: '50px'
+//         }
