@@ -32,7 +32,6 @@ io.on('connection', function (socket) {
   socket.on('user_online', (status, id, role, name) => {
     if (role, id) {
       // console.log("User Connected ", socket.id)
-      socket.join(socket.id)
       let obj = {
         socketID: socket.id,
         id,
@@ -170,7 +169,7 @@ io.on('connection', function (socket) {
     socket.emit('project-completed-ack', data);
   })
   socket.on('join-room', (room) => {
-    // Join user to room
+    console.log('join this room', room)
     socket.join(room);
 
   })
@@ -182,7 +181,7 @@ io.on('connection', function (socket) {
       roomId,
       users: Array.from(usersSet)
     }));
-    console.log('roomsArray', roomsArray)
+    // console.log('roomsArray', roomsArray)
     // Graphic Designer
     if (message.role === 'Graphic-Designer') {
       const customer = connectedUser.find(user => user.id === String(message.authorId));
@@ -191,11 +190,11 @@ io.on('connection', function (socket) {
         if (!customerJoinedRoom) {
           socket.to(customer.socketID).emit('chat-message-notification', message);
           sendMessage(message.authorId, message)
-          console.log('Customer received message')
+          // console.log('Customer received message')
         }
       } else {
         sendMessage(message.authorId, message)
-        console.log('Testing customer api')
+        // console.log('Testing customer api')
       }
 
       const manager = connectedUser.find(user => user.role?.includes('Project-Manager'));
@@ -203,11 +202,11 @@ io.on('connection', function (socket) {
         const managerJoinedRoom = roomsArray.find(item => item.roomId === room && item.users.includes(manager.socketID));
         if (!managerJoinedRoom) {
           socket.to(manager.socketID).emit('chat-message-notification', message);
-          sendManagerMessage(message)
+          // sendManagerMessage(message)
           console.log('Manager received message')
         }
       } else {
-        sendManagerMessage(message)
+        // sendManagerMessage(message)
         console.log('sending message to Manager')
       }
     }
@@ -220,11 +219,11 @@ io.on('connection', function (socket) {
         if (!customerJoinedRoom) {
           socket.to(customer.socketID).emit('chat-message-notification', message);
           sendMessage(message.authorId, message)
-          console.log('Customer received message')
+          // console.log('Customer received message')
         }
       } else {
         sendMessage(message.authorId, message)
-        console.log('Testing Customer api')
+        // console.log('Testing Customer api')
       }
       if (teamId) {
         const designer = connectedUser.find(user => user.id === String(teamId));
@@ -279,23 +278,29 @@ io.on('connection', function (socket) {
   })
 
   // Join private chat
-  socket.on('join-private-chat', () => {
-    console.log('join-private-chat',)
-    socket.join(socket.id);
-  })
-  socket.on('send-private-message', (msg) => {
-    console.log(msg)
-    const activeOrNot = connectedUser.find(item => item.id === msg.receiver);
+  // socket.on('join-private-chat', (room) => {
+  //     socket.join(room);
+  // })
+  socket.on('send-private-message', (msg, id, user_id) => {
+    const rooms = io.sockets.adapter.rooms;
+    const roomsArray = Array.from(rooms.entries()).map(([roomId, usersSet]) => ({
+      roomId,
+      users: Array.from(usersSet)
+    }));
+    const activeOrNot = connectedUser.find(item => item.id === id);
     if (activeOrNot) {
-      socket.to(activeOrNot.socketID).emit('receive-private-message', msg);
-    } else {
-      sendMessage(msg.receiver, msg)
+      const privateChatRoom = roomsArray.some(item => item.roomId === user_id && item.users.includes(activeOrNot.socketID));
+      console.log(privateChatRoom)
+      if (privateChatRoom) {
+        console.log(roomsArray)
+        console.log('1')
+        socket.to(activeOrNot.socketID).emit('receive-private-message', { ...msg, view: false });
+      } else {
+        console.log('2')
+        socket.to(activeOrNot.socketID).emit('send-private-message-notification', { ...msg, view: true });
+      }
     }
   })
-  // socket.on('leave-private-chat', (room) => {
-  //   console.log('leaving chat', room)
-  //   socket.leave(socket.id, room);
-  // })
   socket.on('leave-room', (room) => {
     socket.leave(room)
   })
