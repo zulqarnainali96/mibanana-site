@@ -5,8 +5,6 @@ import useChatMessageHook from './use-chat-message-hook'
 
 const ChatMessageNo = ({ reduxState, reduxActions }) => {
     const { chatMessage } = useChatMessageHook(reduxState, reduxActions)
-
-    console.log(chatMessage)
     return (
         <React.Fragment>
             {chatMessage?.length > 0 && <ListItemText

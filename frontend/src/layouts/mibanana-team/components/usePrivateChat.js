@@ -4,7 +4,7 @@ import { currentUserRole } from 'redux/global/global-functions'
 import { SocketContext } from 'sockets'
 import { v4 as uuid } from 'uuid'
 
-const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, reduxState, reduxActions) => {
+const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, reduxState, reduxActions, item) => {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState("")
     const role = currentUserRole(reduxState)
@@ -30,25 +30,33 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
         }
     }
     // console.log(reduxState.private_chat_message)
-    const sendMessage = async () => {
-        const msg = {
+    function userOnline() {
+        let msg = {
             id: uuid(),
             message,
             receiver,
             sender: user_id,
             date: new Date(),
             type: 'personal-chat',
-            receiver_name: name,
             sender_name: username,
-            receiver_avatar: avatar,
-            sender_avatar: user_avatar
+            avatar: user_avatar
         }
-        reduxActions.privateChatMesage(msg)
-        socketIO.current.emit('send-private-message', msg)
+        if (item?.hasOwnProperty('status')) {
+            return { ...msg, view: false }
+        } else {
+            return { ...msg, view: true }
+        }
+    }
+    const sendMessage = async () => {
+
+        reduxActions.privateChatMesage(userOnline())
+        if (item?.hasOwnProperty('status')) {
+            socketIO.current.emit('send-private-message', userOnline(), receiver, user_id)
+        }
 
         try {
             setMessage("")
-            await apiClient.post(`/api/create-personal-chat/${user_id}/${receiver}`, msg)
+            await apiClient.post(`/api/create-personal-chat/${user_id}/${receiver}`, userOnline())
             // console.log(resp)
         }
         catch (error) {
@@ -76,14 +84,14 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
         getPersonalChat()
 
         return () => {
-            socketIO.current.emit('leave-private-chat', receiver)
+            socketIO.current.emit('leave-room', receiver)
         }
     }, [receiver])
 
     useEffect(() => {
         if (!handleRole()?.customer || !handleRole()?.admin) {
             socketIO.current.on('receive-private-message', (msg) => {
-                // console.log(msg)
+                console.log(msg)
                 reduxActions.privateChatMesage(msg)
             })
         }

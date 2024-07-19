@@ -31,16 +31,17 @@ const PrivateChat = ({
 }) => {
     const { name, avatar, roles, _id } = item
     const classes = reactQuillStyles2()
-    const { message, setMessage, chats, loading, sendMessage, privateChatRef } = usePrivateChat(userId, _id, name, username, avatar, user_avatar, reduxState, reduxActions)
+    const { message, setMessage, chats, loading, sendMessage, privateChatRef } = usePrivateChat(userId, _id, name, username, avatar, user_avatar, reduxState, reduxActions, item)
 
     function avatarImage(item) {
-        let avatar = ''
+
+        let profileImage = ''
         if (userId === item.sender) {
-            avatar = item.sender_avatar
-        } else {
-            avatar = item.receivar_avatar
+            profileImage = user_avatar
+        } else if (_id === item.sender) {
+            profileImage = avatar  
         }
-        return avatar
+        return profileImage
     }
     function getImageAlt(item) {
         let alt = ''
@@ -50,6 +51,15 @@ const PrivateChat = ({
             alt = item.receivar_name
         }
         return alt
+    }
+    function userName(item) {
+        let name = ''
+        if (userId === item.sender) {
+            name = username
+        } else if (item.sender === _id) {
+            name = item.sender_name
+        }
+        return name
     }
     function msgPosition(item) {
         let align = ''
@@ -83,7 +93,7 @@ const PrivateChat = ({
             background: '#555',
         }
     }
-    const chatBoxStyle = { marginLeft: '10px', width: '100%', height: '100%', display: 'flex', padding: '0.5rem', paddingBottom: '14px', overflowY: "scroll", ...scrollStyle }
+    const chatBoxStyle = { marginLeft: '10px', width: '100%', height: '100%', display: 'flex', padding: '0.5rem', paddingBottom: '14px', overflowY: "scroll", ...scrollStyle, marginBottom: '9px' }
     const chatBoxStyle2 = { display: 'flex', flexDirection: 'column', width: '100%', height: '100%', gap: '1.5rem', paddingBottom: "12px" }
 
     return (
@@ -94,7 +104,7 @@ const PrivateChat = ({
                 <ListItem divider focusRipple={true} disableTouchRipple={true} disableRipple={true} >
                     <ListItemButton sx={{ "&:hover": { backgroundColor: "transparent !important" } }}>
                         <ListItemIcon>
-                            <Avatar src={""} alt={""} />
+                            <Avatar src={avatar} alt={name} />
                         </ListItemIcon>
                         <ListItemText
                             primary={
@@ -129,7 +139,7 @@ const PrivateChat = ({
                                     <ListItemText
                                         primary={
                                             <React.Fragment>
-                                                Zain
+                                                {userName(item)}
                                                 <Typography
                                                     variant="body2"
                                                     component="div"
@@ -147,8 +157,6 @@ const PrivateChat = ({
                         )
                     })}
                 </Box>
-
-
             </Box>
             )}
 

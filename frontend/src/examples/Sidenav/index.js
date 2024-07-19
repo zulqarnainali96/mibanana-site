@@ -22,7 +22,6 @@ import {
   setWhiteSidenav,
 } from "context";
 import { Button, ListItem, Menu, MenuItem, Toolbar } from "@mui/material";
-import { SocketContext } from "sockets";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
