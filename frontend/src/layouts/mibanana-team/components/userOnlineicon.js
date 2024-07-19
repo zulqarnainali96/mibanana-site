@@ -24,6 +24,6 @@ const UserOnlineIcon = ({
 const greenCircle = {
     border: '2px solid #5ccd5c',
     borderRadius: '25px',
-    padding: '2px',
+    padding: '3px',
 }
 export default UserOnlineIcon

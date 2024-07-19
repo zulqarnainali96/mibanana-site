@@ -46,6 +46,7 @@ const createPersonalChat = async (req, res) => {
             } else {
                 const senderObject = await personalChat.findOne({ user_id })
                 senderObject.chats = [...userChats.chats, { receiver, message: [msg] }]
+                await senderObject.save()
                 const receiverObject3 = await personalChat.findOne({ user_id: receiver }).exec()
                 if (receiverObject3 === null) {
                     await personalChat.create({
@@ -55,7 +56,6 @@ const createPersonalChat = async (req, res) => {
                             message: [msg]
                         }]
                     })
-                    await senderObject.save()
                     return res.status(200).send({ message: "Message sent" })
                 } else {
                     let saveSenderMsg = receiverObject3.chats.find(chat => chat.receiver === user_id)
@@ -66,12 +66,15 @@ const createPersonalChat = async (req, res) => {
                         receiverObject3.chats[index] = {
                             receiver: user_id, message: [...senderMsgArray, msg]
                         }
+                        await receiverObject3.save()
                     } else {
                         receiverObject3.chats = [...receiverObject3.chats, {
                             receiver: user_id,
                             message: [msg]
                         }]
+                        await receiverObject3.save()
                     }
+                    return res.status(200).send({ message: "Message sent !" })
                 }
             }
         }
@@ -92,8 +95,29 @@ const createPersonalChat = async (req, res) => {
                         message: [msg]
                     }]
                 })
+                console.log('If Block')
+                // return res.status(201).send({ message: 'New chat craeted' })
+            } else {
+                console.log('Else Block')
+                let saveSenderMsg_1 = receiverObject.chats.find(chat => chat.receiver === user_id)
+                if (saveSenderMsg_1) {
+                    let senderMsgArray = saveSenderMsg_1.message
+                    const index = receiverObject.chats.indexOf(saveSenderMsg_1)
+                    receiverObject.chats[index] = {
+                        receiver: user_id,
+                        message: [...senderMsgArray, msg]
+                    }
+                    await receiverObject.save()
+                }
+                else {
+                    receiverObject.chats = [...receiverObject.chats, {
+                        receiver: user_id,
+                        message: [msg]
+                    }]
+                    await receiverObject.save()
+                }
             }
-            return res.status(200).send({ message: "Chat created new" })
+            return res.status(200).send({ message: "New Chat Created" })
         }
     } catch (error) {
         return res.status(500).send({ message: 'Internal Server Error' })

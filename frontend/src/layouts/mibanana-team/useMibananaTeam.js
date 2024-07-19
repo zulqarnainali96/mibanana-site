@@ -61,9 +61,9 @@ const useMibananaTeam = (reduxState, reduxActions) => {
         await apiClient.get(`/api/get-team-member-list`)
             .then(({ data }) => {
                 const filterCurrrentUser = data?.list.filter(item => item._id !== user_id)
-                const updatedTeamMembers = countUnreadMessages(reduxState.unread_chat_message, filterCurrrentUser);
-                console.log(updatedTeamMembers)
-                setTeamMemberList(updatedTeamMembers)
+                // const updatedTeamMembers = countUnreadMessages(reduxState.unread_chat_message, filterCurrrentUser);
+                // console.log(updatedTeamMembers)
+                setTeamMemberList(filterCurrrentUser)
                 setLoading(false)
             })
             .catch((e) => {
@@ -75,15 +75,6 @@ const useMibananaTeam = (reduxState, reduxActions) => {
         setFilter(event.target.value);
     };
     const filteredMembers = filter ? teamMemberList.filter(member => member.roles.includes(filter)) : teamMemberList;
-
-    function getFilterUnreadMessage(item) {
-        // console.log(reduxState.unread_chat_message)
-        // console.log(item)
-        const result = reduxState.unread_chat_message?.filter((msg) => {
-            return msg.sender
-        })
-        return String(result?.length).length
-    }
 
     const resetUnreadMessages = (userId) => {
         // Map the team members and reset the unread_message property for the specific user
@@ -103,7 +94,7 @@ const useMibananaTeam = (reduxState, reduxActions) => {
 
     useEffect(() => {
         getTeamMemberList()
-    }, [reduxState.unread_chat_message])
+    }, [])
 
     return {
         handleSingleChat,
@@ -115,7 +106,6 @@ const useMibananaTeam = (reduxState, reduxActions) => {
         singleChat,
         user_id,
         handleFilterChange,
-        getFilterUnreadMessage,
         filteredMembers,
         filter
     }

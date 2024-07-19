@@ -42,7 +42,8 @@ io.on('connection', function (socket) {
       connectedUser.push(obj)
       connectedUser = Array.from(new Set(connectedUser.map(obj => obj.id))).map(id => connectedUser.find(obj => obj.id === id));
       console.log(connectedUser)
-      socket.broadcast.emit('active_users', connectedUser)
+      // socket.broadcast.emit('active_users', connectedUser)
+      io.emit('active_users', connectedUser)
     }
   })
   socket.on('new-project', (project_data) => {

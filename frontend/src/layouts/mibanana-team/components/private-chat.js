@@ -17,6 +17,7 @@ import usePrivateChat from './usePrivateChat'
 import { Close } from '@mui/icons-material'
 import FullScreenLoader from 'components/Loader/FullScreenLoader'
 import { BeatLoader } from 'react-spinners'
+import UserOnlineIcon from './userOnlineicon'
 
 
 const PrivateChat = ({
@@ -93,19 +94,32 @@ const PrivateChat = ({
             background: '#555',
         }
     }
+    const onlineWidth = (member) => {
+        const currentUser = reduxState.onlineUser?.some(item => item.id === member._id)
+        if (currentUser) {
+            return { gap: '1rem' }
+        }
+        else {
+            return null
+        }
+    }
+    
     const chatBoxStyle = { marginLeft: '10px', width: '100%', height: '100%', display: 'flex', padding: '0.5rem', paddingBottom: '14px', overflowY: "scroll", ...scrollStyle, marginBottom: '9px' }
     const chatBoxStyle2 = { display: 'flex', flexDirection: 'column', width: '100%', height: '100%', gap: '1.5rem', paddingBottom: "12px" }
 
+    const mainBox = { position: 'relative', width: '75%', marginLeft: "unset !important", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", borderRadius: "10px", ...boxStyles, display: "flex", flexDirection: "column", padding: "1.5rem", justifyContent: "space-between", transition: "width 0.5s ease-in-out", backgroundColor: mibananaColor.headerColor, }
+
     return (
-        <Box sx={{ position: 'relative', width: '75%', marginLeft: "unset !important", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", borderRadius: "10px", ...boxStyles, display: "flex", flexDirection: "column", padding: "1.5rem", justifyContent: "space-between", transition: "width 0.5s ease-in-out", backgroundColor: mibananaColor.headerColor, }}>
+        <Box sx={mainBox}>
 
             {/* <span style={{ position: 'absolute', right: 12 }}><IconButton><Close fontSize='medium' /></IconButton></span> */}
             <Box sx={{ width: '100%', display: 'flex', backgroundColor: mibananaColor.headerColor, }}>
                 <ListItem divider focusRipple={true} disableTouchRipple={true} disableRipple={true} >
-                    <ListItemButton sx={{ "&:hover": { backgroundColor: "transparent !important" } }}>
-                        <ListItemIcon>
+                    <ListItemButton sx={{ "&:hover": { backgroundColor: "transparent !important"},...(onlineWidth(item)) }}>
+                        {/* <ListItemIcon>
                             <Avatar src={avatar} alt={name} />
-                        </ListItemIcon>
+                        </ListItemIcon> */}
+                        <UserOnlineIcon member={item} data={reduxState.onlineUser} />
                         <ListItemText
                             primary={
                                 <React.Fragment>

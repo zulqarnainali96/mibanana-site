@@ -20,6 +20,7 @@ import PrivateChat from './components/private-chat'
 import FullScreenLoader from 'components/Loader/FullScreenLoader'
 import UserOnlineIcon from './components/userOnlineicon'
 import ChatMessageNo from 'examples/Sidenav/ChatMessageNo'
+import Chat from '@mui/icons-material/Chat'
 
 const MibananaTeam = ({ reduxState, reduxActions }) => {
     const is768 = useMediaQuery("(min-width:768px)")
@@ -33,7 +34,6 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
         user_id,
         filteredMembers,
         handleFilterChange,
-        getFilterUnreadMessage,
         resetUnreadMessages,
         filter
     } = useMibananaTeam(reduxState, reduxActions)
@@ -112,7 +112,8 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
                                                     primary={
                                                         <React.Fragment>
                                                             {member.name}
-                                                            {"   "}{member?.hasOwnProperty('unread_message') && member.unread_message !== 0 ? <div style={styles}>{member.unread_message}</div> : null}
+                                                            {"   "}
+                                                            <ChatMessageNo memberId={member._id} />
                                                             <Typography
                                                                 variant="body2"
                                                                 component="div"
@@ -146,24 +147,6 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
     )
 }
 
-const styles = {
-    position: 'absolute',
-    backgroundColor: "red",
-    maxWidth: '24px',
-    height: '24px',
-    color: '#fff',
-    borderRadius: '12px',
-    textAlign: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '25px',
-    left: '140px',
-    "& > p": {
-        color: "#fff",
-        fontFamily: '"Poppins", sans-serif',
-    }
-}
 const titleStyles = {
     fontSize: '2.5rem',
     width: '100%',

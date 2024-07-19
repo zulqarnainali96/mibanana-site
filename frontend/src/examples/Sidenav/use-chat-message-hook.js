@@ -1,8 +1,15 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
-const useChatMessageHook = (reduxState, reduxActions) => {
+const useChatMessageHook = (reduxState, reduxActions, memberId) => {
+
+    const getUnreadMessage = useCallback(() => {
+        const result = reduxState.unread_chat_message?.filter(item => item.sender === memberId)
+        return result.length
+    }, [reduxState.unread_chat_message])
+
     return {
         chatMessage: reduxState.unread_chat_message,
+        getUnreadMessage,
     }
 }
 
