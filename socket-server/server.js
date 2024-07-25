@@ -7,7 +7,8 @@ const { getValue, getStatusChange } = require('./utility/utility');
 const { UpdateProjectNotifications, UpdateWithoutOnline, updateCurrentNotificationsStatus, handleNotificationDelete } = require('./controllers/new-project-notifications');
 const { updateAndSendingStatusNotifications, sendingNotificationsCurrentManager, sendingNotificationsToTeamMember } = require('./controllers/status-change-notifications');
 const { sendMessage, sendManagerMessage } = require('./controllers/team-member-notification')
-const { v4: uniqeID } = require('uuid')
+const { v4: uniqeID } = require('uuid');
+const { updatePrivateChatMessage } = require('./controllers/private-chat/private-chat');
 const PORT = 4000
 app_chat.use(cors())
 var io = require('socket.io')(server1, {
@@ -41,7 +42,7 @@ io.on('connection', function (socket) {
       }
       connectedUser.push(obj)
       connectedUser = Array.from(new Set(connectedUser.map(obj => obj.id))).map(id => connectedUser.find(obj => obj.id === id));
-      console.log(connectedUser)
+      //console.log(connectedUser)
       // socket.broadcast.emit('active_users', connectedUser)
       io.emit('active_users', connectedUser)
     }
@@ -291,14 +292,12 @@ io.on('connection', function (socket) {
     const activeOrNot = connectedUser.find(item => item.id === id);
     if (activeOrNot) {
       const privateChatRoom = roomsArray.some(item => item.roomId === user_id && item.users.includes(activeOrNot.socketID));
-      console.log(privateChatRoom)
       if (privateChatRoom) {
-        console.log(roomsArray)
-        console.log('1')
         socket.to(activeOrNot.socketID).emit('receive-private-message', { ...msg, view: false });
       } else {
-        console.log('2')
         socket.to(activeOrNot.socketID).emit('send-private-message-notification', { ...msg, view: true });
+        console.log(msg.id)
+        // updatePrivateChatMessage(msg.id, user_id, id)
       }
     }
   })

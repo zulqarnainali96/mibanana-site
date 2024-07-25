@@ -36,6 +36,7 @@ import WebApp from "layouts/Projects/web-app/web-app";
 import CopyWriting from "layouts/Projects/copy-writing/copy-writing";
 import SocialMediaManager from "layouts/Projects/social-media-manager/social-media-manager";
 import WebsiteDevelopment from "layouts/Projects/website-development/website-development";
+import GroupChat from "layouts/group-chat";
 const routes = [
   {
     type: "collapse",
@@ -78,6 +79,14 @@ const routes = [
     icon: <Icon fontSize="small">handshake_outlined</Icon>,
     route: "/mibanana-team",
     component: <MibananaTeam />,
+  },
+  {
+    type: "collapse",
+    name: "Group Chat",
+    key: "group-chat",
+    icon: <Icon fontSize="small">handshake_outlined</Icon>,
+    route: "/group-chat",
+    component: <GroupChat />,
   },
   // New Project form route
   {

@@ -1,6 +1,16 @@
 const mongoose = require('mongoose');
 
 const PersonalChatSchema = new mongoose.Schema({
+    // user_id: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     required: true,
+    //     ref: 'User',
+    // },
+    // chats : [{
+    //     type : Object,
+    //     default : [],
+    //     required : true
+    // }]
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -14,22 +24,12 @@ const PersonalChatSchema = new mongoose.Schema({
             receiver: { type: String, required: true },
             sender: { type: String, required: true },
             sender_name: { type: String, required: true },
-            type: { type: String, default: 'personal-chat' },
+            type: { type: String, default : 'personal-chat' },
             date: { type: Date, required: true },
             avatar: { type: Boolean, required: false, default: false },
             view: { type: Boolean, default: false },
         }]
     }]
-    // user_id: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     required: true,
-    //     ref: 'User',
-    // },
-    // chats : [{
-    //     type : Object,
-    //     default : [],
-    //     required : true
-    // }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('PersonalChat', PersonalChatSchema);

@@ -30,6 +30,7 @@ const { createWebAppProject, getWebAppProjects, deleteWebAppProject, projectWebA
 const { createMobileAppProject, getMobileAppProjects, deleteMobileAppProject, projectMobileWidthRevision, projectMobileForReview, projectMobileAttend, duplicateMobileAppProject, projectMobileAppCompleted, projectMobileAppCancel } = require('../controllers/Projects/mobile-dev/mobile-dev')
 const { getCustomerFiles, updateDriveLink, updateFigmaLink, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, updateProject, createMemberAccounts, updateProjectPriority } = require('../controllers/global/global-controllers')
 const { createPersonalChat, getPersonalChat } = require('../controllers/chat/personal-chat')
+const { createGroupChat, getAllGroupsDetails, updateGroupMessage } = require('../controllers/group-chat/group-chat')
 
 
 // Project Manager Route
@@ -224,5 +225,10 @@ router.get('/api/get-personal-chat/:user_id/:receiver', getPersonalChat)
 
 // Project Priority Set 
 router.post('/api/set-project-priority', updateProjectPriority)
+
+// Create Group Chat
+router.post('/api/create-group-chat', createGroupChat)
+router.get('/api/all-groups', getAllGroupsDetails)
+router.post('/api/update-groups-message/:id', updateGroupMessage)
 
 module.exports = router 

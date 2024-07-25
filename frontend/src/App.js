@@ -167,8 +167,8 @@ export default function App() {
                       routes={
                         role?.admin
                           ? AdminRoutes
-                          : [...routes, role?.projectManager || (handleRole(role).teamMember && manager_router)]
-                      }
+                          : (handleRole(role)?.teamMember || role?.projectManager) ? [...routes, manager_router]
+                          : routes }
                       onMouseEnter={handleOnMouseEnter}
                       onMouseLeave={handleOnMouseLeave}
                     />
