@@ -1,76 +1,152 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import apiClient from 'api/apiClient'
 import { SocketContext } from 'sockets'
+import { currentUserRole } from 'redux/global/global-functions'
+import { handleRole } from 'redux/global/global-functions'
 
 const useMibananaTeam = (reduxState, reduxActions) => {
     const [teamMemberList, setTeamMemberList] = useState([])
     const [loading, setLoading] = useState(false)
-    const [openSingleChat, setOpenSingleChat] = useState(false)
     const [singleChat, setSingleChat] = useState(null)
     const [filter, setFilter] = useState('');
     const user_id = reduxState?.userDetails?.id
     const username = reduxState?.userDetails?.name
     const user_avatar = reduxState?.userDetails?.avatar
     const socketIO = useRef(useContext(SocketContext));
+    const [create_form_open, setCreate_Form_Open] = useState(false)
+    const role = currentUserRole(reduxState)
+    const [allGroups, setAllGroups] = useState([])
+    const [anchorEl, setAnchorEl] = useState(null);
+    const currentUser = handleRole(role)
+    const [isReload, setReload] = useState(false)
+
+    const [respMessage, setRespMessage] = useState("")
+    const [successSB, setSuccessSB] = useState(false)
+    const [errorSB, setErrorSB] = useState(false)
+
+    const openSuccessSB = () => setSuccessSB(true)
+    const openErrorSB = () => setErrorSB(true)
+
+    const handleClick = (event) => {
+        event.stopPropagation();
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const closeChat = () => setSingleChat(null)
 
     const handleSingleChat = (item) => {
-        const userOnline = reduxState.onlineUser?.find(user => user.id === item._id)
-        if (userOnline) {
-            setSingleChat({ ...item, socketID: userOnline.socketID, status: userOnline.status })
+        if (item.hasOwnProperty('group_name')) {
+            setSingleChat(item)
             socketIO.current.emit('join-room', item._id)
         } else {
-            setSingleChat(item)
+            const userOnline = reduxState.onlineUser?.find(user => user.id === item._id)
+            if (userOnline) {
+                setSingleChat({ ...item, socketID: userOnline.socketID, status: userOnline.status })
+                socketIO.current.emit('join-room', item._id)
+            } else {
+                setSingleChat(item)
+            }
         }
     }
-    const closeSingleChat = () => {
-        setOpenSingleChat(false)
-        // setSingleChat({})
+    const handleOpenForm = () => {
+        setCreate_Form_Open(true)
     }
-
-    const countUnreadMessages = (messages, teamMembers) => {
-        // Create a map to store unread message counts for each sender
-        const unreadCounts = {};
-        if (messages?.length > 0) {
-
-            messages.forEach(msg => {
-                const { sender } = msg;
-                if (msg.view) { // Only consider messages with view: true
-                    if (unreadCounts[sender]) {
-                        unreadCounts[sender]++;
-                    } else {
-                        unreadCounts[sender] = 1;
-                    }
-                }
-            });
-
-            // Map the team members and add the unread_message property
-            const updatedTeamMembers = teamMembers.map(member => {
-                return {
-                    ...member,
-                    unread_message: unreadCounts[member._id] || 0
-                };
-            });
-            return updatedTeamMembers;
-        } else {
-            return teamMembers
-        }
-    };
-
+    const handleCloseForm = () => {
+        setCreate_Form_Open(false)
+    }
+   
     const getTeamMemberList = async () => {
         setLoading(true)
         await apiClient.get(`/api/get-team-member-list`)
             .then(({ data }) => {
-                const filterCurrrentUser = data?.list.filter(item => item._id !== user_id)
-                // const updatedTeamMembers = countUnreadMessages(reduxState.unread_chat_message, filterCurrrentUser);
-                // console.log(updatedTeamMembers)
+                const filterCurrrentUser = data?.list.filter(item => item._id !== user_id).map(item => {
+                    return {
+                        ...item,
+                        type: 'single'
+                    }
+                })
                 setTeamMemberList(filterCurrrentUser)
                 setLoading(false)
             })
             .catch((e) => {
+                if (e.response) {
+                    const { message } = e.response.data
+                    setRespMessage(message)
+                    setTimeout(() => {
+                        openErrorSB()
+                    }, 500)
+                } else {
+                    setRespMessage(e.message)
+                    setTimeout(() => {
+                        openErrorSB()
+                    }, 500)
+                }
                 setLoading(false)
-                console.log(e.message)
             });
     }
+
+    const getAllGroups = async () => {
+        await apiClient.get(`/api/all-groups`)
+            .then(({ data }) => {
+                const groups = data.all_groups.map(g => {
+                    return {
+                        ...g,
+                        type: 'group'
+                    }
+                })
+                setAllGroups(groups)
+            })
+            .catch((err) => {
+                if (err.response) {
+                    const { message } = err.response.data
+                    setRespMessage(message)
+                    setTimeout(() => {
+                        openErrorSB()
+                    }, 500)
+                } else {
+                    setRespMessage(err.message)
+                    setTimeout(() => {
+                        openErrorSB()
+                    }, 500)
+                }
+            });
+    }
+    const getGroupsById = async () => {
+        await apiClient.get(`/api/get-groups-by-id/${user_id}`)
+            .then(({ data }) => {
+                const groups = data.all_groups.map(g => {
+                    return {
+                        ...g,
+                        type: 'group'
+                    }
+                })
+                setAllGroups(groups)
+            })
+            .catch((err) => {
+                if (err.response) {
+                    const { message } = err.response.data
+                    setRespMessage(message)
+                    setTimeout(() => {
+                        openErrorSB()
+                    }, 500)
+                } else {
+                    setRespMessage(err.message)
+                    setTimeout(() => {
+                        openErrorSB()
+                    }, 500)
+                }
+            });
+    }
+    const handleGroups = () => {
+        if (role.projectManager || role?.admin) {
+            getAllGroups()
+        } else if (currentUser?.teamMember) {
+            getGroupsById()
+        }
+    }
+
     const handleFilterChange = (event) => {
         setFilter(event.target.value);
     };
@@ -88,26 +164,53 @@ const useMibananaTeam = (reduxState, reduxActions) => {
             return member;
         });
         setTeamMemberList(updatedTeamMembers)
-        const filterTeamMemberUnreadMessage = reduxState.unread_chat_message?.filter(item => item.sender !== userId)
+        const filterTeamMemberUnreadMessage = reduxState.unread_chat_message?.filter(item => {
+            if (item?.type === 'group-chat') {
+                return item._id !== userId
+            } else {
+                return item.sender !== userId
+            }
+        })
         reduxActions.handleUnreadChatMessage(filterTeamMemberUnreadMessage)
     };
 
     useEffect(() => {
         getTeamMemberList()
-    }, [])
+        handleGroups()
+    }, [isReload])
 
     return {
         handleSingleChat,
-        closeSingleChat,
         resetUnreadMessages,
+        handleOpenForm,
+        handleCloseForm,
+        handleClick,
+        handleClose,
+        anchorEl,
+        closeChat,
         loading,
         user_avatar,
         username,
         singleChat,
         user_id,
+
+        errorSB,
+        setErrorSB,
+        respMessage,
+        successSB,
+        setSuccessSB,
+        openSuccessSB,
+        openErrorSB,
+        setRespMessage,
+
         handleFilterChange,
-        filteredMembers,
-        filter
+        filteredMembers: [...allGroups, ...filteredMembers],
+        open: create_form_open,
+        setReload,
+        isReload,
+        filter,
+        role
+
     }
 }
 

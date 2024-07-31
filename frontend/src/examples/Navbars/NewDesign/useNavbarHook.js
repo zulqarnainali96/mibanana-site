@@ -12,12 +12,11 @@ import apiClient from "api/apiClient";
 import useRightSideList from "layouts/Right-side-drawer-list/useRightSideList";
 import { useMaterialUIController } from "context";
 import { projectNotifications } from "redux/global/global-functions";
-import notif from 'assets/sound/notif.wav'
 import { useSelector } from 'react-redux';
-import { error } from 'ajv/dist/vocabularies/applicator/dependencies';
 import { currentUserRole } from 'redux/global/global-functions';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@emotion/react';
+import { notificationSound } from 'redux/global/global-functions';
 let image = "image/"
 
 const useNavbarHook = (reduxState, reduxActions) => {
@@ -415,12 +414,6 @@ const useNavbarHook = (reduxState, reduxActions) => {
         setShowAccountsBtn(prev => !prev)
     }, [showAccountsbtn])
 
-    // Notifications Dropdown
-    const notificationSound = () => {
-        const audio = new Audio(notif);
-        audio.play();
-    }
-
     useEffect(() => {
         socketIO.current.on('connect', () => {
             const userId = reduxState?.userDetails?.id
@@ -429,14 +422,6 @@ const useNavbarHook = (reduxState, reduxActions) => {
             socketIO.current.emit('user_online', true, userId, roles, user_name)
         })
     }, [])
-
-    // useEffect(() => {
-    //     socketIO.current.on('active_users', (online_users) => {
-    //         const filterUserArray = online_users.filter(user => user.id !== reduxState?.userDetails?.id)
-    //         console.log(filterUserArray)
-    //         reduxActions.handleOnlineUsers(filterUserArray)
-    //     })
-    // }, [socketIO.current])
 
     useEffect(() => {
         const userId = reduxState?.userDetails?.id
@@ -477,6 +462,12 @@ const useNavbarHook = (reduxState, reduxActions) => {
             })
             socketIO.current.on('send-private-message-notification', (message) => {
                 console.log('message', message)
+                notificationSound()
+                reduxActions.handleUnreadChatMessage(message)
+            })
+            socketIO.current.on('group-msg-notification', (message) => {
+                console.log('message', message)
+                notificationSound()
                 reduxActions.handleUnreadChatMessage(message)
             })
         }

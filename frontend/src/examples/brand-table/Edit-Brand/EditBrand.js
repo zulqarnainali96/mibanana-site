@@ -197,7 +197,7 @@ const EditBrand = (props) => {
     setDeleteFiles(deleteFiles.filter((file_name) => file_name !== name));
     setDel_Brand_File(prev => prev.filter((brand) => brand.unique !== id));
   }
-
+  
   return (
     <BrandModal className="brand-modal-container" open={open}
       sx={{
@@ -449,6 +449,7 @@ const EditBrand = (props) => {
                             loading="lazy"
                             style={{ cursor: "pointer" }}
                             onClick={() => window.open(item.url, "_blank")}
+                            alt="file"
                           />
                           <span style={{ fontSize: "12px", color: "#333" }}>{item.name}</span>
                           <Download
@@ -495,6 +496,7 @@ const EditBrand = (props) => {
                             loading="lazy"
                             style={{ cursor: "pointer" }}
                             onClick={() => window.open(item.url, "_blank")}
+                            alt="file"
                           />
                           <span style={{ fontSize: "12px", color: "#333" }}>{item.name}</span>
                           <Download
@@ -584,6 +586,7 @@ const EditBrand = (props) => {
                             loading="lazy"
                             style={{ cursor: "pointer" }}
                             onClick={() => window.open(item.url, "_blank")}
+                            alt="file"
                           />
                           <span style={{ fontSize: "12px", color: "#333" }}>{item.name}</span>
                           <Download
@@ -630,6 +633,7 @@ const EditBrand = (props) => {
                             loading="lazy"
                             style={{ cursor: "pointer" }}
                             onClick={() => window.open(item.url, "_blank")}
+                            alt="file"
                           />
                           <span style={{ fontSize: "12px", color: "#333" }}>{item.name}</span>
                           <Download

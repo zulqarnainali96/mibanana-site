@@ -170,7 +170,7 @@ const ChatsContainer = ({
                 pb={1}
             >
                 <Grid xs={6} style={{ display: "flex", alignItems: "center" }}>Activity</Grid>
-                {handleRole(role)?.teamMember || handleRole(role)?.projectManager ? (
+                {handleRole(role)?.teamMember || role?.projectManager ? (
                     <Grid
                         id="dropdown-btn"
                         aria-controls={anchorEl ? 'dropdown-menu' : undefined}
@@ -238,12 +238,12 @@ const ChatsContainer = ({
                     style={{ top: "10px" }}
                 >
                     <MenuList>
-                        {handleRole(role).teamMember ? (
+                        {handleRole(role)?.teamMember ? (
                             <div>
                                 <MenuItem onClick={projectAttend1}>Ongoing</MenuItem>
                                 <MenuItem onClick={projectForReview1}>For Review</MenuItem>
                             </div>
-                        ) : handleRole(role).projectManager ? (
+                        ) : role?.projectManager ? (
                             <div>
                                 <MenuItem onClick={projectAttend1}>Ongoing</MenuItem>
                                 <MenuItem onClick={projectForReview1}>For Review</MenuItem>

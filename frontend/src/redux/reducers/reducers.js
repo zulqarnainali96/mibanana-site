@@ -4,7 +4,7 @@ import { PRIVATE_CHAT_MESSAGE } from "redux/actions/actions"
 import { CURRENT_PROJECT_ID } from "redux/actions/actions"
 import { STATUS_NOTIFICATIONS } from "redux/actions/actions"
 import { PROJECT_NOTIFICATIONS } from "redux/actions/actions"
-import { USER_DETAILS, SHOW_MODAL, PROJECT_CATEGORY, CUSTOMER_BRAND, NEW_BRAND, STATUS, IS_ALERT, CUSTOMER_PROJECTS, USER_AVATAR_URL, PROJECT_ID, IS_EDIT_BRAND, OPEN_BRAND_MODAL, RIGHTSIDEDRAWER, CURRENT_INDEX, RE_RENDER_CHAT, NON_ACTIVE_CUSTOMER, TOGGLE_CHATS, PROJECT_CALL, ONLINE_USER, UNREAD_CHAT_MESSAGE } from "redux/actions/actions"
+import { USER_DETAILS, SHOW_MODAL, PROJECT_CATEGORY, CUSTOMER_BRAND, NEW_BRAND, STATUS, IS_ALERT, CUSTOMER_PROJECTS, USER_AVATAR_URL, PROJECT_ID, IS_EDIT_BRAND, OPEN_BRAND_MODAL, RIGHTSIDEDRAWER, CURRENT_INDEX, RE_RENDER_CHAT, NON_ACTIVE_CUSTOMER, TOGGLE_CHATS, PROJECT_CALL, ONLINE_USER, UNREAD_CHAT_MESSAGE, GROUP_MESSAGE } from "redux/actions/actions"
 
 const initialState = {
     userDetails: {},
@@ -61,6 +61,7 @@ const initialState = {
     onlineUser: [],
     private_chat_message: [],
     unread_chat_message : [],
+    group_message: [],
 
 }
 const UserReducers = (state = initialState, action) => {
@@ -231,6 +232,21 @@ const UserReducers = (state = initialState, action) => {
                 return {
                     ...state,
                     private_chat_message: [...state.private_chat_message, payload]
+                }
+            }
+        }
+        case GROUP_MESSAGE: {
+            if (Array.isArray(payload)) {
+                return {
+                    ...state,
+                    group_message: [...payload]
+                }
+
+            } else {
+                // Socket returns single object 
+                return {
+                    ...state,
+                    group_message: [...state.group_message, payload]
                 }
             }
         }

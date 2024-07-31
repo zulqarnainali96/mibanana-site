@@ -35,7 +35,6 @@ export default function TransitionsErrorModal({ message, openModal, setOpenModal
                             >
                                 <CloseIcon fontSize='medium' />
                             </IconButton>
-                            {/* <span onClick={() => setOpenModal(false)} style={{ position: "absolute", top: "-45px", right: "-30px", cursor: "pointer", fontSize: "20px" }}>x</span> */}
                             <img src={closeIcon} style={{ marginBottom: "1rem" }} width={102} height={102} />
                             <h2 id="transition-modal-title" style={{ color: '#333', fontFamily: fontsFamily.poppins }} className="modal-title">
                                 {message}

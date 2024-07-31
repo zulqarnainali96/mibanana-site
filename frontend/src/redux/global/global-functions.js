@@ -2,6 +2,7 @@
 
 import apiClient from "api/apiClient"
 import { getDate } from "./table-date";
+import discordMusic from "assets/sound/discord.mp3";
 
 const toggleDrawer = (anchor, open, setState, state) => (event) => {
   if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -453,5 +454,10 @@ const handleRole = (role) => {
   }
 }
 
+const notificationSound = () => {
+  const audio = new Audio(discordMusic);
+  audio.play();
+}
 
-export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus, getProjectById, projectNotifications, projecStatusNotifications, getSingleProjectById, openProjectByFormType, getUserRoles, getForReviewApiAccordingToProject, getWithRevisionApiAccordingToProject, getOngoingApiAccordingToProject, getCancelApiAccordingToProject, getDuplicateApiAccordingToProject, getDeleteApiAccordingToProject, getCompletedApiAccordingToProject, getProjectCategory, handleRole, makeTaskPriorityHigh }
+
+export { getProjectData, showFilesModal, getBrandData, toggleDrawer, currentUserRole, projectStatus, getProjectById, projectNotifications, projecStatusNotifications, getSingleProjectById, openProjectByFormType, getUserRoles, getForReviewApiAccordingToProject, getWithRevisionApiAccordingToProject, getOngoingApiAccordingToProject, getCancelApiAccordingToProject, getDuplicateApiAccordingToProject, getDeleteApiAccordingToProject, getCompletedApiAccordingToProject, getProjectCategory, handleRole, makeTaskPriorityHigh, notificationSound }

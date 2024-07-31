@@ -24,6 +24,7 @@ export const PROJECT_CALL = "PROJECT_CALL";
 export const ONLINE_USER = "ONLINE_USER";
 export const PRIVATE_CHAT_MESSAGE = "PRIVATE_CHAT_MESSAGE";
 export const UNREAD_CHAT_MESSAGE = "UNREAD_CHAT_MESSAGE";
+export const GROUP_MESSAGE = "GROUP_MESSAGE";
 
 export const getUserDetails = (payload) => ({
   type: USER_DETAILS,
@@ -153,6 +154,10 @@ export const handleUnreadChatMessage = (payload) => ({
   type: UNREAD_CHAT_MESSAGE,
   payload: payload,
 });
+export const handleGroupMessage = (payload) => ({
+  type: GROUP_MESSAGE,
+  payload: payload,
+});
 
 export const reduxFunctions = {
   getUserDetails,
@@ -179,6 +184,7 @@ export const reduxFunctions = {
   handleStatusProject_notifications,
   handle_OpenEditProject,
   handle_CurrentProjectId,
+  handleGroupMessage,
   handleGetAllProjects,
   handleOnlineUsers,
 };

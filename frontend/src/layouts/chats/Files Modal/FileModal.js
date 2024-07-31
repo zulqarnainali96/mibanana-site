@@ -1,14 +1,11 @@
-import { Link, NavLink, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import ModalLayout from '../../../examples/ModalLayout'
 import { useSelector } from 'react-redux'
 import { Grid } from '@mui/material'
-import { otherFileStyle } from 'examples/Navbars/Form-modal'
 import { ArticleOutlined, Download, PictureAsPdf } from '@mui/icons-material'
 import MDBox from 'components/MDBox'
-import Profile from 'assets/mi-banana-icons/Photo.png'
 import { useEffect, useState } from 'react'
 import MDTypography from 'components/MDTypography'
-import MDButton from 'components/MDButton'
 import FilesVersion from '../Files-version/FilesVersion'
 import apiClient from 'api/apiClient'
 
@@ -16,7 +13,6 @@ let image = 'image/'
 let docx = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 let pdf = "application/pdf"
 
-const downloadStyles = { postion: 'absolute !important', top: '0px', left: '282px !important' }
 
 const ImageViewer = ({ item }) => {
     function DownloadFiles(url) {

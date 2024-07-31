@@ -182,8 +182,8 @@ export default function App() {
             <Routes>
               {user !== null ? (
                 role?.admin ? getRoutes(AdminRoutes) :
-                  role?.projectManager || role?.designer ? getRoutes(projectManager) :
-                    getRoutes(routes)) :
+                  role?.projectManager || handleRole(role)?.teamMember ? getRoutes(projectManager) :
+                    getRoutes(routes)) :    
                 getRoutes(authRoutes)
               }
               <Route

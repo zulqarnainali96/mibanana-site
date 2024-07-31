@@ -9,6 +9,7 @@ const { updateAndSendingStatusNotifications, sendingNotificationsCurrentManager,
 const { sendMessage, sendManagerMessage } = require('./controllers/team-member-notification')
 const { v4: uniqeID } = require('uuid');
 const { updatePrivateChatMessage } = require('./controllers/private-chat/private-chat');
+const sendingGroupMessage = require('./controllers/group-chat-controller/group-chat-controller');
 const PORT = 4000
 app_chat.use(cors())
 var io = require('socket.io')(server1, {
@@ -29,10 +30,8 @@ mongoose.connection.once('open', () => {
 })
 
 io.on('connection', function (socket) {
-  // io.emit('active_users', connectedUser)
   socket.on('user_online', (status, id, role, name) => {
     if (role, id) {
-      // console.log("User Connected ", socket.id)
       let obj = {
         socketID: socket.id,
         id,
@@ -43,7 +42,6 @@ io.on('connection', function (socket) {
       connectedUser.push(obj)
       connectedUser = Array.from(new Set(connectedUser.map(obj => obj.id))).map(id => connectedUser.find(obj => obj.id === id));
       //console.log(connectedUser)
-      // socket.broadcast.emit('active_users', connectedUser)
       io.emit('active_users', connectedUser)
     }
   })
@@ -171,7 +169,7 @@ io.on('connection', function (socket) {
     socket.emit('project-completed-ack', data);
   })
   socket.on('join-room', (room) => {
-    console.log('join this room', room)
+    console.log('Room joined id:', room)
     socket.join(room);
 
   })
@@ -278,11 +276,6 @@ io.on('connection', function (socket) {
     }
 
   })
-
-  // Join private chat
-  // socket.on('join-private-chat', (room) => {
-  //     socket.join(room);
-  // })
   socket.on('send-private-message', (msg, id, user_id) => {
     const rooms = io.sockets.adapter.rooms;
     const roomsArray = Array.from(rooms.entries()).map(([roomId, usersSet]) => ({
@@ -301,11 +294,12 @@ io.on('connection', function (socket) {
       }
     }
   })
+  socket.on('send-group-message', (msg, room) => {
+    console.log(msg)
+    sendingGroupMessage(io, connectedUser, socket, msg, room)
+  });
   socket.on('leave-room', (room) => {
     socket.leave(room)
-  })
-  socket.on('connect', () => {
-    // console.log('user connected ', socket.id);
   })
   socket.on('disconnect', () => {
     connectedUser = connectedUser.filter(user => user.socketID !== socket.id)
@@ -313,3 +307,5 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('active_users', connectedUser)
   })
 });
+
+module.exports = { io };

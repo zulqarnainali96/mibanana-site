@@ -15,8 +15,6 @@ import useSingleChat from './useSingleChat'
 import { Box } from '@mui/material'
 import { fontsFamily } from 'assets/font-family'
 import { mibananaColor } from 'assets/new-images/colors'
-import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput } from '@chatscope/chat-ui-kit-react';
 
 const SingleChat = ({ userId, handleSingleChat, item, username, user_avatar }) => {
     const { name, avatar, roles, _id } = item

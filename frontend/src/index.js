@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { MaterialUIControllerProvider } from "context";
+import "./index.css"
 import { persister, store } from "redux/store";
 const container = document.getElementById("app");
 const root = createRoot(container);

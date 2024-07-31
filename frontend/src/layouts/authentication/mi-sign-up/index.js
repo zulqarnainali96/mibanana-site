@@ -29,13 +29,12 @@ const MiSignup = () => {
     })
     const [loading, setLoading] = useState(false)
     const [isCheck, setIsCheck] = useState(false)
-    const navigate = useNavigate()
 
     const [respMessage, setRespMessage] = useState("")
     const [errorSB, setErrorSB] = useState(false);
     const [successSB, setSuccessSB] = useState(false);
 
-    const openSuccessSB = () => setSuccessSB(true);
+    // const openSuccessSB = () => setSuccessSB(true);
     const closeSuccessSB = () => setSuccessSB(false);
 
     const openErrorSB = () => setErrorSB(true);

@@ -33,8 +33,6 @@ const ProjectChat = (props) => {
         borderBottom: `2px solid ${mibananaColor.tableHeaderColor}`,
         display: "flex",
     })
-
-    console.log(handleRole())
     return (
         <React.Fragment >
             <MDTypography

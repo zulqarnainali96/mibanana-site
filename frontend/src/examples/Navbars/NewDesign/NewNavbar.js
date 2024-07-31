@@ -17,32 +17,17 @@ import NotificationItem from "examples/Items/NotificationItem";
 import Divider from "@mui/material/Divider";
 
 import reduxContainer from "redux/containers/containers";
-// import { getProjectData } from "redux/global/global-functions";
-// import { getBrandData } from "redux/global/global-functions";
-// import DefaultAvatar from "assets/mi-banana-icons/default-profile.png";
-// import { reRenderChatComponent } from "redux/actions/actions";
-// import apiClient from "api/apiClient";
-// import { useDispatch } from "react-redux";
-// import { useSelector } from "react-redux";
-import { currentUserRole } from "redux/global/global-functions";
 import { mibananaColor } from "assets/new-images/colors";
 import { styled } from "@mui/material/styles";
 import { fontsFamily } from "assets/font-family";
-import { projectIcon } from "assets/new-images/navbars/create-project-icon";
 import SuccessModal from "components/SuccessBox/SuccessModal";
 import CreateProject1 from "../Form-modal/new";
-// import useRightSideList from "layouts/Right-side-drawer-list/useRightSideList";
 import RightSideDrawer from "components/RightSideDrawer";
-// import { useMaterialUIController } from "context";
 import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 import List from "@mui/material/List";
-// import { setMiniSidenav } from 'context'
 import "./navbar-style.css"
 import MenuIcon from "@mui/icons-material/Menu"
 
-// import { projectNotifications } from "redux/global/global-functions";
-// import notif from 'assets/sound/notif.wav'
-// import { SocketContext } from "sockets";
 import ProjectMenuOptions from "../create-project-poper/project-menu-poper";
 import CopyWritingForm from "../Copy-writing-form/copy-writing-form";
 import SocialMediaManager from "../social-media-form/social-media-manager";

@@ -1,4 +1,69 @@
 ::--webkit-scrollbar {
-    width: 0px !important;
-    background: transparent !important; 
+  width: 0px !important;
+  background: transparent !important;
+}
+
+.groups {
+  position: absolute;
+  right: 0;
+  background-color: green;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  border-radius: 4px;
+  padding-inline: 6px;
+  padding-block: 2px;
+}
+.chat-close-icon {
+  position: absolute !important;
+  right: 0;
+}
+.delete {
+  color: red !important;
+}
+.chatBoxStyle2 {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 1.5rem;
+  padding-bottom: 12px;
+}
+
+.mainBox {
+  position: relative;
+  width: 75%;
+  margin-left: unset !important;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  justify-content: space-between;
+  transition: width 0.5s ease-in-out;
+  background-color: var(--headerColor);
+}
+.chatBoxStyle {
+  margin-left: 10px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 0.5rem;
+  padding-bottom: 14px;
+  overflow-y: scroll;
+  margin-bottom: 9px;
+}
+.chatBoxStyle::-webkit-scrollbar {
+  width: 10px;
+  height: 16px;
+}
+.chatBoxStyle::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.chatBoxStyle::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+.chatBoxStyle::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

@@ -29,6 +29,7 @@ const mapStateToProps = (state) => ({
         onlineUser: state.onlineUser,
         private_chat_message : state.private_chat_message,
         unread_chat_message : state.unread_chat_message,
+        group_message : state.group_message,
     }
 })
 
@@ -57,6 +58,7 @@ const mapDispatchToProps = (dispatch) => ({
         handleOnlineUsers: (payload) => dispatch(reduxFunctions.handleOnlineUsers(payload)),
         privateChatMesage: (payload) => dispatch(reduxFunctions.privateChatMesage(payload)),
         handleUnreadChatMessage: (payload) => dispatch(reduxFunctions.handleUnreadChatMessage(payload)),
+        handleGroupMessage: (payload) => dispatch(reduxFunctions.handleGroupMessage(payload)),
 
     }
 })

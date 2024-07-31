@@ -1,42 +1,59 @@
-import MDBox from 'components/MDBox'
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
-import React, { useState } from 'react'
-import noPageFound from 'assets/new-images/mibanana-team/no-page.png'
-import { Box, FormControl, Grid, IconButton, InputLabel, List, ListItem, ListItemButton, ListItemIcon, ListItemText, MenuItem, Select, Typography, useMediaQuery } from '@mui/material'
-import SendOutlined from '@mui/icons-material/SendOutlined';
-import MDTypography from 'components/MDTypography'
+import React from 'react'
+import { Box, FormControl, Grid, InputLabel, List, MenuItem, Select, useMediaQuery } from '@mui/material'
 import { fontsFamily } from 'assets/font-family'
 import { mibananaColor } from 'assets/new-images/colors'
-import TeamMemberChat from 'layouts/team-member-chat'
 import useMibananaTeam from './useMibananaTeam'
-import ChatIcon from '@mui/icons-material/Chat';
-import SingleChat from 'layouts/team-member-chat/components/singleChat'
 import reduxContainer from 'redux/containers/containers'
 import { BeatLoader } from 'react-spinners'
 
 
 import './miBananaTeamMembers.css'
-import PrivateChat from './components/private-chat'
+import PrivateChat from './components/Private-Chat/private-chat'
 import FullScreenLoader from 'components/Loader/FullScreenLoader'
 import UserOnlineIcon from './components/userOnlineicon'
-import ChatMessageNo from 'examples/Sidenav/ChatMessageNo'
-import Chat from '@mui/icons-material/Chat'
+import TitleContainer from './components/title-container'
+import CreateGroupForm from './components/Create-Group-Form/create-group-from'
+import FitlerTeamMembers from './components/filter-team-member'
+import GroupChat from './components/Group-Chat/group-chat'
+import TransitionsErrorModal from 'components/Modal/ErrorModal'
+import TransitionsModal from 'components/Modal/Modal'
 
 const MibananaTeam = ({ reduxState, reduxActions }) => {
-    const is768 = useMediaQuery("(min-width:768px)")
+    const allStates = useMibananaTeam(reduxState, reduxActions)
     const onlineUsers = reduxState.onlineUser
     const {
         loading,
         handleSingleChat,
         user_avatar,
         username,
+        open,
         singleChat,
+        anchorEl,
         user_id,
-        filteredMembers,
+        closeChat,
         handleFilterChange,
+        handleClick,
+        handleClose,
+        isReload,
+
+        respMessage,
+        errorSB,
+        setReload,
         resetUnreadMessages,
-        filter
-    } = useMibananaTeam(reduxState, reduxActions)
+        handleOpenForm,
+        handleCloseForm,
+        
+        setErrorSB,
+        setSuccessSB,
+        successSB,
+        openErrorSB,
+        openSuccessSB,
+        setRespMessage,
+
+        filter,
+        role,
+    } = allStates
 
     const boxStyles = {
         padding: "1.5rem",
@@ -67,6 +84,25 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
     }
     return (
         <DashboardLayout>
+            <CreateGroupForm
+                open={open}
+                onClose={handleCloseForm}
+                openErrorSB={openErrorSB}
+                openSuccessSB={openSuccessSB}
+                setRespMessage={setRespMessage}
+                setReload={setReload}
+            />
+            <TransitionsModal
+                message={respMessage}
+                openModal={successSB}
+                setOpenModal={setSuccessSB}
+            />
+            <TransitionsErrorModal
+                message={respMessage}
+                openModal={errorSB}
+                setOpenModal={setErrorSB}
+            />
+
             <Grid container spacing={0} py={0} px={2} height={"100%"} justifyContent={'center'} alignItems={"center"} width={"100%"} sx={{
                 backgroundColor: loading ? 'rgb(0, 0, 0, .2);' : 'inherit'
             }}>
@@ -78,17 +114,16 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
                     <Box sx={{ width: '100%', display: 'flex', gap: '.7rem', justifyContent: 'flex-start', alignItems: 'center', xpadding: '1rem', borderRadius: '10px' }}>
 
                         <Box sx={{ width: singleChat === null ? "100%" : '25%', ...boxStyles }}>
-                            <Typography variant="h4" gutterBottom>
-                                Team Members
-                            </Typography>
+                            <Box display={"flex"} justifyContent={"space-between"}>
+                                <TitleContainer role={role} handleOpenForm={handleOpenForm} />
+                            </Box>
                             <FormControl variant="outlined" fullWidth margin="normal">
                                 <InputLabel>Filter by Role</InputLabel>
                                 <Select
                                     value={filter}
                                     onChange={handleFilterChange}
                                     label="Filter by Role"
-                                    sx={{ minHeight: '3rem', display: 'flex', alignItems: 'center' }}
-                                >
+                                    sx={{ minHeight: '3rem', display: 'flex', alignItems: 'center' }} s>
                                     <MenuItem value=""><em>All</em></MenuItem>
                                     <MenuItem value="Mobile-App-Developer">Mobile Developer</MenuItem>
                                     <MenuItem value="Graphic-Designer">Graphic Designer</MenuItem>
@@ -98,47 +133,42 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
                                 </Select>
                             </FormControl>
                             <List>
-                                {
-                                    filteredMembers.map((member, index) => (
-                                        <ListItem key={index} disablePadding sx={{
-                                            "&:focus-within": {
-                                                backgroundColor: (filteredMembers?.some(member => member._id === singleChat?._id)) ? "rgba(149, 157, 165, 0.2) !important" : null,
-                                            },
-                                        }} onClick={() => handleSingleChat(member)}>
-                                            <ListItemButton sx={onlineWidth(member)} onClick={() => resetUnreadMessages(member._id)}>
-                                                <UserOnlineIcon member={member} data={onlineUsers} />
-                                                <ListItemText
-                                                    sx={{ position: 'relative' }}
-                                                    primary={
-                                                        <React.Fragment>
-                                                            {member.name}
-                                                            {"   "}
-                                                            <ChatMessageNo memberId={member._id} />
-                                                            <Typography
-                                                                variant="body2"
-                                                                component="div"
-                                                                color="textSecondary"
-                                                            >
-                                                                {member.roles}
-                                                            </Typography>
-                                                        </React.Fragment>
-                                                    }
-                                                />
-                                            </ListItemButton>
-                                        </ListItem>
-                                    ))
-                                }
+                                <FitlerTeamMembers
+                                    allStates={allStates}
+                                    onlineUsers={onlineUsers}
+                                    onlineWidth={onlineWidth}
+                                />
                             </List>
                         </Box>
-                        {singleChat === null ? null : <PrivateChat
-                            reduxActions={reduxActions}
-                            reduxState={reduxState}
-                            boxStyles={boxStyles}
-                            userId={user_id}
-                            username={username}
-                            user_avatar={user_avatar}
-                            item={singleChat}
-                        />}
+                        {singleChat?.type === 'single' ? (
+                            <PrivateChat
+                                reduxActions={reduxActions}
+                                reduxState={reduxState}
+                                closeChat={closeChat}
+                                boxStyles={boxStyles}
+                                userId={user_id}
+                                username={username}
+                                user_avatar={user_avatar}
+                                item={singleChat}
+                            />
+                        ) : singleChat?.type === 'group' ? (
+                            <GroupChat
+                                reduxActions={reduxActions}
+                                reduxState={reduxState}
+                                closeChat={closeChat}
+                                handleClose={handleClose}
+                                handleClick={handleClick}
+                                boxStyles={boxStyles}
+                                anchorEl={anchorEl}
+                                userId={user_id}
+                                username={username}
+                                user_avatar={user_avatar}
+                                item={singleChat}
+                                setReload={setReload}
+                                isReload={isReload}
+
+                            />
+                        ) : singleChat === null ? null : null}
                     </Box>
                 )}
 
@@ -147,20 +177,20 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
     )
 }
 
-const titleStyles = {
-    fontSize: '2.5rem',
-    width: '100%',
-    color: mibananaColor.yellowColor,
-    fontFamily: fontsFamily.poppins,
-    fontWeight: 'bold !important',
-    userSelect: 'none'
-}
-const titleStyles2 = {
-    fontSize: '1.5rem',
-    width: '100%',
-    color: mibananaColor.yellowColor,
-    fontFamily: fontsFamily.poppins,
-    fontWeight: 'bold !important',
-    userSelect: 'none'
-}
+// const titleStyles = {
+//     fontSize: '2.5rem',
+//     width: '100%',
+//     color: mibananaColor.yellowColor,
+//     fontFamily: fontsFamily.poppins,
+//     fontWeight: 'bold !important',
+//     userSelect: 'none'
+// }
+// const titleStyles2 = {
+//     fontSize: '1.5rem',
+//     width: '100%',
+//     color: mibananaColor.yellowColor,
+//     fontFamily: fontsFamily.poppins,
+//     fontWeight: 'bold !important',
+//     userSelect: 'none'
+// }
 export default reduxContainer(MibananaTeam)
