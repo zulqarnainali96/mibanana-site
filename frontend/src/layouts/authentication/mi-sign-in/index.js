@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import MiLayoutCover from "../components/Mi-Layout";
 import MDBox from "components/MDBox";
 import MiIcon from "assets/mi-banana-icons/mibanana-logo-1-color 1.png";
@@ -16,9 +16,7 @@ import { ArrowForward } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 import reduxContainer from "redux/containers/containers";
 import MoonLoader from "react-spinners/MoonLoader";
-import { socket } from "sockets";
-import TransitionsModal from "components/Modal/Modal";
-import TransitionsErrorModal from "components/Modal/ErrorModal";
+import { SocketContext } from "sockets";
 
 
 const MiSignIn = ({ reduxActions, reduxState }) => {
@@ -26,6 +24,7 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [UiChange, setUiChange] = useState(false);
+  const socketIO = useRef(useContext(SocketContext)); 
 
   // State for requried field after login
   const [open, setOpen] = useState(false);
@@ -81,7 +80,7 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           openSuccessSB();
           setLoading(false);
           navigate("/board");
-          socket.connect();
+          socketIO.current.connect();
         } else {
           setLoading(false);
           throw Error;

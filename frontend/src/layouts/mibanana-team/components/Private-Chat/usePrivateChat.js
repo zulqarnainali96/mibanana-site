@@ -49,8 +49,8 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
         }
     }
     const sendMessage = async () => {
+        if(message === '') return
         const msg = userOnline()
-        console.log(msg)
         reduxActions.privateChatMesage(msg)
         try {
             setMessage("")

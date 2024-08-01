@@ -4,7 +4,7 @@ import "./Style.css"
 
 const myStyle = {
     width: "100%",
-    height:"50.13px",
+    height:"66.13px",
     padding: "15px",
     border:"none", 
     border: "1px solid #ccc",

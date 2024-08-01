@@ -38,14 +38,13 @@ const MemberList = ({ allStates, onlineUsers, onlineWidth, member }) => {
         </ListItem>
     )
 }
-const GroupList = ({ allStates, onlineUsers, onlineWidth, member }) => {
-    console.log(member)
+const GroupList = ({ allStates, onlineUsers, onlineWidth, member, id }) => {
     const { singleChat, handleSingleChat, filteredMembers, resetUnreadMessages } = allStates
     return (
         <ListItem disablePadding sx={{
             "&:focus-within": {
                 backgroundColor: (filteredMembers?.some(member => member._id === singleChat?._id)) ? "rgba(149, 157, 165, 0.2) !important" : null,
-            },
+            }, 
         }} onClick={() => handleSingleChat(member)}>
             <ListItemButton onClick={() => resetUnreadMessages(member._id)}>
                 <UserOnlineIcon member={member} data={onlineUsers} />
@@ -62,7 +61,7 @@ const GroupList = ({ allStates, onlineUsers, onlineWidth, member }) => {
                                 component="div"
                                 color="textSecondary"
                             >
-                                {member.participant?.map(item => <span>{item.name + ", " + "  "}</span>)}
+                                {member.participant?.map((item,i) => <span key={i}>{item.name + ", " + "  "}</span>)}
                             </Typography>
                         </React.Fragment>
                     }
@@ -77,10 +76,10 @@ const FitlerTeamMembers = ({ allStates, onlineUsers, onlineWidth }) => {
         <React.Fragment>
             {
                 allStates.filteredMembers.map((member, index) => (
-                    <React.Fragment>
+                    <React.Fragment key={index}>
                         {member.type === 'single' ? (
                             <MemberList
-                                key={index}
+                                key={member._id}
                                 member={member}
                                 allStates={allStates}
                                 onlineUsers={onlineUsers}
@@ -88,7 +87,7 @@ const FitlerTeamMembers = ({ allStates, onlineUsers, onlineWidth }) => {
                             />
                         ) : (
                             <GroupList
-                                key={index}
+                                key={member._id}
                                 member={member}
                                 allStates={allStates}
                                 onlineUsers={onlineUsers}

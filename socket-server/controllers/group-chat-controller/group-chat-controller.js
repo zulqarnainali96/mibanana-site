@@ -21,12 +21,15 @@ const checkingConnectedUserInGroup = async (io, msg, connectedUser, room, socket
     const findGroup = await GroupChatModel.findById(room)
     if (findGroup) {
         sendingMessagetoDatabase(msg, room)
+        console.log('1')
         if (currentRoom) {
+            console.log('2')
             const currentRoomUsers = currentRoom.users
             const part = connectedUser.filter(p => findGroup.participant.some(item => item.id === p._id))
             const findOnlinePart = part.filter(p => !currentRoomUsers.includes(p.socketID))
             if (findOnlinePart.length > 0) {
                 for (let i = 0; i <= findOnlinePart.length; i++) {
+                    console.log('3')
                     socket.to(findOnlinePart[i]?.socketID).emit('group-msg-notification', msg)
                 }
             }

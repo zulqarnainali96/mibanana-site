@@ -50,17 +50,18 @@ const GroupChat = ({
         let profileImage = ''
         if (userId === item.sender) {
             profileImage = user_avatar
-        } else if (_id === item.sender) {
-            profileImage = avatar
+        } else {
+            profileImage = item.avatar
         }
         return profileImage
     }
+
     function getImageAlt(item) {
         let alt = ''
         if (userId === item.sender) {
-            alt = item.sender_name
+            alt = item.username
         } else {
-            alt = item.receivar_name
+            alt = item.sender_name
         }
         return alt
     }
@@ -185,7 +186,7 @@ const GroupChat = ({
                                 <ListItem disablePadding sx={{ backgroundColor: '#fff', width: '60%', ...(msgPosition(item)) }}>
                                     <ListItemButton disableRipple={true} sx={{ "&:hover": { backgroundColor: "transparent !important" } }}>
                                         <ListItemIcon>
-                                            <Avatar src={''} alt={''} />
+                                            <Avatar src={avatarImage(item)} alt={getImageAlt(item)} />
                                         </ListItemIcon>
                                         <ListItemText
                                             primary={

@@ -60,7 +60,7 @@ const initialState = {
     project_call: false,
     onlineUser: [],
     private_chat_message: [],
-    unread_chat_message : [],
+    unread_chat_message: [],
     group_message: [],
 
 }
@@ -239,14 +239,20 @@ const UserReducers = (state = initialState, action) => {
             if (Array.isArray(payload)) {
                 return {
                     ...state,
-                    group_message: [...payload]
+                    group_message: payload.map(message => ({
+                        ...message,
+                        date: message.date instanceof Date ? message.date.toISOString() : message.date
+                    }))
                 }
 
             } else {
                 // Socket returns single object 
                 return {
                     ...state,
-                    group_message: [...state.group_message, payload]
+                    group_message: [...state.group_message, {
+                        ...payload,
+                        date: payload.date instanceof Date ? payload.date.toISOString() : payload.date
+                    }]
                 }
             }
         }
@@ -254,13 +260,19 @@ const UserReducers = (state = initialState, action) => {
             if (Array.isArray(payload)) {
                 return {
                     ...state,
-                    unread_chat_message: [...payload]
+                    unread_chat_message: payload.map(message => ({
+                        ...message,
+                        date: message.date instanceof Date ? message.date.toISOString() : message.date
+                    }))
                 }
 
             } else {
                 return {
                     ...state,
-                    unread_chat_message: [...state.unread_chat_message, payload]
+                    unread_chat_message: [...state.unread_chat_message, {
+                        ...payload,
+                        date: payload.date instanceof Date ? payload.date.toISOString() : payload.date
+                    }]
                 }
             }
         }

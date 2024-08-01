@@ -17,6 +17,7 @@ var io = require('socket.io')(server1, {
     origin: [
       'http://localhost:3000',
       'https://mibanana.com',
+      'https://test.mibanana.com',
       'https://si.mibanana.com'],
     credentials: true,
   }
@@ -41,7 +42,7 @@ io.on('connection', function (socket) {
       }
       connectedUser.push(obj)
       connectedUser = Array.from(new Set(connectedUser.map(obj => obj.id))).map(id => connectedUser.find(obj => obj.id === id));
-      //console.log(connectedUser)
+      console.log(connectedUser)
       io.emit('active_users', connectedUser)
     }
   })
@@ -295,7 +296,6 @@ io.on('connection', function (socket) {
     }
   })
   socket.on('send-group-message', (msg, room) => {
-    console.log(msg)
     sendingGroupMessage(io, connectedUser, socket, msg, room)
   });
   socket.on('leave-room', (room) => {
@@ -304,8 +304,6 @@ io.on('connection', function (socket) {
   socket.on('disconnect', () => {
     connectedUser = connectedUser.filter(user => user.socketID !== socket.id)
     // console.log('User disconnected', connectedUser);
-    socket.broadcast.emit('active_users', connectedUser)
+    io.emit('active_users', connectedUser)
   })
 });
-
-module.exports = { io };

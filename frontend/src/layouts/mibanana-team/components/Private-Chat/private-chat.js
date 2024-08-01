@@ -42,7 +42,7 @@ const PrivateChat = ({
         if (userId === item.sender) {
             profileImage = user_avatar
         } else if (_id === item.sender) {
-            profileImage = avatar  
+            profileImage = avatar
         }
         return profileImage
     }
@@ -105,7 +105,7 @@ const PrivateChat = ({
             return null
         }
     }
-    
+
     const chatBoxStyle = { marginLeft: '10px', width: '100%', height: '100%', display: 'flex', padding: '0.5rem', paddingBottom: '14px', overflowY: "scroll", ...scrollStyle, marginBottom: '9px' }
     const chatBoxStyle2 = { display: 'flex', flexDirection: 'column', width: '100%', height: '100%', gap: '1.5rem', paddingBottom: "12px" }
 
@@ -117,7 +117,7 @@ const PrivateChat = ({
             {/* <span style={{ position: 'absolute', right: 12 }}><IconButton><Close fontSize='medium' /></IconButton></span> */}
             <Box sx={{ width: '100%', display: 'flex', backgroundColor: mibananaColor.headerColor, }}>
                 <ListItem divider focusRipple={true} disableTouchRipple={true} disableRipple={true} >
-                    <ListItemButton sx={{ "&:hover": { backgroundColor: "transparent !important"},...(onlineWidth(item)) }}>
+                    <ListItemButton sx={{ "&:hover": { backgroundColor: "transparent !important" }, ...(onlineWidth(item)) }}>
                         {/* <ListItemIcon>
                             <Avatar src={avatar} alt={name} />
                         </ListItemIcon> */}
@@ -163,6 +163,11 @@ const PrivateChat = ({
                                                     color="textSecondary"
                                                     fontFamily={'"Poppins", sans-serif'}
                                                     dangerouslySetInnerHTML={{ __html: item.message }}
+                                                    sx={{
+                                                        wordWrap: 'break-word',
+                                                        overflowWrap: 'break-word',
+                                                        whiteSpace: 'pre-wrap',
+                                                    }}
                                                 >
 
                                                 </Typography>
