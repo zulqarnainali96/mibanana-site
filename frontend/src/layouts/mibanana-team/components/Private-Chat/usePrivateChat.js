@@ -113,7 +113,7 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
     useEffect(() => {
         if (!handleRole()?.customer || !handleRole()?.admin) {
             socketIO.current.on('receive-private-message', (msg) => {
-                // notificationSound()
+                notificationSound()
                 reduxActions.privateChatMesage(msg)
             })
         }

@@ -254,6 +254,7 @@ const useWebsiteHook = (reduxState, reduxActions) => {
                 setTeamMemberList(data?.list)
             })
             .catch((e) => {
+                console.log(e.message)
             });
     }
 

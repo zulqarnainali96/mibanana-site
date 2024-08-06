@@ -135,7 +135,7 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
     useEffect(() => {
         if (!handleRole()?.customer || !handleRole()?.admin) {
             socketIO.current.on('receive-group-message', (msg) => {
-                // notificationSound()
+                notificationSound()
                 reduxActions.handleGroupMessage(msg)
             })
         }

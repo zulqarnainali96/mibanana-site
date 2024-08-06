@@ -28,6 +28,7 @@ import EditGroupChat from '../Edit-Group/edit-group-form';
 import useGroupChat from './useGroupChat';
 import TransitionsModal from 'components/Modal/Modal';
 import TransitionsErrorModal from 'components/Modal/ErrorModal';
+import { formatMessageDate } from 'redux/global/table-date';
 
 const GroupChat = ({
     boxStyles,
@@ -184,9 +185,9 @@ const GroupChat = ({
                         {reduxState.group_message?.map(item => {
                             return (
                                 <ListItem disablePadding sx={{ backgroundColor: '#fff', width: '60%', ...(msgPosition(item)) }}>
-                                    <ListItemButton disableRipple={true} sx={{ "&:hover": { backgroundColor: "transparent !important" } }}>
+                                    <ListItemButton disableRipple={true} sx={{ "&:hover": { backgroundColor: "transparent !important" }, position: 'relative' }}>
                                         <ListItemIcon>
-                                            <Avatar src={avatarImage(item)} alt={getImageAlt(item)} />
+                                            <Avatar src={avatarImage(item)} alt={item?.sender_name} />
                                         </ListItemIcon>
                                         <ListItemText
                                             primary={
@@ -200,6 +201,20 @@ const GroupChat = ({
                                                         dangerouslySetInnerHTML={{ __html: item.message }}
                                                     >
 
+                                                    </Typography>
+                                                    <Typography
+                                                        variant="body2"
+                                                        component="span"
+                                                        fontFamily={'"Poppins", sans-serif'}
+                                                        sx={{
+                                                            position: 'absolute',
+                                                            color: '#00000070',
+                                                            fontSize: '.8rem',
+                                                            bottom: '5px',
+                                                            right: '15px',
+                                                        }}
+                                                    >
+                                                        {formatMessageDate(item.date)}
                                                     </Typography>
                                                 </React.Fragment>
                                             }
