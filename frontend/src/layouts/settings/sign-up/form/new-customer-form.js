@@ -1,15 +1,14 @@
+import React from 'react'
 import { ArrowForward, Visibility, VisibilityOff } from '@mui/icons-material'
-import { Autocomplete, Grid, IconButton, TextField } from '@mui/material'
+import { Grid, IconButton } from '@mui/material'
 import MDBox from 'components/MDBox'
 import MDButton from 'components/MDButton'
 import MDInput from 'components/MDInput'
 import MDTypography from 'components/MDTypography'
-import React, { useEffect, useState } from 'react'
 import { MoonLoader } from 'react-spinners'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { makeStyles } from '@mui/styles'
-import MiLayoutCover from 'layouts/authentication/components/Mi-Layout'
 
 const useStyles = makeStyles({
     Container: {
@@ -21,27 +20,22 @@ const useStyles = makeStyles({
         height: '46px !important'
     }
 })
-// phone, setPhone, phone2, setPhone2
-const NewCustomerForm = ({ onChange, handleSubmit, loading, setFormValue, formValue }) => {
-    const classes = useStyles()
-    const [currentPassword, setCurrentPassword] = useState(false)
-    const [confirmPassword, setConfirmPassword] = useState(false)
+const NewCustomerForm = ({
+    onChange,
+    handleSubmit,
+    loading,
+    formValue,
+    currentPassword,
+    confirmPassword,
+    handlePhoneChange1,
+    handlePhoneChange2,
+    setCurrentPassword,
+    setConfirmPassword,
+    isShowPassword
 
-    const handlePhoneChange1 = (phone) => {
-        setFormValue({
-            ...formValue,
-            phone: phone
-        })
-    }
-    const handlePhoneChange2 = (phone) => {
-        setFormValue({
-            ...formValue,
-            primary_phone: phone
-        })
-    }
-    const isShowPassword = (setPassword) => {
-        setPassword(prev => !prev)
-    }
+}) => {
+    const classes = useStyles()
+
     return (
         <MDBox component="form" role="form" onSubmit={handleSubmit} >
             <MDTypography fontSize="medium" width="21%" marginBottom="15px">

@@ -100,6 +100,32 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
             return { admin: true }
         }
     }
+    const getGroupChatData = async (id) => {
+        setLoading(true)
+        try {
+            const { data } = await apiClient.get(`api/get-groups-messages/${item._id}`)
+            setLoading(false)
+            if (data) {
+                reduxActions.handleGroupMessage(data.messages)
+            }
+        }
+        catch (err) {
+            if (err.response) {
+                const { message } = err.response.data
+                setRespMessage(message)
+                setTimeout(() => {
+                    openErrorSB()
+                }, 400)
+            } else {
+                setRespMessage(err.message)
+                setTimeout(() => {
+                    openErrorSB()
+                }, 400)
+            }
+            setLoading(false)
+        }
+    }
+
     useEffect(() => {
         if (privateChatRef.current) {
             privateChatRef.current.scrollTop = privateChatRef.current.scrollHeight;
@@ -119,8 +145,9 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
         reduxActions.handleGroupMessage(item.messages)
     }, [])
     useEffect(() => {
+        getGroupChatData()
         return () => {
-            socketIO.current.off('receive-group-message')
+            // socketIO.current.off('receive-group-message')
             socketIO.current.emit('leave-room', item._id)
         }
     }, [item._id])
@@ -139,6 +166,7 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
         openErrorSB,
         deleteChatGroup,
         delLoading,
+        role,
 
         sendMessage,
         privateChatRef,

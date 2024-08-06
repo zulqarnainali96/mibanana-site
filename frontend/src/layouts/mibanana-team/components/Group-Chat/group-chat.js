@@ -101,7 +101,7 @@ const GroupChat = ({
         }
     }
 
-    const { open, handleClose: onClose, handleOpen, respMessage, setRespMessage, successSB, errorSB, openErrorSB, openSuccessSB, setErrorSB, setSuccessSB, loading, message, privateChatRef, sendMessage, setMessage, deleteChatGroup, delLoading } = useGroupChat(setReload, closeChat, userId, _id, 'name', username, avatar, user_avatar, reduxState, reduxActions, item)
+    const { open, handleClose: onClose, handleOpen, respMessage, setRespMessage, successSB, errorSB, openErrorSB, openSuccessSB, setErrorSB, setSuccessSB, loading, message, privateChatRef, sendMessage, setMessage, deleteChatGroup, delLoading, role } = useGroupChat(setReload, closeChat, userId, _id, 'name', username, avatar, user_avatar, reduxState, reduxActions, item)
     return (
         <Box className={'mainBox'} sx={{ ...boxStyles }}>
             <EditGroupChat
@@ -120,7 +120,7 @@ const GroupChat = ({
                 <ListItem divider >
                     <ListItemButton disableRipple={true} sx={{ "&:hover": { backgroundColor: "transparent !important" }, ...(onlineWidth(item)) }}>
                         <UserOnlineIcon member={item} data={reduxState.onlineUser} />
-                        <Grid
+                        {role?.projectManager ? <Grid
                             className='chat-close-icon'
                             id="dropdown-btn"
                             aria-controls={anchorEl ? 'dropdown-menu' : undefined}
@@ -132,7 +132,7 @@ const GroupChat = ({
                             sx={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer", color: '#333' }}
                         >
                             <MoreVertIcon fontSize='medium' />
-                        </Grid>
+                        </Grid> : <IconButton onClick={closeChat} className='chat-close-icon'><Close /></IconButton>}
                         <Menu
                             id="dropdown-menu"
                             anchorEl={anchorEl}

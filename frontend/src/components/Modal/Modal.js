@@ -37,7 +37,7 @@ export default function TransitionsModal({ message, openModal, setOpenModal }) {
               </IconButton>
               {/* <span onClick={() => setOpenModal(false)} style={{ position: "absolute", top: "-45px", right: "-30px", cursor: "pointer", fontSize: "20px" }}>x</span> */}
               <img src={checkIcon} style={{ marginBottom: "1rem" }} />
-              <h2 id="transition-modal-title" style={{ color: '#333', fontFamily: fontsFamily.poppins }} className="modal-title">
+              <h2 id="transition-modal-title" style={{ color: '#333', fontFamily: fontsFamily.poppins, lineHeight: '2.7rem !important' }} className="modal-title">
                 {message}
               </h2>
             </div>

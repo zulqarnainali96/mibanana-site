@@ -20,7 +20,6 @@ import { BeatLoader } from 'react-spinners'
 import UserOnlineIcon from '../userOnlineicon'
 import "../../miBananaTeamMembers.css";
 
-
 const PrivateChat = ({
     boxStyles,
     userId,
@@ -34,7 +33,7 @@ const PrivateChat = ({
 }) => {
     const { name, avatar, roles, _id } = item
     const classes = reactQuillStyles2()
-    const { message, setMessage, chats, loading, sendMessage, privateChatRef } = usePrivateChat(userId, _id, name, username, avatar, user_avatar, reduxState, reduxActions, item)
+    const { message, setMessage, chats, loading, sendMessage, privateChatRef, formatMessageDate } = usePrivateChat(userId, _id, name, username, avatar, user_avatar, reduxState, reduxActions, item)
 
     function avatarImage(item) {
 
@@ -117,7 +116,7 @@ const PrivateChat = ({
             {/* <span style={{ position: 'absolute', right: 12 }}><IconButton><Close fontSize='medium' /></IconButton></span> */}
             <Box sx={{ width: '100%', display: 'flex', backgroundColor: mibananaColor.headerColor, }}>
                 <ListItem divider focusRipple={true} disableTouchRipple={true} disableRipple={true} >
-                    <ListItemButton sx={{ "&:hover": { backgroundColor: "transparent !important" }, ...(onlineWidth(item)) }}>
+                    <ListItemButton disableRipple sx={{ "&:hover": { backgroundColor: "transparent !important" }, ...(onlineWidth(item)) }}>
                         {/* <ListItemIcon>
                             <Avatar src={avatar} alt={name} />
                         </ListItemIcon> */}
@@ -146,12 +145,12 @@ const PrivateChat = ({
                 </FullScreenLoader>
             ) : (<Box ref={privateChatRef} sx={chatBoxStyle} >
                 <Box sx={chatBoxStyle2}>
-                    {chats?.map(item => {
+                    {chats?.length > 0 ? chats?.map(item => {
                         return (
                             <ListItem disablePadding sx={{ backgroundColor: '#fff', width: '60%', ...(msgPosition(item)) }}>
-                                <ListItemButton sx={{ "&:hover": { backgroundColor: "transparent !important" } }}>
+                                <ListItemButton disableRipple sx={{ "&:hover": { backgroundColor: "transparent !important" }, position: 'relative' }}>
                                     <ListItemIcon>
-                                        <Avatar src={avatarImage(item)} alt={getImageAlt(item)} />
+                                        <Avatar src={avatarImage(item)} alt={item.sender_name} />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={
@@ -171,13 +170,40 @@ const PrivateChat = ({
                                                 >
 
                                                 </Typography>
+                                                <Typography
+                                                    variant="body2"
+                                                    component="span"
+                                                    fontFamily={'"Poppins", sans-serif'}
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        color: '#00000070',
+                                                        fontSize: '.8rem',
+                                                        bottom: '5px',
+                                                        right: '15px',
+                                                    }}
+                                                >
+                                                    {formatMessageDate(item.date)}
+                                                </Typography>
                                             </React.Fragment>
                                         }
                                     />
                                 </ListItemButton>
                             </ListItem>
                         )
-                    })}
+                    }) : <Typography
+                        variant="body2"
+                        component="div"
+                        color="title"
+                        fontFamily={'"Poppins", sans-serif'}
+                        textAlign={'center'}
+                        sx={{
+                            marginTop: '10px',
+                            fontSize: '1.2rem',
+                            fontWeight: '400'
+                        }}
+                    >
+                        No Messages Found
+                    </Typography>}
                 </Box>
             </Box>
             )}
