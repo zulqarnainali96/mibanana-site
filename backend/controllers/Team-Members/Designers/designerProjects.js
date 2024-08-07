@@ -91,105 +91,106 @@ const getDesignerList = asyncHandler(async (req, res) => {
         }
     }
 })
-// const getTeamMemberList = async (req, res) => {
-//     const id = req.params.id
-//     const category = req.params.category
-//     if (!id) return res.status(400).send("Please provide ID")
-//     if (id) {
-//         const user = await User.find({ _id: id }).exec()
-//         if (user[0] !== null && user[0].roles.includes("Project-Manager")) {
-//             const allUser = await User.find().select('-password').lean().exec()
-//             if (category === 'mobile-app-development') {
-//                 const mobileDev = allUser.filter(item =>
-//                     item.roles.includes("Mobile-App-Developer")
-//                 ).map(item => {
-//                     return {
-//                         _id: item._id,
-//                         name: item.name,
-//                         email: item.email,
-//                         roles: item.roles,
-//                         avatar: item.avatar
-//                     };
-//                 });
-//                 return res.status(200).send({ list: mobileDev })
-//             }
-//             else if (category === 'web-app') {
-//                 const webDeveloper = allUser.filter(item =>
-//                     item.roles.includes("Web-Developer")
-//                 ).map(item => {
-//                     return {
-//                         _id: item._id,
-//                         name: item.name,
-//                         email: item.email,
-//                         roles: item.roles,
-//                         avatar: item.avatar
-//                     };
-//                 });
-//                 return res.status(200).send({ list: webDeveloper })
-//             }
-//             else if (category === 'social-media-manager') {
-//                 const socialMediaManager = allUser.filter(item =>
-//                     item.roles.includes("Social-Media-Manager")
-//                 ).map(item => {
-//                     return {
-//                         _id: item._id,
-//                         name: item.name,
-//                         email: item.email,
-//                         roles: item.roles,
-//                         avatar: item.avatar
-//                     };
-//                 });
-//                 return res.status(200).send({ list: socialMediaManager })
-//             }
-//             else if (category === 'copy-writing') {
-//                 const copyWriter = allUser.filter(item =>
-//                     item.roles.includes("Copy-Writer")
-//                 ).map(item => {
-//                     return {
-//                         _id: item._id,
-//                         name: item.name,
-//                         email: item.email,
-//                         roles: item.roles,
-//                         avatar: item.avatar
-//                     };
-//                 });
-//                 return res.status(200).send({ list: copyWriter })
-//             }
-//             else if (category === 'website-development') {
-//                 const websiteDevlopment = allUser.filter(item =>
-//                     item.roles.includes("Web-Developer")
-//                 ).map(item => {
-//                     return {
-//                         _id: item._id,
-//                         name: item.name,
-//                         email: item.email,
-//                         roles: item.roles,
-//                         avatar: item.avatar
-//                     };
-//                 });
-//                 return res.status(200).send({ list: websiteDevlopment })
-//             }
-//             else if (category === 'graphic-design' || category === 'Graphic Design') {
-//                 const designers = allUser.filter(item =>
-//                     item.roles.includes("Graphic-Designer")
-//                 ).map(item => {
-//                     return {
-//                         _id: item._id,
-//                         name: item.name,
-//                         email: item.email,
-//                         roles: item.roles,
-//                         avatar: item.avatar
-//                     };
-//                 });
-//                 return res.status(200).send({ list: designers })
-//             }
-//         }
-//         else {
-//             return res.status(400).send('You are not allowed')
-//         }
-//     }
-// }
 const getTeamMemberList = async (req, res) => {
+    const id = req.params.id
+    const category = req.params.category
+    if (!id) return res.status(400).send("Please provide ID")
+    if (id) {
+        const user = await User.find({ _id: id }).exec()
+        if (user[0] !== null && user[0].roles.includes("Project-Manager")) {
+            const allUser = await User.find().select('-password').lean().exec()
+            if (category === 'mobile-app-development') {
+                const mobileDev = allUser.filter(item =>
+                    item.roles.includes("Mobile-App-Developer")
+                ).map(item => {
+                    return {
+                        _id: item._id,
+                        name: item.name,
+                        email: item.email,
+                        roles: item.roles,
+                        avatar: item.avatar
+                    };
+                });
+                return res.status(200).send({ list: mobileDev })
+            }
+            else if (category === 'web-app') {
+                const webDeveloper = allUser.filter(item =>
+                    item.roles.includes("Web-Developer")
+                ).map(item => {
+                    return {
+                        _id: item._id,
+                        name: item.name,
+                        email: item.email,
+                        roles: item.roles,
+                        avatar: item.avatar
+                    };
+                });
+                return res.status(200).send({ list: webDeveloper })
+            }
+            else if (category === 'social-media-manager') {
+                const socialMediaManager = allUser.filter(item =>
+                    item.roles.includes("Social-Media-Manager")
+                ).map(item => {
+                    return {
+                        _id: item._id,
+                        name: item.name,
+                        email: item.email,
+                        roles: item.roles,
+                        avatar: item.avatar
+                    };
+                });
+                return res.status(200).send({ list: socialMediaManager })
+            }
+            else if (category === 'copy-writing') {
+                const copyWriter = allUser.filter(item =>
+                    item.roles.includes("Copy-Writer")
+                ).map(item => {
+                    return {
+                        _id: item._id,
+                        name: item.name,
+                        email: item.email,
+                        roles: item.roles,
+                        avatar: item.avatar
+                    };
+                });
+                return res.status(200).send({ list: copyWriter })
+            }
+            else if (category === 'website-development') {
+                console.log(category)
+                const websiteDevlopment = allUser.filter(item =>
+                    item.roles.includes("Web-Developer")
+                ).map(item => {
+                    return {
+                        _id: item._id,
+                        name: item.name,
+                        email: item.email,
+                        roles: item.roles,
+                        avatar: item.avatar
+                    };
+                });
+                return res.status(200).send({ list: websiteDevlopment })
+            }
+            else if (category === 'graphic-design' || category === 'Graphic Design') {
+                const designers = allUser.filter(item =>
+                    item.roles.includes("Graphic-Designer")
+                ).map(item => {
+                    return {
+                        _id: item._id,
+                        name: item.name,
+                        email: item.email,
+                        roles: item.roles,
+                        avatar: item.avatar
+                    };
+                });
+                return res.status(200).send({ list: designers })
+            }
+        }
+        else {
+            return res.status(400).send('You are not allowed')
+        }
+    }
+}
+const getTeamMemberList2 = async (req, res) => {
     try {
         const user = await User.find().exec()
         if (user) {
@@ -345,4 +346,4 @@ const getTeamMemberListForChat = async (req, res) => {
 //     }
 // };
 
-module.exports = { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList, getTeamMemberListForChat }
+module.exports = { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList2, getTeamMemberList, getTeamMemberListForChat }

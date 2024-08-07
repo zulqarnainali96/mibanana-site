@@ -11,6 +11,11 @@ const groupChatSchema = mongoose.Schema({
         required: false,
         default: ""
     },
+    admin_id: {
+        type: String,
+        required: true,
+        default: ""
+    },
     group_description: {
         type: String,
         required: false,

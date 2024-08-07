@@ -1,16 +1,21 @@
 const GroupChatModal = require('../../models/group-chat-modal/group-chat-model')
 
 const createGroupChat = async (req, res) => {
-    const { group_name, group_description, group_admin, participant } = req.body
-    if (!group_name || !participant) {
-        return res.status(400).send({ message: 'group name, group_admin, participant are required' })
+    const { group_name, group_description, group_admin, participant, admin_id } = req.body
+    if (!group_name || !participant || !group_admin) {
+        return res.status(400).send({ message: 'group name, group_admin, group_admin, participant are required' })
     }
     try {
         const makeChatGroup = await GroupChatModal.create({
-            group_admin, group_name, group_description, participant
+            group_admin, group_name, group_description, admin_id, participant
         })
         if (makeChatGroup) {
-            return res.status(201).send({ message: "Chat Group Created" })
+            const findCreateGroup = await GroupChatModal.findById(makeChatGroup._id)
+            const filterParticipants = findCreateGroup.participant
+                .filter(part => part._id !== admin_id && part._id !== null)
+                .map(part => part._id);
+
+            return res.status(201).send({ message: "Chat Group Created", participant: filterParticipants })
         } else {
             return res.status(401).send({ message: "Found Error try again !" })
         }
@@ -105,5 +110,21 @@ const deleteGroupChat = async (req, res) => {
 
 }
 
+const getGroupMessages = async (req, res) => {
+    const _id = req.params.id
+    if (!_id) {
+        return res.status(400).send({ message: 'id not found' })
+    }
+    try {
+        const groups = await GroupChatModal.findById(_id)
+        if (groups) return res.status(200).send({ messages: groups.messages })
+        else return res.status(404).send({ message: 'Group not found' })
 
-module.exports = { createGroupChat, getAllGroupsDetails, updateGroupMessage, getGroupsById, deleteGroupChat, updateGroupSetting }
+    } catch (error) {
+        return res.status(500).send({ message: "Internal Server Error" })
+    }
+
+}
+
+
+module.exports = { createGroupChat, getAllGroupsDetails, updateGroupMessage, getGroupsById, deleteGroupChat, updateGroupSetting, getGroupMessages }
