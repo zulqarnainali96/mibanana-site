@@ -4,7 +4,7 @@ import reduxContainer from 'redux/containers/containers'
 import useChatMessageHook from './use-chat-message-hook'
 
 const ChatMessageNo = ({ reduxState, reduxActions, memberId }) => {
-    const { chatMessage, getUnreadMessage } = useChatMessageHook(reduxState, reduxActions, memberId)
+    const { chatMessage, getUnreadMessage, messageCount } = useChatMessageHook(reduxState, reduxActions, memberId)
 
     return (
         <React.Fragment>

@@ -295,7 +295,7 @@ io.on('connection', function (socket) {
       }
     }
   })
-  socket.on('send-group-message', (msg, room) => {
+  socket.on('send-group-message', async(msg, room) => {
     sendingGroupMessage(io, connectedUser, socket, msg, room)
   });
   socket.on('leave-room', (room) => {

@@ -43,6 +43,7 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
         resetUnreadMessages,
         handleOpenForm,
         handleCloseForm,
+        currentUser,
         
         setErrorSB,
         setSuccessSB,
@@ -115,7 +116,7 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
 
                         <Box sx={{ width: singleChat === null ? "100%" : '25%', ...boxStyles }}>
                             <Box display={"flex"} justifyContent={"space-between"}>
-                                <TitleContainer role={role} handleOpenForm={handleOpenForm} />
+                                <TitleContainer role={role} handleOpenForm={handleOpenForm} currentUser={currentUser} />
                             </Box>
                             <FormControl variant="outlined" fullWidth margin="normal">
                                 <InputLabel>Filter by Role</InputLabel>

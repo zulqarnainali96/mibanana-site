@@ -1,13 +1,15 @@
-//  Live Site  mongodb+srv://mibanana:F0GLmBdleUZ5Mq9M@mibananacluster.cva0t3g.mongodb.net/mibanana-database?retryWrites=true&w=majority&appName=mibananaCluster
-//  Test site  mongodb+srv://mibanana:F0GLmBdleUZ5Mq9M@mibananacluster.cva0t3g.mongodb.net/test-database?retryWrites=true&w=majority&appName=mibananaCluster
-
 const mongoose = require('mongoose')
+
+
+const liveDatabase = 'mongodb+srv://mibanana:F0GLmBdleUZ5Mq9M@mibananacluster.cva0t3g.mongodb.net/mibanana-database?retryWrites=true&w=majority&appName=mibananaCluster'
+const testDatabase = 'mongodb+srv://mibanana:F0GLmBdleUZ5Mq9M@mibananacluster.cva0t3g.mongodb.net/test-database?retryWrites=true&w=majority&appName=mibananaCluster'
+
 
 const ConnectDB = async () => {
     try {
-        await mongoose.connect('mongodb+srv://mibanana:F0GLmBdleUZ5Mq9M@mibananacluster.cva0t3g.mongodb.net/test-database?retryWrites=true&w=majority&appName=mibananaCluster')
+        await mongoose.connect(testDatabase)
     } catch (error) {
-       console.log(error) 
+        console.log(error)
     }
 }
 

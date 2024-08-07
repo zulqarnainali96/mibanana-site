@@ -21,6 +21,7 @@ import reduxContainer from 'redux/containers/containers';
 import usePrivateChat from '../Private-Chat/usePrivateChat';
 import { fontsFamily } from 'assets/font-family';
 import { Close } from '@mui/icons-material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import "../../miBananaTeamMembers.css";
 import { Grid, Menu, MenuItem, MenuList } from '@mui/material';
 import MenuItemDropdown from 'layouts/ProjectsTable/data/MenuItem';
@@ -29,6 +30,7 @@ import useGroupChat from './useGroupChat';
 import TransitionsModal from 'components/Modal/Modal';
 import TransitionsErrorModal from 'components/Modal/ErrorModal';
 import { formatMessageDate } from 'redux/global/table-date';
+import { handleRole } from 'redux/global/global-functions';
 
 const GroupChat = ({
     boxStyles,
@@ -102,6 +104,22 @@ const GroupChat = ({
         }
     }
 
+    function copyMessageWithHtml(message) {
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = message;
+        document.body.appendChild(tempElement);
+        const range = document.createRange();
+        range.selectNodeContents(tempElement);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        document.body.removeChild(tempElement);
+        selection.removeAllRanges();
+        alert("Message copied to clipboard!");
+    }
+
+
     const { open, handleClose: onClose, handleOpen, respMessage, setRespMessage, successSB, errorSB, openErrorSB, openSuccessSB, setErrorSB, setSuccessSB, loading, message, privateChatRef, sendMessage, setMessage, deleteChatGroup, delLoading, role } = useGroupChat(setReload, closeChat, userId, _id, 'name', username, avatar, user_avatar, reduxState, reduxActions, item)
     return (
         <Box className={'mainBox'} sx={{ ...boxStyles }}>
@@ -121,7 +139,7 @@ const GroupChat = ({
                 <ListItem divider >
                     <ListItemButton disableRipple={true} sx={{ "&:hover": { backgroundColor: "transparent !important" }, ...(onlineWidth(item)) }}>
                         <UserOnlineIcon member={item} data={reduxState.onlineUser} />
-                        {role?.projectManager ? <Grid
+                        {role?.projectManager || handleRole(role)?.teamMember ? <Grid
                             className='chat-close-icon'
                             id="dropdown-btn"
                             aria-controls={anchorEl ? 'dropdown-menu' : undefined}
@@ -182,7 +200,7 @@ const GroupChat = ({
             ) : (
                 <Box ref={privateChatRef} className={'chatBoxStyle'}>
                     <Box className={'chatBoxStyle2'}>
-                        {reduxState.group_message?.map(item => {
+                        {reduxState.group_message?.length > 0 ? reduxState.group_message?.map(item => {
                             return (
                                 <ListItem disablePadding sx={{ backgroundColor: '#fff', width: '60%', ...(msgPosition(item)) }}>
                                     <ListItemButton disableRipple={true} sx={{ "&:hover": { backgroundColor: "transparent !important" }, position: 'relative' }}>
@@ -216,13 +234,33 @@ const GroupChat = ({
                                                     >
                                                         {formatMessageDate(item.date)}
                                                     </Typography>
+                                                    <IconButton
+                                                        onClick={() => copyMessageWithHtml(item.message)}
+                                                        sx={{ position: 'absolute', right: 0, top: 5 }}>
+                                                        <ContentCopyIcon fontSize="small" />
+                                                    </IconButton>
                                                 </React.Fragment>
                                             }
                                         />
                                     </ListItemButton>
                                 </ListItem>
                             )
-                        })}
+                        }) : (
+                            <Typography
+                                variant="body2"
+                                component="div"
+                                color="title"
+                                fontFamily={'"Poppins", sans-serif'}
+                                textAlign={'center'}
+                                sx={{
+                                    marginTop: '10px',
+                                    fontSize: '1.2rem',
+                                    fontWeight: '400'
+                                }}
+                            >
+                                No Messages Found
+                            </Typography>
+                        )}
                     </Box>
                 </Box>
             )}

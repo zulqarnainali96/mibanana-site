@@ -82,7 +82,8 @@ const FileUploadContainer = ({
 
   const [project, setProject] = useState(projects?.find((item) => item._id === id))
   const [reloadState, setReloadState] = useState(false)
-  const version1 = project?.add_files[0]?.version1;
+  // const version1 = project?.add_files[0]?.version1;
+  const version1 = project?.add_files?.length > 0 ? project?.add_files[0]?.version1 : []
   const [version, setVersion] = useState(version1);
   const [memberName, setMemberName] = useState([]);
   const [files, setFiles] = useState([]);
@@ -172,7 +173,7 @@ const FileUploadContainer = ({
     setFileMsg("");
     setLoading(true);
     await apiClient
-      .get(`/api/get-customer-files/graphic-design/${id}`)
+      .get(`/api/get-customer-files/${project?.project_category}/${id}`)
       .then(({ data }) => {
         setVersion(data.filesInfo);
         handlePreviewImages(data?.filesInfo)
@@ -433,16 +434,6 @@ const FileUploadContainer = ({
       return [];
     }
   }
-  // const designerFilesforAll = async () => {
-  //   try {
-  //     const response = await apiClient.get("/api/designer-uploads/" + id);
-  //     const { data } = response;
-
-  //     return data.filesInfo || [];
-  //   } catch (err) {
-  //     return [];
-  //   }
-  // };
   const getAllVersionFiles = async () => {
     if (fileVersion?.length === 0) return []
     let allversionfiles = []

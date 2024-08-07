@@ -24,7 +24,7 @@ const useCreateGroupForm = (reduxState, onClose, openSuccessSB, openErrorSB, set
     async function getTeamList() {
         const { data, status } = await apiClient.get('/api/get-team-member-list')
         if (status === 200) {
-            const filterList = data.list.filter( item => item._id !== reduxState.userDetails?.id)
+            const filterList = data.list.filter(item => item._id !== reduxState.userDetails?.id)
             setOptions(filterList)
         } else {
             setOptions([])
@@ -32,12 +32,20 @@ const useCreateGroupForm = (reduxState, onClose, openSuccessSB, openErrorSB, set
     }
 
     const handleGroupForm = async (values, { resetForm }) => {
-        if(selectedOptions.length === 0) return
+        if (selectedOptions.length === 0) return
+        const userData = {
+            _id: reduxState.userDetails?.id,
+            name: reduxState.userDetails?.name,
+            email: reduxState?.userDetails.email,
+            avatar: reduxState?.userDetails.avatar,
+            roles: reduxState?.userDetails.roles,
+        }
         setLoading(true)
         const postData = {
             ...values,
-            participant: selectedOptions,
+            participant: [...selectedOptions, userData],
             group_admin: reduxState.userDetails?.name,
+            admin_id : userData._id,
         }
         try {
             const { data, status } = await apiClient.post('/api/create-group-chat', postData)
@@ -50,7 +58,7 @@ const useCreateGroupForm = (reduxState, onClose, openSuccessSB, openErrorSB, set
                 setTimeout(() => {
                     openSuccessSB()
                 }, 400)
-                setReload(prev=>!prev)
+                setReload(prev => !prev)
             }
         }
         catch (err) {

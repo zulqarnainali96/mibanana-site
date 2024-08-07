@@ -73,7 +73,7 @@ const FileModal = ({ title, open, setOpen }) => {
     const [loading, setLoading] = useState(false)
     const { id } = useParams()
     const project = projects?.find(item => item._id === id)
-    const version1 = project?.add_files[0]?.version1
+    const version1 = project?.add_files?.length > 0 ? project?.add_files[0]?.version1 : []
     const [version, setVersion] = useState(version1)
     const isDesigner = useSelector(state => state.userDetails)?.roles?.includes("Graphic-Designer") ? true : false
     const ismanager = useSelector(state => state.userDetails)?.roles?.includes("Project-Manager") ? true : false

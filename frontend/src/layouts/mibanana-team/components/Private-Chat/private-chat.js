@@ -14,11 +14,13 @@ import { reactQuillStyles2 } from 'assets/react-quill-settings/react-quill-setti
 import { modules } from 'assets/react-quill-settings/react-quill-settings'
 import { formats } from 'assets/react-quill-settings/react-quill-settings'
 import usePrivateChat from './usePrivateChat'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Close } from '@mui/icons-material'
 import FullScreenLoader from 'components/Loader/FullScreenLoader'
 import { BeatLoader } from 'react-spinners'
 import UserOnlineIcon from '../userOnlineicon'
 import "../../miBananaTeamMembers.css";
+import { formatMessageDate } from 'redux/global/table-date'
 
 const PrivateChat = ({
     boxStyles,
@@ -33,7 +35,7 @@ const PrivateChat = ({
 }) => {
     const { name, avatar, roles, _id } = item
     const classes = reactQuillStyles2()
-    const { message, setMessage, chats, loading, sendMessage, privateChatRef, formatMessageDate } = usePrivateChat(userId, _id, name, username, avatar, user_avatar, reduxState, reduxActions, item)
+    const { message, setMessage, chats, loading, sendMessage, privateChatRef } = usePrivateChat(userId, _id, name, username, avatar, user_avatar, reduxState, reduxActions, item)
 
     function avatarImage(item) {
 
@@ -103,6 +105,21 @@ const PrivateChat = ({
         else {
             return null
         }
+    }
+
+    function copyMessageWithHtml(message) {
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = message;
+        document.body.appendChild(tempElement);
+        const range = document.createRange();
+        range.selectNodeContents(tempElement);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        document.body.removeChild(tempElement);
+        selection.removeAllRanges();
+        alert("Message copied to clipboard!");
     }
 
     const chatBoxStyle = { marginLeft: '10px', width: '100%', height: '100%', display: 'flex', padding: '0.5rem', paddingBottom: '14px', overflowY: "scroll", ...scrollStyle, marginBottom: '9px' }
@@ -184,6 +201,11 @@ const PrivateChat = ({
                                                 >
                                                     {formatMessageDate(item.date)}
                                                 </Typography>
+                                                <IconButton
+                                                    onClick={() => copyMessageWithHtml(item.message)}
+                                                    sx={{ position: 'absolute', right: 0, top: 5 }}>
+                                                    <ContentCopyIcon fontSize="small" />
+                                                </IconButton>
                                             </React.Fragment>
                                         }
                                     />

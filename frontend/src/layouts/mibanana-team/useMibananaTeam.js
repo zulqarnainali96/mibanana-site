@@ -202,6 +202,7 @@ const useMibananaTeam = (reduxState, reduxActions) => {
         openSuccessSB,
         openErrorSB,
         setRespMessage,
+        currentUser,
 
         handleFilterChange,
         filteredMembers: [...allGroups, ...filteredMembers],
