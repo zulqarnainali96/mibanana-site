@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import apiClient from 'api/apiClient'
 // import { SocketContext } from 'sockets'
 import { currentUserRole } from 'redux/global/global-functions'
@@ -58,7 +58,7 @@ const useMibananaTeam = (reduxState, reduxActions) => {
     const handleCloseForm = () => {
         setCreate_Form_Open(false)
     }
-   
+
     const getTeamMemberList = async () => {
         setLoading(true)
         await apiClient.get(`/api/get-team-member-list`)
@@ -176,6 +176,27 @@ const useMibananaTeam = (reduxState, reduxActions) => {
         reduxActions.handleUnreadChatMessage(filterTeamMemberUnreadMessage)
     };
 
+    const sortTeamMembers = useCallback(() => {
+        const sortedMembers = [...teamMemberList, ...allGroups].sort((a, b) => {
+          const lastMessageA = reduxState.unread_chat_message.find(msg => 
+            msg.type === 'group-chat' ? msg._id === a._id : msg.sender === a._id
+          );
+          const lastMessageB = reduxState.unread_chat_message.find(msg => 
+            msg.type === 'group-chat' ? msg._id === b._id : msg.sender === b._id
+          );
+      
+          if (!lastMessageA && !lastMessageB) return 0;
+          if (!lastMessageA) return 1;
+          if (!lastMessageB) return -1;
+      
+          return new Date(lastMessageB.date) - new Date(lastMessageA.date);
+        });
+      
+        return sortedMembers;
+      }, [teamMemberList, allGroups, reduxState.unread_chat_message]);
+      
+
+
     useEffect(() => {
         getTeamMemberList()
         handleGroups()
@@ -207,7 +228,8 @@ const useMibananaTeam = (reduxState, reduxActions) => {
         currentUser,
 
         handleFilterChange,
-        filteredMembers: [...allGroups, ...filteredMembers],
+        // filteredMembers: [...allGroups, ...filteredMembers],
+        sortedTeamMembers: sortTeamMembers(),
         open: create_form_open,
         setReload,
         isReload,
