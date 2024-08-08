@@ -14,9 +14,10 @@ import xls from "assets/images/xls.svg";
 
 import { sendingStatusNotification } from 'socket-events/socket-event'
 import ImageAvatar from "assets/mi-banana-icons/default-profile.png";
-import { SocketContext } from 'sockets'
+// import { SocketContext } from 'sockets'
 import { getUserRoles } from 'redux/global/global-functions'
 import { getProjectById } from 'redux/global/global-functions'
+import { useSocket } from 'sockets'
 
 
 const useSocialMediaHook = (reduxState, reduxActions) => {
@@ -64,7 +65,8 @@ const useSocialMediaHook = (reduxState, reduxActions) => {
     const [isViewerOpen, setIsViewerOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(0)
     const fileRef = useRef(null);
-    const socketIO = useRef(useContext(SocketContext));
+    // const socketIO = useRef(useContext(SocketContext));
+    const socketIO = useSocket();
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -242,7 +244,7 @@ const useSocialMediaHook = (reduxState, reduxActions) => {
     const closeErrorSB = () => setErrorSB(false);
 
     function joinChatRoom() {
-        socketIO.current.emit("join-room", id);
+        socketIO.emit("join-room", id);
     }
     const getChatMessage = async () => {
         await apiClient
@@ -559,7 +561,7 @@ const useSocialMediaHook = (reduxState, reduxActions) => {
         };
 
         setMsgArray((prev) => (prev ? [...prev, data.chat_message] : [data.chat_message]));
-        socketIO.current.emit("room-message", data.chat_message, id, team_members);
+        socketIO.emit("room-message", data.chat_message, id, team_members);
         await apiClient
             .put("/chat-message", data)
             .then(({ data }) => {
@@ -771,7 +773,7 @@ const useSocialMediaHook = (reduxState, reduxActions) => {
                         msg: 'New Project assigned',
                         view: true,
                     }
-                    socketIO.current.emit('project-assigned', value._id, message)
+                    socketIO.emit('project-assigned', value._id, message)
                     setTeamMembers(save?.team_members)
                     // setsuccessMessage(data?.message);
                     // setsuccessOpen(true);
@@ -846,12 +848,12 @@ const useSocialMediaHook = (reduxState, reduxActions) => {
         showMenu,
     }
     useEffect(() => {
-        socketIO.current.on("message", (message) => {
+        socketIO.on("message", (message) => {
             if (message !== "") {
                 setMsgArray((prev) => [...prev, message]);
             }
         });
-    }, [socketIO.current]);
+    }, [socketIO]);
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -866,7 +868,7 @@ const useSocialMediaHook = (reduxState, reduxActions) => {
         }
         joinChatRoom();
         return () => {
-            socketIO.current.emit('leave-room', id)
+            socketIO.emit('leave-room', id)
         }
     }, []);
 

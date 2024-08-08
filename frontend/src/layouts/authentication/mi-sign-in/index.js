@@ -16,7 +16,8 @@ import { ArrowForward } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 import reduxContainer from "redux/containers/containers";
 import MoonLoader from "react-spinners/MoonLoader";
-import { SocketContext } from "sockets";
+// import { SocketContext } from "sockets";
+import { useSocket } from 'sockets';
 
 
 const MiSignIn = ({ reduxActions, reduxState }) => {
@@ -24,7 +25,8 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [UiChange, setUiChange] = useState(false);
-  const socketIO = useRef(useContext(SocketContext)); 
+  // const socketIO = useRef(useContext(SocketContext)); 
+  const socketIO = useSocket();
 
   // State for requried field after login
   const [open, setOpen] = useState(false);
@@ -80,7 +82,7 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           openSuccessSB();
           setLoading(false);
           navigate("/board");
-          socketIO.current.connect();
+          socketIO.connect();
         } else {
           setLoading(false);
           throw Error;

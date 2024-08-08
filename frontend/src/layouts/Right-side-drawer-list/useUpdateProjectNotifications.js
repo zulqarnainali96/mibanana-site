@@ -1,14 +1,14 @@
-import { useContext, useEffect, useRef } from 'react'
-import { SocketContext } from 'sockets';
+import { useEffect, useRef } from 'react'
+import { useSocket } from 'sockets';
 
 export const useUpdateProjectNotifications = (reduxActions, reduxState, project_notifications) => {
-    const socketIO = useRef(useContext(SocketContext));
+    const socketIO = useSocket();
 
 
     const updatedNotifications = (unique_key) => {
         const id = reduxState.userDetails?.id
-        socketIO.current.emit('update-current-notification', unique_key, id)
-        socketIO.current.on('send-update-notification-status', (Ok) => {
+        socketIO.emit('update-current-notification', unique_key, id)
+        socketIO.on('send-update-notification-status', (Ok) => {
             if (Ok) {
                 const project_notif = project_notifications?.find(item => item.unique_key === unique_key);
                 if (project_notif) {
@@ -24,8 +24,8 @@ export const useUpdateProjectNotifications = (reduxActions, reduxState, project_
     
     const deleteNotification = (id) => {
         const user_id = reduxState.userDetails?.id
-        socketIO.current.emit('delete-current-notification', id, user_id)
-        socketIO.current.on('confirmation-delete-notification', (done) => {
+        socketIO.emit('delete-current-notification', id, user_id)
+        socketIO.on('confirmation-delete-notification', (done) => {
             if (done) {
                 const deleteNotification = project_notifications?.filter(item => item.unique_key !== id)
                 reduxActions.handleProject_notifications(deleteNotification)

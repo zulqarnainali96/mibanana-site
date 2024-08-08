@@ -61,7 +61,7 @@ const GroupList = ({ allStates, onlineUsers, onlineWidth, member, id }) => {
                                 component="div"
                                 color="textSecondary"
                             >
-                                {member.participant?.map((item,i) => <span key={i}>{item.name + ", " + "  "}</span>)}
+                                {member.participant?.map((item,i) => <span key={i} style={{fontSize:'.9rem'}} >{item.name + ", " + "  "}</span>)}
                             </Typography>
                         </React.Fragment>
                     }

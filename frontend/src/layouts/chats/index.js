@@ -8,21 +8,22 @@ import reduxContainer from "redux/containers/containers";
 import { useSelector } from "react-redux";
 import ImageAvatar from "assets/mi-banana-icons/default-profile.png";
 import "./style.css";
-import MDSnackbar from "components/MDSnackbar";
+// import MDSnackbar from "components/MDSnackbar";
 import FileModal from "./Files Modal/FileModal";
 import FileUploadContainer from "./File-upload-container";
 import { currentUserRole } from "redux/global/global-functions";
 import ChatsContainer from "./Chat-container";
-import { SocketContext } from "sockets";
+// import { SocketContext } from "sockets";
 import { v4 as uuidv4 } from 'uuid';
 import { Action } from 'layouts/ProjectsTable/data/authorsTableData';
 import TransitionsModal from "components/Modal/Modal";
 import TransitionsErrorModal from "components/Modal/ErrorModal";
 import { getUserRoles } from "redux/global/global-functions";
+import { useSocket } from "sockets";
 
 const Chating = ({ reduxState, reduxActions }) => {
-  // const socketIO = useSocket()
-  const socketRef = useRef(useContext(SocketContext));
+  const socketRef = useSocket()
+  // const socketRef = useRef(useContext(SocketContext));
   const role = currentUserRole(reduxState);
   const options = {
     timeZone: 'Europe/Berlin',
@@ -97,7 +98,7 @@ const Chating = ({ reduxState, reduxActions }) => {
     };
 
     setMsgArray((prev) => (prev ? [...prev, data.chat_message] : [data.chat_message]));
-    socketRef.current.emit("room-message", data.chat_message, id, team_members);
+    socketRef.emit("room-message", data.chat_message, id, team_members);
     await apiClient
       .put("/chat-message", data)
       .then(({ data }) => {
@@ -133,7 +134,7 @@ const Chating = ({ reduxState, reduxActions }) => {
   function joinChatRoom() {
     // setHideChatBox(true);
     // socketRef.current.emit("room-message", "", id);
-    socketRef.current.emit("join-room", id);
+    socketRef.emit("join-room", id);
   }
 
   const getChatMessage = async () => {
@@ -151,12 +152,12 @@ const Chating = ({ reduxState, reduxActions }) => {
   };
 
   useEffect(() => {
-    socketRef.current.on("message", (message) => {
+    socketRef.on("message", (message) => {
       if (message !== "") {
         setMsgArray((prev) => [...prev, message]);
       }
     });
-  }, [socketRef.current]);
+  }, [socketRef]);
 
   useEffect(() => {
     getChatMessage();

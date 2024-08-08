@@ -10,9 +10,10 @@ import "./../../../examples/new-table/table-style.css"
 import OptionsList from "./options-list";
 import { sendingStatusNotification } from "socket-events/socket-event";
 import { customerSendingNotification } from "socket-events/socket-event";
-import { SocketContext } from "sockets";
+// import { SocketContext } from "sockets";
 import TransitionsModal from "components/Modal/Modal";
 import { getForReviewApiAccordingToProject, getOngoingApiAccordingToProject, getCompletedApiAccordingToProject, getDuplicateApiAccordingToProject, getDeleteApiAccordingToProject, getCancelApiAccordingToProject } from "redux/global/global-functions";
+import { useSocket } from "sockets";
 
 export const Author = ({ name, }) => (
   <MDBox lineHeight={1}>
@@ -40,7 +41,8 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
   const [loading5, setLoading5] = useState(false)
   const [loading6, setLoading6] = useState(false)
   const [openModal, setOpenModal] = useState(false)
-  const socketIO = useRef(useContext(SocketContext));
+  // const socketIO = useRef(useContext(SocketContext));
+  const socketIO = useSocket();
 
   const handleMenuOpen = (event) => {
     event.preventDefault()

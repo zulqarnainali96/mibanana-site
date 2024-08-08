@@ -2,7 +2,8 @@ import apiClient from 'api/apiClient';
 import { useContext, useEffect, useRef, useState, useCallback } from 'react';
 import { notificationSound } from 'redux/global/global-functions';
 import { currentUserRole } from 'redux/global/global-functions';
-import { SocketContext } from 'sockets';
+import { useSocket } from 'sockets';
+// import { SocketContext } from 'sockets';
 import { v4 as uuid } from 'uuid';
 
 const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, reduxState, reduxActions, item) => {
@@ -10,7 +11,8 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
     const [message, setMessage] = useState("");
     const [unreadMessages, setUnreadMessages] = useState(0);
     const role = currentUserRole(reduxState);
-    const socketIO = useRef(useContext(SocketContext));
+    // const socketIO = useRef(useContext(SocketContext));
+    const socketIO = useSocket();
     const privateChatRef = useRef(null);
 
     const handleRole = () => {
@@ -51,7 +53,7 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
             setMessage("");
             await apiClient.post(`/api/create-personal-chat/${user_id}/${receiver}`, msg);
             if (item?.hasOwnProperty('status')) {
-                socketIO.current.emit('send-private-message', msg, receiver, user_id);
+                socketIO.emit('send-private-message', msg, receiver, user_id);
             }
         } catch (error) {
             console.log(error);
@@ -105,13 +107,13 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
         getPersonalChat();
 
         return () => {
-            socketIO.current.emit('leave-room', receiver);
+            socketIO.emit('leave-room', receiver);
         };
     }, [receiver]);
 
     useEffect(() => {
         if (!handleRole()?.customer || !handleRole()?.admin) {
-            socketIO.current.on('receive-private-message', (msg) => {
+            socketIO.on('receive-private-message', (msg) => {
                 notificationSound();
                 reduxActions.privateChatMesage(msg);
                 if (document.hidden) {
@@ -121,10 +123,10 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
             console.log('usePrivateChat')
 
             return () => {
-                socketIO.current.off('receive-private-message');
+                socketIO.off('receive-private-message');
             };
         }
-    }, [socketIO.current]);
+    }, []);
 
     useEffect(() => {
         if (privateChatRef.current) {

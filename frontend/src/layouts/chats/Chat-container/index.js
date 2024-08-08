@@ -20,7 +20,7 @@ import { useParams } from 'react-router-dom';
 import MDButton from 'components/MDButton';
 import apiClient from 'api/apiClient';
 import { sendingStatusNotification } from 'socket-events/socket-event';
-import { SocketContext } from 'sockets';
+// import { SocketContext } from 'sockets';
 import { getProjectData } from 'redux/global/global-functions';
 import { ArrowForward } from '@mui/icons-material';
 import { MoonLoader } from 'react-spinners';
@@ -30,6 +30,7 @@ import { currentUserRole } from 'redux/global/global-functions';
 import TransitionsModal from 'components/Modal/Modal';
 import { handleRole } from 'redux/global/global-functions';
 import { getProjectById } from 'redux/global/global-functions';
+import { useSocket } from 'sockets';
 
 const ChatsContainer = ({
     chatContainerRef,
@@ -52,7 +53,9 @@ const ChatsContainer = ({
     const userId = reduxState?.userDetails?.id
     const is500 = useMediaQuery("(max-width:500px)")
     const [loading, setLoading] = useState(false)
-    const socketIO = useRef(useContext(SocketContext));
+    // const socketIO = useRef(useContext(SocketContext));
+    const socketIO = useSocket();
+
     const role = currentUserRole(reduxState);
     const { id } = useParams();
     const currentProject = reduxState?.project_list?.CustomerProjects?.find(item => item._id === id);

@@ -1,7 +1,6 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { SocketContext } from 'sockets';
 import { getProjectData } from "redux/global/global-functions";
 import { getBrandData } from "redux/global/global-functions";
 import { reRenderChatComponent } from "redux/actions/actions";
@@ -17,10 +16,12 @@ import { currentUserRole } from 'redux/global/global-functions';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import { notificationSound } from 'redux/global/global-functions';
+import { useSocket } from 'sockets';
 let image = "image/"
 
 const useNavbarHook = (reduxState, reduxActions) => {
-    const socketIO = useRef(useContext(SocketContext));
+    const socketIO = useSocket();
+
     const location = useLocation();
 
     const collapseName = location.pathname.replace("/", "");
@@ -247,7 +248,7 @@ const useNavbarHook = (reduxState, reduxActions) => {
                         user: reduxState?.userDetails?.id,
                         project_id: resp.data?.project._id,
                     };
-                    socketIO.current.emit('new-project', projectData)
+                    socketIO.emit('new-project', projectData)
                     setRespMessage("Project Created Successfully");
                     reduxActions.getNew_Brand(!reduxState?.new_brand);
                     let param = [
@@ -360,7 +361,7 @@ const useNavbarHook = (reduxState, reduxActions) => {
             persistStore(store).purge();
             localStorage.removeItem("user_details");
             navigate("/authentication/mi-sign-in");
-            socketIO.current.disconnect()
+            socketIO.disconnect()
         } catch (error) {
             console.error("Logout failed:", error);
         }
@@ -415,11 +416,11 @@ const useNavbarHook = (reduxState, reduxActions) => {
     }, [showAccountsbtn])
 
     useEffect(() => {
-        socketIO.current.on('connect', () => {
+        socketIO.on('connect', () => {
             const userId = reduxState?.userDetails?.id
             const user_name = reduxState?.userDetails?.name
             const roles = reduxState?.userDetails?.roles
-            socketIO.current.emit('user_online', true, userId, roles, user_name)
+            socketIO.emit('user_online', true, userId, roles, user_name)
         })
     }, [])
 
@@ -428,78 +429,78 @@ const useNavbarHook = (reduxState, reduxActions) => {
         const user_name = reduxState?.userDetails?.name
         const roles = reduxState?.userDetails?.roles
 
-        socketIO.current.emit('user_online', true, userId, roles, user_name)
+        socketIO.emit('user_online', true, userId, roles, user_name)
         const id = reduxState?.userDetails?.id;
         projectNotifications(id, reduxActions.handleProject_notifications)
     }, [])
 
     useEffect(() => {
-        socketIO.current.on('active_users', (online_users) => {
+        socketIO.on('active_users', (online_users) => {
             const filterUserArray = online_users.filter(user => user.id !== reduxState?.userDetails?.id)
             // console.log(filterUserArray)
             reduxActions.handleOnlineUsers(filterUserArray)
         })
         if (handleRole()?.projectManager) {
-            socketIO.current.on('new-project-notification', project_data => {
+            socketIO.on('new-project-notification', project_data => {
                 getProjectData(reduxState?.userDetails?.id, reduxActions.getCustomerProject)
                 notificationSound()
                 reduxActions.handleProject_notifications(project_data)
             })
         }
         if (handleRole()?.customer) {
-            socketIO.current.on('status-change-notification', project_data => {
+            socketIO.on('status-change-notification', project_data => {
                 reduxActions.handleProject_notifications(project_data)
             })
         }
 
         if (handleRole()?.projectManager || handleRole()?.teamMember) {
-            socketIO.current.on('getting-customer-notifications', (project_data, id, status) => {
+            socketIO.on('getting-customer-notifications', (project_data, id, status) => {
                 const filterProject = reduxState?.project_list.CustomerProjects?.map(project => {
                     return project._id === id ? { ...project, status: status } : project
                 })
                 reduxActions.getCustomerProject({ ...reduxState?.projects_list, CustomerProjects: filterProject })
                 reduxActions.handleProject_notifications(project_data)
             })
-            socketIO.current.on('send-private-message-notification', (message) => {
+            socketIO.on('send-private-message-notification', (message) => {
                 console.log('message', message)
                 notificationSound()
                 reduxActions.handleUnreadChatMessage(message)
             })
-            socketIO.current.on('group-msg-notification', (message) => {
+            socketIO.on('group-msg-notification', (message) => {
                 console.log('message', message)
                 notificationSound()
                 reduxActions.handleUnreadChatMessage(message)
             })
         }
         if (handleRole()?.teamMember) {
-            socketIO.current.on('new-project-assigned', message => {
+            socketIO.on('new-project-assigned', message => {
                 reduxActions.handleProject_notifications(message)
             })
         }
 
-        socketIO.current.on('chat-message-notification', message => {
+        socketIO.on('chat-message-notification', message => {
             reduxActions.handleProject_notifications(message)
             console.log('message', message);
         })
         return () => {
-            socketIO.current.off('chat-message-notification')
+            socketIO.off('chat-message-notification')
             if (role?.designer) {
-                socketIO.current.off('new-project-assigned')
+                socketIO.off('new-project-assigned')
             }
             if (role?.projectManager || role?.designer) {
-                socketIO.current.off('getting-customer-notifications')
+                socketIO.off('getting-customer-notifications')
             }
             if (role?.projectManager) {
-                socketIO.current.off('new-project-notification')
+                socketIO.off('new-project-notification')
             }
             if (role?.customer) {
-                socketIO.current.off('status-change-notification')
+                socketIO.off('status-change-notification')
             }
         }
-    }, [socketIO.current])
+    }, [socketIO])
 
     useEffect(() => {
-        socketIO.current.connect()
+        socketIO.connect()
     }, [])
 
     useEffect(() => {

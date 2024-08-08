@@ -1,9 +1,10 @@
 import apiClient from "api/apiClient";
-import { SocketContext } from "sockets";
+// import { SocketContext } from "sockets";
 import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { currentUserRole } from "redux/global/global-functions";
 import { v4 as uuid } from 'uuid';
 import { notificationSound } from "redux/global/global-functions";
+import { useSocket } from "sockets";
 
 const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar, user_avatar, reduxState, reduxActions, item) => {
     const [loading, setLoading] = useState(false);
@@ -11,7 +12,8 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
     const [message, setMessage] = useState("");
     const [unreadMessages, setUnreadMessages] = useState(0);
     const role = currentUserRole(reduxState);
-    const socketIO = useRef(useContext(SocketContext));
+    // const socketIO = useRef(useContext(SocketContext));
+    const socketIO = useSocket();
     const privateChatRef = useRef(null);
 
     const [open, setOpen] = useState(false);
@@ -41,7 +43,7 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
             return;
         }
         const msg = userOnline();
-        socketIO.current.emit('send-group-message', { _id: item._id, ...msg }, item._id);
+        socketIO.emit('send-group-message', { _id: item._id, ...msg }, item._id);
         reduxActions.handleGroupMessage(msg);
         setMessage("");
     };
@@ -153,7 +155,7 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
         getGroupChatData();
 
         return () => {
-            socketIO.current.emit('leave-room', item._id);
+            socketIO.emit('leave-room', item._id);
         };
     }, [item._id]);
 
@@ -165,7 +167,7 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
 
     useEffect(() => {
         if (!handleRole()?.customer || !handleRole()?.admin) {
-            socketIO.current.on('receive-group-message', (msg) => {
+            socketIO.on('receive-group-message', (msg) => {
                    notificationSound();
                 reduxActions.handleGroupMessage(msg);
                 if (document.hidden) {
@@ -174,10 +176,10 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
             });
             console.log('useGroupChat')
             return () => {
-                socketIO.current.off('receive-group-message');
+                socketIO.off('receive-group-message');
             }
         }
-    }, [socketIO.current]);
+    }, [socketIO]);
 
     return {
         open,

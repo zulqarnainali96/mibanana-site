@@ -24,8 +24,6 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useMediaQuery } from "@mui/material";
 import MainComponent from "main-comp";
-import { SocketContext, socket } from "sockets";
-import { io } from 'socket.io-client';
 import { handleRole } from "redux/global/global-functions";
 
 export default function App() {
@@ -149,7 +147,6 @@ export default function App() {
   );
 
   return (
-    <SocketContext.Provider value={socket}>
       <MainComponent >
         <ThemeProvider theme={darkMode ? themeDark : theme}>
           <CssBaseline />
@@ -200,6 +197,5 @@ export default function App() {
           </MDBox>
         </ThemeProvider>
       </MainComponent>
-    </SocketContext.Provider>
   );
 }

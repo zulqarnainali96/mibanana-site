@@ -1,8 +1,9 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import apiClient from 'api/apiClient'
-import { SocketContext } from 'sockets'
+// import { SocketContext } from 'sockets'
 import { currentUserRole } from 'redux/global/global-functions'
 import { handleRole } from 'redux/global/global-functions'
+import { useSocket } from 'sockets'
 
 const useMibananaTeam = (reduxState, reduxActions) => {
     const [teamMemberList, setTeamMemberList] = useState([])
@@ -12,7 +13,8 @@ const useMibananaTeam = (reduxState, reduxActions) => {
     const user_id = reduxState?.userDetails?.id
     const username = reduxState?.userDetails?.name
     const user_avatar = reduxState?.userDetails?.avatar
-    const socketIO = useRef(useContext(SocketContext));
+    // const socketIO = useRef(useContext(SocketContext));
+    const socketIO = useSocket();
     const [create_form_open, setCreate_Form_Open] = useState(false)
     const role = currentUserRole(reduxState)
     const [allGroups, setAllGroups] = useState([])
@@ -39,12 +41,12 @@ const useMibananaTeam = (reduxState, reduxActions) => {
     const handleSingleChat = (item) => {
         if (item.hasOwnProperty('group_name')) {
             setSingleChat(item)
-            socketIO.current.emit('join-room', item._id)
+            socketIO.emit('join-room', item._id)
         } else {
             const userOnline = reduxState.onlineUser?.find(user => user.id === item._id)
             if (userOnline) {
                 setSingleChat({ ...item, socketID: userOnline.socketID, status: userOnline.status })
-                socketIO.current.emit('join-room', item._id)
+                socketIO.emit('join-room', item._id)
             } else {
                 setSingleChat(item)
             }

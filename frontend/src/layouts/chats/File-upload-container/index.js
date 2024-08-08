@@ -42,8 +42,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import CachedIcon from "@mui/icons-material/Cached";
 import ProjectFilesFolder from "./project-filter-button/project-files-folder";
 import { getProjectById } from "redux/global/global-functions";
-import { SocketContext } from "sockets";
+// import { SocketContext } from "sockets";
 import TransitionsModal from "components/Modal/Modal";
+import { useSocket } from "sockets";
 
 const uploadBtn = {
   backgroundColor: "#98e225",
@@ -98,7 +99,8 @@ const FileUploadContainer = ({
   const [successOpen, setsuccessOpen] = useState(false);
   const [successMessage, setsuccessMessage] = useState("");
   const [currentImage, setCurrentImage] = useState(0)
-  const socketIO = useContext(SocketContext)
+  // const socketIO = useContext(SocketContext)
+  const socketIO = useSocket()
 
   const [designerLoading, setDesignerLoading] = useState(false)
   const [teamMembers, setTeamMembers] = useState(project?.team_members)

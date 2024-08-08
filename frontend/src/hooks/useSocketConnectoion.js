@@ -1,7 +1,7 @@
 import { io } from "socket.io-client"
 
 export const SocketConnection = (cb, unique_key, id, roles, socketIO) => {
-    if (socketIO.current) {
+    if (socketIO) {
         cb(unique_key)
     } else {
         const socket = io("http://localhost:4000", {

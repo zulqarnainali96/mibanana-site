@@ -114,7 +114,7 @@ const CopyWritingForm = ({
                 }
                 setTimeout(() => {
                     reduxActions.handleGetAllProjects(!reduxState.project_call)
-                    socketIO.current.emit('new-project', socketMsg)
+                    socketIO.emit('new-project', socketMsg)
                     openSuccessSB();
                 }, 500);
             }
