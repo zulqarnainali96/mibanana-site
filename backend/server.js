@@ -10,8 +10,6 @@ const { logEvents } = require('./middleware/logs')
 const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
 const task = require('./controllers/Projects/Graphic_design/projects_task_scheduler')
-const projects = require('./models/graphic-design-model')
-const User = require('./models/UsersLogin')
 
 const PORT = process.env.PORT
 //App Config
@@ -27,13 +25,13 @@ app.use('/authentication/mi-sign-up', require('./routes/userRoutes'))
 app.get('/test', (req, res) => {
     res.send("Working")
 })
+
 app.use(errorHandler)
 mongoose.connection.once('open', () => {
     console.log(`Connected to MongoDB`)
     app.listen(PORT, () => {
         console.log(`Server started on Port : ${PORT}`)
         // task.start() 
-        // addProjectCategorytoProjectNotifications()
     })
 })
 mongoose.connection.on('error', error => {

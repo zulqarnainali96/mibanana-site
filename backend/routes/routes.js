@@ -117,7 +117,7 @@ router.get("/auth/user/:id/verify/:token", verifyToken)
 
 // Route for posting adding and get project files
 
-router.post('/file/google-cloud/', uploadFiles.array('files', 7), uploadFile)
+router.post('/api/file/upload-files/', uploadFiles.array('files', 7), uploadFile)
 router.post('/file/get-files', getFiles)
 router.get('/get-files/download/:name', downloadFile) // Not added on api documentation
 

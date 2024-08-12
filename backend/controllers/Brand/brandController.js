@@ -1,12 +1,15 @@
 const brand_model = require("../../models/Brands/brandModel")
+const Projects = require('../../models/graphic-design-model')
 const { bucket } = require("../../google-cloud-storage/gCloudStorage")
 const User = require("../../models/UsersLogin")
 const path = require('path')
 const { v4: uniqID } = require('uuid')
+const { findRole } = require("../../utils/helper")
 
 const createBrand = async (req, res) => {
     const { user, name, brand_name, brand_description, web_url, facebook_url, instagram_url, twitter_url, linkedin_url, tiktok_url } = req.body
     const files = req.files
+    console.log(files)
     if (!files.length) {
         return res.status(402).send({ message: 'Please provide logo images' })
     }
@@ -111,18 +114,22 @@ const getBrandList = async (req, res) => {
         return res.status(402).send({ message: 'ID not provided Try login again' })
     }
     try {
-        const brands = await brand_model.find({ user: user }).lean().exec()
-        const [users] = await User.find({ _id: user })
-        if (users?.roles.includes("Admin") || users?.roles.includes("Project-Manager") || users?.roles.includes("Graphic-Designer")) {
-            const allBrands = await brand_model.find()
-            return res.status(200).send({ message: 'All List Found', brandList: allBrands })
+        const users = await User.findOne({ _id: user })
+        if (findRole(users).teamMember) {
+            let memberProject = await Projects.find()
+            memberProject = memberProject.filter(project => {
+                if (project.team_members._id === user) return project.brand
+            })
+            const findOwnProject = await brand_model.find({ user })
+            return res.status(200).send({ message: 'List Found', brandList: [...memberProject, ...findOwnProject] })
         }
-        else {
-            if (brands !== null) {
-                return res.status(200).send({ message: 'List Found', brandList: brands })
-            } else {
-                return res.status(400).json({ message: 'No brand found' })
-            }
+        if (findRole(users).projectManager || findRole(users).admin) {
+            const memberProject = await brand_model.find()
+            return res.status(200).send({ message: 'List Found', brandList: memberProject })
+        }
+        else if (findRole(users).customer) {
+            const findOwnProject = await brand_model.find({ user })
+            return res.status(200).send({ message: 'List Found', brandList: findOwnProject })
         }
     } catch (err) {
         res.status(500).send({ message: 'Internal Server error' })
@@ -139,15 +146,17 @@ const deleteBrandList = async (req, res) => {
         if (findBrand) {
             const { files, _id } = findBrand
             // Delete brand files from storage
-            for (let v = 0; files.length > v; v++) {
-                const file = files[v];
-                const prefix = file.folder_name + file.name
-                await bucket.file(prefix).delete().then(() => {
-                    console.log('Files deleted from storage')
-                }).catch(err => {
-                    console.log(err)
-                    return res.status(500).send({ message: 'Failed to delete file Try again', err })
-                })
+            if (files.length > 0) {
+                for (let v = 0; files.length > v; v++) {
+                    const file = files[v];
+                    const prefix = file.folder_name + file.name
+                    await bucket.file(prefix).delete().then(() => {
+                        console.log('Files deleted from storage')
+                    }).catch(err => {
+                        console.log(err)
+                        return res.status(500).send({ message: 'Failed to delete file Try again', err })
+                    })
+                }
             }
             const deleteBrand = await brand_model.findByIdAndRemove(_id)
             if (deleteBrand) return res.status(200).send({ message: 'Brand Deleted' })

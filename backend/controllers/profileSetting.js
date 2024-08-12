@@ -84,43 +84,4 @@ const getCompanyDetails = asyncHandler(async (req, res) => {
 })
 
 
-// Profile Api Functions 
-
-// const createProfileData = asyncHandler(async (req, res) => {
-//     const { id, phone, email, fullName, image } = req.body
-//     if (!id) {
-//         return res.status(400).json({ message: "Invalid UserID Please Login again" })
-//     }
-//     if (!email && !fullName) {
-//         return res.status(400).json({ message: "email, fullName are required fields" })
-//     }
-//     if (email && fullName && id) {
-//         const creatingProfileObj = await ProfileDetails.create({user : id, email, fullName, phone, image })
-//         if (creatingProfileObj) {
-//             return res.status(200).json({ message: "Profile Data Created" })
-//         }
-//         else {
-//             return res.status(400).json({ message: "Invalid User Data" })
-//         }
-//     }
-//     return res.status(404).json({ message: 'Unable to create data' })
-// })
-
-// const getProfileData = asyncHandler(async (req, res) => {
-//     const { id } = req.body
-//     if (!id) {
-//         return res.status(400).json({ message: "Invalid UserID Please Login again" })
-//     }
-//     if (id) {
-//         const ProfileData = await ProfileDetails.find({ user: id }).exec()
-//         if (ProfileData?.length) {
-//             return res.status(200).json({ ProfileData })
-//         } else {
-//             return res.status(404).json({ message: "No Data Found" })
-//         }
-//     }
-//     return res.status(404).json({ message: "Invalid ID" })
-// })
-
-
 module.exports = { postCompanyDetails, getCompanyDetails, updateProfile }

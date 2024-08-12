@@ -5,6 +5,7 @@ const graphicDesignerProjects = require("../../../models/team_members/graphic_mo
 const User = require("../../../models/UsersLogin")
 ///
 const asyncHandler = require("express-async-handler")
+const { findRole } = require("../../../utils/helper")
 
 const createGraphicProject = asyncHandler(async (req, res) => {
     const { designer_project_list, user, id } = req.body // Here Graphic Desiger ID is required of which Project manager  has Projects,
@@ -96,8 +97,8 @@ const getTeamMemberList = async (req, res) => {
     const category = req.params.category
     if (!id) return res.status(400).send("Please provide ID")
     if (id) {
-        const user = await User.find({ _id: id }).exec()
-        if (user[0] !== null && user[0].roles.includes("Project-Manager")) {
+        const user = await User.findOne({ _id: id }).exec()
+        if (findRole(user).projectManager || findRole(user).teamMember || findRole(user).admin) {
             const allUser = await User.find().select('-password').lean().exec()
             if (category === 'mobile-app-development') {
                 const mobileDev = allUser.filter(item =>
@@ -186,7 +187,7 @@ const getTeamMemberList = async (req, res) => {
             }
         }
         else {
-            return res.status(400).send('You are not allowed')
+            return res.status(400).send('User not found')
         }
     }
 }

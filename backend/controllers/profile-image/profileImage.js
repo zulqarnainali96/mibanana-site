@@ -1,8 +1,5 @@
 const { bucket } = require('../../google-cloud-storage/gCloudStorage')
 const User = require('../../models/UsersLogin')
-const { v4: uniqID } = require('uuid')
-const path = require('path')
-
 
 const UploadProfileImage = async (req, res) => {
     const id = req.params.id
@@ -18,8 +15,7 @@ const UploadProfileImage = async (req, res) => {
         if (!user) return res.status(404).send({ message: 'User not Found try login again' })
 
         if (req.file) {
-            let username = user.name.replace(/\s/g, '')
-            const location = `${username}-${user._id}/profile-image/`
+            const location = `${user._id}/profile-image/`
             const [profile] = await bucket.getFiles({ prefix: location })
             if (profile.length > 0) {
                 await Promise.all(profile.map(async (file) => {
@@ -36,8 +32,7 @@ const UploadProfileImage = async (req, res) => {
         user.name = req.body.fullname
         user.email = req.body.email
         user.phone_no = req.body.phone_no
-        let name = user.name.replace(/\s/g, '')
-        const prefix = `${name}-${user._id}/profile-image/`
+        const prefix = `${user._id}/profile-image/`
         const blob = bucket.file(prefix + req.file.originalname)
         blob.createWriteStream({ resumable: false }).on('finish', async () => {
             const [file] = await bucket.getFiles({ prefix })
@@ -48,12 +43,9 @@ const UploadProfileImage = async (req, res) => {
                     return obj
                 })
                 if (filesInfo.length > 0) {
-
                     const [profile] = filesInfo
-                    // console.log(profile.url)
                     user.avatar = profile.url
                     const profileData = await user.save()
-
                     if (profileData) {
                         const {name, email,phone_no, avatar} = profileData
                         return res.status(201).send({

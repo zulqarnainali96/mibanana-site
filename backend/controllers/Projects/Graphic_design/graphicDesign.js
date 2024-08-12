@@ -9,6 +9,7 @@ const copyWritingModel = require('../../../models/projects/copy-writing/copy-wri
 const socialMediaModal = require('../../../models/projects/social-media-modal/social-media-modal')
 const websiteModal = require('../../../models/projects/website-model/website-model')
 const webAppModel = require("../../../models/projects/web-app/web-app-model")
+const { findRole } = require("../../../utils/helper")
 
 const createGraphicDesign = asyncHandler(async (req, res) => {
     const {
@@ -165,151 +166,148 @@ const getGraphicProject = asyncHandler(async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: "ID not provided Try Login again" })
     }
-    if (id) {
-        const findUser = await User.findOne({ _id: id }).exec()
-        if (findUser) {
-            const Roles = findUser.roles
-            // Project-Manager
-            if (Roles.includes("Project-Manager")) {
-                const graphic_projects = await graphicDesignModel.find().exec()
-                const mobile_app_projects = await mobileAppModel.find().exec()
-                const web_app_projects = await webappModel.find().exec()
+    const findUser = await User.findOne({ _id: id }).exec()
+    if (findUser) {
+        const Roles = findUser.roles
+        // Project-Manager
+        if (findRole(findUser).projectManager) {
+            const graphic_projects = await graphicDesignModel.find().exec()
+            const mobile_app_projects = await mobileAppModel.find().exec()
+            const web_app_projects = await webappModel.find().exec()
 
-                const website_projects = await websiteModal.find().exec()
-                const social_media_projects = await socialMediaModal.find().exec()
-                const copy_write_projects = await copyWritingModel.find().exec()
+            const website_projects = await websiteModal.find().exec()
+            const social_media_projects = await socialMediaModal.find().exec()
+            const copy_write_projects = await copyWritingModel.find().exec()
 
-                let CustomerProjects = [...graphic_projects, ...mobile_app_projects, ...web_app_projects, ...website_projects, ...social_media_projects, ...copy_write_projects]
-                if (CustomerProjects.length > 0) {
-                    return res.status(200).send({
-                        message: 'hello Manager',
-                        CustomerProjects
-                    })
-                } else {
-                    return res.status(200).send({
-                        message: 'no projects found', CustomerProjects: []
-                    })
-                }
-            }
-            // Admin
-            else if (Roles.includes("Admin")) {
-                const graphic_projects = await graphicDesignModel.find().exec()
-                const mobile_app_projects = await mobileAppModel.find().exec()
-                const web_app_projects = await webappModel.find().exec()
-                const website_projects = await websiteModal.find().exec()
-                const social_media_projects = await socialMediaModal.find().exec()
-                const copy_write_projects = await copyWritingModel.find().exec()
-                let CustomerProjects = [...graphic_projects, ...mobile_app_projects, ...web_app_projects, ...website_projects, ...social_media_projects, ...copy_write_projects]
-
-                if (CustomerProjects.length > 0) {
-                    return res.status(200).send({
-                        message: 'Hello Admin',
-                        CustomerProjects
-                    })
-                } else {
-                    return res.status(200).send({
-                        message: 'no projects found', CustomerProjects: []
-                    })
-                }
-            }
-            // Customer
-            else if (Roles.includes("Customer")) {
-                const graphic_projects = await graphicDesignModel.find({ user: id }).exec()
-                const mobile_app_projects = await mobileAppModel.find({ user: id }).exec()
-                const web_app_projects = await webappModel.find().exec()
-                const website_projects = await websiteModal.find({ user: id }).exec()
-                const social_media_projects = await socialMediaModal.find({ user: id }).exec()
-                const copy_write_projects = await copyWritingModel.find({ user: id }).exec()
-                let CustomerProjects = [...graphic_projects, ...mobile_app_projects, ...web_app_projects, ...website_projects, ...social_media_projects, ...copy_write_projects]
-
-                if (CustomerProjects.length > 0) {
-                    return res.status(200).send({
-                        message: 'Hello customer',
-                        CustomerProjects
-                    })
-                } else {
-                    return res.status(200).send({
-                        message: 'no projects found', CustomerProjects: []
-                    })
-                }
-            }
-            // Graphic-Designer
-            else if (Roles.includes("Graphic-Designer")) {
-                const getList = await graphicDesignModel.find().lean().exec()
-                if (getList) {
-                    // console.log(id)
-                    const filteredData = getList.filter(item =>
-                        item.team_members.some(member => member._id === id)
-                    );
-                    // console.log(filteredData);
-                    return res.status(200).send({
-                        message: 'hello designer', CustomerProjects: filteredData
-                    })
-                }
-            }
-            // Mobile-App-Developer
-            else if (Roles.includes("Mobile-App-Developer")) {
-                const getList = await mobileAppModel.find().lean().exec()
-                if (getList) {
-                    // console.log(id)
-                    const filteredData = getList.filter(item =>
-                        item.team_members.some(member => member._id === id)
-                    );
-                    // console.log(filteredData);
-                    return res.status(200).send({
-                        message: 'hello Mobile-App-Developer', CustomerProjects: filteredData
-                    })
-                }
-            }
-            else if (Roles.includes("Copy-Writer")) {
-                const getList = await copyWritingModel.find().lean().exec()
-                if (getList) {
-                    // console.log(id)
-                    const filteredData = getList.filter(item =>
-                        item.team_members.some(member => member._id === id)
-                    );
-                    // console.log(filteredData);
-                    return res.status(200).send({
-                        message: 'hello Mobile-App-Developer', CustomerProjects: filteredData
-                    })
-                }
-            }
-            else if (Roles.includes("Social-Media-Manager")) {
-                const getList = await copyWritingModel.find().lean().exec()
-                if (getList) {
-                    // console.log(id)
-                    const filteredData = getList.filter(item =>
-                        item.team_members.some(member => member._id === id)
-                    );
-                    // console.log(filteredData);
-                    return res.status(200).send({
-                        message: 'hello Mobile-App-Developer', CustomerProjects: filteredData
-                    })
-                }
-            }
-            else if (Roles.includes("Web-Developer")) {
-                let filtered_website_project = []
-                let filtered_web_app_project = []
-                const website_projects = await websiteModal.find().lean().exec()
-                const web_app_projects = await webAppModel.find().lean().exec()
-
-                if (website_projects) {
-                    filtered_website_project = website_projects.filter(item =>
-                        item.team_members.some(member => member._id === id)
-                    );
-                }
-                if (web_app_projects) {
-                    filtered_web_app_project = web_app_projects.filter(item =>
-                        item.team_members.some(member => member._id === id)
-                    );
-                }
+            let CustomerProjects = [...graphic_projects, ...mobile_app_projects, ...web_app_projects, ...website_projects, ...social_media_projects, ...copy_write_projects]
+            if (CustomerProjects.length > 0) {
                 return res.status(200).send({
-                    message: 'hello Mobile-App-Developer', CustomerProjects: [...filtered_website_project, ...filtered_web_app_project]
+                    message: 'hello Manager',
+                    CustomerProjects
+                })
+            } else {
+                return res.status(200).send({
+                    message: 'no projects found', CustomerProjects: []
                 })
             }
         }
+        // Admin
+        else if (findRole(findUser).admin) {
+            const graphic_projects = await graphicDesignModel.find().exec()
+            const mobile_app_projects = await mobileAppModel.find().exec()
+            const web_app_projects = await webappModel.find().exec()
+            const website_projects = await websiteModal.find().exec()
+            const social_media_projects = await socialMediaModal.find().exec()
+            const copy_write_projects = await copyWritingModel.find().exec()
+            let CustomerProjects = [...graphic_projects, ...mobile_app_projects, ...web_app_projects, ...website_projects, ...social_media_projects, ...copy_write_projects]
+
+            if (CustomerProjects.length > 0) {
+                return res.status(200).send({
+                    message: 'Hello Admin',
+                    CustomerProjects
+                })
+            } else {
+                return res.status(200).send({
+                    message: 'no projects found', CustomerProjects: []
+                })
+            }
+        }
+        // Customer
+        else if (findRole(findUser).customer) {
+            const graphic_projects = await graphicDesignModel.find({ user: id }).exec()
+            const mobile_app_projects = await mobileAppModel.find({ user: id }).exec()
+            const web_app_projects = await webappModel.find({ user: id }).exec()
+            const website_projects = await websiteModal.find({ user: id }).exec()
+            const social_media_projects = await socialMediaModal.find({ user: id }).exec()
+            const copy_write_projects = await copyWritingModel.find({ user: id }).exec()
+            let CustomerProjects = [...graphic_projects, ...mobile_app_projects, ...web_app_projects, ...website_projects, ...social_media_projects, ...copy_write_projects]
+
+            if (CustomerProjects.length > 0) {
+                return res.status(200).send({
+                    message: 'Hello customer',
+                    CustomerProjects
+                })
+            } else {
+                return res.status(200).send({
+                    message: 'no projects found', CustomerProjects: []
+                })
+            }
+        }
+        // Graphic-Designer
+        else if (Roles.includes("Graphic-Designer")) {
+            const getList = await graphicDesignModel.find().lean().exec()
+            const graphic_projects = await graphicDesignModel.find({ user: id }).exec()
+            if (getList) {
+                const filteredData = getList.filter(item =>
+                    item.team_members.some(member => member._id === id)
+                );
+                return res.status(200).send({
+                    message: 'hello designer', CustomerProjects: [...filteredData, ...graphic_projects]
+                })
+            }
+        }
+        // Mobile-App-Developer
+        // else if (Roles.includes("Mobile-App-Developer")) {
+        //     const getList = await mobileAppModel.find().lean().exec()
+        //     if (getList) {
+        //         const filteredData = getList.filter(item =>
+        //             item.team_members.some(member => member._id === id)
+        //         );
+        //         // console.log(filteredData);
+        //         return res.status(200).send({
+        //             message: 'hello Mobile-App-Developer', CustomerProjects: filteredData
+        //         })
+        //     }
+        // }
+        // else if (Roles.includes("Copy-Writer")) {
+        //     const getList = await copyWritingModel.find().lean().exec()
+        //     if (getList) {
+        //         // console.log(id)
+        //         const filteredData = getList.filter(item =>
+        //             item.team_members.some(member => member._id === id)
+        //         );
+        //         // console.log(filteredData);
+        //         return res.status(200).send({
+        //             message: 'hello Mobile-App-Developer', CustomerProjects: filteredData
+        //         })
+        //     }
+        // }
+        // else if (Roles.includes("Social-Media-Manager")) {
+        //     const getList = await copyWritingModel.find().lean().exec()
+        //     if (getList) {
+        //         // console.log(id)
+        //         const filteredData = getList.filter(item =>
+        //             item.team_members.some(member => member._id === id)
+        //         );
+        //         // console.log(filteredData);
+        //         return res.status(200).send({
+        //             message: 'hello Mobile-App-Developer', CustomerProjects: filteredData
+        //         })
+        //     }
+        // }
+        // else if (Roles.includes("Web-Developer")) {
+        //     let filtered_website_project = []
+        //     let filtered_web_app_project = []
+        //     const website_projects = await websiteModal.find().lean().exec()
+        //     const web_app_projects = await webAppModel.find().lean().exec()
+
+        //     if (website_projects) {
+        //         filtered_website_project = website_projects.filter(item =>
+        //             item.team_members.some(member => member._id === id)
+        //         );
+        //     }
+        //     if (web_app_projects) {
+        //         filtered_web_app_project = web_app_projects.filter(item =>
+        //             item.team_members.some(member => member._id === id)
+        //         );
+        //     }
+        //     return res.status(200).send({
+        //         message: 'hello Mobile-App-Developer', CustomerProjects: [...filtered_website_project, ...filtered_web_app_project]
+        //     })
+        // }
+    } else {
+        return res.status(400).send({ message: 'User not found' })
     }
-    return res.status(404).send('Data not available')
 
 })
 const duplicateProject = async (req, res) => {
