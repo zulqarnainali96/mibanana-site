@@ -1,7 +1,7 @@
 const { v4: uniqeID } = require('uuid')
 
 const getValue = (data, id) => {
-    const { project_title, name, user, project_id, } = data
+    const { project_title, name, user, project_id, role } = data
     let obj = {
         unique_key: uniqeID(),
         id: id ? id : '',
@@ -10,7 +10,7 @@ const getValue = (data, id) => {
         project_id,
         user,
         name,
-        role: 'Customer',
+        role,
         msg: `created a new project`,
         view: true,
     }

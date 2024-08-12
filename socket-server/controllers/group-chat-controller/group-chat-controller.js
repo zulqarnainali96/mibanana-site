@@ -25,7 +25,7 @@ const checkingConnectedUserInGroup = async (io, msg, connectedUser, room, socket
         if (currentRoom) {
             console.log('2')
             const currentRoomUsers = currentRoom.users
-            const part = connectedUser.filter(p => findGroup.participant.some(item => item.id === p._id))
+            const part = connectedUser.filter(p => findGroup.participant.some(item => item._id === p.id))
             const findOnlinePart = part.filter(p => !currentRoomUsers.includes(p.socketID))
             if (findOnlinePart.length > 0) {
                 for (let i = 0; i <= findOnlinePart.length; i++) {

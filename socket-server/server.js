@@ -295,7 +295,7 @@ io.on('connection', function (socket) {
       }
     }
   })
-  socket.on('send-group-message', async(msg, room) => {
+  socket.on('send-group-message', async (msg, room) => {
     sendingGroupMessage(io, connectedUser, socket, msg, room)
   });
   socket.on('leave-room', (room) => {
@@ -303,7 +303,7 @@ io.on('connection', function (socket) {
   })
   socket.on('disconnect', () => {
     connectedUser = connectedUser.filter(user => user.socketID !== socket.id)
-    // console.log('User disconnected', connectedUser);
+    console.log('User disconnected', connectedUser);
     io.emit('active_users', connectedUser)
   })
 });
