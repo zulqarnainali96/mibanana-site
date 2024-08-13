@@ -6,7 +6,7 @@ const { sendStatusChangeMailtoCustomer } = require("../../../utils/sendMail");
 const uniqID = require('uuid').v4
 
 const createCopyWritingProject = async (req, res) => {
-    const { user, name, project_title, copy_writing_service, word_count, project_description, } = req.body;
+    const { user, name, project_title, copy_writing_service, word_count, project_description, brand } = req.body;
 
     if (!user) {
         return res.status(400).send({ message: "id not provided Try Login again!" })
@@ -16,7 +16,7 @@ const createCopyWritingProject = async (req, res) => {
     }
     try {
         const obj = {
-            user, name, project_title, team_members: [], copy_writing_service, word_count, project_description,
+            user, name, project_title, team_members: [], brand: brand !== null ? brand : {}, copy_writing_service, word_count, project_description,
             status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
         const copyWriting = await copyWritingModel.create(obj)
@@ -266,7 +266,7 @@ const duplicateCopyWritingProject = async (req, res) => {
             const { project_category, name, project_title, project_description, word_count, copy_writing_service } = findproject
             const copy_project_title = project_title + " Copy"
             const obj = {
-                user, name, project_category, project_title: copy_project_title, project_description,  word_count, copy_writing_service,
+                user, name, project_category, project_title: copy_project_title, project_description, word_count, copy_writing_service,
                 is_active: false, version: ["1"], status: 'Project manager', team_members: [], figma_link: '', drive_link: ''
             }
             const creatingNewProject = await copyWritingModel.create(obj)

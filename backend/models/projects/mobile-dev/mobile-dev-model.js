@@ -15,15 +15,30 @@ const MobileDevSchema = mongoose.Schema({
         required: true,
         default: ""
     },
-    platform : {
-        type : String,
-        required : true,
-        default : ""
+    platform: {
+        type: String,
+        required: true,
+        default: ""
     },
     project_description: {
         type: String,
         required: false,
         default: ""
+    },
+    project_category: {
+        type: String,
+        required: true,
+        default: ""
+    },
+    brand: {
+        type: Object,
+        required: false,
+        default: {}
+    },
+    role: {
+        type: String,
+        required: false,
+        default: ''
     },
     is_active: {
         type: Boolean,
@@ -35,7 +50,7 @@ const MobileDevSchema = mongoose.Schema({
         required: true,
         default: 'Project manager'
     },
-    project_category : {
+    project_category: {
         type: String,
         required: false,
         default: 'mobile-app-development'

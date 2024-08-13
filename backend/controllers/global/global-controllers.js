@@ -1020,6 +1020,20 @@ const updateProject = async (req, res) => {
                 }
             }
         }
+        else if (category === 'graphic-design') {
+            const graphicDesign = await graphicDesignModel.findById(project_id)
+            if (graphicDesign) {
+                if (graphicDesign.team_members.length > 0) {
+                    return res.status(201).send({ message: 'Already Assigned to Designer', })
+                } else {
+                    graphicDesign.team_members = team_members
+                    graphicDesign.status = status
+                    graphicDesign.is_active = is_active
+                    const save = await graphicDesign.save()
+                    return res.status(201).send({ message: 'Project Updated', save })
+                }
+            }
+        }
     } catch (err) {
         res.status(500).send({ message: 'Internal Server error' })
     }

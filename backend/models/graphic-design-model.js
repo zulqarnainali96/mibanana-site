@@ -75,6 +75,11 @@ const projectModel = mongoose.Schema({
         required : true,
         default : 'Project manager'
     },
+    role : {
+        type : String,
+        required : false,
+        default : ''
+    },
     // Required in Future when project manager update the data it will need a need to add Array of Team members that are working on this project
     team_members: [{
         type: Object,

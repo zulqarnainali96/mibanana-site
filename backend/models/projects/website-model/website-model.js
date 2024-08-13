@@ -15,6 +15,21 @@ const websiteSchema = mongoose.Schema({
         required: true,
         default: ""
     },
+    project_category: {
+        type: String,
+        required: true,
+        default: ""
+    },
+    brand: {
+        type: Object,
+        required: false,
+        default: {}
+    },
+    role: {
+        type: String,
+        required: false,
+        default: ''
+    },
     website_type: {
         type: String,
         required: true,

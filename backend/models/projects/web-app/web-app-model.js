@@ -15,6 +15,21 @@ const WebAppSchema = mongoose.Schema({
         required: true,
         default: ""
     },
+    project_category: {
+        type: String,
+        required: true,
+        default: ""
+    },
+    brand: {
+        type: Object,
+        required: false,
+        default: {}
+    },
+    role: {
+        type: String,
+        required: false,
+        default: ''
+    },
     preferred_stack: {
         type: String,
         required: true,
@@ -40,7 +55,7 @@ const WebAppSchema = mongoose.Schema({
         required: true,
         default: 'Project manager'
     },
-    project_category : {
+    project_category: {
         type: String,
         required: false,
         default: 'web-app'

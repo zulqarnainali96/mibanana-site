@@ -16,6 +16,21 @@ const SocialMediaSchema = mongoose.Schema({
         required: true,
         default: ""
     },
+    project_category: {
+        type: String,
+        required: true,
+        default: ""
+    },
+    brand: {
+        type: Object,
+        required: false,
+        default: {}
+    },
+    role: {
+        type: String,
+        required: false,
+        default: ''
+    },
     service_type: {
         type: String,
         required: true,

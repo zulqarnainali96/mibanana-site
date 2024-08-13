@@ -2,7 +2,7 @@ const { bucket } = require("../../../google-cloud-storage/gCloudStorage");
 const websiteModal = require("../../../models/projects/website-model/website-model")
 
 const createWebsiteProject = async (req, res) => {
-    const { user, name, project_title, website_type, preferred_stack, project_description, } = req.body;
+    const { user, name, project_title, website_type, brand, preferred_stack, project_description, project_category } = req.body;
 
     if (!user || !name) {
         return res.status(400).send({ message: "id not provided Try Login again!" })
@@ -12,7 +12,7 @@ const createWebsiteProject = async (req, res) => {
     }
     try {
         const obj = {
-            user, name, project_title, team_members: [], website_type, preferred_stack, project_description,
+            user, name, project_title, team_members: [], project_category, website_type, brand: brand !== null ? brand : {}, preferred_stack, project_description,
             status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
         const websiteProject = await websiteModal.create(obj)

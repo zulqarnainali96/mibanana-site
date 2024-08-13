@@ -20,6 +20,21 @@ const CopyWritingSchemas = mongoose.Schema({
         required: true,
         default: ""
     },
+    project_category: {
+        type: String,
+        required: true,
+        default: ""
+    },
+    brand: {
+        type: Object,
+        required: false,
+        default: {}
+    },
+    role: {
+        type: String,
+        required: false,
+        default: ''
+    },
     word_count: {
         type: String,
         required: true,

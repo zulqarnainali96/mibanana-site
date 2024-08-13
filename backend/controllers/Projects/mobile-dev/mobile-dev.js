@@ -4,7 +4,7 @@ const User = require('../../../models/UsersLogin');
 const { sendStatusChangeMailtoCustomer } = require('../../../utils/sendMail');
 
 const createMobileAppProject = async (req, res) => {
-    const { user, name, project_title, platform, project_description, } = req.body;
+    const { user, name, brand, role, project_title, platform, project_description, project_category } = req.body;
 
     if (!user || !name) {
         return res.status(400).send({ message: "id not provided Try Login again!" })
@@ -14,7 +14,7 @@ const createMobileAppProject = async (req, res) => {
     }
     try {
         const obj = {
-            user, name, project_title, team_members: [], platform, project_description, status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
+            user, name, project_title, project_category, team_members: [], brand: brand !== null ? brand : {}, platform, project_description, status: "Project manager", role, is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
         const mobileAppProject = await mobileAppModel.create(obj)
         if (mobileAppProject) {

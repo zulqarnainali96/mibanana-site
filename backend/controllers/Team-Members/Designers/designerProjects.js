@@ -314,37 +314,4 @@ const getTeamMemberListForChat = async (req, res) => {
     }
 }
 
-
-// const getAssignGraphicProject = async (req, res) => {
-//     const id = req.params.id;
-
-//     if (!id) {
-//         return res.status(400).send("ID not provided. Please provide a valid ID.");
-//     }
-//     const objectId = mongoose.Types.ObjectId.isValid(id);
-//     if (!objectId) {
-//         return res.status(400).send("Invalid ID format.");
-//     }
-//     try {
-
-//         const user = await User.findOne({ _id: id }).exec();
-
-//         if (!user) {
-//             return res.status(404).send("User not found.");
-//         }
-
-//         if (user.roles.includes("Graphic-Designer")) {
-//             const getProjects = await graphicDesignerProjects.find({ user: id }).exec();
-//             if (getProjects) {
-//                 return res.status(200).send({ message: "List fetched successfully" });
-//             }
-//             return res.status(400).send({ message: "Unable to get Design Projects. Please try again." });
-//         } else {
-//             return res.status(400).send({ message: "You are not allowed to see graphic projects." });
-//         }
-//     } catch (error) {
-//         return res.status(500).send("An error occurred while processing your request.");
-//     }
-// };
-
 module.exports = { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList2, getTeamMemberList, getTeamMemberListForChat }
