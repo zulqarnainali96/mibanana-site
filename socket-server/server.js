@@ -182,7 +182,6 @@ io.on('connection', function (socket) {
       roomId,
       users: Array.from(usersSet)
     }));
-    // console.log('roomsArray', roomsArray)
     // Graphic Designer
     if (message.role === 'Graphic-Designer') {
       const customer = connectedUser.find(user => user.id === String(message.authorId));
