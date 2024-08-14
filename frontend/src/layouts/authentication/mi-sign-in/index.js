@@ -83,6 +83,7 @@ const MiSignIn = ({ reduxActions, reduxState }) => {
           setLoading(false);
           navigate("/board");
           socketIO.connect();
+          console.log(socketIO)
         } else {
           setLoading(false);
           throw Error;

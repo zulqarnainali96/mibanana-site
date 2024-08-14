@@ -15,6 +15,7 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
     // const socketIO = useRef(useContext(SocketContext));
     const socketIO = useSocket();
     const privateChatRef = useRef(null);
+    const [scrolling, setScrolling] = useState(false)
 
     const [open, setOpen] = useState(false);
     const [respMessage, setRespMessage] = useState("");
@@ -105,8 +106,14 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
             setLoading(false);
             if (data) {
                 reduxActions.handleGroupMessage(data.messages);
+                setScrolling(true)
+                if (privateChatRef.current) {
+                    privateChatRef.current.scrollTop = privateChatRef.current.scrollHeight;
+                }
+
             }
         } catch (err) {
+            setScrolling(false)
             if (err.response) {
                 const { message } = err.response.data;
                 setRespMessage(message);
@@ -148,6 +155,7 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
 
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
+
         };
     }, [updateDocumentTitle]);
 
@@ -155,6 +163,7 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
         getGroupChatData();
 
         return () => {
+            setScrolling(false)
             socketIO.emit('leave-room', item._id);
         };
     }, [item._id]);
@@ -163,12 +172,12 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
         if (privateChatRef.current) {
             privateChatRef.current.scrollTop = privateChatRef.current.scrollHeight;
         }
-    }, [reduxState.group_message]);
+    }, [reduxState.group_message, scrolling]);
 
     useEffect(() => {
         if (!handleRole()?.customer || !handleRole()?.admin) {
             socketIO.on('receive-group-message', (msg) => {
-                   notificationSound();
+                notificationSound();
                 reduxActions.handleGroupMessage(msg);
                 if (document.hidden) {
                     setUnreadMessages((prevCount) => prevCount + 1);

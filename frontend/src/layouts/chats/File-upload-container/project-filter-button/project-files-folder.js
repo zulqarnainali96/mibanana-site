@@ -9,12 +9,14 @@ import MDButton from 'components/MDButton';
 
 
 const ProjectFilesFolder = (props) => {
-    const { selectedFilePeople, clientFiles, role, addFileVerion, addVersionStyle, versionHandler, getFullFolderArray, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState, getLatestDesign } = props
+    const { selectedFilePeople, clientFiles, role, addFileVerion, addVersionStyle, versionHandler, getFullFolderArray, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState, getLatestDesign, reduxState } = props
 
     const [loading, setLoading] = useState(false)
     const [editModal, setEditModal] = useState(null);
     const [showMenu, setShowMenu] = useState(false)
     const [drive_link, setDriveLink] = useState(project?.drive_link)
+    const userId = reduxState?.userDetails?.id
+
 
     const [openFigma, setOpenFigmaModal] = useState(null);
     const [figma_link, setFigmaLink] = useState(project?.figma_link)
@@ -47,7 +49,7 @@ const ProjectFilesFolder = (props) => {
                 }, 400)
             }
         }
-        else if (role?.designer || role?.admin || role?.projectManager) {
+        else if (role?.teamMember || role?.admin || role?.projectManager) {
             openMenu()
         }
     }
@@ -62,7 +64,7 @@ const ProjectFilesFolder = (props) => {
                 }, 400)
             }
         }
-        else if (role?.designer || role?.admin || role?.projectManager) {
+        else if (role?.teamMember || role?.admin || role?.projectManager) {
             openFigmaMenu()
         }
     }
@@ -111,7 +113,7 @@ const ProjectFilesFolder = (props) => {
 
     const updateDriveLink = () => {
         const driveLink = {
-            category : project.project_category,
+            category: project.project_category,
             drive_link,
             id: project._id
         }
@@ -147,10 +149,10 @@ const ProjectFilesFolder = (props) => {
                 }
             })
     }
-    
+
     const updateFigmaLink = () => {
         const figmaLink = {
-            category : project.project_category,
+            category: project.project_category,
             figma_link,
             id: project._id
         }
@@ -165,7 +167,6 @@ const ProjectFilesFolder = (props) => {
                 setTimeout(() => {
                     openSuccessSB()
                     setOpenFigmaModal(false)
-                    // getProjectData(project?._id, reduxActions.getCustomerProject)
                 }, 400)
             })
             .catch((err) => {
@@ -227,6 +228,14 @@ const ProjectFilesFolder = (props) => {
             }
         } else {
             return true
+        }
+    }
+
+    function showFolderName() {
+        if(project.role === 'Mobile-App-Developer' || project.role === 'Web-Developer' || project.role === 'Copy-Writer' || project.role === 'Graphic-Designer' || project.role === 'Social-Media-Manager'|| project.role === 'Project-Manager'){
+            return 'Team Member Uploads'
+        } else {
+            return 'Customer'
         }
     }
     return (
@@ -297,17 +306,7 @@ const ProjectFilesFolder = (props) => {
                 </div>
             </SuccessModal>
             <>
-                {/* <select
-                    value={selectedFilePeople}
-                    onChange={handleFilePeopleChange}
-                    className={`selectType1 ${activebtn == "folder" && "activeClass"}`}
-                    style={{ textTransform: 'capitalize' }}
-                >
-                    {getFullFolderArray().map((item, i) => (
-                        <option key={i} value={item} disabled={checkVersionEmpty(item)} >{i === 0 || i === 1 ? item : `pre version ${item}`}</option>
-                    ))
-                    }
-                </select> */}
+             
                 <button
                     className="selectType1 addnewversion"
                     onClick={getLatestDesign}
@@ -320,22 +319,8 @@ const ProjectFilesFolder = (props) => {
                     onClick={clientFiles}
                     style={addVersionStyle}
                 >
-                    Customer Folder
+                    {showFolderName()}
                 </button>
-                {/* {role?.projectManager || role?.designer || role?.admin ? (
-                    <button
-                        className="selectType1 addnewversion"
-                        onClick={addFileVerion}
-                        style={addVersionStyle}
-                    >
-                        Add new version
-                    </button>
-                ) : null} */}
-                {/* {role?.projectManager || role?.designer || role?.admin ? (
-                    <button className="selectType1 addnewversion" onClick={versionHandler} style={addVersionStyle} >
-                        Delete version
-                    </button>
-                ) : null} */}
                 {showGoogleDriveButton() ? (
                     <div className="drive-container">
                         <button className="selectType1 addnewversion" style={addVersionStyle} onClick={driveFiles}>

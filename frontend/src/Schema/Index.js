@@ -34,6 +34,7 @@ export const mobileAppSchema = Yup.object({
     project_title: Yup.string().min(3).required("Please enter your project title"),
     platform: Yup.string().required('Service type is required'),
     project_description: Yup.string().required('Project description is required'),
+    brand: Yup.object(),
 });
 
 export const groupChatSchema = Yup.object({

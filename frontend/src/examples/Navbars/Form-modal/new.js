@@ -227,7 +227,7 @@ const CreateProject1 = ({
             <DialogContent>
                 <Box component="form" onSubmit={onSubmit} sx={{ display: 'flex', flexWrap: 'wrap' }}>
                     <Grid width={"100%"} container spacing={2} justifyContent={"space-between"} alignItems={"center"}>
-                        <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
+                        {/* <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
                             <FormControl sx={({ breakpoints }) => marginNone(breakpoints)}>
                                 <Autocomplete
                                     value={formValue.project_category}
@@ -242,8 +242,8 @@ const CreateProject1 = ({
                                     renderInput={(params) => <TextField disabled={category.some(item => item !== 'Graphic Design')} required {...params} label="Select Project Category" />}
                                 />
                             </FormControl>
-                        </Grid>
-                        <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
+                        </Grid> */}
+                        <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>
                             <FormControl sx={({ breakpoints }) => marginNone(breakpoints)}>
                                 <Autocomplete
                                     value={formValue.design_type}

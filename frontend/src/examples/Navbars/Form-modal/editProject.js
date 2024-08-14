@@ -137,7 +137,7 @@ const EditProjectModal = (props) => {
         }
         formdata.append("user_id", user_id);
         formdata.append("project_id", project_id);
-        apiClient.post("/file/google-cloud", formdata).then((res) => {
+        apiClient.post("/api/file/upload-files", formdata).then((res) => {
             console.log('Edit files uploaded successfully')
         }).catch(err => {
             console.error("Error uploading files Found =>", err);
@@ -330,8 +330,7 @@ const EditProjectModal = (props) => {
             <DialogContent>
                 <Box component="form" sx={{ display: 'flex', flexWrap: 'wrap' }} onSubmit={updateEditForm}>
                     <Grid width={"100%"} container spacing={2} justifyContent={"space-between"} alignItems={"center"}>
-
-                        <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
+                        {/* <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
                             <FormControl sx={({ breakpoints }) => marginNone(breakpoints)}>
                                 <Autocomplete
                                     value={formValue.project_category}
@@ -346,7 +345,7 @@ const EditProjectModal = (props) => {
                                     renderInput={(params) => <TextField disabled={category.some(item => item !== 'Graphic Design')} required {...params} label="Select Project Category" />}
                                 />
                             </FormControl>
-                        </Grid>
+                        </Grid> */}
                         <Grid item xxl={6} xl={6} lg={12} md={12} xs={12}>
                             <FormControl sx={({ breakpoints }) => marginNone(breakpoints)}>
                                 <Autocomplete

@@ -48,7 +48,7 @@ const initialValues = {
 };
 
 const WebAppDevForm = ({
-    open, handleClose, setRespMessage, setLoading, loading, reduxState, reduxActions, openErrorSB, openSuccessSB, socketIO
+    open, handleClose, role, setRespMessage, setLoading, loading, reduxState, reduxActions, openErrorSB, openSuccessSB, socketIO
 }) => {
     const classes = reactQuillStyles()
     const quilRef = useRef();
@@ -58,6 +58,8 @@ const WebAppDevForm = ({
             ...values,
             user: reduxState.userDetails?.id,
             name: reduxState.userDetails?.name,
+            role: reduxState?.userDetails?.roles[0] ?? '',
+            project_category: 'web-app',
         };
         setLoading(true)
         try {
@@ -69,14 +71,19 @@ const WebAppDevForm = ({
                 resetForm(clearForm());
                 const socketMsg = {
                     ...dataToSend,
-                    project_id: data.webAppProject._id
-                }
+                    project_id: data.webAppProject._id,
+                    role: reduxState?.userDetails?.roles[0] ?? '',
+                    project_category: 'web-app',
+                };
                 setTimeout(() => {
                     reduxActions.handleGetAllProjects(!reduxState.project_call)
-                    socketIO.emit('new-project', socketMsg)
+                    if (!role?.admin || !role?.projectManager) {
+                        socketIO.emit('new-project', socketMsg)
+                    }
                     openSuccessSB();
                 }, 500);
             }
+
         } catch (error) {
             if (error.response.data) {
                 setRespMessage(error.response.data.message)

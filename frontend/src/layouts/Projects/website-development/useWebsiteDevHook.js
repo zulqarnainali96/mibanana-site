@@ -87,7 +87,7 @@ const useWebsiteHook = (reduxState, reduxActions) => {
         formdata.append("user_id", reduxState?.userDetails.id);
         formdata.append("project_id", project?._id);
         await apiClient
-            .post("/file/google-cloud", formdata)
+            .post("/api/file/upload-files/", formdata)
             .then(() => {
                 setLoading(false);
                 setRespMessage('Files Uploaded Successfully');
@@ -177,6 +177,9 @@ const useWebsiteHook = (reduxState, reduxActions) => {
     };
 
     const handleSubmit = (fileType) => {
+        if ((project?.user === userId && handleRole()?.teamMember) || (project?.user === userId && handleRole()?.projectManager)) {
+            customerUploadFiles(fileType);
+        }
         if (handleRole().teamMember || handleRole().projectManager || handleRole().admin) {
             const latest_version = [...fileVersion]?.pop()
             versionUploads(fileType, latest_version)

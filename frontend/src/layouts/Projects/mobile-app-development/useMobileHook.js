@@ -88,7 +88,7 @@ const useMobileHook = (reduxState, reduxActions) => {
         // formdata.append("project_title", project.project_title);
         formdata.append("project_id", project?._id);
         await apiClient
-            .post("/file/google-cloud", formdata)
+            .post("/api/file/upload-files", formdata)
             .then(() => {
                 setLoading(false);
                 setRespMessage('Files Uploaded Successfully');
@@ -178,6 +178,9 @@ const useMobileHook = (reduxState, reduxActions) => {
     };
 
     const handleSubmit = (fileType) => {
+        if ((project?.user === userId && handleRole()?.teamMember) || (project?.user === userId && handleRole()?.projectManager)) {
+            customerUploadFiles(fileType);
+        }
         if (handleRole().teamMember || handleRole().projectManager || handleRole().admin) {
             const latest_version = [...fileVersion]?.pop()
             versionUploads(fileType, latest_version)
@@ -791,7 +794,8 @@ const useMobileHook = (reduxState, reduxActions) => {
                         type: 'project-assigned',
                         project_id: project._id,
                         project_title: project.project_title,
-                        role: 'Project-Manager',
+                        role: reduxState.userDetails?.roles[0] ?? '',
+                        project_category : project?.project_category,
                         msg: 'New Project assigned',
                         view: true,
                     }

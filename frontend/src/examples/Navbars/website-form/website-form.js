@@ -50,7 +50,7 @@ const initialValues = {
 };
 
 const WebsiteForm = ({
-    open, handleClose, openSuccessSB, openErrorSB, reduxState, reduxActions, setLoading, loading, setRespMessage, socketIO
+    open, role, handleClose, openSuccessSB, openErrorSB, reduxState, reduxActions, setLoading, loading, setRespMessage, socketIO
 }) => {
     const classes = reactQuillStyles()
     const quilRef = useRef()
@@ -61,6 +61,8 @@ const WebsiteForm = ({
             ...values,
             user: reduxState.userDetails?.id,
             name: reduxState.userDetails?.name,
+            role: reduxState?.userDetails?.roles[0] ?? '',
+            project_category: 'website-development',
         };
         try {
             const { data } = await apiClient.post('/api/create-website-project', dataToSend);
@@ -71,11 +73,15 @@ const WebsiteForm = ({
                 resetForm(clearForm());
                 const socketMsg = {
                     ...dataToSend,
-                    project_id: data.websiteProject._id
+                    project_id: data.websiteProject._id,
+                    role: reduxState?.userDetails?.roles[0] ?? '',
+                    project_category: 'website-development',
                 }
                 setTimeout(() => {
                     reduxActions.handleGetAllProjects(!reduxState.project_call)
-                    socketIO.emit('new-project', socketMsg)
+                    if (!role?.admin || !role?.projectManager) {
+                        socketIO.emit('new-project', socketMsg)
+                    }
                     openSuccessSB();
                 }, 500);
             }
@@ -234,7 +240,7 @@ const WebsiteForm = ({
                                 id='project_description'
                                 value={values.project_description}
                                 onChange={(value) => setFieldValue('project_description', value)}
-                                onBlur={ () => handleBlur({
+                                onBlur={() => handleBlur({
                                     target: {
                                         name: 'project_description'
                                     }

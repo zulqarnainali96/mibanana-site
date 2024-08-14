@@ -51,7 +51,7 @@ const initialValues = {
 }
 
 const SocialMediaManager = ({
-  open, handleClose, reduxState, reduxActions, openSuccessSB, openErrorSB, setRespMessage, setLoading, loading, socketIO,
+  open, role, handleClose, reduxState, reduxActions, openSuccessSB, openErrorSB, setRespMessage, setLoading, loading, socketIO,
 }) => {
   const [uploadedImages, setUploadedImages] = useState([]);
   const fileInputRef = useRef(null);
@@ -65,7 +65,7 @@ const SocialMediaManager = ({
     }
     formdata.append("user_id", reduxState?.userDetails.id);
     formdata.append("project_id", project_id);
-    await apiClient.post("/file/google-cloud", formdata)
+    await apiClient.post("/api/file/upload-files", formdata)
       .then(() => {
         setUploadedImages([]);
       })
@@ -92,6 +92,8 @@ const SocialMediaManager = ({
       ...values,
       user: reduxState.userDetails?.id,
       name: reduxState.userDetails?.name,
+      role: reduxState?.userDetails?.roles[0] ?? '',
+      project_category: 'social-media-manager',
     };
     try {
       const { data } = await apiClient.post('/api/create-social-media-project', dataToSend);
@@ -105,11 +107,15 @@ const SocialMediaManager = ({
         resetForm(clearForm());
         const socketMsg = {
           ...dataToSend,
-          project_id: data.socialMedia._id
+          project_id: data.socialMedia._id,
+          role: reduxState?.userDetails?.roles[0] ?? '',
+          project_category: 'social-media-manager',
         }
         setTimeout(() => {
           reduxActions.handleGetAllProjects(!reduxState.project_call)
-          socketIO.emit('new-project', socketMsg)
+          if (!role?.admin || !role?.projectManager) {
+            socketIO.emit('new-project', socketMsg)
+          }
           openSuccessSB();
         }, 500);
       }

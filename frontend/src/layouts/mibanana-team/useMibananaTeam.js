@@ -226,7 +226,7 @@ const useMibananaTeam = (reduxState, reduxActions) => {
         openErrorSB,
         setRespMessage,
         currentUser,
-
+        
         handleFilterChange,
         // filteredMembers: [...allGroups, ...filteredMembers],
         sortedTeamMembers: sortTeamMembers(),

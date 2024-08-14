@@ -66,7 +66,7 @@ const useNavbarHook = (reduxState, reduxActions) => {
     const [openMobileApp, setOpenMobileApp] = useState(false)
 
     const [formValue, setFormValue] = useState({
-        project_category: "",
+        project_category: "graphic-design",
         design_type: "",
         brand: {},
         project_title: "",
@@ -127,9 +127,6 @@ const useNavbarHook = (reduxState, reduxActions) => {
             [name]: value,
         });
     };
-    function clearAllNotfications() {
-        reduxActions.getUserNewChatMessage([]);
-    }
     function getToTheProject(id) {
         if (id) {
             navigate("/chat/" + id);
@@ -236,19 +233,23 @@ const useNavbarHook = (reduxState, reduxActions) => {
             sizes: setSizes(),
             specific_software_names: formValue.specific_software_names,
             file_formats: formValue.file_formats,
+            role : reduxState?.userDetails?.roles[0] ?? '',
             is_active: false,
         };
         await apiClient.post("/graphic-project", data)
             .then((resp) => {
                 if (resp?.status === 201) {
-                    // const { message } = resp?.data;
                     const projectData = {
                         ...data,
                         brand: formValue.brand.brand_name,
                         user: reduxState?.userDetails?.id,
                         project_id: resp.data?.project._id,
+                        role : reduxState?.userDetails?.roles[0] ?? '',
+                        project_category : formValue.project_category  
                     };
-                    socketIO.emit('new-project', projectData)
+                    if(!role?.projectManager || !role?.admin) {
+                        socketIO.emit('new-project', projectData)
+                    }
                     setRespMessage("Project Created Successfully");
                     reduxActions.getNew_Brand(!reduxState?.new_brand);
                     let param = [
@@ -320,7 +321,7 @@ const useNavbarHook = (reduxState, reduxActions) => {
         }
         formdata.append("user_id", user_id);
         formdata.append("project_id", project_id);
-        apiClient.post("/file/google-cloud", formdata, {
+        apiClient.post("/api/file/upload-files/", formdata, {
             onUploadProgress: (progressEvent) => {
                 const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                 setUploadProgress(percentCompleted);
@@ -358,10 +359,11 @@ const useNavbarHook = (reduxState, reduxActions) => {
     }
     const handleLogout = async () => {
         try {
+            // socketIO.disconnect(true)
+            socketIO.disconnect()
             persistStore(store).purge();
             localStorage.removeItem("user_details");
             navigate("/authentication/mi-sign-in");
-            socketIO.disconnect()
         } catch (error) {
             console.error("Logout failed:", error);
         }
@@ -462,12 +464,12 @@ const useNavbarHook = (reduxState, reduxActions) => {
                 reduxActions.handleProject_notifications(project_data)
             })
             socketIO.on('send-private-message-notification', (message) => {
-                console.log('message', message)
+                // console.log('message', message)
                 notificationSound()
                 reduxActions.handleUnreadChatMessage(message)
             })
             socketIO.on('group-msg-notification', (message) => {
-                console.log('message', message)
+                // console.log('message', message)
                 notificationSound()
                 reduxActions.handleUnreadChatMessage(message)
             })
@@ -480,22 +482,32 @@ const useNavbarHook = (reduxState, reduxActions) => {
 
         socketIO.on('chat-message-notification', message => {
             reduxActions.handleProject_notifications(message)
-            console.log('message', message);
         })
         return () => {
             socketIO.off('chat-message-notification')
-            if (role?.designer) {
+            // socketIO.off('active_users')
+
+            // Team members event
+            if (handleRole()?.teamMember) {
                 socketIO.off('new-project-assigned')
             }
-            if (role?.projectManager || role?.designer) {
+
+            if (handleRole()?.teamMember || handleRole()?.projectManager) {
+                socketIO.off('group-msg-notification')
+                socketIO.off('send-private-message-notification')
                 socketIO.off('getting-customer-notifications')
             }
-            if (role?.projectManager) {
+
+            if (handleRole()?.projectManager) {
                 socketIO.off('new-project-notification')
             }
-            if (role?.customer) {
+
+            // Customer off event
+            if (handleRole()?.customer) {
                 socketIO.off('status-change-notification')
             }
+
+
         }
     }, [socketIO])
 

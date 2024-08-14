@@ -11,6 +11,7 @@ import { submitButtonStyle } from 'examples/Navbars/mobile-app-dev-form/mobile-a
 import AutoList from './components/AutoList';
 import useEditGroupForm from './use-edit-group-form';
 import MDInput from 'components/MDInput';
+import { GroupDetails } from './components/GroupDetails';
 
 
 const GroupForm = styled(Dialog)(({ theme: { breakpoints } }) => ({
@@ -33,7 +34,7 @@ const GroupForm = styled(Dialog)(({ theme: { breakpoints } }) => ({
     },
 }));
 
-const EditGroupChat = ({ reduxState, open, onClose, data, openErrorSB, openSuccessSB, setRespMessage, setReload }) => {
+const EditGroupChat = ({ reduxState, open, onClose, data, openErrorSB, openSuccessSB, setRespMessage, setReload, userId }) => {
     const smallScreen = useMediaQuery("(max-width:768px)");
 
     const {
@@ -69,78 +70,83 @@ const EditGroupChat = ({ reduxState, open, onClose, data, openErrorSB, openSucce
                     <CloseOutlined />
                 </MDButton>
             </DialogTitle>
-            <DialogContent>
-                <form onSubmit={handleSubmit}>
-                    <Grid container spacing={2}>
-                        <Grid item xxl={6} xl={6} lg={6} sm={12} xs={12}>
-                            <MDTypography variant="h6" pb={1} className="copywriting-title">
-                                Group Name
-                            </MDTypography>
-                            <TextField
-                                fullWidth
-                                sx={{ "& > .MuiInputBase-root": { paddingBlock: '7px !important' } }}
-                                placeholder='Type your Group Name'
-                                id='group_name'
-                                name='group_name'
-                                value={values.group_name}
-                                type='text'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                touched={touched.group_name}
-                                error={errors.group_name}
-                                helperText={errors.group_name}
-                            />
-                        </Grid>
-                        <Grid item xxl={6} xl={6} lg={6} sm={12} xs={12}>
-                            <MDTypography variant={"h6"} pb={1} className="copywriting-title">
-                                Select Participants
-                            </MDTypography>
-                            <Grid container>
-                                <Grid item xs={12}>
-                                    <AutoList
-                                        setAutoListOpen={setAutoListOpen}
-                                        autoListOpen={autoListOpen}
-                                        teamLoading={teamLoading}
-                                        options={options}
-                                        selectedOptions={selectedOptions}
-                                        setSelectedOptions={setSelectedOptions}
-                                    />
+            {userId === data.admin_id ? (
+                <DialogContent>
+                    <form onSubmit={handleSubmit}>
+                        <Grid container spacing={2}>
+                            <Grid item xxl={6} xl={6} lg={6} sm={12} xs={12}>
+                                <MDTypography variant="h6" pb={1} className="copywriting-title">
+                                    Group Name
+                                </MDTypography>
+                                <TextField
+                                    fullWidth
+                                    sx={{ "& > .MuiInputBase-root": { paddingBlock: '7px !important' } }}
+                                    placeholder='Type your Group Name'
+                                    id='group_name'
+                                    name='group_name'
+                                    value={values.group_name}
+                                    type='text'
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    touched={touched.group_name}
+                                    error={errors.group_name}
+                                    helperText={errors.group_name}
+                                />
+                            </Grid>
+                            <Grid item xxl={6} xl={6} lg={6} sm={12} xs={12}>
+                                <MDTypography variant={"h6"} pb={1} className="copywriting-title">
+                                    Select Participants
+                                </MDTypography>
+                                <Grid container>
+                                    <Grid item xs={12}>
+                                        <AutoList
+                                            setAutoListOpen={setAutoListOpen}
+                                            autoListOpen={autoListOpen}
+                                            teamLoading={teamLoading}
+                                            options={options}
+                                            selectedOptions={selectedOptions}
+                                            setSelectedOptions={setSelectedOptions}
+                                        />
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <MDTypography variant={"h6"} pb={1} className="copywriting-title">
-                                Group Descriptions
-                            </MDTypography>
-                            <Grid container>
-                                <Grid item xs={12}>
-                                    <TextareaAutosize
-                                        style={textAreaStyles}
-                                        maxRows={40}
-                                        name='group_description'
-                                        // maxLength={40}
-                                        value={values.group_description}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        placeholder="Type your Group Description"
-                                    />
+                            <Grid item xs={12}>
+                                <MDTypography variant={"h6"} pb={1} className="copywriting-title">
+                                    Group Descriptions
+                                </MDTypography>
+                                <Grid container>
+                                    <Grid item xs={12}>
+                                        <TextareaAutosize
+                                            style={textAreaStyles}
+                                            maxRows={40}
+                                            name='group_description'
+                                            // maxLength={40}
+                                            value={values.group_description}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            placeholder="Type your Group Description"
+                                        />
+                                    </Grid>
                                 </Grid>
                             </Grid>
+                            {/* Add Drag and Drop area */}
+                            <Grid item xs={12}>
+                                <MDButton
+                                    type="submit"
+                                    style={submitButtonStyle}
+                                    disabled={loading}
+                                    endIcon={<MoonLoader loading={loading} size={18} color='#fff' />}
+                                >
+                                    Update
+                                </MDButton>
+                            </Grid>
                         </Grid>
-                        {/* Add Drag and Drop area */}
-                        <Grid item xs={12}>
-                            <MDButton
-                                type="submit"
-                                style={submitButtonStyle}
-                                disabled={loading}
-                                endIcon={<MoonLoader loading={loading} size={18} color='#fff' />}
-                            >
-                                Update
-                            </MDButton>
-                        </Grid>
-                    </Grid>
-                </form>
-            </DialogContent>
+                    </form>
+                </DialogContent>) :
+                (
+                    <GroupDetails data={data} />
+                )
+            }
         </GroupForm>
     )
 }

@@ -20,6 +20,8 @@ import closeIcon from 'assets/images/close.webp'
 import check from 'assets/images/check.png'
 import TransitionsModal from 'components/Modal/Modal'
 import TransitionsErrorModal from 'components/Modal/ErrorModal'
+import { handleRole } from 'redux/global/global-functions'
+import { currentUserRole } from 'redux/global/global-functions'
 
 
 const MIBrandTable = (props) => {
@@ -75,7 +77,7 @@ const MIBrandTable = (props) => {
     } = useBrandData(props)
 
     const { reduxState, reduxActions } = props
-    const currentRole = (role?.admin || role?.projectManager || role?.designer) ? true : false
+    // const currentRole = (role?.admin || role?.projectManager || role?.designer) ? true : false
     const is768 = useMediaQuery("(max-width:768px)")
     const is500 = useMediaQuery("(max-width:500px)")
     const { rows, small_rows, columns, small_columns } = brandData(setFormValue, openEditBrandModal, openSuccessSB, openErrorSB, setRespMessage, reduxState, reduxActions)
@@ -147,14 +149,13 @@ const MIBrandTable = (props) => {
             />
 
             <MDBox ml={4} pt={2} pb={3}>
-                <Grid container pt={currentRole && "0px"} justifyContent={"flex-end"} alignItems={"center"} spacing={2}>
+                <Grid container justifyContent={"flex-end"} alignItems={"center"} spacing={2}>
                     <Grid item xxl={12} xl={12} md={12} xs={12}>
                         <Grid container alignItems={"center"} justifyContent={"space-around"}>
-                            <Grid item xxl={currentRole ? 12 : 6} xl={currentRole ? 12 : 6}>
+                            <Grid item xxl={12} xl={6}>
                                 <MDTypography sx={{ ...titleStyles, fontSize: is500 ? '2rem' : '3rem', }}>miBrands</MDTypography>
                             </Grid>
-                            {currentRole ? null :
-                                (<Grid item xxl={6} xl={6}>
+                                <Grid item xxl={12} xl={12} lg={6} md={6} sm={6} xs={6}>
                                     <MDBox width={"100%"} sx={{ textAlign: "right", paddingInline: '32px' }}>
                                         <BrandButton
                                             variant="contained"
@@ -172,7 +173,6 @@ const MIBrandTable = (props) => {
                                         </BrandButton>
                                     </MDBox>
                                 </Grid>
-                                )}
                         </Grid>
                     </Grid>
                     <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>

@@ -1,4 +1,4 @@
-import React, {useRef } from 'react';
+import React, { useRef } from 'react';
 import { styled } from "@mui/material/styles";
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -6,7 +6,7 @@ import Dialog from '@mui/material/Dialog';
 import MDTypography from 'components/MDTypography';
 import MDButton from 'components/MDButton';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
-import { Grid, MenuItem, Select } from '@mui/material';
+import { Autocomplete, Grid, MenuItem, Select, TextField } from '@mui/material';
 import Input from 'components/Input/Input';
 import { useFormik } from 'formik';
 import { mobileAppSchema } from 'Schema/Index';
@@ -42,20 +42,24 @@ const initialValues = {
     project_title: '',
     platform: '',
     project_description: "",
+    brand: {}
 };
 
 const MobileAppDevForm = ({
-    open, handleClose, reduxState, reduxActions, setRespMessage, openErrorSB, openSuccessSB, loading, setLoading, socketIO
+    open, handleClose, reduxState, reduxActions, brandOption, setRespMessage, openErrorSB, role, openSuccessSB, loading, setLoading, socketIO
 }) => {
     const classes = reactQuillStyles()
     const quilRef = useRef();
 
     const handleMobileFormSubmit = async (values, { resetForm }) => {
+        console.log("values", values)
         setLoading(true);
         const dataToSend = {
             ...values,
             user: reduxState.userDetails?.id,
             name: reduxState.userDetails?.name,
+            role : reduxState?.userDetails?.roles[0] ?? '',
+            project_category : 'mobile-app-development',
         };
         try {
             const { data } = await apiClient.post('/api/create-mobile-app-project', dataToSend);
@@ -66,11 +70,15 @@ const MobileAppDevForm = ({
                 resetForm(clearForm());
                 const socketMsg = {
                     ...dataToSend,
-                    project_id: data.mobileAppProject._id
+                    project_id: data.mobileAppProject._id,
+                    role : reduxState?.userDetails?.roles[0] ?? '',
+                    project_category : 'mobile-app-development',
                 }
                 setTimeout(() => {
                     reduxActions.handleGetAllProjects(!reduxState.project_call)
-                    socketIO.emit('new-project', socketMsg)
+                    if (!role?.admin || !role?.projectManager) {
+                        socketIO.emit('new-project', socketMsg)
+                    }
                     openSuccessSB();
                 }, 500);
             }
@@ -140,6 +148,24 @@ const MobileAppDevForm = ({
                                 errors={formik.errors.project_title}
                             />
                         </Grid>
+                        <Grid item xs={12}>
+                            <MDTypography variant={"h6"} pb={1} className="">
+                                Brand
+                            </MDTypography>
+                            <Grid container>
+                                <Grid item xs={12}>
+                                    <Autocomplete
+                                        name="brand"
+                                        value={formik.values.brand}
+                                        onChange={(event, newValue) => formik.setFieldValue("brand", newValue)}
+                                        id="brand"
+                                        getOptionLabel={option => option.brand_name ? option.brand_name : ''}
+                                        options={brandOption}
+                                        sx={{ width: '100%' }}
+                                        renderInput={(params) => <TextField {...params} label="Select Brand" />} />
+                                </Grid>
+                            </Grid>
+                        </Grid>
 
                         <Grid item xs={12}>
                             <MDTypography variant={"h6"} pb={1} className="">
@@ -175,9 +201,9 @@ const MobileAppDevForm = ({
                                 id='project_description'
                                 value={formik.values.project_description}
                                 onChange={(value) => formik.setFieldValue('project_description', value)}
-                                onBlur={()=> formik.handleBlur({
-                                    target : {
-                                        name : 'project_description'
+                                onBlur={() => formik.handleBlur({
+                                    target: {
+                                        name: 'project_description'
                                     }
                                 })}
                                 modules={modules}

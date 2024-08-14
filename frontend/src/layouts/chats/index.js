@@ -20,11 +20,12 @@ import TransitionsModal from "components/Modal/Modal";
 import TransitionsErrorModal from "components/Modal/ErrorModal";
 import { getUserRoles } from "redux/global/global-functions";
 import { useSocket } from "sockets";
+import { handleRole } from "redux/global/global-functions";
 
 const Chating = ({ reduxState, reduxActions }) => {
   const socketRef = useSocket()
   // const socketRef = useRef(useContext(SocketContext));
-  const role = currentUserRole(reduxState);
+  const role = currentUserRole(reduxState)
   const options = {
     timeZone: 'Europe/Berlin',
     hour: '2-digit',
@@ -33,7 +34,7 @@ const Chating = ({ reduxState, reduxActions }) => {
     hour12: false // Use 24-hour format
   };
   const { id } = useParams();
-  const [project, setProject] = useState(reduxState.project_list.CustomerProjects?.find(item => item._id === id || {}))
+  const [project, setProject] = useState(reduxState.project_list?.CustomerProjects?.find(item => item._id === id || {}))
   const [fileVersion, setFileVersionList] = useState(project?.version.length > 0 ? project?.version : []);
 
   const currentTime = new Date(); // Get the current date and time
@@ -60,16 +61,6 @@ const Chating = ({ reduxState, reduxActions }) => {
 
   let avatar = useSelector((state) => state.userDetails?.avatar);
 
-  // const personProject = () => {
-  //   if (reduxState.project_list?.CustomerProjects) {
-  //     const singleProject = reduxState.project_list?.CustomerProjects?.find(
-  //       (item) => item?._id === id
-  //     );
-  //     return singleProject;
-  //   } else {
-  //     return {};
-  //   }
-  // };
   const team_members = project?.team_members?.length > 0 ? project?.team_members[0]?._id : "";
 
   const onSendMessage = async (event) => {
@@ -85,6 +76,7 @@ const Chating = ({ reduxState, reduxActions }) => {
         type: "chat-message",
         project_id: id,
         project_title: project?.project_title,
+        project_category : project.project_category,
         authorId: project?.user,
         user,
         name: name,

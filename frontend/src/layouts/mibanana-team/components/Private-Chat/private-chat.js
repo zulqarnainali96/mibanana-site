@@ -122,8 +122,21 @@ const PrivateChat = ({
         alert("Message copied to clipboard!");
     }
 
-    const chatBoxStyle = { marginLeft: '10px', width: '100%', height: '100%', display: 'flex', padding: '0.5rem', paddingBottom: '14px', overflowY: "scroll", ...scrollStyle, marginBottom: '9px' }
-    const chatBoxStyle2 = { display: 'flex', flexDirection: 'column', width: '100%', height: '100%', gap: '1.5rem', paddingBottom: "12px" }
+    const chatBoxStyle = {
+        marginLeft: '10px', width: '100%',
+        height: '100%', display: 'flex',
+        padding: '0.5rem', paddingBottom: '14px',
+        overflowY: "scroll", ...scrollStyle,
+        marginBottom: '9px'
+    }
+    const chatBoxStyle2 = {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+        gap: '1.5rem',
+        paddingBottom: "12px"
+    }
 
     const mainBox = { position: 'relative', width: '75%', marginLeft: "unset !important", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", borderRadius: "10px", ...boxStyles, display: "flex", flexDirection: "column", padding: "1.5rem", justifyContent: "space-between", transition: "width 0.5s ease-in-out", backgroundColor: mibananaColor.headerColor, }
 
@@ -160,8 +173,8 @@ const PrivateChat = ({
                 <FullScreenLoader>
                     <BeatLoader size={25} color={'#fff'} />
                 </FullScreenLoader>
-            ) : (<Box ref={privateChatRef} sx={chatBoxStyle} >
-                <Box sx={chatBoxStyle2}>
+            ) : (<Box className={'chatBoxStyle'} >
+                <Box ref={privateChatRef} className={'chatBoxStyle2'}>
                     {chats?.length > 0 ? chats?.map(item => {
                         return (
                             <ListItem disablePadding sx={{ backgroundColor: '#fff', width: '60%', ...(msgPosition(item)) }}>

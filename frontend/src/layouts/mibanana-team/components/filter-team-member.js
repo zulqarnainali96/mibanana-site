@@ -39,12 +39,12 @@ const MemberList = ({ allStates, onlineUsers, onlineWidth, member }) => {
     )
 }
 const GroupList = ({ allStates, onlineUsers, onlineWidth, member, id }) => {
-    const { singleChat, handleSingleChat, filteredMembers, resetUnreadMessages } = allStates
+    const { singleChat, handleSingleChat, filteredMembers, resetUnreadMessages, user_id } = allStates
     return (
         <ListItem disablePadding sx={{
             "&:focus-within": {
                 backgroundColor: (filteredMembers?.some(member => member._id === singleChat?._id)) ? "rgba(149, 157, 165, 0.2) !important" : null,
-            }, 
+            },
         }} onClick={() => handleSingleChat(member)}>
             <ListItemButton onClick={() => resetUnreadMessages(member._id)}>
                 <UserOnlineIcon member={member} data={onlineUsers} />
@@ -61,12 +61,17 @@ const GroupList = ({ allStates, onlineUsers, onlineWidth, member, id }) => {
                                 component="div"
                                 color="textSecondary"
                             >
-                                {member.participant?.map((item,i) => <span key={i} style={{fontSize:'.9rem'}} >{item.name + ", " + "  "}</span>)}
+                                {member.participant?.map((item, i) => <span
+                                    key={i}
+                                    style={{ fontSize: '.9rem' }}>
+                                    {user_id === item._id ? 'You' : item.name + ", " + "  "}
+                                </span>
+                                )}
                             </Typography>
                         </React.Fragment>
                     }
                 />
-        </ListItemButton>
+            </ListItemButton>
         </ListItem >
     )
 }
@@ -75,7 +80,7 @@ const FitlerTeamMembers = ({ allStates, onlineUsers, onlineWidth }) => {
     return (
         <React.Fragment>
             {
-                allStates.filteredMembers.map((member, index) => (
+                allStates.sortedTeamMembers.map((member, index) => (
                     <React.Fragment key={index}>
                         {member.type === 'single' ? (
                             <MemberList

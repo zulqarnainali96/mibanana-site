@@ -3,18 +3,68 @@ import React from 'react'
 import MenuItemDropdown from './MenuItem'
 
 const AuthMembersList = (props) => {
-    const { item, loading4, loading5, projectAttend, projectForReview, role, deleteProject, loading6 } = props
+    const { item, loading4, loading5, userRole, projectAttend, projectForReview, role, deleteProject, loading6 } = props
 
     return (
         <React.Fragment>
             <MenuItemDropdown loading={loading5} disabled={loading5} onClick={projectAttend} title="Ongoing" />
             <MenuItemDropdown loading={loading4} disabled={loading4} onClick={projectForReview} title="For Review" />
-            {role?.admin && <MenuItemDropdown loading={loading6} disabled={loading6} onClick={deleteProject} title="Delete Project" />}
+            {userRole?.admin && <MenuItemDropdown loading={loading6} disabled={loading6} onClick={deleteProject} title="Delete Project" />}
         </React.Fragment>
     )
 }
+
+const TeamMemberList = (props) => {
+    const { item, onEditProject, projectCompleted, loading3, loading2, loading1, duplicateProject, projectCancel } = props
+    const getEditDisabled = () => {
+        let disabled = false
+        if (item.status === 'Project manager') disabled = false
+
+        else if (item.status === 'Completed') disabled = true
+        else if (item.status === 'For Review') disabled = false
+        else if (item.status === 'With Revision') disabled = false
+        else if (item.status === 'Ongoing') disabled = true
+        else if (item.status === 'Assigned') disabled = false
+        else if (item.status === 'Cancel') disabled = true
+        return disabled
+    }
+    const getActionsDisabled = () => {
+        let result = false
+        if (item.status === 'For Review') result = false
+
+        else if (item.status === 'Project manager') result = true
+        else if (item.status === 'Assigned') result = true
+        else if (item.status === 'With Revision') result = false
+        else if (item.status === 'Ongoing') result = true
+        else if (item.status === 'Completed') result = true
+        else if (item.status === 'Cancel') result = true
+        return result
+    }
+    const getCancelDisabled = () => {
+        let result = false
+        if (item.status === 'Project manager') result = false
+
+        else if (item.status === 'For Review') result = true
+        else if (item.status === 'Ongoing') result = true
+        else if (item.status === 'Assigned') result = true
+        else if (item.status === 'With Revision') result = true
+        else if (item.status === 'Completed') result = true
+        else if (item.status === 'Cancel') result = true
+        return result
+    }
+
+    return (
+        <React.Fragment>
+            <MenuItemDropdown loading={false} onClick={onEditProject} disabled={getEditDisabled()} title="Edit" />
+            <MenuItemDropdown loading={loading3} disabled={loading3 || getActionsDisabled()} onClick={projectCompleted} title="Completed" />
+            <MenuItemDropdown loading={loading2} disabled={loading2} onClick={duplicateProject} title="Duplicate" />
+            <MenuItemDropdown loading={loading1} disabled={loading1 || getCancelDisabled()} onClick={projectCancel} title="Cancel" />
+        </React.Fragment>
+    )
+}
+
 const CustomerList = (props) => {
-    const { item, loading1, loading2, loading3, projectCancel, duplicateProject, projectCompleted, onEditProject  } = props
+    const { item, loading1, loading2, loading3, projectCancel, duplicateProject, projectCompleted, onEditProject } = props
 
     const getActionsDisabled = () => {
         let result = false
@@ -31,7 +81,7 @@ const CustomerList = (props) => {
     const getCancelDisabled = () => {
         let result = false
         if (item.status === 'Project manager') result = false
-        
+
         else if (item.status === 'For Review') result = true
         else if (item.status === 'Ongoing') result = true
         else if (item.status === 'Assigned') result = true
@@ -63,10 +113,10 @@ const CustomerList = (props) => {
 }
 
 const OptionsList = (props) => {
-    const { item, children, handleMenuOpen, anchorEl, handleMenuClose, role, loading1, loading2, loading3, loading4, loading5, projectAttend, projectCancel, duplicateProject, projectCompleted, projectForReview, deleteProject, loading6, onEditProject } = props
+    const { item, children, handleMenuOpen, anchorEl, handleMenuClose, userRole, loading1, loading2, loading3, loading4, loading5, projectAttend, projectCancel, duplicateProject, projectCompleted, projectForReview, deleteProject, loading6, onEditProject, userId } = props
 
     const customer_props = { item, loading1, loading2, loading3, projectCancel, duplicateProject, projectCompleted, onEditProject }
-    const auth_member_list = { item, loading4, loading5, projectAttend, projectForReview, role, deleteProject, loading6 }
+    const auth_member_list = { item, loading4, loading5, projectAttend, projectForReview, userRole, deleteProject, loading6 }
 
     return (
         <React.Fragment>
@@ -84,8 +134,10 @@ const OptionsList = (props) => {
                         horizontal: "center"
                     }}
                 >
-                    {role?.customer ? (
-                        <CustomerList {...customer_props} />) : <AuthMembersList {...auth_member_list} />}
+                    {userRole?.customer ? (
+                        <CustomerList {...customer_props}
+                        />)
+                        : userRole?.teamMember && userId === item.user ? <TeamMemberList {...customer_props} /> : <AuthMembersList {...auth_member_list} />}
                 </Menu>
             }
         </React.Fragment>

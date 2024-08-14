@@ -182,9 +182,13 @@ const currentUserRole = (state) => {
 
 const getUserRoles = (role) => {
   if (role?.designer) return "Graphic-Designer";
-  if (role?.projectManager) return "Project-Manager";
-  if (role?.admin) return "Admin";
-  if (role?.customer) return "Customer";
+  else if (role?.projectManager) return "Project-Manager";
+  else if (role?.mobile_app_developer) return "Mobile-App-Developer";
+  else if (role?.web_developer) return "Web-Developer";
+  else if (role?.social_media_manager) return "Social-Media-Manager";
+  else if (role?.copywriter) return "Copy-Writer";
+  else if (role?.customer) return "Customer";
+  else if (role?.admin) return "Admin";
 };
 
 const getProjectById = (id, callback, category, setFileVersionList) => {
@@ -340,7 +344,7 @@ const getOngoingApiAccordingToProject = (category, id) => {
   else if (category === 'social-media-manager') {
     return `/api/social-media/ongoing/${id}`
   }
-  else if (category === 'copy-writing') {
+  else if (category === 'copy-writing') { 
     return `/api/copy-writer/ongoing/${id}`
   }
   else if (category === 'web-app') {
@@ -447,12 +451,21 @@ const makeTaskPriorityHigh = async (data, setRespMessage, openSuccessSB, openErr
 }
 
 const handleRole = (role) => {
-  if (role?.designer || role?.mobile_app_developer || role?.web_developer || role?.social_media_manager || role?.copywriter) {
-    return {
-      teamMember: true
+        if (role?.designer || role?.mobile_app_developer || role?.web_developer || role?.social_media_manager || role?.copywriter) {
+            return {
+                teamMember: true
+            }
+        }
+        else if (role?.projectManager) {
+            return { projectManager: true }
+        }
+        else if (role?.customer) {
+            return { customer: true }
+        }
+        else if (role?.admin) {
+            return { admin: true }
+        }
     }
-  }
-}
 
 const notificationSound = () => {
   const audio = new Audio(discordMusic);

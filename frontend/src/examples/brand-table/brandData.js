@@ -14,133 +14,134 @@ import { mibananaColor } from "assets/new-images/colors";
 import { ArrowDownward } from "@mui/icons-material";
 import { currentUserRole } from "redux/global/global-functions";
 import { Link } from "react-router-dom";
+import BrandAction from "./brand-action/brand-action";
 
-export const Action = ({ item, setFormValue, openEditBrandModal, openSuccessSB, openErrorSB, setRespMessage, reduxState, reduxActions }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const dispatch = useDispatch();
-  const id = useSelector((state) => state.userDetails.id);
-  // const reduxState = useSelector((state) => state);
-  // const [errorSB, setErrorSB] = useState(false);
-  // const [successSB, setSuccessSB] = useState(false);
-  // const [respMessage, setRespMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const role = currentUserRole(reduxState);
+// export const Action = ({ item, setFormValue, openEditBrandModal, openSuccessSB, openErrorSB, setRespMessage, reduxState, reduxActions }) => {
+//   const [anchorEl, setAnchorEl] = useState(null);
+//   const dispatch = useDispatch();
+//   const id = useSelector((state) => state.userDetails.id);
+//   // const reduxState = useSelector((state) => state);
+//   // const [errorSB, setErrorSB] = useState(false);
+//   // const [successSB, setSuccessSB] = useState(false);
+//   // const [respMessage, setRespMessage] = useState("");
+//   const [loading, setLoading] = useState(false);
+//   const role = currentUserRole(reduxState);
 
-  // const openSuccessSB = () => setSuccessSB(true);
-  // const closeSuccessSB = () => setSuccessSB(false);
+//   // const openSuccessSB = () => setSuccessSB(true);
+//   // const closeSuccessSB = () => setSuccessSB(false);
 
-  // const openErrorSB = () => setErrorSB(true);
-  // const closeErrorSB = () => setErrorSB(false);
+//   // const openErrorSB = () => setErrorSB(true);
+//   // const closeErrorSB = () => setErrorSB(false);
 
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+//   const handleMenuOpen = (event) => {
+//     setAnchorEl(event.currentTarget);
+//   };
 
-  const func = (value) => dispatch(getCustomerBrand(value));
+//   const func = (value) => dispatch(getCustomerBrand(value));
 
-  async function deleteBrandList() {
-    setLoading(true);
-    if (!item._id) {
-      setRespMessage("ID not provided");
-      setLoading(false);
-      setTimeout(() => {
-        openErrorSB();
-      }, 1000);
-      return;
-    }
-    await apiClient.delete("/api/brand/" + item._id)
-      .then(({ data }) => {
-        if (data.message) setRespMessage(data.message);
-        setLoading(false);
-        setTimeout(() => {
-          getBrandData(id, func);
-          openSuccessSB();
-        }, 1200);
-      })
-      .catch((err) => {
-        if (err.response) {
-          const { message } = err.response.data;
-          setRespMessage(message);
-          setLoading(false);
-          setTimeout(() => {
-            openErrorSB();
-          }, 1200);
-          return;
-        }
-        setLoading(false);
-        setRespMessage(err.message);
-        setTimeout(() => {
-          openErrorSB();
-        }, 1200);
-      });
-  }
-  const openBrandModal = () => {
-    reduxActions.getNew_Brand(!reduxState.new_brand)
-    const filterBrand = reduxState.customerBrand?.find((brand) => brand._id === item._id);
-    if (filterBrand) {
-      setFormValue({ ...filterBrand });
-      openEditBrandModal()
-      // dispatch(openEditBrandModal(true));
-    }
-  };
+//   async function deleteBrandList() {
+//     setLoading(true);
+//     if (!item._id) {
+//       setRespMessage("ID not provided");
+//       setLoading(false);
+//       setTimeout(() => {
+//         openErrorSB();
+//       }, 1000);
+//       return;
+//     }
+//     await apiClient.delete("/api/brand/" + item._id)
+//       .then(({ data }) => {
+//         if (data.message) setRespMessage(data.message);
+//         setLoading(false);
+//         setTimeout(() => {
+//           getBrandData(id, func);
+//           openSuccessSB();
+//         }, 1200);
+//       })
+//       .catch((err) => {
+//         if (err.response) {
+//           const { message } = err.response.data;
+//           setRespMessage(message);
+//           setLoading(false);
+//           setTimeout(() => {
+//             openErrorSB();
+//           }, 1200);
+//           return;
+//         }
+//         setLoading(false);
+//         setRespMessage(err.message);
+//         setTimeout(() => {
+//           openErrorSB();
+//         }, 1200);
+//       });
+//   }
+//   const openBrandModal = () => {
+//     reduxActions.getNew_Brand(!reduxState.new_brand)
+//     const filterBrand = reduxState.customerBrand?.find((brand) => brand._id === item._id);
+//     if (filterBrand) {
+//       setFormValue({ ...filterBrand });
+//       openEditBrandModal()
+//       // dispatch(openEditBrandModal(true));
+//     }
+//   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-  return (
-    <MDBox>
-      <MDBox onClick={handleMenuOpen}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="active-svg"
-          width="27"
-          height="27"
-          fill="none"
-        >
-          <path
-            stroke="inherit"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"
-          />
-        </svg>
-      </MDBox>
-      <Menu
-        id="dropdown-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-      >
-        {role?.customer ? (
-          <div>
-            <MenuItem onClick={openBrandModal}>Edit</MenuItem>
-            <MenuItem sx={containerStyles} onClick={deleteBrandList}>
-              <h6 style={{ fontWeight: "300", color: "inherit" }}>Delete</h6>
-              <IconButton>
-                <MoonLoader size={20} loading={loading} />
-              </IconButton>
-            </MenuItem>
-          </div>
-        ) : role?.admin ? (
-          <MenuItem sx={containerStyles} onClick={() => { }}>
-            <h6 style={{ fontWeight: "300", color: "inherit" }} onClick={deleteBrandList}>Delete</h6>
-            <IconButton>
-              <MoonLoader size={20} loading={loading} />
-            </IconButton>
-          </MenuItem>
-        ) : (
-          <MenuItem sx={containerStyles} onClick={() => { }}>
-            <h6 style={{ fontWeight: "300", color: "inherit" }}>No Options</h6>
-          </MenuItem>
-        )}
-      </Menu>
-    </MDBox>
-  );
-};
+//   const handleMenuClose = () => {
+//     setAnchorEl(null);
+//   };
+//   return (
+//     <MDBox>
+//       <MDBox onClick={handleMenuOpen}>
+//         <svg
+//           xmlns="http://www.w3.org/2000/svg"
+//           className="active-svg"
+//           width="27"
+//           height="27"
+//           fill="none"
+//         >
+//           <path
+//             stroke="inherit"
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M21 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 11A5 5 0 1 0 6 1a5 5 0 0 0 0 10ZM21 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM6 26a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"
+//           />
+//         </svg>
+//       </MDBox>
+//       <Menu
+//         id="dropdown-menu"
+//         anchorEl={anchorEl}
+//         open={Boolean(anchorEl)}
+//         onClose={handleMenuClose}
+//         transformOrigin={{
+//           vertical: "top",
+//           horizontal: "center",
+//         }}
+//       >
+//         {role?.customer ? (
+//           <div>
+//             <MenuItem onClick={openBrandModal}>Edit</MenuItem>
+//             <MenuItem sx={containerStyles} onClick={deleteBrandList}>
+//               <h6 style={{ fontWeight: "300", color: "inherit" }}>Delete</h6>
+//               <IconButton>
+//                 <MoonLoader size={20} loading={loading} />
+//               </IconButton>
+//             </MenuItem>
+//           </div>
+//         ) : role?.admin ? (
+//           <MenuItem sx={containerStyles} onClick={() => { }}>
+//             <h6 style={{ fontWeight: "300", color: "inherit" }} onClick={deleteBrandList}>Delete</h6>
+//             <IconButton>
+//               <MoonLoader size={20} loading={loading} />
+//             </IconButton>
+//           </MenuItem>
+//         ) : (
+//           <MenuItem sx={containerStyles} onClick={() => { }}>
+//             <h6 style={{ fontWeight: "300", color: "inherit" }}>No Options</h6>
+//           </MenuItem>
+//         )}
+//       </Menu>
+//     </MDBox>
+//   );
+// };
 
 const ShowFiles = ({ item }) => {
   const [showfiles, setShowFiles] = useState(false);
@@ -216,25 +217,17 @@ const BrandData = (setFormValue, openEditBrandModal, openSuccessSB, openErrorSB,
     }
     let brandDescription = item.brand_description?.substring(0, 50) + '...'
     getBrandLogo();
+    console.log(arr)
 
     return {
       logo: (
-        <>
-          {role?.customer ? (
-            <img
-              src={arr?.url}
-              style={{ maxWidth: 80, maxHeight: 80, width: 80, height: "auto" }}
-              alt="brand-logo"
-            />
-          ) : (
-            <Link to={`/brand/${item?._id}`}>
-              <img
-                src={arr?.url}
-                style={{ maxWidth: 80, maxHeight: 80, width: 80, height: "auto" }}
-              />
-            </Link>
-          )}
-        </>
+        <Link to={`/brand/${item?._id}`}>
+          <img
+            src={arr?.url}
+            style={{ maxWidth: 80, maxHeight: 80, width: 80, height: "auto" }}
+            alt="brand-logo"
+          />
+        </Link>
       ),
       brand_name: (
         <MDTypography variant="h4" sx={textStyles}>
@@ -248,22 +241,17 @@ const BrandData = (setFormValue, openEditBrandModal, openSuccessSB, openErrorSB,
           sx={{ ...textStyles, fontSize: "14px !important" }}
           dangerouslySetInnerHTML={{ __html: brandDescription }}
         >
-          {/* {item.brand_description} */}
         </MDTypography>
       ),
-
-      // files: <MDTypography display="flex" flexDirection="column" variant="p" fontSize="small">
-      //     {item.files?.map(file => <MDTypography sx={{ color: '#000', fontWeight: 'bold' }} key={file.id} variant="p" fontSize="small">{file.name}</MDTypography>)}
-      // </MDTypography>,
       files: <ShowFiles item={item} />,
       action: (
         <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
-          <Action
+          <BrandAction
             item={item}
             setFormValue={setFormValue}
             openEditBrandModal={openEditBrandModal}
-            openSuccessSB={openSuccessSB} 
-            openErrorSB={openErrorSB} s
+            openSuccessSB={openSuccessSB}
+            openErrorSB={openErrorSB}
             setRespMessage={setRespMessage}
             reduxState={reduxState}
             reduxActions={reduxActions}
@@ -293,20 +281,13 @@ const BrandData = (setFormValue, openEditBrandModal, openSuccessSB, openErrorSB,
     return {
       logo: (
         <>
-          {role?.customer ? (
+          <Link to={`/brand/${item?._id}`}>
             <img
-              src={arr?.url === "" ? "" : arr?.url}
+              src={arr?.url}
               style={{ maxWidth: 70, maxHeight: 70, width: 50, height: "auto" }}
               alt="brand-logo"
             />
-          ) : (
-            <Link to={`/brand/${item?._id}`}>
-              <img
-                src={arr?.url}
-                style={{ maxWidth: 70, maxHeight: 70, width: 50, height: "auto" }}
-              />
-            </Link>
-          )}
+          </Link>
         </>
       ),
       brand_name: (
@@ -316,7 +297,17 @@ const BrandData = (setFormValue, openEditBrandModal, openSuccessSB, openErrorSB,
       ),
       action: (
         <MDTypography component="span" href="#" variant="caption" color="text" fontWeight="medium">
-          <Action item={item} setFormValue={setFormValue} openEditBrandModal={openEditBrandModal} openSuccessSB={openSuccessSB} openErrorSB={openErrorSB} setRespMessage={setRespMessage} />
+          <BrandAction
+            item={item}
+            setFormValue={setFormValue}
+            openEditBrandModal={openEditBrandModal}
+            openSuccessSB={openSuccessSB}
+            openErrorSB={openErrorSB}
+            setRespMessage={setRespMessage}
+            reduxState={reduxState}
+            reduxActions={reduxActions}
+          />
+
         </MDTypography>
       ),
     };
@@ -345,7 +336,4 @@ const BrandData = (setFormValue, openEditBrandModal, openSuccessSB, openErrorSB,
 };
 export default BrandData;
 
-const containerStyles = {
-  display: "flex",
-  justifyContent: "space-between",
-};
+

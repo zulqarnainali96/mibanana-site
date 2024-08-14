@@ -1,0 +1,12 @@
+.group-details-container{
+    display: grid;
+    width: 50%;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: .2rem;
+}
+
+.group-details-container div {
+    padding: .2rem;
+    text-align: center;
+    font-size: .8rem;
+}

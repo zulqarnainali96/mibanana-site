@@ -68,37 +68,48 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
   const rows = projectList?.length
     ? projectList?.map((item, i) => {
       return {
-        project_title: <MDBox lineHeight={1}>
-          <MDTypography
-            display={"block"}
-            sx={{ textDecoration: "underline !important" }}
-            variant="button"
-            fontWeight="medium"
-          >
-            <MDBox
+        project_title: (
+          <MDBox lineHeight={1}>
+            <MDTypography
+              display={"block"}
+              sx={{ textDecoration: "underline !important" }}
+              variant="button"
+              fontWeight="medium"
+            >
+              <MDBox
+                sx={{
+                  "&:hover": { color: "blue" },
+                  fontFamily: fontsFamily.poppins,
+                  fontWeight: "400  !important",
+                  color: mibananaColor.yellowTextColor,
+                }}
+                onClick={() => openProjectChat(item?._id)}
+              >
+                {item?.project_title}
+              </MDBox>
+            </MDTypography>
+          </MDBox>),
+        name: (
+          <div>
+            <MDTypography
+              variant="h6"
               sx={{
-                "&:hover": { color: "blue" },
                 fontFamily: fontsFamily.poppins,
                 fontWeight: "400  !important",
                 color: mibananaColor.yellowTextColor,
               }}
-              onClick={() => openProjectChat(item?._id)}
             >
-              {item?.project_title}
-            </MDBox>
-          </MDTypography>
-        </MDBox>,
-        name: (
-          <MDTypography
-            variant="h6"
-            sx={{
-              fontFamily: fontsFamily.poppins,
-              fontWeight: "400  !important",
-              color: mibananaColor.yellowTextColor,
-            }}
-          >
-            {item?.name}
-          </MDTypography>
+              {item?.name}
+            </MDTypography>
+            {item?.role ? <span style={{
+              background: '#105e1078',
+              padding: '0.1em',
+              fontSize: '0.8rem',
+              color: '#fff',
+              display: 'block',
+              marginTop: '8px'
+            }}>{item?.role}</span> : null}
+          </div>
         ),
 
         team_members: (
@@ -202,6 +213,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
               errorSBNot={openErrorSB}
               successSBNot={openSuccessSB}
               role={role}
+              reduxState={reduxState}
               onEditProject={() => onEditProject(item?._id)}
             />
           </MDTypography>

@@ -4,6 +4,7 @@ import apiClient from 'api/apiClient'
 import { fontsFamily } from 'assets/font-family'
 // import MDSnackbar from 'components/MDSnackbar'
 import React, { useState, useRef, useEffect } from 'react'
+import { handleRole } from 'redux/global/global-functions'
 import { currentUserRole } from 'redux/global/global-functions'
 // import { getBrandData } from 'redux/global/global-functions'
 
@@ -20,7 +21,7 @@ const useBrandData = (props) => {
     const [isContentEmpty, setIsContentEmpty] = useState(false);
 
 
-    const role = currentUserRole(reduxState)
+    const role = handleRole(currentUserRole(reduxState))
 
     const [respMessage, setRespMessage] = useState("")
     const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -185,15 +186,9 @@ const useBrandData = (props) => {
                     })
                     setFilesArray([])
                     closeAddBrandModal()
-                    // getBrandData(reduxState?.userDetails?.id, reduxActions.getCustomerBrand)
-                    // getSingleBrandFile(data?.customerBrand?._id)
-                    // reduxActions.getNew_Brand(!reduxState.new_brand)
-
-                    // setOpenModal(true)
                     openSuccessSB()
                     setTimeout(() => {
                         reduxActions.getNew_Brand(!reduxState.new_brand)
-                        // document.location.reload()
                     }, 4000)
 
                 })

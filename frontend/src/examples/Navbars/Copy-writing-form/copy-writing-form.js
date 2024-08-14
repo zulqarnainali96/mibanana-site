@@ -56,7 +56,8 @@ const CopyWritingForm = ({
     openSuccessSB, 
     loading, 
     setLoading, 
-    socketIO
+    socketIO,
+    role
 }) => {
     const [uploadedImages, setUploadedImages] = useState([]);
     const fileInputRef = useRef(null);
@@ -70,7 +71,7 @@ const CopyWritingForm = ({
         }
         formdata.append("user_id", reduxState?.userDetails.id);
         formdata.append("project_id", project_id);
-        await apiClient.post("/file/google-cloud", formdata)
+        await apiClient.post("/api/file/upload-files", formdata)
             .then(() => { 
                 setUploadedImages([]);
             })
@@ -114,7 +115,9 @@ const CopyWritingForm = ({
                 }
                 setTimeout(() => {
                     reduxActions.handleGetAllProjects(!reduxState.project_call)
-                    socketIO.emit('new-project', socketMsg)
+                    if(!role?.admin || !role?.projectManager){
+                        socketIO.emit('new-project', socketMsg)
+                    }
                     openSuccessSB();
                 }, 500);
             }

@@ -46,7 +46,7 @@ const GroupChat = ({
     item,
     reduxState,
     reduxActions, }) => {
-    const { group_name, avatar, _id, participant, messages } = item
+    const { group_name, avatar, _id, admin_id, participant, messages } = item
     const classes = reactQuillStyles2()
 
     function avatarImage(item) {
@@ -121,11 +121,14 @@ const GroupChat = ({
 
 
     const { open, handleClose: onClose, handleOpen, respMessage, setRespMessage, successSB, errorSB, openErrorSB, openSuccessSB, setErrorSB, setSuccessSB, loading, message, privateChatRef, sendMessage, setMessage, deleteChatGroup, delLoading, role } = useGroupChat(setReload, closeChat, userId, _id, 'name', username, avatar, user_avatar, reduxState, reduxActions, item)
+
+    console.log(privateChatRef.current?.scrollTop)
     return (
         <Box className={'mainBox'} sx={{ ...boxStyles }}>
             <EditGroupChat
                 open={open}
                 data={item}
+                userId={userId}
                 reduxState={reduxState}
                 onClose={onClose}
                 openErrorSB={openErrorSB}
@@ -168,7 +171,17 @@ const GroupChat = ({
                             style={{ top: "10px" }}
                         >
                             <MenuList>
-                                <MenuItem onClick={handleOpen}>Edit Group</MenuItem>
+                                {userId === admin_id ? (
+                                    <MenuItem onClick={handleOpen}>
+                                        Edit Group
+                                    </MenuItem>
+                                ) :
+                                    (
+                                        <MenuItem onClick={handleOpen}>
+                                            View Group
+                                        </MenuItem>
+                                    )
+                                }
                                 <MenuItemDropdown deleteClass={"delete"} title={"Delete Group"} onClick={deleteChatGroup} loading={delLoading} disabled={delLoading} />
                                 <MenuItem onClick={closeChat}>Close Chat</MenuItem>
                             </MenuList>
@@ -198,8 +211,8 @@ const GroupChat = ({
                     <BeatLoader size={25} color={'#fff'} />
                 </FullScreenLoader>
             ) : (
-                <Box ref={privateChatRef} className={'chatBoxStyle'}>
-                    <Box className={'chatBoxStyle2'}>
+                <Box className={'chatBoxStyle'}>
+                    <Box ref={privateChatRef} className={'chatBoxStyle2'}>
                         {reduxState.group_message?.length > 0 ? reduxState.group_message?.map(item => {
                             return (
                                 <ListItem disablePadding sx={{ backgroundColor: '#fff', width: '60%', ...(msgPosition(item)) }}>

@@ -26,8 +26,7 @@ import RightSideDrawer from "components/RightSideDrawer";
 import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 import List from "@mui/material/List";
 import "./navbar-style.css"
-import MenuIcon from "@mui/icons-material/Menu"
-
+import MenuIcon from "@mui/icons-material/Menu";
 import ProjectMenuOptions from "../create-project-poper/project-menu-poper";
 import CopyWritingForm from "../Copy-writing-form/copy-writing-form";
 import SocialMediaManager from "../social-media-form/social-media-manager";
@@ -287,6 +286,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         openSuccessSB={openSuccessSB}
         loading={loading}
         setLoading={setLoading}
+        role={role}
       />
 
       <SocialMediaManager
@@ -300,6 +300,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         upload_files={upload_files}
         handleFileUpload={handleFileUpload}
         removeFiles={removeFiles}
+        role={role}
 
         setLoading={setLoading}
         setRespMessage={setRespMessage}
@@ -321,6 +322,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         reduxActions={reduxActions}
         loading={loading}
         setLoading={setLoading}
+        role={role}
 
       />
 
@@ -336,6 +338,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         reduxActions={reduxActions}
         loading={loading}
         setLoading={setLoading}
+        role={role}
       />
 
       <MobileAppDevForm
@@ -348,8 +351,10 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         respMessage={respMessage}
         openErrorSB={openErrorSB}
         openSuccessSB={openSuccessSB}
+        brandOption={brandOption}
         loading={loading}
         setLoading={setLoading}
+        role={role}
       />
 
 
@@ -384,7 +389,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
               <MenuIcon fontSize="large" />
             </div>
             {renderUserMenu()}
-            {role?.customer &&
+            {
               // (
               //   <ProjectButton
               //     variant="contained"
@@ -417,7 +422,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
             ) : null}
             <RightSideDrawer list={list} />
           </div>
-          {role?.customer && (
+          {
             // <ProjectButton2
             //   variant="contained"
             //   size="small"
@@ -435,7 +440,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
               handleWebAppDev={handleWebAppDev}
               handleMobileAppDev={handleMobileAppDev}
             />
-          )}
+          }
         </Grid>
       </Grid>
 

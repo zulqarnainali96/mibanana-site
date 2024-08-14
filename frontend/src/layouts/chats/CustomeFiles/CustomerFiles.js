@@ -148,7 +148,7 @@ const CustomerFiles = ({ openErrorSB, openSuccessSB, setRespMessage, reduxState,
         formdata.append('name', reduxState?.userDetails.name)
         formdata.append('project_title', currentProject.project_title)
         formdata.append('project_id', currentProject?._id)
-        await apiClient.post("/file/google-cloud", formdata).then(() => {
+        await apiClient.post("/api/file/upload-files", formdata).then(() => {
             const data = {
                 user_id: reduxState?.userDetails.id,
                 name: reduxState?.userDetails.name,

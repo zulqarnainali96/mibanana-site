@@ -20,26 +20,23 @@ const ProjectNotification = (props) => {
     const onChangeProjectView = (item) => {
         updatedNotifications(item.unique_key)
         setTimeout(() => {
-            navigate("/chat/" + item?.project_id)
+            if (item.project_category === 'graphic-design') {
+                navigate("/chat/" + item?.project_id)
+            } else {
+                navigate(`/${item.project_category}/${item.project_id}`)
+            }
         }, 150)
-    }
-    function openProjectChat(id) {
-        // const filterProject = projectList.find(proj => proj._id === id)
-        // if (openProjectByFormType(filterProject.project_category)) {
-        //     setTimeout(() => {
-        //         navigate(`/${filterProject.project_category}/${filterProject._id}`);
-        //     }, 400)
-        // } else {
-        //     setTimeout(() => {
-        //         navigate(`/chat/${id}`);
-        //     }, 400)
-        // }
     }
 
     const onChangeScreenToChats = (item) => {
-        navigate("/chat/" + item?.project_id)
+        if (item.project_category === 'graphic-design') {
+            navigate("/chat/" + item?.project_id)
+        } else {
+            navigate(`/${item.project_category}/${item.project_id}`)
+        }
     }
     const handleNotificationsOpen = (item) => {
+        console.log(item)
         if (item.view) {
             onChangeProjectView(item)
         } else {

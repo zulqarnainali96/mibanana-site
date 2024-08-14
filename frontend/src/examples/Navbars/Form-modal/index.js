@@ -278,7 +278,7 @@ function CreateProject({
         formdata.append('project_title', project_title)
         formdata.append('project_id', project_id)
 
-        apiClient.post("/file/google-cloud", formdata, {
+        apiClient.post("/api/file/upload-files", formdata, {
             onUploadProgress: (progressEvent) => {
                 const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
                 // console.log(percentCompleted)

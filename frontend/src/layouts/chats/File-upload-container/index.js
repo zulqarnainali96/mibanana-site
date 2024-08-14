@@ -45,6 +45,7 @@ import { getProjectById } from "redux/global/global-functions";
 // import { SocketContext } from "sockets";
 import TransitionsModal from "components/Modal/Modal";
 import { useSocket } from "sockets";
+import { handleRole } from "redux/global/global-functions";
 
 const uploadBtn = {
   backgroundColor: "#98e225",
@@ -68,7 +69,7 @@ const FileUploadContainer = ({
   setFileVersionList,
   fileVersion,
 }) => {
-  const userId = useSelector((state) => state.userDetails?.id);
+  const userId = reduxState.userDetails?.id;
   const projects = reduxState?.project_list?.CustomerProjects;
   const classes = useStyles();
   // const [previewAllImages, setPreviewAllImages] = useState([])
@@ -89,15 +90,15 @@ const FileUploadContainer = ({
   const [memberName, setMemberName] = useState([]);
   const [files, setFiles] = useState([]);
   const [fileMsg, setFileMsg] = useState("");
-  const re_render_chat = reduxState?.re_render_chat;
+  // const re_render_chat = reduxState?.re_render_chat;
   const fileRef = useRef(null);
-  const role = currentUserRole(reduxState);
+  const role = handleRole(currentUserRole(reduxState));
   const [isViewerOpen, setIsViewerOpen] = useState(false);
-  const [previewimg, setpreviewimg] = useState("");
+  // const [previewimg, setpreviewimg] = useState("");
   const [currentVersion, setSelectVersion] = useState("");
   const [designerList, setDesignerList] = useState([]);
   const [successOpen, setsuccessOpen] = useState(false);
-  const [successMessage, setsuccessMessage] = useState("");
+  // const [successMessage, setsuccessMessage] = useState("");
   const [currentImage, setCurrentImage] = useState(0)
   // const socketIO = useContext(SocketContext)
   const socketIO = useSocket()
@@ -217,12 +218,11 @@ const FileUploadContainer = ({
       setFilesType(files[i]);
       filType.push(files[i]);
     }
-    await handleSubmit(filType);
+    handleSubmit(filType);
   };
 
   const onDrop = async (acceptedFiles) => {
-    // Do something with dropped files
-    await handleSubmit(acceptedFiles);
+    handleSubmit(acceptedFiles);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -277,7 +277,7 @@ const FileUploadContainer = ({
     // formdata.append("name", reduxState?.userDetails.name);
     // formdata.append("project_title", project.project_title);
     formdata.append("project_id", project?._id);
-    await apiClient.post("/file/google-cloud", formdata)
+    await apiClient.post("/api/file/upload-files", formdata)
       .then(() => {
         const data = {
           user_id: reduxState?.userDetails.id,
@@ -361,7 +361,10 @@ const FileUploadContainer = ({
       })
   };
   const handleSubmit = (fileType) => {
-    if (role?.designer || role?.projectManager || role?.admin) {
+    if ((project?.user === userId && role?.teamMember) || (project?.user === userId && role?.projectManager)) {
+      customerUploadFiles(fileType);
+    }
+    else if ((project?.user !== userId && role?.teamMember) || (project?.user !== userId && role?.projectManager) || role?.admin) {
       const latest_version = [...fileVersion]?.pop()
       versionUploads(fileType, latest_version)
     }
@@ -524,8 +527,9 @@ const FileUploadContainer = ({
   const getAllDesignersList = async () => {
     await apiClient.get(`/api/get-team-member-list/graphic-design/${userId}`)
       .then(({ data }) => {
-        setDesignerList(data?.list)
-
+        const filterData = data?.list?.filter((item) => { return item?._id !== project?.user })
+        console.log("filter", filterData )
+        setDesignerList(filterData)
       })
       .catch((e) => {
       });
@@ -533,6 +537,7 @@ const FileUploadContainer = ({
 
   useEffect(() => {
     if (role.projectManager || role.admin) getAllDesignersList()
+    if(role?.teamMember && userId === project?.user) getAllDesignersList()
     setSelectedFilePeople("Latest design")
     let lastIndex = [...fileVersion]?.pop()
     getFilesOnVerion(lastIndex)
@@ -683,7 +688,7 @@ const FileUploadContainer = ({
   }, [reloadState])
 
   const filesFolderProps = {
-    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState, getLatestDesign
+    selectedFilePeople, getFullFolderArray, handleFilePeopleChange, currentVersion, clientFiles, getListThroughVersion, fileVersion, activebtn, role, addFileVerion, addVersionStyle, versionHandler, checkVersionEmpty, openErrorSB, openSuccessSB, project, setRespMessage, reduxActions, reloadState, getLatestDesign, reduxState
   }
 
   // function getDate(localDate) {
@@ -782,12 +787,11 @@ const FileUploadContainer = ({
                         <>
                           <Grid item xxl={3} xl={3} lg={3} md={3} xs={6} className="file-grid-item" height={version?.length < 5 ? "147px" : undefined}>
                             <div className={`upload-file-main ${classes.uploadedfileMainDiv}`}>
-                              {(role?.projectManager || role?.designer || role?.admin) && (
+                              {(role?.projectManager || role?.teamMember || role?.admin) && (
                                 <IconButton onClick={() => deleteFile(ver)} className="deleteIcon">
                                   <CloseIcon fontSize="small" />
                                 </IconButton>
                               )}
-
                               <DownloadForOfflineIcon
                                 onClick={() => DownloadFile(ver?.download_link)}
                                 className="downloadicon"
@@ -892,19 +896,20 @@ const FileUploadContainer = ({
                   <>
                     {teamMembers?.length > 0 ? (
                       <>
-                        {/* <img src={designerImg} className="adminImg1" /> */}
                         {teamMembers.map((item, i) => (
                           <div key={i}>
-                            {role?.projectManager && (<IconButton size="small" className="remove-designer" onClick={() => deleteDesigner(item)}>
-                              <CloseRoundedIcon fontSize="small" />
-                            </IconButton>)}
+                            {role?.projectManager && (
+                              <IconButton size="small" className="remove-designer" onClick={() => deleteDesigner(item)}>
+                                <CloseRoundedIcon fontSize="small" />
+                              </IconButton>
+                            )}
                             <h3 className={classes.adminDiv2h3}>{item?.name}</h3>
                           </div>
                         ))}
                       </>
                     ) : (
                       <>
-                        {role?.projectManager ? (
+                        {role?.teamMember || role?.projectManager ? (
                           <Autocomplete
                             value={memberName}
                             onChange={(event, newValue) => {

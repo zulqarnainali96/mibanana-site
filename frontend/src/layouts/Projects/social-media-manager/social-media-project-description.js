@@ -71,7 +71,7 @@ const SocialMediaManagerDescription = ({
                 <div className="project-details-div">
                     <h2 className="admin-div1h2">Service Type</h2>
                     <div className="adminDiv2">
-                            <h3 className="admin-div-2h3" style={{ textDecoration: 'underline', color: '#344767' }} >{project.service_type}</h3>
+                        <h3 className="admin-div-2h3" style={{ textDecoration: 'underline', color: '#344767' }} >{project.service_type}</h3>
                     </div>
                 </div>
                 <div className="project-details-div">
@@ -107,6 +107,12 @@ const SocialMediaManagerDescription = ({
                         {project?.is_active ? "Active" : "Not Active"}
                     </Typography>
                 </div>
+                {project?.brand !== null ? <div className="project-details-div">
+                    <h2 className="admin-div1h2">Brand</h2>
+                    <Typography variant="h6" className="desc1">
+                        {project.brand?.brand_name}
+                    </Typography>
+                </div> : null}
             </div>
         </React.Fragment>
     )

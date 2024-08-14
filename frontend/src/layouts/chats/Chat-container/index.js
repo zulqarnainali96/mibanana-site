@@ -31,6 +31,7 @@ import TransitionsModal from 'components/Modal/Modal';
 import { handleRole } from 'redux/global/global-functions';
 import { getProjectById } from 'redux/global/global-functions';
 import { useSocket } from 'sockets';
+import ProjectChanges from './project-changes';
 
 const ChatsContainer = ({
     chatContainerRef,
@@ -159,106 +160,22 @@ const ChatsContainer = ({
     }
     return (
         <React.Fragment>
-            <MDTypography
-                sx={({ palette: { primary } }) => ({
-                    fontFamily: fontsFamily.poppins,
-                    color: mibananaColor.tableHeaderColor,
-                    fontWeight: "bold",
-                    fontSize: is500 ? "14px !important" : "16px",
-                    paddingBottom: "5px",
-                    borderBottom: `2px solid ${mibananaColor.tableHeaderColor}`,
-                    display: "flex",
-                })}
-                variant="h4"
-                pb={1}
-            >
-                <Grid xs={6} style={{ display: "flex", alignItems: "center" }}>Activity</Grid>
-                {handleRole(role)?.teamMember || role?.projectManager ? (
-                    <Grid
-                        id="dropdown-btn"
-                        aria-controls={anchorEl ? 'dropdown-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={anchorEl ? 'true' : undefined}
-                        onClick={handleClick}
-                        item
-                        xs={6}
-                        sx={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer", color: '#333' }}
-                    >
-                        Change Status
-                        <MoreVertIcon fontSize='small' />
-                    </Grid>
-                ) : null}
-                {userRole === 'Customer' && (
-                    // <Grid
-                    //     id="dropdown-btn-customer"
-                    //     aria-controls={anchorEl ? 'dropdown-menu-customer' : undefined}
-                    //     aria-haspopup="true"
-                    //     aria-expanded={anchorEl ? 'true' : undefined}
-                    //     onClick={handleClick}
-                    //     item
-                    //     xs={6}
-                    //     style={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer" }}
-                    // >
-                    //     <span style={{ backgroundColor: "#FFE135", color: "#636e72", padding: "0.5rem 0.8rem", display: "flex", alignItems: "center", fontSize : '13px' }}>
-                    //         Send Changes to Designer
-                    //         {/* <MoreVertIcon fontSize='small' /> */}
-                    //     </span>
-                    // </Grid>
-                    <MDBox display="flex" justifyContent="flex-end" alignItems="center" width="100%" onClick={() => withRevision(id)}>
-                        {/* <MDButton sx={sendChangeButton} variant="contained" color="primary" >Send Changes to Designer</MDButton> */}
-                        <MDButton
-                            type="submit"
-                            color="warning"
-                            endIcon={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <MoonLoader loading={loading} size={18} color='#121212' />
-                            </div>}
-                            disabled={loading}
-                            boxShadow="none"
-                            sx={{
-                                color: '#000 !important',
-                                textTransform: "capitalize",
-                                fontFamily: "Poppins, sans-serif",
-                                fontSize: '12px'
-                            }}
-                        >
-                            Send Changes to Designer
-                        </MDButton>
-                    </MDBox>
-                )}
-                <Menu
-                    id="dropdown-menu"
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    style={{ top: "10px" }}
-                >
-                    <MenuList>
-                        {handleRole(role)?.teamMember ? (
-                            <div>
-                                <MenuItem onClick={projectAttend1}>Ongoing</MenuItem>
-                                <MenuItem onClick={projectForReview1}>For Review</MenuItem>
-                            </div>
-                        ) : role?.projectManager ? (
-                            <div>
-                                <MenuItem onClick={projectAttend1}>Ongoing</MenuItem>
-                                <MenuItem onClick={projectForReview1}>For Review</MenuItem>
-                                <MenuItem onClick={makePriorityHigh}>Make High Priority</MenuItem>
-                            </div>
-                        ) : null}
-                    </MenuList>
-                </Menu>
+            <ProjectChanges
+                withRevision={withRevision}
+                anchorEl={anchorEl}
+                handleClose={handleClose}
+                projectAttend1={projectAttend1}
+                projectForReview1={projectForReview1}
+                makePriorityHigh={makePriorityHigh}
+                handleClick={handleClick}
+                loading={loading}
+                userRole={role}
+                project_user={project?.user}
+                project_id={id}
+                userId={userId}
+                is500={is500}
+            />
 
-
-
-            </MDTypography>
             <Grid
                 ref={chatContainerRef}
                 container

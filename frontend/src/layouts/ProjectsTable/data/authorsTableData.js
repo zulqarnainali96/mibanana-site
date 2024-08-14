@@ -14,6 +14,7 @@ import { customerSendingNotification } from "socket-events/socket-event";
 import TransitionsModal from "components/Modal/Modal";
 import { getForReviewApiAccordingToProject, getOngoingApiAccordingToProject, getCompletedApiAccordingToProject, getDuplicateApiAccordingToProject, getDeleteApiAccordingToProject, getCancelApiAccordingToProject } from "redux/global/global-functions";
 import { useSocket } from "sockets";
+import { handleRole } from "redux/global/global-functions";
 
 export const Author = ({ name, }) => (
   <MDBox lineHeight={1}>
@@ -32,7 +33,7 @@ export const Job = ({ title, description }) => (
   </MDBox>
 );
 
-export const Action = ({ children, item, resonseMessage, message, errorSBNot, successSBNot, role, onEditProject }) => {
+export const Action = ({ children, item, resonseMessage, message, errorSBNot, successSBNot, role, onEditProject, reduxState }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [loading1, setLoading1] = useState(false)
   const [loading2, setLoading2] = useState(false)
@@ -41,6 +42,9 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
   const [loading5, setLoading5] = useState(false)
   const [loading6, setLoading6] = useState(false)
   const [openModal, setOpenModal] = useState(false)
+  const userRole = handleRole(role)
+  const userId = reduxState?.userDetails?.id
+
   // const socketIO = useRef(useContext(SocketContext));
   const socketIO = useSocket();
 
@@ -302,7 +306,7 @@ export const Action = ({ children, item, resonseMessage, message, errorSBNot, su
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const options_props = { item, children, handleMenuOpen, handleMenuClose, anchorEl, role, loading1, loading2, loading3, loading4, loading5, projectForReview, projectCompleted, duplicateProject, projectCancel, projectAttend, deleteProject, loading6, onEditProject };
+  const options_props = { item, children, handleMenuOpen, handleMenuClose, anchorEl, userRole, loading1, loading2, loading3, loading4, loading5, projectForReview, projectCompleted, duplicateProject, projectCancel, projectAttend, deleteProject, loading6, onEditProject, userId };
   return (
     <MDBox>
       <OptionsList {...options_props} />

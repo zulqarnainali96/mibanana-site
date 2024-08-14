@@ -44,7 +44,7 @@ function Dashboard({ reduxActions, reduxState }) {
 
   const sumbitAndOngoing = () => {
     const filterStatus = projects?.filter(item => item.status === Assigned || item.status === Revision || item.status === ForReview || item.status === Ongoing)
-    return filterStatus?.length
+    return filterStatus?.length ?? 0
   }
   const projectCompleted = projects?.filter(item => item.status === Completed)
   const onEditProject = (project_id) => {

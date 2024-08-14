@@ -13,6 +13,7 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
     const role = currentUserRole(reduxState);
     // const socketIO = useRef(useContext(SocketContext));
     const socketIO = useSocket();
+    const [scrolling, setScrolling] = useState(false)
     const privateChatRef = useRef(null);
 
     const handleRole = () => {
@@ -66,10 +67,12 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
             const { data } = await apiClient.get(`/api/get-personal-chat/${user_id}/${receiver}`);
             setLoading(false);
             if (data.chats) {
+                setScrolling(true)
                 reduxActions.privateChatMesage(data.chats.message);
             }
         } catch (error) {
             setLoading(false);
+            setScrolling(false)
             reduxActions.privateChatMesage([]);
             console.log(error);
         }
@@ -107,6 +110,7 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
         getPersonalChat();
 
         return () => {
+            setScrolling(false)
             socketIO.emit('leave-room', receiver);
         };
     }, [receiver]);
@@ -121,18 +125,26 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
                 }
             });
             console.log('usePrivateChat')
-
             return () => {
                 socketIO.off('receive-private-message');
             };
         }
-    }, []);
+    }, [socketIO]);
+
+    // useEffect(() => {
+    //     if (privateChatRef.current) {
+    //         const lastMessage = privateChatRef.current.lastElementChild;
+    //         if (lastMessage) {
+    //             lastMessage.scrollIntoView({ behavior: 'smooth' });
+    //         }
+    //     }
+    // }, [reduxState.group_message, item._id]);
 
     useEffect(() => {
         if (privateChatRef.current) {
             privateChatRef.current.scrollTop = privateChatRef.current.scrollHeight;
         }
-    }, [reduxState.private_chat_message]);
+    }, [reduxState.group_message, scrolling]);
 
     return {
         message,
