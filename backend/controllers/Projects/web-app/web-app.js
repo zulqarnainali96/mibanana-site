@@ -2,7 +2,7 @@ const { bucket } = require('../../../google-cloud-storage/gCloudStorage');
 const webappModel = require('../../../models/projects/web-app/web-app-model')
 
 const createWebAppProject = async (req, res) => {
-    const { user, name, project_title, preferred_stack, brand, backend_tech, project_description, project_category } = req.body;
+    const { user, name, project_title, role, preferred_stack, brand, backend_tech, project_description, project_category } = req.body;
 
     if (!user || !name) {
         return res.status(400).send({ message: "id not provided Try Login again!" })
@@ -12,7 +12,7 @@ const createWebAppProject = async (req, res) => {
     }
     try {
         const obj = {
-            user, name, project_title, project_category, team_members: [], brand: brand !== null ? brand : {}, preferred_stack, backend_tech, project_description, status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
+            user, name, project_title, role, project_category, team_members: [], brand: brand !== null ? brand : {}, preferred_stack, backend_tech, project_description, status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
         const webAppProject = await webappModel.create(obj)
         if (webAppProject) {

@@ -30,7 +30,6 @@ const useMibananaTeam = (reduxState, reduxActions) => {
     const openErrorSB = () => setErrorSB(true)
 
     const handleClick = (event) => {
-        event.stopPropagation();
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
@@ -39,6 +38,7 @@ const useMibananaTeam = (reduxState, reduxActions) => {
     const closeChat = () => setSingleChat(null)
 
     const handleSingleChat = (item) => {
+        setAnchorEl(null);
         if (item.hasOwnProperty('group_name')) {
             setSingleChat(item)
             socketIO.emit('join-room', item._id)

@@ -2,6 +2,7 @@ import { groupChatSchema } from "Schema/Index";
 import apiClient from "api/apiClient";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react"
+import { useSocket } from "sockets";
 
 const useCreateGroupForm = (reduxState, onClose, openSuccessSB, openErrorSB, setRespMessage, setReload) => {
     const [loading, setLoading] = useState(false)
@@ -9,6 +10,7 @@ const useCreateGroupForm = (reduxState, onClose, openSuccessSB, openErrorSB, set
     const [options, setOptions] = useState([]);
     const teamLoading = autoListOpen && options.length === 0;
     const [selectedOptions, setSelectedOptions] = useState([])
+    const socketIO = useSocket()
 
     const initialValues = {
         group_name: '',
@@ -45,7 +47,7 @@ const useCreateGroupForm = (reduxState, onClose, openSuccessSB, openErrorSB, set
             ...values,
             participant: [...selectedOptions, userData],
             group_admin: reduxState.userDetails?.name,
-            admin_id : userData._id,
+            admin_id: userData._id,
         }
         try {
             const { data, status } = await apiClient.post('/api/create-group-chat', postData)
@@ -55,6 +57,8 @@ const useCreateGroupForm = (reduxState, onClose, openSuccessSB, openErrorSB, set
                 setSelectedOptions([])
                 onClose()
                 setRespMessage(data.message)
+                // console.log(data)
+                socketIO.emit('new-group-notification', data.participant, data.groupData)
                 setTimeout(() => {
                     openSuccessSB()
                 }, 400)

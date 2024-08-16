@@ -7,7 +7,6 @@ import TextareaAutosize from '@mui/base/TextareaAutosize';
 import React from 'react'
 import { MoonLoader } from 'react-spinners';
 import { submitButtonStyle } from 'examples/Navbars/mobile-app-dev-form/mobile-app-dev-form';
-// import Input from 'components/Input/Input';
 import AutoList from './components/AutoList';
 import useEditGroupForm from './use-edit-group-form';
 import MDInput from 'components/MDInput';
@@ -48,15 +47,11 @@ const EditGroupChat = ({ reduxState, open, onClose, data, openErrorSB, openSucce
         teamLoading,
         setAutoListOpen,
         handleBlur,
+        formData,
         textAreaStyles,
         touched,
         selectedOptions,
         setSelectedOptions,
-        errorSB,
-        successSB,
-        respMessage,
-        setErrorSB,
-        setSuccessSB,
     } = useEditGroupForm(reduxState, data, onClose, openErrorSB, openSuccessSB, setRespMessage, setReload);
 
 
@@ -104,8 +99,10 @@ const EditGroupChat = ({ reduxState, open, onClose, data, openErrorSB, openSucce
                                             autoListOpen={autoListOpen}
                                             teamLoading={teamLoading}
                                             options={options}
+                                            formData={formData}
                                             selectedOptions={selectedOptions}
                                             setSelectedOptions={setSelectedOptions}
+                                            reduxState={reduxState}
                                         />
                                     </Grid>
                                 </Grid>

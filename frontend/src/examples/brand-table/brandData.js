@@ -217,8 +217,6 @@ const BrandData = (setFormValue, openEditBrandModal, openSuccessSB, openErrorSB,
     }
     let brandDescription = item.brand_description?.substring(0, 50) + '...'
     getBrandLogo();
-    console.log(arr)
-
     return {
       logo: (
         <Link to={`/brand/${item?._id}`}>

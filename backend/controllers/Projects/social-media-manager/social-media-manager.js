@@ -2,7 +2,7 @@ const { bucket } = require("../../../google-cloud-storage/gCloudStorage");
 const socialMediaModel = require("../../../models/projects/social-media-modal/social-media-modal")
 
 const createSocialMediaProject = async (req, res) => {
-    const { user, name, project_title, service_type, brand, platforms, plan, project_description, project_category} = req.body;
+    const { user, name, project_title, role, service_type, brand, platforms, plan, project_description, project_category} = req.body;
 
     if (!user || !name) {
         return res.status(400).send({ message: "id not provided Try Login again!" })
@@ -12,7 +12,7 @@ const createSocialMediaProject = async (req, res) => {
     }
     try {
         const obj = {
-            user, name, project_title, project_category, team_members: [], service_type, brand: brand !== null ? brand : {}, platforms, plan, project_description, status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
+            user, name, project_title, role, project_category, team_members: [], service_type, brand: brand !== null ? brand : {}, platforms, plan, project_description, status: "Project manager", is_active: false, version: ["1"], drive_link: "", figma_link: "",
         }
         const socialMedia = await socialMediaModel.create(obj)
         if (socialMedia) {

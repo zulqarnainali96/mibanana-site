@@ -8,7 +8,7 @@ import MDButton from "components/MDButton";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import { useFormik } from "formik";
 import Input from "components/Input/Input";
-import { Grid, MenuItem, Select } from "@mui/material";
+import { Autocomplete, Grid, MenuItem, Select, TextField } from "@mui/material";
 import { socialMediaSchema } from "Schema/Index";
 import ReactQuill from "react-quill";
 import { modules } from 'assets/react-quill-settings/react-quill-settings';
@@ -44,6 +44,7 @@ const initialValues = {
   service_type: "",
   platforms: "",
   plan: "",
+  brand: {},
   project_details: "",
   otherServiceType: "",
   otherPlatform: "",
@@ -51,7 +52,7 @@ const initialValues = {
 }
 
 const SocialMediaManager = ({
-  open, role, handleClose, reduxState, reduxActions, openSuccessSB, openErrorSB, setRespMessage, setLoading, loading, socketIO,
+  open, role, handleClose, reduxState, reduxActions, openSuccessSB, openErrorSB, setRespMessage, setLoading, loading, socketIO, brandOption,
 }) => {
   const [uploadedImages, setUploadedImages] = useState([]);
   const fileInputRef = useRef(null);
@@ -242,6 +243,24 @@ const SocialMediaManager = ({
                 touched={touched.project_title}
                 errors={errors.project_title}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <MDTypography variant={"h6"} pb={1} className="">
+                Brand
+              </MDTypography>
+              <Grid container>
+                <Grid item xs={12}>
+                  <Autocomplete
+                    name="brand"
+                    value={values.brand}
+                    onChange={(event, newValue) => setFieldValue("brand", newValue)}
+                    id="brand"
+                    getOptionLabel={option => option.brand_name ? option.brand_name : ''}
+                    options={brandOption}
+                    sx={{ width: '100%' }}
+                    renderInput={(params) => <TextField {...params} label="Select Brand" />} />
+                </Grid>
+              </Grid>
             </Grid>
 
             {/*service type*/}

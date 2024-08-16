@@ -6,7 +6,7 @@ import MDTypography from 'components/MDTypography';
 import MDButton from 'components/MDButton';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import DialogContent from '@mui/material/DialogContent';
-import { Grid, MenuItem, Select } from '@mui/material';
+import { Autocomplete, Grid, MenuItem, Select, TextField } from '@mui/material';
 import Input from 'components/Input/Input';
 import { copyWritingSchema } from '../../../Schema/Index';
 import { useFormik } from 'formik';
@@ -43,19 +43,21 @@ const initialValues = {
     copy_writing_service: '',
     word_count: "",
     project_description: "",
+    brand: {},
     otherServiceType: "",
     otherWordCount: "",
 };
 const CopyWritingForm = ({
-    open, 
-    handleClose, 
-    reduxState, 
-    reduxActions, 
-    setRespMessage, 
-    openErrorSB, 
-    openSuccessSB, 
-    loading, 
-    setLoading, 
+    open,
+    handleClose,
+    reduxState,
+    reduxActions,
+    setRespMessage,
+    openErrorSB,
+    openSuccessSB,
+    brandOption,
+    loading,
+    setLoading,
     socketIO,
     role
 }) => {
@@ -72,7 +74,7 @@ const CopyWritingForm = ({
         formdata.append("user_id", reduxState?.userDetails.id);
         formdata.append("project_id", project_id);
         await apiClient.post("/api/file/upload-files", formdata)
-            .then(() => { 
+            .then(() => {
                 setUploadedImages([]);
             })
             .catch((err) => {
@@ -98,6 +100,8 @@ const CopyWritingForm = ({
             ...values,
             user: reduxState.userDetails?.id,
             name: reduxState.userDetails?.name,
+            role: reduxState?.userDetails?.roles[0] ?? '',
+            project_category: 'copy-writing',
         };
         try {
             const { data } = await apiClient.post('/api/create-copywriting-project', dataToSend);
@@ -111,11 +115,13 @@ const CopyWritingForm = ({
                 resetForm(clearForm());
                 const socketMsg = {
                     ...dataToSend,
-                    project_id: data.copyWriting._id
+                    project_id: data.copyWriting._id,
+                    role: reduxState?.userDetails?.roles[0] ?? '',
+                    project_category: 'copy-writing',
                 }
                 setTimeout(() => {
                     reduxActions.handleGetAllProjects(!reduxState.project_call)
-                    if(!role?.admin || !role?.projectManager){
+                    if (!role?.admin || !role?.projectManager) {
                         socketIO.emit('new-project', socketMsg)
                     }
                     openSuccessSB();
@@ -227,6 +233,24 @@ const CopyWritingForm = ({
                                 touched={touched.project_title}
                                 errors={errors.project_title}
                             />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <MDTypography variant={"h6"} pb={1} className="">
+                                Brand
+                            </MDTypography>
+                            <Grid container>
+                                <Grid item xs={12}>
+                                    <Autocomplete
+                                        name="brand"
+                                        value={values.brand}
+                                        onChange={(event, newValue) => setFieldValue("brand", newValue)}
+                                        id="brand"
+                                        getOptionLabel={option => option.brand_name ? option.brand_name : ''}
+                                        options={brandOption}
+                                        sx={{ width: '100%' }}
+                                        renderInput={(params) => <TextField {...params} label="Select Brand" />} />
+                                </Grid>
+                            </Grid>
                         </Grid>
                         <Grid item xs={6}>
                             <MDTypography variant={"h6"} pb={1} className="copywriting-title">

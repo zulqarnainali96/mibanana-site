@@ -16,12 +16,13 @@ import { reactQuillStyles2 } from 'assets/react-quill-settings/react-quill-setti
 import ReactQuill from 'react-quill'
 import { formats } from 'assets/react-quill-settings/react-quill-settings'
 import { modules } from 'assets/react-quill-settings/react-quill-settings'
+import ProjectChanges from 'layouts/chats/Chat-container/project-changes'
 
 const basicStyle = { display: "flex", alignItems: "center" }
 
 const ProjectChat = (props) => {
     const is500 = useMediaQuery("(max-width:500px)")
-    const { userId, chatContainerRef, withRevision, handleRole, handleClick, anchorEl, loading, id, handleClose, projectForReview, projectOngoing, msgArray, onSendMessage, sendMessage, avatar, message, makePriorityHigh } = props
+    const { userId, chatContainerRef, withRevision, handleRole, handleClick, anchorEl, loading, id, handleClose, projectForReview, projectOngoing, msgArray, onSendMessage, sendMessage, avatar, message, makePriorityHigh, role, project } = props
 
     const classes = reactQuillStyles2()
     const chatTitle = ({ palette: { primary } }) => ({
@@ -35,7 +36,7 @@ const ProjectChat = (props) => {
     })
     return (
         <React.Fragment >
-            <MDTypography
+            {/* <MDTypography
                 sx={chatTitle}
                 variant="h4"
                 pb={1}
@@ -107,7 +108,22 @@ const ProjectChat = (props) => {
                         ) : null}
                     </MenuList>
                 </Menu>
-            </MDTypography>
+            </MDTypography> */}
+            <ProjectChanges
+                handleClick={handleClick}
+                withRevision={withRevision}
+                anchorEl={anchorEl}
+                handleClose={handleClose}
+                projectAttend1={projectOngoing}
+                projectForReview1={projectForReview}
+                userRole={role}
+                is500={is500}
+                userId={userId}
+                project_id={id}
+                loading={loading}
+                makePriorityHigh={makePriorityHigh}
+                project_user={project.user}
+            />
             <Grid
                 ref={chatContainerRef}
                 container

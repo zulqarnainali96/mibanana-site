@@ -9,7 +9,7 @@ const useEditGroupForm = (reduxState, formData, onClose, openErrorSB, openSucces
     const [options, setOptions] = useState([]);
     const teamLoading = autoListOpen && options.length === 0;
     const [selectedOptions, setSelectedOptions] = useState([])
-    
+
 
     const initialValues = {
         group_name: '',
@@ -25,7 +25,7 @@ const useEditGroupForm = (reduxState, formData, onClose, openErrorSB, openSucces
     async function getTeamList() {
         const { data, status } = await apiClient.get('/api/get-team-member-list')
         if (status === 200) {
-            const filterList = data.list.filter( item => item._id !== reduxState.userDetails?.id)
+            const filterList = data.list.filter(item => { return item._id !== reduxState.userDetails?.id })
 
             setOptions(filterList)
         } else {
@@ -45,7 +45,7 @@ const useEditGroupForm = (reduxState, formData, onClose, openErrorSB, openSucces
             if (status === 200) {
                 onClose()
                 setRespMessage(data.message)
-                setReload(prev=>!prev)
+                setReload(prev => !prev)
                 setTimeout(() => {
                     openSuccessSB()
                 }, 400)
@@ -126,8 +126,19 @@ const useEditGroupForm = (reduxState, formData, onClose, openErrorSB, openSucces
             group_name: formData.group_name,
             group_description: formData.group_description
         })
-
-        setSelectedOptions(formData.participant)
+        let arr = [...formData.participant]
+        const findUser = arr.find(item => item._id === reduxState.userDetails?.id)
+        if (findUser) {
+            const i = arr?.indexOf(findUser)
+            const newUser = {
+                ...findUser,
+                name: 'You',
+            }
+            arr.splice(i, 1, newUser);
+            setSelectedOptions(arr);
+        } else {
+            setSelectedOptions(formData.participant)
+        }
     }, [formData])
 
     return {

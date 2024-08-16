@@ -10,12 +10,12 @@ const createGroupChat = async (req, res) => {
             group_admin, group_name, group_description, admin_id, participant
         })
         if (makeChatGroup) {
-            const findCreateGroup = await GroupChatModal.findById(makeChatGroup._id)
-            const filterParticipants = findCreateGroup.participant
+            const findCreatedGroup = await GroupChatModal.findById(makeChatGroup._id)
+            const filterParticipants = findCreatedGroup.participant
                 .filter(part => part._id !== admin_id && part._id !== null)
                 .map(part => part._id);
 
-            return res.status(201).send({ message: "Chat Group Created", participant: filterParticipants })
+            return res.status(201).send({ message: "Chat Group Created", participant: filterParticipants, groupData: findCreatedGroup })
         } else {
             return res.status(401).send({ message: "Found Error try again !" })
         }

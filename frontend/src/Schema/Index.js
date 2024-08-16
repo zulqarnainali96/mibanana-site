@@ -5,6 +5,7 @@ export const copyWritingSchema = Yup.object({
     copy_writing_service: Yup.string().required('Service type is required'),
     word_count: Yup.string().required('Service type is required'),
     project_description: Yup.string().required('Project details is required'),
+    brand: Yup.object(),
 });
 
 export const socialMediaSchema = Yup.object({
@@ -13,6 +14,7 @@ export const socialMediaSchema = Yup.object({
     platforms: Yup.string().required('Service type is required'),
     plan: Yup.string().required('Project details is required'),
     project_description: Yup.string().required('Project details is required'),
+    brand: Yup.object(),
 
 });
 
@@ -21,6 +23,7 @@ export const webDevelopmentSchema = Yup.object({
     website_type: Yup.string().required('Service type is required'),
     preferred_stack: Yup.string().required('Service type is required'),
     project_description: Yup.string().required('Project details is required'),
+    brand: Yup.object(),
 });
 
 export const webAppSchema = Yup.object({
@@ -28,6 +31,7 @@ export const webAppSchema = Yup.object({
     preferred_stack: Yup.string().required('Service type is required'),
     backend_tech: Yup.string().required('Service type is required'),
     project_description: Yup.string().required('Project details is required'),
+    brand: Yup.object(),
 });
 
 export const mobileAppSchema = Yup.object({

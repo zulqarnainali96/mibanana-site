@@ -6,7 +6,7 @@ import Dialog from '@mui/material/Dialog';
 import MDTypography from 'components/MDTypography';
 import MDButton from 'components/MDButton';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
-import { Grid, MenuItem, Select, TextField } from '@mui/material';
+import { Autocomplete, Grid, MenuItem, Select, TextField } from '@mui/material';
 import Input from 'components/Input/Input';
 import { useFormik } from 'formik';
 import axios from 'axios';
@@ -46,11 +46,12 @@ const initialValues = {
     project_title: '',
     website_type: '',
     preferred_stack: "",
+    brand: {},
     project_description: "",
 };
 
 const WebsiteForm = ({
-    open, role, handleClose, openSuccessSB, openErrorSB, reduxState, reduxActions, setLoading, loading, setRespMessage, socketIO
+    open, role, handleClose, openSuccessSB, openErrorSB, reduxState, reduxActions, setLoading, loading, setRespMessage, socketIO, brandOption,
 }) => {
     const classes = reactQuillStyles()
     const quilRef = useRef()
@@ -153,6 +154,24 @@ const WebsiteForm = ({
                                 touched={touched.project_title}
                                 errors={errors.project_title}
                             />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <MDTypography variant={"h6"} pb={1} className="">
+                                Brand
+                            </MDTypography>
+                            <Grid container>
+                                <Grid item xs={12}>
+                                    <Autocomplete
+                                        name="brand"
+                                        value={values.brand}
+                                        onChange={(event, newValue) => setFieldValue("brand", newValue)}
+                                        id="brand"
+                                        getOptionLabel={option => option.brand_name ? option.brand_name : ''}
+                                        options={brandOption}
+                                        sx={{ width: '100%' }}
+                                        renderInput={(params) => <TextField {...params} label="Select Brand" />} />
+                                </Grid>
+                            </Grid>
                         </Grid>
 
                         { /*website type*/}

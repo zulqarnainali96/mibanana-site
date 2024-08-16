@@ -142,21 +142,26 @@ const GroupChat = ({
                 <ListItem divider >
                     <ListItemButton disableRipple={true} sx={{ "&:hover": { backgroundColor: "transparent !important" }, ...(onlineWidth(item)) }}>
                         <UserOnlineIcon member={item} data={reduxState.onlineUser} />
-                        {role?.projectManager || handleRole(role)?.teamMember ? <Grid
-                            className='chat-close-icon'
-                            id="dropdown-btn"
-                            aria-controls={anchorEl ? 'dropdown-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={anchorEl ? 'true' : undefined}
-                            onClick={handleClick}
-                            item
-                            xs={6}
-                            sx={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer", color: '#333' }}
-                        >
-                            <MoreVertIcon fontSize='medium' />
-                        </Grid> : <IconButton onClick={closeChat} className='chat-close-icon'><Close /></IconButton>}
+                        {role?.projectManager || handleRole(role)?.teamMember ? (
+                            <Grid
+                                className='chat-close-icon'
+                                id="dropdown-btn"
+                                aria-controls={anchorEl ? 'dropdown-menu-group' : undefined}
+                                // aria-haspopup="true"
+                                aria-expanded={anchorEl ? 'true' : undefined}
+                                onClick={handleClick}
+                                item
+                                xs={6}
+                                sx={{ display: "flex", justifyContent: "end", alignItems: "center", cursor: "pointer", color: '#333' }}
+                            >
+                                <MoreVertIcon fontSize='medium' />
+                            </Grid>
+                        ) : (
+                            <IconButton onClick={closeChat} className='chat-close-icon'><Close /></IconButton>
+                        )
+                        }
                         <Menu
-                            id="dropdown-menu"
+                            id="dropdown-menu-group"
                             anchorEl={anchorEl}
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
@@ -197,7 +202,7 @@ const GroupChat = ({
                                         color="textSecondary"
                                         fontFamily={fontsFamily.poppins}
                                     >
-                                        Members :{participant?.map(item => <span>{item.name + ", " + "  "}</span>)}
+                                        Members :{participant?.map(item => <span>{item._id === userId ? 'You ,' : item.name + ", " + "  "}</span>)}
                                     </Typography>
                                 </React.Fragment>
                             }

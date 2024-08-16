@@ -277,6 +277,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       <CopyWritingForm
         open={openCopyWriting}
         handleClose={handleOpenCopyWritingClose}
+        brandOption={brandOption}
         socketIO={socketIO}
         reduxState={reduxState}
         reduxActions={reduxActions}
@@ -292,8 +293,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       <SocialMediaManager
         open={openSocialMediaForm}
         handleClose={handleCloseSocialMedia}
+        brandOption={brandOption}
         socketIO={socketIO}
-
         formValue={formValue}
         setFormValue={setFormValue}
         add_files={add_files}
@@ -301,7 +302,6 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         handleFileUpload={handleFileUpload}
         removeFiles={removeFiles}
         role={role}
-
         setLoading={setLoading}
         setRespMessage={setRespMessage}
         openErrorSB={openErrorSB}
@@ -315,6 +315,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         open={openWebsite}
         socketIO={socketIO}
         handleClose={handleCloseWebsite}
+        brandOption={brandOption}
         setRespMessage={setRespMessage}
         openErrorSB={openErrorSB}
         openSuccessSB={openSuccessSB}
@@ -331,6 +332,7 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         socketIO={socketIO}
         handleClose={handleCloseWebAppDev}
         setRespMessage={setRespMessage}
+        brandOption={brandOption}
         respMessage={respMessage}
         openErrorSB={openErrorSB}
         openSuccessSB={openSuccessSB}

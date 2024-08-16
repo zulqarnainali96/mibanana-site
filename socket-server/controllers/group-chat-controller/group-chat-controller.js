@@ -56,5 +56,13 @@ const sendingGroupMessage = async (io, connectedUser, socket, msg, room) => {
     }
 
 }
+const sendingNewGroupNotification = (socket, participant, data, connectedUser) => {
+    const findParticipant = connectedUser.filter(p => participant.includes(p.id))
+    console.log('PARTICIPANT ID ', findParticipant)
+    for (let i = 0; i <= findParticipant.length -1; i++) {
+        console.log('www ', findParticipant[i])
+        socket.to(findParticipant[i].socketID).emit('new-group-notification', data)
+    }
+}
 
-module.exports = sendingGroupMessage
+module.exports = { sendingNewGroupNotification, sendingGroupMessage }

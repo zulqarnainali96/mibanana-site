@@ -9,7 +9,7 @@ const { updateAndSendingStatusNotifications, sendingNotificationsCurrentManager,
 const { sendMessage, sendManagerMessage } = require('./controllers/team-member-notification')
 const { v4: uniqeID } = require('uuid');
 const { updatePrivateChatMessage } = require('./controllers/private-chat/private-chat');
-const sendingGroupMessage = require('./controllers/group-chat-controller/group-chat-controller');
+const { sendingGroupMessage, sendingNewGroupNotification } = require('./controllers/group-chat-controller/group-chat-controller');
 const PORT = 4000
 app_chat.use(cors())
 var io = require('socket.io')(server1, {
@@ -297,6 +297,9 @@ io.on('connection', function (socket) {
   socket.on('send-group-message', async (msg, room) => {
     sendingGroupMessage(io, connectedUser, socket, msg, room)
   });
+  socket.on('new-group-notification', (participant, groupData) => {
+    sendingNewGroupNotification(socket, participant, groupData, connectedUser)
+  })
   socket.on('leave-room', (room) => {
     socket.leave(room)
   })

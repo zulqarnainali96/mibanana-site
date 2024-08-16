@@ -6,7 +6,7 @@ import Dialog from '@mui/material/Dialog';
 import MDTypography from 'components/MDTypography';
 import MDButton from 'components/MDButton';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
-import { Grid, MenuItem, Select } from '@mui/material';
+import { Autocomplete, Grid, MenuItem, Select, TextField } from '@mui/material';
 import Input from 'components/Input/Input';
 import TransitionsModal from 'components/Modal/Modal';
 import ReactQuill from "react-quill";
@@ -42,13 +42,14 @@ const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => 
 
 const initialValues = {
     project_title: '',
+    brand: {},
     preferred_stack: "",
     backend_tech: "",
     project_description: "",
 };
 
 const WebAppDevForm = ({
-    open, handleClose, role, setRespMessage, setLoading, loading, reduxState, reduxActions, openErrorSB, openSuccessSB, socketIO
+    open, handleClose, role, setRespMessage, setLoading, loading, reduxState, reduxActions, openErrorSB, openSuccessSB, socketIO, brandOption,
 }) => {
     const classes = reactQuillStyles()
     const quilRef = useRef();
@@ -150,6 +151,25 @@ const WebAppDevForm = ({
                                 errors={errors.project_title}
                             />
                         </Grid>
+                        <Grid item xs={12}>
+                            <MDTypography variant={"h6"} pb={1} className="">
+                                Brand
+                            </MDTypography>
+                            <Grid container>
+                                <Grid item xs={12}>
+                                    <Autocomplete
+                                        name="brand"
+                                        value={values.brand}
+                                        onChange={(event, newValue) => setFieldValue("brand", newValue)}
+                                        id="brand"
+                                        getOptionLabel={option => option.brand_name ? option.brand_name : ''}
+                                        options={brandOption}
+                                        sx={{ width: '100%' }}
+                                        renderInput={(params) => <TextField {...params} label="Select Brand" />} />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
                         { /*website type*/}
                         <Grid item xs={6}>
                             <MDTypography variant={"h6"} pb={1} className="">

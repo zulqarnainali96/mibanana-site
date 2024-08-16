@@ -534,6 +534,12 @@ const useNavbarHook = (reduxState, reduxActions) => {
         }
     }, []);
 
+    useEffect( () => {
+        socketIO.on('new-group-notification',(group_data)=> {
+            console.log(group_data)
+        })
+    }, [socketIO])
+
     return {
         open,
         list,

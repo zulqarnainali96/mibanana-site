@@ -9,6 +9,7 @@ const AutoList = ({
     options,
     teamLoading,
     selectedOptions,
+    reduxState,
     setSelectedOptions
 }) => {
     return (
@@ -23,7 +24,7 @@ const AutoList = ({
             onClose={() => {
                 setAutoListOpen(false);
             }}
-            
+
             disableCloseOnSelect
             isOptionEqualToValue={(option, value) => option._id === value._id}
             getOptionLabel={(option) => option.name}
@@ -31,6 +32,7 @@ const AutoList = ({
             loading={teamLoading}
             value={selectedOptions}
             onChange={(event, newValue) => {
+                console.log(newValue)
                 setSelectedOptions(newValue);
             }}
             renderInput={(params) => (

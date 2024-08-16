@@ -48,6 +48,7 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
 
     const sendMessage = async () => {
         if (message === '') return;
+        setScrolling(true)
         const msg = userOnline();
         reduxActions.privateChatMesage(msg);
         try {
@@ -58,6 +59,7 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
             }
         } catch (error) {
             console.log(error);
+            setScrolling(false)
         }
     };
 
