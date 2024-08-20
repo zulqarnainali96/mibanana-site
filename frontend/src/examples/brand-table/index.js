@@ -155,24 +155,25 @@ const MIBrandTable = (props) => {
                             <Grid item xxl={12} xl={6}>
                                 <MDTypography sx={{ ...titleStyles, fontSize: is500 ? '2rem' : '3rem', }}>miBrands</MDTypography>
                             </Grid>
-                                <Grid item xxl={12} xl={12} lg={6} md={6} sm={6} xs={6}>
-                                    <MDBox width={"100%"} sx={{ textAlign: "right", paddingInline: '32px' }}>
-                                        <BrandButton
-                                            variant="contained"
-                                            size='medium'
-                                            disableFocusRipple
-                                            type="button"
-                                            startIcon={<Add cursor={"pointer"} fontSize='large'
-                                                sx={{
-                                                    fontSize: '1.3rem !important',
-                                                    display: 'inline-flex'
-                                                }} />}
-                                            onClick={openAddBrandModal}
-                                        >
-                                            ADD Brand
-                                        </BrandButton>
-                                    </MDBox>
-                                </Grid>
+                            <Grid item xxl={12} xl={12} lg={6} md={6} sm={6} xs={6}>
+                                <MDBox width={"100%"} sx={{ textAlign: "right", paddingInline: '32px'}}>
+                                    <BrandButton
+                                        variant="contained"
+                                        size='medium'
+                                        disableFocusRipple
+                                        type="button"
+                                        style={{backgroundColor:"#FDD700", color:"#333333", borderRadius:"50px"}}
+                                        startIcon={<Add cursor={"pointer"} fontSize='large'
+                                            sx={{
+                                                fontSize: '1.3rem !important',
+                                                display: 'inline-flex'
+                                            }} />}
+                                        onClick={openAddBrandModal}
+                                    >
+                                        ADD Brand
+                                    </BrandButton>
+                                </MDBox>
+                            </Grid>
                         </Grid>
                     </Grid>
                     <Grid item xxl={12} xl={12} lg={12} md={12} xs={12}>

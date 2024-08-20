@@ -280,7 +280,7 @@ const CreateProject1 = ({
                                     getOptionLabel={option => option.brand_name ? option.brand_name : ''}
                                     options={brandOption}
                                     sx={{ width: '100%' }}
-                                    renderInput={(params) => <TextField required {...params} label="Select Brand" />}
+                                    renderInput={(params) => <TextField  {...params} label="Select Brand" />}
 
                                 />
                             </FormControl>

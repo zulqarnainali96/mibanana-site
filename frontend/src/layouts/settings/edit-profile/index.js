@@ -107,7 +107,11 @@ const EditProfile = ({ reduxState, reduxActions }) => {
                                                 objectFit: 'cover',
                                             }} />}
                                             <label htmlFor="upload-image">
-                                                <MDButton variant="contained" color="info" component="span">
+                                                <MDButton variant="contained" color="warning" component="span" sx={{
+                                                    color: '#000 !important',
+                                                    fontSize: 14,
+                                                    textTransform: "capitalize",
+                                                }} circular={true}>
                                                     Upload Profile
                                                 </MDButton>
                                                 <input

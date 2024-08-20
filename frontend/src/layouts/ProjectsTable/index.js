@@ -72,7 +72,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
           <MDBox lineHeight={1}>
             <MDTypography
               display={"block"}
-              sx={{ textDecoration: "underline !important" }}
+              sx={{ textDecoration: "underline !important"}}
               variant="button"
               fontWeight="medium"
             >
@@ -101,13 +101,17 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
             >
               {item?.name}
             </MDTypography>
-            {item?.role ? <span style={{
-              background: '#105e1078',
-              padding: '0.1em',
-              fontSize: '0.8rem',
-              color: '#fff',
+            {item?.role && item?.role !== 'Customer' ? <span style={{
+              background: '#FDD700',
+              padding: '0.3rem',
+              fontSize: '0.7rem',
+              fontWeight: 'bold',
+              color: '#333333',
               display: 'block',
-              marginTop: '8px'
+              marginTop: '8px',
+              width: '150px',
+              maxWidth: '160px',
+              borderRadius: '7px'
             }}>{item?.role}</span> : null}
           </div>
         ),
@@ -161,6 +165,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                   fontWeight: "400  !important",
                   width: "10rem",
                   maxWidth: "10rem",
+                  borderRadius: "7px",
                 },
               }}
               circular="true"
