@@ -10,6 +10,7 @@ const { logEvents } = require('./middleware/logs')
 const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
 const task = require('./controllers/Projects/Graphic_design/projects_task_scheduler')
+const { updatingAllUsersChatHisotries } = require('./controllers/global/global-controllers')
 
 const PORT = process.env.PORT
 //App Config
@@ -29,6 +30,7 @@ app.get('/test', (req, res) => {
 app.use(errorHandler)
 mongoose.connection.once('open', () => {
     console.log(`Connected to MongoDB`)
+    // updatingAllUsersChatHisotries()
     app.listen(PORT, () => {
         console.log(`Server started on Port : ${PORT}`)
         // task.start() 

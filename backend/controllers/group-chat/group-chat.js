@@ -1,4 +1,4 @@
-const GroupChatModal = require('../../models/group-chat-modal/group-chat-model')
+const GroupChatModal = require('../../models/chat/group-chat-modal/group-chat-model')
 
 const createGroupChat = async (req, res) => {
     const { group_name, group_description, group_admin, participant, admin_id } = req.body

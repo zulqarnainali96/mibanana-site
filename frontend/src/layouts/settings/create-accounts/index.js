@@ -122,12 +122,6 @@ const CreateAccounts = () => {
                                         })}
 
                                         pb={2}
-                                    // verticalAlign="middle"
-                                    // fontWeight="medium"
-                                    // sx={({ palette: { mibanana }, typography: { size } }) => ({
-                                    //     color: mibanana.text,
-                                    //     size: size.lg
-                                    // })}
                                     >Create Accounts
                                     </MDTypography>
                                     <Grid container spacing={2}>

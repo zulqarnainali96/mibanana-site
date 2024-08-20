@@ -11,15 +11,4 @@ const test_bucket_mibanana = 'test-mibanana-bucket'
 
 const bucket = gCloudStorage.bucket(bucketName2)
 
-const downloadFile = async (req, res) => {
-    try {
-        const [metaData] = await bucket.file(req.params.name).getMetadata()
-        res.redirect(metaData.mediaLink)
-
-    } catch (err) {
-        res.status(500).send({ message: 'Internal Server Error' })
-        console.log(err)
-    }
-}
-
-module.exports = { downloadFile, bucket }
+module.exports = {bucket }

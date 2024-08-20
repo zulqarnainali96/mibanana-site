@@ -9,6 +9,7 @@ const websiteModal = require("../../models/projects/website-model/website-model"
 const copyWritingModel = require("../../models/projects/copy-writing/copy-writing-model");
 const socialMediaModel = require("../../models/projects/social-media-modal/social-media-modal")
 const bcrypt = require('bcrypt')
+const chatHistory = require('../../models/chat/chat-history/chat-history-modal')
 const User = require('../../models/UsersLogin')
 
 
@@ -1050,21 +1051,65 @@ const createMemberAccounts = async (req, res) => {
             return res.status(409).json({ message: 'Email already exists' })
         }
         const hashPassword = await bcrypt.hash(password, 10)
-        console.log(hashPassword)
         if (hashPassword) {
             const obj = { name: username, is_active: true, roles, 'password': hashPassword, verified: true, email, avatar: '', notifications: [] }
             const user = await User.create(obj)
             if (user !== null) {
-                return res.status(201).send({ message: 'User Created' })
+                const allUsers = await User.find({ _id : {$nin : [user._id]}}).lean()
+                const filterUser = allUsers.filter(user => {
+                    if (user.roles.includes('Mobile-App-Developer')) return user
+                    if (user.roles.includes('Graphic-Designer')) return user
+                    if (user.roles.includes('Copy-Writer')) return user
+                    if (user.roles.includes('Social-Media-Manager')) return user
+                    if (user.roles.includes('Project-Manager')) return user
+                    if (user.roles.includes('Web-Developer')) return user
+                }).map(user => {
+                    return String(user._id)
+                })
+                let allUserArrayObject = []
+                for (const item_ of filterUser) {
+                    const hg = {
+                        user_id: item_,
+                        unread_messages_count: '',
+                        unread_messages_ids: []
+                    }
+                    allUserArrayObject.push(hg)
+                }
+                const save = await chatHistory.create({ userId: user._id, chated_persons: allUserArrayObject })
+                if (save) {
+                    let findAllChatHistory = await chatHistory.find()
+                    findAllChatHistory = findAllChatHistory.filter(item => item.userId.toString() !== save.userId.toString())
+                    for (const item of findAllChatHistory) {
+                        const findCurrentHistory = await chatHistory.findOne(item._id)
+                        if (findCurrentHistory.chated_persons.length > 0) {
+                            console.log('working one')
+                            const all_users = findCurrentHistory.chated_persons
+                            const findUserExist = all_users.some(item => item.user_id.toString() === user._id.toString())
+                            if (!findUserExist) {
+                                console.log('working two')
+                                findCurrentHistory.chated_persons = [...all_users, {
+                                    user_id: user._id,
+                                    unread_messages_count: 0,
+                                    unread_messages_ids: []
+                                }]
+                                await findCurrentHistory.save()
+                            }
+                        }
+                    }
+                    return res.status(201).send({ message: 'User Created' })
+                } else {
+                    console.log('Not working')
+                    await User.findByIdAndRemove(user._id)
+                    return res.status(404).send({ message: 'Failed to create user' })
+                }
             } else {
-                return res.status(404).send({ message: 'Found error try again!' })
+                return res.status(404).send({ message: 'Failed to create user try again!' })
             }
         } else {
-            console.log('error')
             return res.status(500).send({ message: 'Internal Server Error' })
         }
     } catch (error) {
-        console.log('error 2')
+        console.log(error)
         res.status(500).send({ message: "Internal Server Error" });
     }
 }
@@ -1136,4 +1181,38 @@ const updateProjectPriority = async (req, res) => {
     }
 }
 
-module.exports = { getCustomerFiles, updateDriveLink, updateFigmaLink, updateProject, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, createMemberAccounts, updateProjectPriority }
+const updatingAllUsersChatHisotries = async () => {
+    const allUsers = await User.find().lean()
+    const filterUser = allUsers.filter(user => {
+        if (user.roles.includes('Mobile-App-Developer')) return user
+        if (user.roles.includes('Graphic-Designer')) return user
+        if (user.roles.includes('Copy-Writer')) return user
+        if (user.roles.includes('Social-Media-Manager')) return user
+        if (user.roles.includes('Project-Manager')) return user
+        if (user.roles.includes('Web-Developer')) return user
+    }).map(user => {
+        return String(user._id)
+    })
+    for (let i = 0; i < filterUser.length; i++) {
+        const user = filterUser[i]
+        const history = await chatHistory.findOne({ userId: user }).exec()
+        if (history) {
+            let arr = filterUser.filter(item => item !== user)
+            let cc = []
+            for (let a = 0; a < arr.length; a++) {
+                const cu = arr[a]
+                const h = {
+                    user_id: cu,
+                    unread_messages_count: '',
+                    unread_messages_ids: []
+                }
+                cc.push(h)
+            }
+            console.log(history)
+            await chatHistory.findByIdAndUpdate(history._id, { chated_persons: cc })
+        }
+
+    }
+}
+
+module.exports = { getCustomerFiles, updateDriveLink, updateFigmaLink, updateProject, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, createMemberAccounts, updateProjectPriority, updatingAllUsersChatHisotries }

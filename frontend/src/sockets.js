@@ -20,7 +20,7 @@ export const SocketProvider = ({ children }) => {
     useEffect(() => {
         const newSocket = io(baseURL, {
             withCredentials: true,
-            // transports: ['websocket'],
+            transports: ['websocket'],
             autoConnect : false,
             upgrade: false,
         });

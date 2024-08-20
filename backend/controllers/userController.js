@@ -283,7 +283,6 @@ const updateCustomerDetails = async (req, res) => {
     }
 }
 
-
 const validate = (data) => {
     const schema = Joi.object({
         email: Joi.string().email().required().label("email"),
@@ -291,6 +290,4 @@ const validate = (data) => {
     });
     return schema.validate(data);
 }
-
-
 module.exports = { createUsers, LoginUser, getNewCustomerDetails, getAllRequiredFields, getNonActiveCustomer, getCompanyDetails, deleteCurrentCustomer, updateCustomerDetails } 

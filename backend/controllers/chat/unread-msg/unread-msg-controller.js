@@ -1,4 +1,4 @@
-const unreadMsg = require('../../models/chat/personal-chat/unread-chat-message');
+const unreadMsg = require('../../../models/chat/personal-chat/unread-chat-message');
 
 // Create Unread Message 
 const UnreadMsgController = async (req, res) => {

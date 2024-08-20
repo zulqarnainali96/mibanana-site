@@ -31,8 +31,6 @@ const createGraphicProject = asyncHandler(async (req, res) => {
     }
     return res.status(404).send({ message: "Invalid data unable to assign Try again!" })
 })
-
-
 const getAssignGraphicProject = asyncHandler(async (req, res) => {
     const id = req.params.id
     if (!id) {
@@ -53,7 +51,6 @@ const getAssignGraphicProject = asyncHandler(async (req, res) => {
         return res.status(400).send({ message: "your are not allowed to see graphic projects!" })
     }
 })
-
 const getDesignerList = asyncHandler(async (req, res) => {
     const id = req.params.id
     if (!id) return res.status(400).send("Please provide ID")
@@ -62,18 +59,6 @@ const getDesignerList = asyncHandler(async (req, res) => {
         if (isManager[0] !== null && isManager[0].roles.includes("Project-Manager")) {
             const designerList = await User.find().select('-password').lean().exec()
 
-            // const filterDesigner = designerList.filter(item => {
-            //     let obj = {}
-            //     if (item.roles.includes("Graphic-Designer")) {
-            //             obj._id = item._id
-            //             obj.name = item.name
-            //             obj.email = item.email
-            //             obj.roles = item.roles
-            //             obj.avatar = item.avatar
-            //         }
-            //     return obj
-            //     // return item.roles.includes("Graphic-Designer")
-            // })
             const filterDesigner = designerList.filter(item =>
                 item.roles.includes("Graphic-Designer")
             ).map(item => {

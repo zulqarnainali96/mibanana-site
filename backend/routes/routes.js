@@ -12,12 +12,11 @@ const uploadFiles = multer({
 })
 
 const { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList2, getTeamMemberList, getTeamMemberListForChat } = require('../controllers/Team-Members/Designers/designerProjects')
-const { createChatController, getProjectChat, findChatWithIDs } = require('../controllers/chat/chat_controller')
+const { createChatController, getProjectChat, findChatWithIDs } = require('../controllers/chat/project-chat/chat_controller')
 const { fileUploader, getProfileData, updateCustomerProfile } = require('../controllers/cloudinary_control')
 const { getBrandList, createBrand, deleteBrandList, updateBrandList, addMoreImages, UpdateAllBrandDetails, getSingleBrandFile } = require('../controllers/Brand/brandController')
 const changePassword = require('../controllers/forgetPassControll')
 const verifyToken = require('../controllers/verifyEmail/verify-email-control')
-const { downloadFile } = require('../google-cloud-storage/gCloudStorage')
 const { designerUpload, getDesignerFiles, deleteDesignerFiles, getFilesOnVersionBasis, deleteFileOnVersionBasis } = require('../controllers/Projects/Graphic_design/designer_upload')
 const { UploadProfileImage, UploadWithoutProfileImage } = require('../controllers/profile-image/profileImage')
 const { getAllRequiredFields, getNewCustomerDetails, getNonActiveCustomer, deleteCurrentCustomer, updateCustomerDetails } = require('../controllers/userController')
@@ -29,7 +28,7 @@ const { createWebsiteProject, getWebsiteProjects, deleteWebsiteProject, projectW
 const { createWebAppProject, getWebAppProjects, deleteWebAppProject, projectWebAppWidthRevision, projectWebAppForReview, projectWebAppAttend, duplicateWebAppProject, projectWebAppCompleted, projectWebAppCancel } = require('../controllers/Projects/web-app/web-app')
 const { createMobileAppProject, getMobileAppProjects, deleteMobileAppProject, projectMobileWidthRevision, projectMobileForReview, projectMobileAttend, duplicateMobileAppProject, projectMobileAppCompleted, projectMobileAppCancel } = require('../controllers/Projects/mobile-dev/mobile-dev')
 const { getCustomerFiles, updateDriveLink, updateFigmaLink, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, updateProject, createMemberAccounts, updateProjectPriority } = require('../controllers/global/global-controllers')
-const { createPersonalChat, getPersonalChat } = require('../controllers/chat/personal-chat')
+const { createPersonalChat, getPersonalChat } = require('../controllers/chat/personal-chat/personal-chat')
 const { createGroupChat, getAllGroupsDetails, updateGroupMessage, getGroupsById, deleteGroupChat, updateGroupSetting, getGroupMessages } = require('../controllers/group-chat/group-chat')
 
 
@@ -119,7 +118,6 @@ router.get("/auth/user/:id/verify/:token", verifyToken)
 
 router.post('/api/file/upload-files/', uploadFiles.array('files', 7), uploadFile)
 router.post('/file/get-files', getFiles)
-router.get('/get-files/download/:name', downloadFile) // Not added on api documentation
 
 
 // Route for Designer Uploading files releated to project

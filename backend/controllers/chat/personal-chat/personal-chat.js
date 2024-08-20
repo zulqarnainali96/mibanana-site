@@ -1,4 +1,4 @@
-const personalChat = require("../../models/chat/personal-chat/personal-chat")
+const personalChat = require("../../../models/chat/personal-chat/personal-chat")
 
 const createPersonalChat = async (req, res) => {
     const user_id = req.params.user_id
