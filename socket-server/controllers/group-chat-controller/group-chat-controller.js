@@ -1,4 +1,5 @@
 const GroupChatModel = require('../../models/group-chat/group-chat-model');
+const { updatePrivateChatMessage, addNewGroupToUserChatHistory } = require('../private-chat/private-chat');
 
 const sendingMessagetoDatabase = async (msg, room) => {
     const findGroup = await GroupChatModel.findById(room)
@@ -21,16 +22,14 @@ const checkingConnectedUserInGroup = async (io, msg, connectedUser, room, socket
     const findGroup = await GroupChatModel.findById(room)
     if (findGroup) {
         sendingMessagetoDatabase(msg, room)
-        console.log('1')
         if (currentRoom) {
-            console.log('2')
             const currentRoomUsers = currentRoom.users
             const part = connectedUser.filter(p => findGroup.participant.some(item => item._id === p.id))
             const findOnlinePart = part.filter(p => !currentRoomUsers.includes(p.socketID))
             if (findOnlinePart.length > 0) {
-                for (let i = 0; i <= findOnlinePart.length; i++) {
-                    console.log('3')
+                for (let i = 0; i <= findOnlinePart.length -1; i++) {
                     socket.to(findOnlinePart[i]?.socketID).emit('group-msg-notification', msg)
+                    updatePrivateChatMessage(msg.id, room, findOnlinePart[i].id)
                 }
             }
 
@@ -58,11 +57,15 @@ const sendingGroupMessage = async (io, connectedUser, socket, msg, room) => {
 }
 const sendingNewGroupNotification = (socket, participant, data, connectedUser) => {
     const findParticipant = connectedUser.filter(p => participant.includes(p.id))
-    console.log('PARTICIPANT ID ', findParticipant)
-    for (let i = 0; i <= findParticipant.length -1; i++) {
-        console.log('www ', findParticipant[i])
-        socket.to(findParticipant[i].socketID).emit('new-group-notification', data)
+    if(findParticipant.length > 0) {
+        for (let i = 0; i <= findParticipant.length -1; i++) {
+            socket.to(findParticipant[i].socketID).emit('new-group-notification', data)
+        }
     }
+    for(let d = 0; d <= participant.length -1; d++){
+        addNewGroupToUserChatHistory(data._id, participant[d])
+    }
+    
 }
 
 module.exports = { sendingNewGroupNotification, sendingGroupMessage }

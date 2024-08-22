@@ -74,11 +74,11 @@ io.on('connection', function (socket) {
         socket.to(team_member.socketID).emit('new-project-assigned', message);
         const t = String(id)
         sendMessage(t, message)
-        console.log('Team member received a message')
+        // console.log('Team member received a message')
       } else {
         const t = String(id)
         sendMessage(t, message)
-        console.log('Testing desginer api')
+        // console.log('Testing desginer api')
       }
     }
   })
@@ -117,7 +117,7 @@ io.on('connection', function (socket) {
       const team_member = connectedUser.find(onlineUser => onlineUser.id === team_member_id)
       const teamMemberData = getStatusChange(item, role, team_member_id, msg, status)
       if (team_member) {
-        console.log('Team member Online')
+        // console.log('Team member Online')
         socket.join(team_member.socketID)
         socket.to(team_member.socketID).emit('getting-customer-notifications', teamMemberData, item._id, status)
         sendingNotificationsToTeamMember(teamMemberData, team_member_id)
@@ -170,7 +170,7 @@ io.on('connection', function (socket) {
     socket.emit('project-completed-ack', data);
   })
   socket.on('join-room', (room) => {
-    console.log('Room joined id:', room)
+    // console.log('Room joined id:', room)
     socket.join(room);
 
   })
@@ -203,11 +203,11 @@ io.on('connection', function (socket) {
         if (!managerJoinedRoom) {
           socket.to(manager.socketID).emit('chat-message-notification', message);
           // sendManagerMessage(message)
-          console.log('Manager received message')
+          // console.log('Manager received message')
         }
       } else {
         // sendManagerMessage(message)
-        console.log('sending message to Manager')
+        // console.log('sending message to Manager')
       }
     }
 
@@ -233,12 +233,12 @@ io.on('connection', function (socket) {
             socket.to(designer.socketID).emit('chat-message-notification', message);
             const t = String(teamId)
             sendMessage(t, message)
-            console.log('Designer received message')
+            // console.log('Designer received message')
           }
         } else {
           const t = String(teamId)
           sendMessage(t, message)
-          console.log('Testing desginer api')
+          // console.log('Testing desginer api')
         }
       }
     }
@@ -251,11 +251,11 @@ io.on('connection', function (socket) {
         if (!managerJoinedRoom) {
           socket.to(manager.socketID).emit('chat-message-notification', message);
           sendManagerMessage(message)
-          console.log('Manager received message')
+          // console.log('Manager received message')
         }
       } else {
         sendManagerMessage(message)
-        console.log('sending message to Manager')
+        // console.log('sending message to Manager')
       }
       if (teamId) {
         const designer = connectedUser.find(user => user.id === String(teamId));
@@ -265,12 +265,12 @@ io.on('connection', function (socket) {
             socket.to(designer.socketID).emit('chat-message-notification', message);
             const t = String(teamId)
             sendMessage(t, message)
-            console.log('Designer received message')
+            // console.log('Designer received message')
           }
         } else {
           const t = String(teamId)
           sendMessage(t, message)
-          console.log('sending message to Designer')
+          // console.log('sending message to Designer')
         }
       }
     }
@@ -288,9 +288,8 @@ io.on('connection', function (socket) {
       if (privateChatRoom) {
         socket.to(activeOrNot.socketID).emit('receive-private-message', { ...msg, view: false });
       } else {
-        socket.to(activeOrNot.socketID).emit('send-private-message-notification', { ...msg, view: true });
-        console.log(msg.id)
-        // updatePrivateChatMessage(msg.id, user_id, id)
+        socket.to(activeOrNot.socketID).emit('send-private-message-notification', { ...msg, view: false });
+        updatePrivateChatMessage(msg.id, user_id, id)
       }
     }
   })
@@ -305,7 +304,7 @@ io.on('connection', function (socket) {
   })
   socket.on('disconnect', () => {
     connectedUser = connectedUser.filter(user => user.socketID !== socket.id)
-    console.log('User disconnected', connectedUser);
+    // console.log('User disconnected', connectedUser);
     io.emit('active_users', connectedUser)
   })
 });
