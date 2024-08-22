@@ -3,9 +3,11 @@
 const mongoose = require("mongoose")
 const graphicDesignerProjects = require("../../../models/team_members/graphic_model")
 const User = require("../../../models/UsersLogin")
+const chatHistory = require("../../../models/chat/chat-history/chat-history-modal")
 ///
 const asyncHandler = require("express-async-handler")
 const { findRole } = require("../../../utils/helper")
+const groupChatModal = require('../../../models/chat/group-chat-modal/group-chat-model')
 
 const createGraphicProject = asyncHandler(async (req, res) => {
     const { designer_project_list, user, id } = req.body // Here Graphic Desiger ID is required of which Project manager  has Projects,
@@ -177,17 +179,15 @@ const getTeamMemberList = async (req, res) => {
     }
 }
 const getTeamMemberList2 = async (req, res) => {
+    const userId = req.params.id
     try {
         const user = await User.find().exec()
         if (user) {
-            const filteruser = user.filter(item => {
-                if (item.roles.includes("Customer") || item.roles.includes("Admin")) {
-                    return null
-                } else {
+            const chat_history = await chatHistory.findOne({ userId }).exec()
+            const ff = user.filter(item => {
+                if (!item.roles.includes("Admin") && !item.roles.includes("Customer") && item._id.toString() !== userId)
                     return item
-                }
-            })
-            const list = filteruser.map(item => {
+            }).map(item => {
                 return {
                     _id: item._id,
                     name: item.name,
@@ -196,7 +196,63 @@ const getTeamMemberList2 = async (req, res) => {
                     avatar: item.avatar
                 };
             });
-            return res.status(200).send({ list })
+            const allGroups = await groupChatModal.find().exec()
+            const filterGroups = allGroups.filter(item => {
+                if (item.admin_id === userId) return item
+                else if (item.participant.some(part => part._id === userId)) return item
+            }).map(u => {
+                return {
+                    _id: u._id,
+                    group_name: u.group_name,
+                    group_admin: u.group_admin,
+                    admin_id: u.admin_id,
+                    group_description: u.group_description,
+                    participant: u.participant,
+                    type: 'group',
+                    createdAt: u.createdAt,
+                    updatedAt: u.updatedAt,
+
+                }
+            })
+            const sortedTeamMembers = [...ff, ...filterGroups].map(member => {
+                const chatPerson = chat_history.chated_persons.find(cp => cp.user_id === member._id.toString());
+                return {
+                    ...member,
+                    unread_messages_count: chatPerson?.unread_messages_count || "",
+                    unread_messages_ids: chatPerson?.unread_messages_ids || [],
+                    chatIndex: chatPerson ? chat_history.chated_persons.indexOf(chatPerson) : Infinity
+                };
+            })
+                .sort((a, b) => a.chatIndex - b.chatIndex)
+                .map(({ chatIndex, ...rest }) => rest);
+
+            return res.status(200).send({ list: sortedTeamMembers })
+        } else {
+            return res.status(404).send('No user found')
+        }
+
+    } catch (error) {
+        return res.status(500).send('Interal Server Error')
+    }
+}
+const getTeamMemberList3 = async (req, res) => {
+    const userId = req.params.id
+    try {
+        const user = await User.find().exec()
+        if (user) {
+            const list = user.filter(item => {
+                if (!item.roles.includes("Admin") && !item.roles.includes("Customer") && item._id.toString() !== userId)
+                    return item
+            }).map(item => {
+                return {
+                    _id: item._id,
+                    name: item.name,
+                    email: item.email,
+                    roles: item.roles,
+                    avatar: item.avatar
+                };
+            });
+            return res.status(200).send({ list})
         } else {
             return res.status(404).send('No user found')
         }
@@ -299,4 +355,4 @@ const getTeamMemberListForChat = async (req, res) => {
     }
 }
 
-module.exports = { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList2, getTeamMemberList, getTeamMemberListForChat }
+module.exports = { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList2, getTeamMemberList3, getTeamMemberList, getTeamMemberListForChat }

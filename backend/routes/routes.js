@@ -11,7 +11,7 @@ const uploadFiles = multer({
     storage: multer.memoryStorage()
 })
 
-const { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList2, getTeamMemberList, getTeamMemberListForChat } = require('../controllers/Team-Members/Designers/designerProjects')
+const { createGraphicProject, getAssignGraphicProject, getDesignerList, getTeamMemberList2, getTeamMemberList3, getTeamMemberList, getTeamMemberListForChat } = require('../controllers/Team-Members/Designers/designerProjects')
 const { createChatController, getProjectChat, findChatWithIDs } = require('../controllers/chat/project-chat/chat_controller')
 const { fileUploader, getProfileData, updateCustomerProfile } = require('../controllers/cloudinary_control')
 const { getBrandList, createBrand, deleteBrandList, updateBrandList, addMoreImages, UpdateAllBrandDetails, getSingleBrandFile } = require('../controllers/Brand/brandController')
@@ -77,7 +77,8 @@ router.get("/assign-graphic-project/:id", getAssignGraphicProject) // Not added 
 // get Designer List ===> project manager route
 router.get("/api/get-designer-list/:id", getDesignerList)
 router.get("/api/get-team-member-list/:category/:id", getTeamMemberList)
-router.get("/api/get-team-member-list", getTeamMemberList2)
+router.get("/api/get-team-member-list/:id", getTeamMemberList2)
+router.get("/api/get-filter-team-member-list/:id", getTeamMemberList3)
 router.get("/api/get-team-member-list/:category", getTeamMemberListForChat)
 router.delete("/api/del-designer-files/:id/:filename", deleteDesignerFiles) // Not added on api documentation
 router.post("/api/delete-file", deleteFile)
@@ -233,4 +234,4 @@ router.get('/api/get-groups-by-id/:id', getGroupsById)
 router.get('/api/get-groups-messages/:id', getGroupMessages)
 router.delete('/api/delete-group/:id', deleteGroupChat)
 
-module.exports = router 
+module.exports = router

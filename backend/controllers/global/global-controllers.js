@@ -11,6 +11,7 @@ const socialMediaModel = require("../../models/projects/social-media-modal/socia
 const bcrypt = require('bcrypt')
 const chatHistory = require('../../models/chat/chat-history/chat-history-modal')
 const User = require('../../models/UsersLogin')
+const Groups = require('../../models/chat/group-chat-modal/group-chat-model')
 
 
 // Controler for getting customer upload files for all projects category
@@ -1055,7 +1056,7 @@ const createMemberAccounts = async (req, res) => {
             const obj = { name: username, is_active: true, roles, 'password': hashPassword, verified: true, email, avatar: '', notifications: [] }
             const user = await User.create(obj)
             if (user !== null) {
-                const allUsers = await User.find({ _id : {$nin : [user._id]}}).lean()
+                const allUsers = await User.find({ _id: { $nin: [user._id] } }).lean()
                 const filterUser = allUsers.filter(user => {
                     if (user.roles.includes('Mobile-App-Developer')) return user
                     if (user.roles.includes('Graphic-Designer')) return user
@@ -1098,7 +1099,6 @@ const createMemberAccounts = async (req, res) => {
                     }
                     return res.status(201).send({ message: 'User Created' })
                 } else {
-                    console.log('Not working')
                     await User.findByIdAndRemove(user._id)
                     return res.status(404).send({ message: 'Failed to create user' })
                 }
@@ -1195,6 +1195,11 @@ const updatingAllUsersChatHisotries = async () => {
     })
     for (let i = 0; i < filterUser.length; i++) {
         const user = filterUser[i]
+        // const createHistroy = await chatHistory.create({
+        //     userId: user,
+        //     chated_persons: []
+        // })
+        console.log('chat-history created')
         const history = await chatHistory.findOne({ userId: user }).exec()
         if (history) {
             let arr = filterUser.filter(item => item !== user)
@@ -1214,5 +1219,28 @@ const updatingAllUsersChatHisotries = async () => {
 
     }
 }
+const addingGroupalsoToChatHistory = async () => {
+    try {
+        const allgroups = await Groups.find().lean()
+        for (let k = 0; k < allgroups.length; k++) {
+            const group_id = allgroups[k]._id
+            const participant = allgroups[k].participant
+            for (let p = 0; p < participant.length; p++) {
+                const _id = participant[p]
+                const chat_history = await chatHistory.findOne({ userId: _id })
+                if (chat_history) {
+                    // const chated_persons = chat_history.chated_persons
+                    chat_history.chated_persons.push({ user_id: group_id, unread_messages_count: 0, unread_messages_ids: [] })
+                    console.log('group_id pushed',)
+                    await chat_history.save()
+                }
 
-module.exports = { getCustomerFiles, updateDriveLink, updateFigmaLink, updateProject, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, createMemberAccounts, updateProjectPriority, updatingAllUsersChatHisotries }
+            }
+
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+module.exports = { getCustomerFiles, updateDriveLink, updateFigmaLink, updateProject, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, createMemberAccounts, updateProjectPriority, updatingAllUsersChatHisotries, addingGroupalsoToChatHistory }
