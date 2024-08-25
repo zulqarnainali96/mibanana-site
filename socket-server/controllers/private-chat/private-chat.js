@@ -10,7 +10,7 @@ const updatePrivateChatMessage = async (msgid, userId, recId) => {
             const filterHistory = findChatHistory.chated_persons.filter(item => item.user_id !== userId)
             const updateObj = {
                 ...df,
-                unread_messages_count: (parseInt(df.unread_messages_count || "0") + 1).toString(),
+                unread_messages_count: df.unread_messages_count || 0 + 1.,
                 unread_messages_ids: [...df.unread_messages_ids, msgid]
             }
             findChatHistory.chated_persons = [
