@@ -218,7 +218,7 @@ const getTeamMemberList2 = async (req, res) => {
                 const chatPerson = chat_history.chated_persons.find(cp => cp.user_id === member._id.toString());
                 return {
                     ...member,
-                    unread_messages_count: chatPerson?.unread_messages_count || "",
+                    unread_messages_count: chatPerson?.unread_messages_count || 0,
                     unread_messages_ids: chatPerson?.unread_messages_ids || [],
                     chatIndex: chatPerson ? chat_history.chated_persons.indexOf(chatPerson) : Infinity
                 };

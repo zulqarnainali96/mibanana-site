@@ -14,6 +14,25 @@ const sendMailToUser = async (email, url) => {
     })
 }
 
+const authCode = async (email, code) => {
+    sendgrid.send({
+        to: email,
+        from: process.env.SENDER,
+        subject: 'Authentication Code',
+        html: `
+        <table style="width: 100%;background-color: #F6F6E8">
+        <tr >
+            <td align="center">
+                <img src="https://storage.googleapis.com/mi-banana-401205.appspot.com/mibanana-logo/mibanana-logo.png" style="margin-block:30px;"  width='40%' />
+            </td>
+        </tr>
+        <br>
+        <h4>
+            <i>Your Authentication Code is </i>${code}
+        </h4>
+        </table>`
+    })
+}
 const sendConfirmAccountMail = async (email, msg) => {
     sendgrid.send({
         to: email,
@@ -70,7 +89,7 @@ const sendStatusChangeMailtoCustomer = async (project_name, email, msg, status) 
 
 }
 
-const designerUploadFilesMail  = async (project_name, email, msg ) => {
+const designerUploadFilesMail = async (project_name, email, msg) => {
     sendgrid.send({
         to: email,
         from: process.env.SENDER,
@@ -91,4 +110,4 @@ const designerUploadFilesMail  = async (project_name, email, msg ) => {
 
 }
 
-module.exports = { sendMailToUser, sendConfirmAccountMail, sendStatusChangeMailtoCustomer, designerUploadFilesMail }
+module.exports = { sendMailToUser, sendConfirmAccountMail, sendStatusChangeMailtoCustomer, designerUploadFilesMail, authCode }

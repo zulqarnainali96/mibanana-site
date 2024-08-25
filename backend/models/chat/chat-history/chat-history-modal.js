@@ -13,7 +13,7 @@ const chatHistorySchema = new mongoose.Schema({
             default: '',
         },
         unread_messages_count: {
-            type: String,
+            type: Number,
             required: false,
             default: '',
         },

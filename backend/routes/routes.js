@@ -30,6 +30,7 @@ const { createMobileAppProject, getMobileAppProjects, deleteMobileAppProject, pr
 const { getCustomerFiles, updateDriveLink, updateFigmaLink, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, updateProject, createMemberAccounts, updateProjectPriority } = require('../controllers/global/global-controllers')
 const { createPersonalChat, getPersonalChat } = require('../controllers/chat/personal-chat/personal-chat')
 const { createGroupChat, getAllGroupsDetails, updateGroupMessage, getGroupsById, deleteGroupChat, updateGroupSetting, getGroupMessages } = require('../controllers/group-chat/group-chat')
+const { sendAuthenticationCode, verifyAuthenticationCode, resetPassword } = require('../controllers/reset-password/reset-password')
 
 
 // Project Manager Route
@@ -233,5 +234,9 @@ router.put('/api/update-group-setting/:id', updateGroupSetting)
 router.get('/api/get-groups-by-id/:id', getGroupsById)
 router.get('/api/get-groups-messages/:id', getGroupMessages)
 router.delete('/api/delete-group/:id', deleteGroupChat)
+
+router.post('/api/reset-password', sendAuthenticationCode)
+router.post('/api/verify-authen-code', verifyAuthenticationCode)
+router.post('/api/change-password', resetPassword)
 
 module.exports = router

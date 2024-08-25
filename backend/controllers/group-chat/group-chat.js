@@ -65,8 +65,34 @@ const updateGroupSetting = async (req, res) => {
     const _id = req.params.id
     const { group_name, group_description, participant } = req.body
     try {
-        const updateCurrentGroup = await GroupChatModal.findByIdAndUpdate(_id, { group_name, group_description, participant })
+        // const filterParticpant = await 
+        const updateCurrentGroup = await GroupChatModal.findById(_id)
         if (updateCurrentGroup) {
+            const prevParticpant = updateCurrentGroup.participant.map(part => part._id);
+            const newParticpant = participant.map(part => part._id);
+            const currentParticipant = prevParticpant.filter(part => !newParticpant.includes(part));
+            const removeGroupParticipant =  newParticpant.filter(part => !prevParticpant.includes(part));
+
+            // If new Participant to group
+            if (currentParticipant.length > 0) {
+                for (let c = 0; c < currentParticipant.length; c++) {
+                    const newMembers_id = currentParticipant[c]
+                    await chatHistory.findOneAndUpdate({ userId: newMembers_id }, { $push: { chated_persons: { user_id: _id, unread_messages_count: 0, unread_messages_ids: [] } } }, { new : true })
+
+                }
+            }
+            // If Participant removed from group
+            if(removeGroupParticipant.length > 0){
+                for (let c = 0; c < removeGroupParticipant.length; c++) {
+                    const removeMembers_id = removeGroupParticipant[c]
+                    await chatHistory.findOneAndUpdate({ userId: removeMembers_id }, { $pull: { chated_persons: { user_id: _id } } }, { new : true })
+                }
+            }
+
+            updateCurrentGroup.participant = participant
+            updateCurrentGroup.group_name = group_name
+            updateCurrentGroup.group_description = group_description
+            await updateCurrentGroup.save()
             return res.status(200).send({ message: "Group Updated" })
         } else {
             return res.status(404).send({ message: "No Group found" })
@@ -104,10 +130,10 @@ const deleteGroupChat = async (req, res) => {
         if (findGroup) {
             const participant = findGroup.participant.map(part => part._id);
             if (participant.length > 0) {
-                for (let i = 0; i <= participant.length - 1; i++) {
+                for (let i = 0; i < participant.length; i++) {
                     const findChatHistory = await chatHistory.findOne({ userId: participant[i] })
                     if (findChatHistory) {
-                        const filterH = findChatHistory.chated_persons.filter(cp => cp.user_id !== findGroup._id)
+                        const filterH = findChatHistory.chated_persons.filter(cp => cp.user_id !== _id)
                         findChatHistory.chated_persons = filterH
                         await findChatHistory.save()
                     }

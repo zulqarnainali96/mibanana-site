@@ -1071,7 +1071,7 @@ const createMemberAccounts = async (req, res) => {
                 for (const item_ of filterUser) {
                     const hg = {
                         user_id: item_,
-                        unread_messages_count: '',
+                        unread_messages_count: 0,
                         unread_messages_ids: []
                     }
                     allUserArrayObject.push(hg)
@@ -1195,11 +1195,6 @@ const updatingAllUsersChatHisotries = async () => {
     })
     for (let i = 0; i < filterUser.length; i++) {
         const user = filterUser[i]
-        // const createHistroy = await chatHistory.create({
-        //     userId: user,
-        //     chated_persons: []
-        // })
-        console.log('chat-history created')
         const history = await chatHistory.findOne({ userId: user }).exec()
         if (history) {
             let arr = filterUser.filter(item => item !== user)
@@ -1208,12 +1203,11 @@ const updatingAllUsersChatHisotries = async () => {
                 const cu = arr[a]
                 const h = {
                     user_id: cu,
-                    unread_messages_count: '',
+                    unread_messages_count: 0,
                     unread_messages_ids: []
                 }
                 cc.push(h)
             }
-            console.log(history)
             await chatHistory.findByIdAndUpdate(history._id, { chated_persons: cc })
         }
 
@@ -1229,9 +1223,7 @@ const addingGroupalsoToChatHistory = async () => {
                 const _id = participant[p]
                 const chat_history = await chatHistory.findOne({ userId: _id })
                 if (chat_history) {
-                    // const chated_persons = chat_history.chated_persons
                     chat_history.chated_persons.push({ user_id: group_id, unread_messages_count: 0, unread_messages_ids: [] })
-                    console.log('group_id pushed',)
                     await chat_history.save()
                 }
 
@@ -1243,4 +1235,29 @@ const addingGroupalsoToChatHistory = async () => {
         console.log(err)
     }
 }
-module.exports = { getCustomerFiles, updateDriveLink, updateFigmaLink, updateProject, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, createMemberAccounts, updateProjectPriority, updatingAllUsersChatHisotries, addingGroupalsoToChatHistory }
+const creatingChatHistory = async () => {
+    try {
+        const allUsers = await User.find().lean()
+        const filterUser = allUsers.filter(user => {
+            if (user.roles.includes('Mobile-App-Developer')) return user
+            if (user.roles.includes('Graphic-Designer')) return user
+            if (user.roles.includes('Copy-Writer')) return user
+            if (user.roles.includes('Social-Media-Manager')) return user
+            if (user.roles.includes('Project-Manager')) return user
+            if (user.roles.includes('Web-Developer')) return user
+        }).map(user => {
+            return String(user._id)
+        })
+        for (let i = 0; i < filterUser.length; i++) {
+            const user = filterUser[i]
+            await chatHistory.create({
+                userId: user,
+                chated_persons: []
+            })
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+module.exports = { getCustomerFiles, updateDriveLink, updateFigmaLink, updateProject, getSingleProject, designerUploadsOnVersion, uploadFile, getFiles, deleteTeamMember, createMemberAccounts, updateProjectPriority, updatingAllUsersChatHisotries, addingGroupalsoToChatHistory, creatingChatHistory }
