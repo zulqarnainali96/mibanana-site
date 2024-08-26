@@ -4,36 +4,37 @@ import "./Style.css"
 
 const myStyle = {
     width: "100%",
-    height:"52.13px",
+    height: "52.13px",
     padding: "15px",
-    border:"none", 
+    border: "none",
     border: "1px solid #ccc",
-    borderRadius:"0.375rem",
+    borderRadius: "0.375rem",
     fontSize: "14px",
-    outline:"none",
-    fontWeight:"400"
-  };
+    outline: "none",
+    fontWeight: "400"
+};
 
 
 
 const Input = (props) => {
-    const {placeholder, name, id, type,values, onChange, touched , onBlur ,errors, disabled} = props;
+    const { placeholder, name, id, type, values, onChange, touched, onBlur, errors, disabled } = props;
     const borderColorRed = touched && errors ? 'border-color-red' : '';
     return (
         <>
             <input
-             placeholder={placeholder}
-              type={type}
-               name={name}
+                placeholder={placeholder}
+                type={type}
+                name={name}
                 id={id}
-                 style={myStyle}
-                 value={values}
-                 onChange={onChange}
-                 onBlur={onBlur}
-                 className={borderColorRed}
-                 disabled={disabled}
-                 autoComplete='off'
-                  />
+                style={myStyle}
+                value={values}
+                onChange={onChange}
+                onBlur={onBlur}
+                className={borderColorRed}
+                disabled={disabled}
+                autoComplete='off'
+                {...props}
+            />
         </>
     )
 }

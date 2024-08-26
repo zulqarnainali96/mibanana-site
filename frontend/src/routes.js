@@ -55,34 +55,34 @@ const routes = [
   },
   // New Project form route
   {
-    name : 'Mobile App Development',
-    key : 'mobile-app-development',
+    name: 'Mobile App Development',
+    key: 'mobile-app-development',
     route: "/mobile-app-development/:id",
     component: <MobileAppDevelopment />,
   },
   {
-    name : 'Web App',
-    key : 'web-app',
+    name: 'Web App',
+    key: 'web-app',
     route: "/web-app/:id",
     component: <WebApp />,
   },
   {
-    name : 'CopyWriting',
-    key : 'copy-writing',
+    name: 'CopyWriting',
+    key: 'copy-writing',
     route: "/copy-writing/:id",
     component: <CopyWriting />,
   },
   {
-    name : 'Social Media Manager',
-    key : 'social-media-manager',
+    name: 'Social Media Manager',
+    key: 'social-media-manager',
     route: "/social-media-manager/:id",
     component: <SocialMediaManager />,
   },
   {
-    name : 'Website Development',
-    key : 'website-development',
+    name: 'Website Development',
+    key: 'website-development',
     route: "/website-development/:id",
     component: <WebsiteDevelopment />,
-  },
+  }
 ];
 export default routes;

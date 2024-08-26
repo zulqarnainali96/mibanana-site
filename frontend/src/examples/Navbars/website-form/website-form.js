@@ -10,7 +10,7 @@ import { Autocomplete, Grid, MenuItem, Select, TextField } from '@mui/material';
 import Input from 'components/Input/Input';
 import { useFormik } from 'formik';
 import axios from 'axios';
-import { webDevelopmentSchema } from 'Schema/Index';
+import { webDevelopmentSchema } from 'Schema';
 import TransitionsModal from 'components/Modal/Modal';
 import apiClient from 'api/apiClient';
 import { submitButtonStyle } from '../mobile-app-dev-form/mobile-app-dev-form';

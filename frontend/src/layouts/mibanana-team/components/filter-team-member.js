@@ -7,7 +7,7 @@ import ChatMessageNo from 'examples/Sidenav/ChatMessageNo'
 import UserOnlineIcon from './userOnlineicon'
 import "../miBananaTeamMembers.css";
 
-const MemberList = ({ allStates, onlineUsers, onlineWidth, member }) => {
+const MemberList = ({ allStates, onlineUsers, onlineWidth, member, fullArray }) => {
     const { singleChat, handleSingleChat, filteredMembers, resetUnreadMessages } = allStates
     return (
         <ListItem disablePadding sx={{
@@ -23,7 +23,7 @@ const MemberList = ({ allStates, onlineUsers, onlineWidth, member }) => {
                         <React.Fragment>
                             {member.name}
                             {"   "}
-                            <ChatMessageNo memberId={member._id} />
+                            <ChatMessageNo memberId={member._id} message_count={member.unread_messages_count} fullArray={fullArray} />
                             <Typography
                                 variant="body2"
                                 component="div"
@@ -38,7 +38,7 @@ const MemberList = ({ allStates, onlineUsers, onlineWidth, member }) => {
         </ListItem>
     )
 }
-const GroupList = ({ allStates, onlineUsers, onlineWidth, member, id }) => {
+const GroupList = ({ allStates, onlineUsers, onlineWidth, member, id, fullArray }) => {
     const { singleChat, handleSingleChat, filteredMembers, resetUnreadMessages, user_id } = allStates
     return (
         <ListItem disablePadding sx={{
@@ -54,7 +54,7 @@ const GroupList = ({ allStates, onlineUsers, onlineWidth, member, id }) => {
                         <React.Fragment>
                             {member.group_name}
                             {"   "}
-                            <ChatMessageNo memberId={member._id} />
+                            <ChatMessageNo memberId={member._id} message_count={member.unread_messages_count} fullArray={fullArray} />
                             <span className='groups'>{member?.type}</span>
                             <Typography
                                 variant="body2"
@@ -64,7 +64,7 @@ const GroupList = ({ allStates, onlineUsers, onlineWidth, member, id }) => {
                                 {member.participant?.map((item, i) => <span
                                     key={i}
                                     style={{ fontSize: '.9rem' }}>
-                                    {user_id === item._id ? 'You' : item.name + ", " + "  "}
+                                    {user_id === item._id ? 'You, ' : item.name + ", " + "  "}
                                 </span>
                                 )}
                             </Typography>
@@ -80,23 +80,25 @@ const FitlerTeamMembers = ({ allStates, onlineUsers, onlineWidth }) => {
     return (
         <React.Fragment>
             {
-                allStates.sortedTeamMembers.map((member, index) => (
+                allStates.sortedTeamMembers.map((member, index, fullArray) => (
                     <React.Fragment key={index}>
-                        {member.type === 'single' ? (
-                            <MemberList
-                                key={member._id}
-                                member={member}
-                                allStates={allStates}
-                                onlineUsers={onlineUsers}
-                                onlineWidth={onlineWidth}
-                            />
-                        ) : (
+                        {member.type === 'group' ? (
                             <GroupList
                                 key={member._id}
                                 member={member}
                                 allStates={allStates}
                                 onlineUsers={onlineUsers}
                                 onlineWidth={onlineWidth}
+                                fullArray={fullArray}
+                            />
+                        ) : (
+                            <MemberList
+                                key={member._id}
+                                member={member}
+                                allStates={allStates}
+                                onlineUsers={onlineUsers}
+                                onlineWidth={onlineWidth}
+                                fullArray={fullArray}
                             />
                         )}
                     </React.Fragment>

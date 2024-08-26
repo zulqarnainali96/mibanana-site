@@ -13,7 +13,6 @@ const useMibananaTeam = (reduxState, reduxActions) => {
     const user_id = reduxState?.userDetails?.id
     const username = reduxState?.userDetails?.name
     const user_avatar = reduxState?.userDetails?.avatar
-    // const socketIO = useRef(useContext(SocketContext));
     const socketIO = useSocket();
     const [create_form_open, setCreate_Form_Open] = useState(false)
     const role = currentUserRole(reduxState)
@@ -39,7 +38,7 @@ const useMibananaTeam = (reduxState, reduxActions) => {
 
     const handleSingleChat = (item) => {
         setAnchorEl(null);
-        if (item.hasOwnProperty('group_name')) {
+        if (item.type === 'group') {
             setSingleChat(item)
             socketIO.emit('join-room', item._id)
         } else {
@@ -61,15 +60,9 @@ const useMibananaTeam = (reduxState, reduxActions) => {
 
     const getTeamMemberList = async () => {
         setLoading(true)
-        await apiClient.get(`/api/get-team-member-list`)
+        await apiClient.get(`/api/get-team-member-list/` + reduxState.userDetails.id)
             .then(({ data }) => {
-                const filterCurrrentUser = data?.list.filter(item => item._id !== user_id).map(item => {
-                    return {
-                        ...item,
-                        type: 'single'
-                    }
-                })
-                setTeamMemberList(filterCurrrentUser)
+                setTeamMemberList(data.list)
                 setLoading(false)
             })
             .catch((e) => {
@@ -89,71 +82,18 @@ const useMibananaTeam = (reduxState, reduxActions) => {
             });
     }
 
-    const getAllGroups = async () => {
-        await apiClient.get(`/api/all-groups`)
+    const getTeamMemberList_1 = () => {
+        apiClient.get(`/api/get-team-member-list/` + reduxState.userDetails.id)
             .then(({ data }) => {
-                const groups = data.all_groups.map(g => {
-                    return {
-                        ...g,
-                        type: 'group'
-                    }
-                })
-                setAllGroups(groups)
+                setTeamMemberList(data.list)
             })
-            .catch((err) => {
-                if (err.response) {
-                    const { message } = err.response.data
-                    setRespMessage(message)
-                    setTimeout(() => {
-                        openErrorSB()
-                    }, 500)
-                } else {
-                    setRespMessage(err.message)
-                    setTimeout(() => {
-                        openErrorSB()
-                    }, 500)
-                }
+            .catch((e) => {
+                console.error(e)
             });
     }
-    const getGroupsById = async () => {
-        await apiClient.get(`/api/get-groups-by-id/${user_id}`)
-            .then(({ data }) => {
-                const groups = data.all_groups.map(g => {
-                    return {
-                        ...g,
-                        type: 'group'
-                    }
-                })
-                setAllGroups(groups)
-            })
-            .catch((err) => {
-                if (err.response) {
-                    const { message } = err.response.data
-                    setRespMessage(message)
-                    setTimeout(() => {
-                        openErrorSB()
-                    }, 500)
-                } else {
-                    setRespMessage(err.message)
-                    setTimeout(() => {
-                        openErrorSB()
-                    }, 500)
-                }
-            });
-    }
-    const handleGroups = () => {
-        if (role.projectManager || role?.admin) {
-            getAllGroups()
-        } else if (currentUser?.teamMember) {
-            getGroupsById()
-        }
-    }
-
     const handleFilterChange = (event) => {
         setFilter(event.target.value);
     };
-    const filteredMembers = filter ? teamMemberList.filter(member => member.roles.includes(filter)) : teamMemberList;
-
     const resetUnreadMessages = (userId) => {
         // Map the team members and reset the unread_message property for the specific user
         const updatedTeamMembers = teamMemberList.map(member => {
@@ -178,28 +118,35 @@ const useMibananaTeam = (reduxState, reduxActions) => {
 
     const sortTeamMembers = useCallback(() => {
         const sortedMembers = [...teamMemberList, ...allGroups].sort((a, b) => {
-          const lastMessageA = reduxState.unread_chat_message.find(msg => 
-            msg.type === 'group-chat' ? msg._id === a._id : msg.sender === a._id
-          );
-          const lastMessageB = reduxState.unread_chat_message.find(msg => 
-            msg.type === 'group-chat' ? msg._id === b._id : msg.sender === b._id
-          );
-      
-          if (!lastMessageA && !lastMessageB) return 0;
-          if (!lastMessageA) return 1;
-          if (!lastMessageB) return -1;
-      
-          return new Date(lastMessageB.date) - new Date(lastMessageA.date);
-        });
-      
-        return sortedMembers;
-      }, [teamMemberList, allGroups, reduxState.unread_chat_message]);
-      
+            const lastMessageA = reduxState.unread_chat_message.find(msg =>
+                msg.type === 'group-chat' ? msg._id === a._id : msg.sender === a._id
+            );
+            const lastMessageB = reduxState.unread_chat_message.find(msg =>
+                msg.type === 'group-chat' ? msg._id === b._id : msg.sender === b._id
+            );
 
+            if (!lastMessageA && !lastMessageB) return 0;
+            if (!lastMessageA) return 1;
+            if (!lastMessageB) return -1;
+
+            return new Date(lastMessageB.date) - new Date(lastMessageA.date);
+        });
+
+        return sortedMembers;
+    }, [teamMemberList, allGroups, reduxState.unread_chat_message]);
+
+    useEffect(() => {
+        getTeamMemberList_1()
+    }, [reduxState.unread_chat_message])
+
+    useEffect(() => {
+        socketIO.on('new-group-notification', (data) => {
+            getTeamMemberList_1()
+        })
+    }, [socketIO])
 
     useEffect(() => {
         getTeamMemberList()
-        handleGroups()
     }, [isReload])
 
     return {
@@ -226,9 +173,8 @@ const useMibananaTeam = (reduxState, reduxActions) => {
         openErrorSB,
         setRespMessage,
         currentUser,
-        
+
         handleFilterChange,
-        // filteredMembers: [...allGroups, ...filteredMembers],
         sortedTeamMembers: sortTeamMembers(),
         open: create_form_open,
         setReload,

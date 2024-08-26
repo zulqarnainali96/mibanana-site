@@ -15,6 +15,7 @@ import WebApp from "layouts/Projects/web-app/web-app";
 import CopyWriting from "layouts/Projects/copy-writing/copy-writing";
 import SocialMediaManager from "layouts/Projects/social-media-manager/social-media-manager";
 import WebsiteDevelopment from "layouts/Projects/website-development/website-development";
+import ResetPassword from "layouts/settings/reset-password/reset-password";
 
 const AdminRoutes = [
     {
@@ -124,7 +125,7 @@ const AdminRoutes = [
                 key: "create-customer",
                 route: "/settings/customers/:id",
                 component: <CurrentCustomerDetails />, // Replace with your actual component for Profile settings
-            }
+            },
         ],
     },
 ];

@@ -48,7 +48,7 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
 
     const sendMessage = async () => {
         if (message === '') return;
-        setScrolling(true)
+        setScrolling( t => !t)
         const msg = userOnline();
         reduxActions.privateChatMesage(msg);
         try {
@@ -59,7 +59,7 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
             }
         } catch (error) {
             console.log(error);
-            setScrolling(false)
+            setScrolling( t => !t)
         }
     };
 
@@ -121,12 +121,12 @@ const usePrivateChat = (user_id, receiver, name, username, user_avatar, avatar, 
         if (!handleRole()?.customer || !handleRole()?.admin) {
             socketIO.on('receive-private-message', (msg) => {
                 notificationSound();
+                setScrolling(t => !t)
                 reduxActions.privateChatMesage(msg);
                 if (document.hidden) {
                     setUnreadMessages((prevCount) => prevCount + 1);
                 }
             });
-            console.log('usePrivateChat')
             return () => {
                 socketIO.off('receive-private-message');
             };

@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client'
 
-// const baseURL =  process.env.REACT_APP_SOCKET_URL
-const baseURL = 'http://localhost:4000'
+const baseURL =  process.env.REACT_APP_SOCKET_URL
+// const baseURL = 'http://localhost:4000'
 // const baseURL = 'https://test-socket.mibanana.com'
 // // https://chat.mibanana.com live site url for socket
 
@@ -20,7 +20,7 @@ export const SocketProvider = ({ children }) => {
     useEffect(() => {
         const newSocket = io(baseURL, {
             withCredentials: true,
-            transports: ['websocket'],
+            // transports: ['websocket'],
             autoConnect : false,
             upgrade: false,
         });

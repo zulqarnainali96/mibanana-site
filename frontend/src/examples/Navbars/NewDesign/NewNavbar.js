@@ -37,15 +37,26 @@ import TransitionsModal from "components/Modal/Modal";
 import EditProjectModal from "../Form-modal/editProject";
 import TransitionsErrorModal from "components/Modal/ErrorModal";
 import useNavbarHook from "./useNavbarHook";
+import ResetPassword from "layouts/settings/reset-password/reset-password";
 
 
 const NewNavbar = ({ reduxState, reduxActions, routes }) => {
 
   const { open, socketIO, formValue, respMessage, successSB, setSuccessSB, setErrorSB, errorSB, handleSubmit, setFormValue, handleClose, openErrorSB, openSuccessSB, setRespMessage, selectedOption, setSelectedOption, handleChange, add_files, brandOption, deleteOtherSingleFile, handleFileUpload, loading, onRemoveChange, quilRef, quillError, removeFiles, removeSingleFile, setShowSuccessModal, uploadProgress, upload_files, handleCloseMobileAppDev, handleCloseSocialMedia, handleCloseWebsite, handleMobileNav, openCopyWriting, handleOpenCopyWriting, clientFiles, editImages, edit_loading, handleClickOpen, handleCloseWebAppDev, handleEditProjectClose, handleMobileAppDev, handleOpenCopyWritingClose, handleOpenSocialMedia, handleUserProfileMenu, handleWebAppDev, handleWebsite, images_loading, modalWidth, notificationsLength, openMobileApp, openSocialMediaForm, openWebApp, openWebsite, personImage, responsiveStyle, role, roleResponsive, setEditImages, setEditLoading, setLoading, showPersonRoles, showSuccessModal, list, getMessageNotification, handleLogout, showAccountsbtn, userMenu, handleUserCloseMenu, anchorEl, collapseName, darkMode, handleMenuClose, handleMenuOpen, is1040, navigate, textColor, transparentSidenav, whiteSidenav } = useNavbarHook(reduxState, reduxActions)
 
+  
+  const closeResetModal = () => {
+    reduxActions.handleResetPassword(false)
+  }
+  const reset_password_open = reduxState.open_reset_password
+
   function showRoles() {
     const { name } = reduxState?.userDetails
     return name
+  }
+  console.log(reduxState.open_reset_password)
+  const openResetPassword = () => {
+    reduxActions.handleResetPassword(true)
   }
 
   const renderUserMenu = () => (
@@ -69,6 +80,10 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
       <Link to="/settings/change-password">
         <NotificationItem icon={<Icon>key</Icon>} title="Change Password" />
       </Link>
+      <div onClick={openResetPassword}>
+        <NotificationItem icon={<Icon>lock_reset</Icon>} title="Reset-Password" />
+
+      </div>
       <NotificationItem icon={<Icon>logout</Icon>} onClick={handleLogout} title="Logout" />
     </Menu>
   );
@@ -253,7 +268,8 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         setShowSuccessModal={setShowSuccessModal}
         brandOption={brandOption}
         removeSingleFile={removeSingleFile}
-        deleteOtherSingleFile={deleteOtherSingleFile}
+        delet
+        eOtherSingleFile={deleteOtherSingleFile}
       />
       <EditProjectModal
         open={reduxState.edit_project}
@@ -272,6 +288,10 @@ const NewNavbar = ({ reduxState, reduxActions, routes }) => {
         images_loading={images_loading}
         loading={edit_loading}
         clientFiles={clientFiles}
+      />
+      <ResetPassword
+        open={reset_password_open}
+        closeResetModal={closeResetModal}
       />
 
       <CopyWritingForm

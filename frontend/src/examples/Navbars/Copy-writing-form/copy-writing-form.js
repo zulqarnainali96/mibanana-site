@@ -8,7 +8,7 @@ import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import DialogContent from '@mui/material/DialogContent';
 import { Autocomplete, Grid, MenuItem, Select, TextField } from '@mui/material';
 import Input from 'components/Input/Input';
-import { copyWritingSchema } from '../../../Schema/Index';
+import { copyWritingSchema } from 'Schema';
 import { useFormik } from 'formik';
 import apiClient from 'api/apiClient';
 import { MoonLoader } from 'react-spinners';

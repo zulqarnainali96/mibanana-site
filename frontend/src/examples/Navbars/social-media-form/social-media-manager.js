@@ -9,7 +9,7 @@ import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import { useFormik } from "formik";
 import Input from "components/Input/Input";
 import { Autocomplete, Grid, MenuItem, Select, TextField } from "@mui/material";
-import { socialMediaSchema } from "Schema/Index";
+import { socialMediaSchema } from "Schema";
 import ReactQuill from "react-quill";
 import { modules } from 'assets/react-quill-settings/react-quill-settings';
 import { formats } from 'assets/react-quill-settings/react-quill-settings';

@@ -46,3 +46,12 @@ export const groupChatSchema = Yup.object({
     // participants:  Yup.array().of(Yup.string().required('Each participant ID is required')).required('Participants are required'),
     group_description: Yup.string().max(600, 'Group description must be at most 300 characters long').notRequired()
 });
+
+export const emailSchema = Yup.object({
+    email: Yup.string().email().required('Email is required'),
+});
+
+export const resetPassword = Yup.object({
+    new_password: Yup.string().min(6, 'password have be atleast 6 charachters').required("Please enter your password"),
+    confirm_password: Yup.string().oneOf([Yup.ref('new_password'), null], 'Passwords must match').required('Confirm password is required'),
+});

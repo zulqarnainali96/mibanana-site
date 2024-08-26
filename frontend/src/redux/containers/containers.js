@@ -30,6 +30,7 @@ const mapStateToProps = (state) => ({
         private_chat_message : state.private_chat_message,
         unread_chat_message : state.unread_chat_message,
         group_message : state.group_message,
+        open_reset_password : state.open_reset_password,
     }
 })
 
@@ -59,6 +60,8 @@ const mapDispatchToProps = (dispatch) => ({
         privateChatMesage: (payload) => dispatch(reduxFunctions.privateChatMesage(payload)),
         handleUnreadChatMessage: (payload) => dispatch(reduxFunctions.handleUnreadChatMessage(payload)),
         handleGroupMessage: (payload) => dispatch(reduxFunctions.handleGroupMessage(payload)),
+        handleResetPassword: (payload) => dispatch(reduxFunctions.handleResetPassword(payload)),
+
 
     }
 })

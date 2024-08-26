@@ -9,6 +9,7 @@ const AutoList = ({
     options,
     teamLoading,
     selectedOptions,
+    formData,
     reduxState,
     setSelectedOptions
 }) => {
@@ -24,7 +25,7 @@ const AutoList = ({
             onClose={() => {
                 setAutoListOpen(false);
             }}
-
+            
             disableCloseOnSelect
             isOptionEqualToValue={(option, value) => option._id === value._id}
             getOptionLabel={(option) => option.name}
@@ -32,6 +33,7 @@ const AutoList = ({
             loading={teamLoading}
             value={selectedOptions}
             onChange={(event, newValue) => {
+                const finduser = newValue.find(item => item._id === formData.admin_id)
                 console.log(newValue)
                 setSelectedOptions(newValue);
             }}

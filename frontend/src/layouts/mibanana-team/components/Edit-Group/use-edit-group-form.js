@@ -1,4 +1,4 @@
-import { groupChatSchema } from "Schema/Index";
+import { groupChatSchema } from "Schema";
 import apiClient from "api/apiClient";
 import { useFormik } from "formik";
 import React, { useCallback, useEffect, useState } from "react"
@@ -23,7 +23,7 @@ const useEditGroupForm = (reduxState, formData, onClose, openErrorSB, openSucces
         });
     }
     async function getTeamList() {
-        const { data, status } = await apiClient.get('/api/get-team-member-list')
+        const { data, status } = await apiClient.get('/api/get-filter-team-member-list/' + reduxState.userDetails?.id)
         if (status === 200) {
             const filterList = data.list.filter(item => { return item._id !== reduxState.userDetails?.id })
 
@@ -143,6 +143,7 @@ const useEditGroupForm = (reduxState, formData, onClose, openErrorSB, openSucces
 
     return {
         loading,
+        formData,
         initialValues,
         values,
         errors,

@@ -14,7 +14,6 @@ import CopyWriting from "layouts/Projects/copy-writing/copy-writing";
 import SocialMediaManager from "layouts/Projects/social-media-manager/social-media-manager";
 import WebsiteDevelopment from "layouts/Projects/website-development/website-development";
 
-
 // const Chating = lazy( () => import("layouts/chats"))
 // const MIBrandTable = lazy( () => import("examples/brand-table"))
 

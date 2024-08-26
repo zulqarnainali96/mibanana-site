@@ -233,7 +233,7 @@ const useNavbarHook = (reduxState, reduxActions) => {
             sizes: setSizes(),
             specific_software_names: formValue.specific_software_names,
             file_formats: formValue.file_formats,
-            role : reduxState?.userDetails?.roles[0] ?? '',
+            role: reduxState?.userDetails?.roles[0] ?? '',
             is_active: false,
         };
         await apiClient.post("/graphic-project", data)
@@ -244,10 +244,10 @@ const useNavbarHook = (reduxState, reduxActions) => {
                         brand: formValue.brand.brand_name,
                         user: reduxState?.userDetails?.id,
                         project_id: resp.data?.project._id,
-                        role : reduxState?.userDetails?.roles[0] ?? '',
-                        project_category : formValue.project_category  
+                        role: reduxState?.userDetails?.roles[0] ?? '',
+                        project_category: formValue.project_category
                     };
-                    if(!role?.projectManager || !role?.admin) {
+                    if (!role?.projectManager || !role?.admin) {
                         socketIO.emit('new-project', projectData)
                     }
                     setRespMessage("Project Created Successfully");
@@ -512,7 +512,9 @@ const useNavbarHook = (reduxState, reduxActions) => {
     }, [socketIO])
 
     useEffect(() => {
-        socketIO.connect()
+        if (!socketIO.connected) {
+            socketIO.connect()
+        }
     }, [])
 
     useEffect(() => {
@@ -534,8 +536,8 @@ const useNavbarHook = (reduxState, reduxActions) => {
         }
     }, []);
 
-    useEffect( () => {
-        socketIO.on('new-group-notification',(group_data)=> {
+    useEffect(() => {
+        socketIO.on('new-group-notification', (group_data) => {
             console.log(group_data)
         })
     }, [socketIO])

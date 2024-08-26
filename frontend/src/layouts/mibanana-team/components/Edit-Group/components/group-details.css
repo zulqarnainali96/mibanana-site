@@ -1,12 +1,19 @@
-.group-details-container{
-    display: grid;
-    width: 50%;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: .2rem;
+.main-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+}
+.main-container > * {
+    font-family: var(--poppinsFont) !important;
+    font-size: .9rem;
 }
 
-.group-details-container div {
-    padding: .2rem;
-    text-align: center;
-    font-size: .8rem;
+.inner-container {
+    width: 100%;
+}
+
+.group-created-date {
+    position: absolute;
 }

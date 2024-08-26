@@ -1,6 +1,5 @@
 import apiClient from "api/apiClient";
-// import { SocketContext } from "sockets";
-import { useState, useEffect, useContext, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { currentUserRole } from "redux/global/global-functions";
 import { v4 as uuid } from 'uuid';
 import { notificationSound } from "redux/global/global-functions";
@@ -12,7 +11,6 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
     const [message, setMessage] = useState("");
     const [unreadMessages, setUnreadMessages] = useState(0);
     const role = currentUserRole(reduxState);
-    // const socketIO = useRef(useContext(SocketContext));
     const socketIO = useSocket();
     const privateChatRef = useRef(null);
     const [scrolling, setScrolling] = useState(false)
@@ -62,13 +60,11 @@ const useGroupChat = (setReload, closeChat, userId, _id, name, username, avatar,
             if (status === 200) {
                 setDelLoading(false);
                 setRespMessage(data.message);
-                setTimeout(() => {
-                    openSuccessSB();
-                }, 800);
+                openSuccessSB();
                 setTimeout(() => {
                     closeChat();
                     setReload(prev => !prev);
-                }, 300);
+                }, 700);
             }
         } catch (err) {
             if (err.response) {

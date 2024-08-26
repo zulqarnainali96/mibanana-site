@@ -1,6 +1,7 @@
 import { TRIGER_NOTIFICATIONS } from "redux/actions/actions"
 import { EDIT_PROJECT } from "redux/actions/actions"
 import { PRIVATE_CHAT_MESSAGE } from "redux/actions/actions"
+import { OPEN_RESET_PASSWORD } from "redux/actions/actions"
 import { CURRENT_PROJECT_ID } from "redux/actions/actions"
 import { STATUS_NOTIFICATIONS } from "redux/actions/actions"
 import { PROJECT_NOTIFICATIONS } from "redux/actions/actions"
@@ -61,6 +62,7 @@ const initialState = {
     onlineUser: [],
     private_chat_message: [],
     unread_chat_message: [],
+    open_reset_password : false, 
     group_message: [],
 
 }
@@ -274,6 +276,12 @@ const UserReducers = (state = initialState, action) => {
                         date: payload.date instanceof Date ? payload.date.toISOString() : payload.date
                     }]
                 }
+            }
+        } 
+        case OPEN_RESET_PASSWORD: {
+            return {
+                ...state,
+                 open_reset_password: payload
             }
         }
         default:

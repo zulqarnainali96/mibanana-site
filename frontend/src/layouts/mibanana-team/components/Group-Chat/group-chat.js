@@ -46,7 +46,7 @@ const GroupChat = ({
     item,
     reduxState,
     reduxActions, }) => {
-    const { group_name, avatar, _id, admin_id, participant, messages } = item
+    const { group_name, avatar, _id, admin_id, participant } = item
     const classes = reactQuillStyles2()
 
     function avatarImage(item) {
@@ -187,7 +187,9 @@ const GroupChat = ({
                                         </MenuItem>
                                     )
                                 }
-                                <MenuItemDropdown deleteClass={"delete"} title={"Delete Group"} onClick={deleteChatGroup} loading={delLoading} disabled={delLoading} />
+                                {userId === admin_id && (
+                                    <MenuItemDropdown deleteClass={"delete"} title={"Delete Group"} onClick={deleteChatGroup} loading={delLoading} disabled={delLoading} />
+                                )}
                                 <MenuItem onClick={closeChat}>Close Chat</MenuItem>
                             </MenuList>
                         </Menu>
@@ -202,7 +204,7 @@ const GroupChat = ({
                                         color="textSecondary"
                                         fontFamily={fontsFamily.poppins}
                                     >
-                                        Members :{participant?.map(item => <span>{item._id === userId ? 'You ,' : item.name + ", " + "  "}</span>)}
+                                        Members :{participant?.map(item => <span>{item._id === userId ? 'You ,' : item.name + " , " + "  "}</span>)}
                                     </Typography>
                                 </React.Fragment>
                             }

@@ -9,7 +9,7 @@ import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import { Autocomplete, Grid, MenuItem, Select, TextField } from '@mui/material';
 import Input from 'components/Input/Input';
 import { useFormik } from 'formik';
-import { mobileAppSchema } from 'Schema/Index';
+import { mobileAppSchema } from 'Schema';
 import apiClient from 'api/apiClient';
 import ReactQuill from "react-quill";
 import { MoonLoader } from 'react-spinners';

@@ -44,7 +44,7 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
         handleOpenForm,
         handleCloseForm,
         currentUser,
-        
+
         setErrorSB,
         setSuccessSB,
         successSB,
@@ -141,18 +141,7 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
                                 />
                             </List>
                         </Box>
-                        {singleChat?.type === 'single' ? (
-                            <PrivateChat
-                                reduxActions={reduxActions}
-                                reduxState={reduxState}
-                                closeChat={closeChat}
-                                boxStyles={boxStyles}
-                                userId={user_id}
-                                username={username}
-                                user_avatar={user_avatar}
-                                item={singleChat}
-                            />
-                        ) : singleChat?.type === 'group' ? (
+                        {singleChat === null ? null : singleChat?.type === 'group' ? (
                             <GroupChat
                                 reduxActions={reduxActions}
                                 reduxState={reduxState}
@@ -169,7 +158,19 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
                                 isReload={isReload}
 
                             />
-                        ) : singleChat === null ? null : null}
+                        ) : (
+                            <PrivateChat
+                                reduxActions={reduxActions}
+                                reduxState={reduxState}
+                                closeChat={closeChat}
+                                boxStyles={boxStyles}
+                                userId={user_id}
+                                username={username}
+                                user_avatar={user_avatar}
+                                item={singleChat}
+                            />
+
+                        )}
                     </Box>
                 )}
 

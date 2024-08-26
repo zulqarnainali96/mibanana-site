@@ -10,7 +10,7 @@ import { Autocomplete, Grid, MenuItem, Select, TextField } from '@mui/material';
 import Input from 'components/Input/Input';
 import TransitionsModal from 'components/Modal/Modal';
 import ReactQuill from "react-quill";
-import { webAppSchema } from 'Schema/Index';
+import { webAppSchema } from 'Schema';
 import { useFormik } from 'formik';
 import apiClient from 'api/apiClient';
 import { MoonLoader } from 'react-spinners';

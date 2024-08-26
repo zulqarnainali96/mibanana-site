@@ -30,6 +30,7 @@ const AutoList = ({
             loading={teamLoading}
             value={selectedOptions}
             onChange={(event, newValue) => {
+                
                 setSelectedOptions(newValue);
             }}
             renderInput={(params) => (

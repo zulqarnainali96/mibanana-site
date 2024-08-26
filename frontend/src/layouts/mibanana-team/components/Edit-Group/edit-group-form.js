@@ -58,9 +58,15 @@ const EditGroupChat = ({ reduxState, open, onClose, data, openErrorSB, openSucce
     return (
         <GroupForm open={open}>
             <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <MDTypography>
-                    Edit Group
-                </MDTypography>
+                {userId === data.admin_id ? (
+                    <MDTypography>
+                        Edit Group
+                    </MDTypography>
+                ) : (
+                    <MDTypography>
+                        View Group
+                    </MDTypography>
+                )}
                 <MDButton onClick={onClose} sx={{ position: "absolute", right: 4 }}>
                     <CloseOutlined />
                 </MDButton>

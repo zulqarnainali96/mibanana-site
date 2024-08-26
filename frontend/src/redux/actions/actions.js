@@ -25,6 +25,7 @@ export const ONLINE_USER = "ONLINE_USER";
 export const PRIVATE_CHAT_MESSAGE = "PRIVATE_CHAT_MESSAGE";
 export const UNREAD_CHAT_MESSAGE = "UNREAD_CHAT_MESSAGE";
 export const GROUP_MESSAGE = "GROUP_MESSAGE";
+export const OPEN_RESET_PASSWORD = "OPEN_RESET_PASSWORD";
 
 export const getUserDetails = (payload) => ({
   type: USER_DETAILS,
@@ -158,6 +159,10 @@ export const handleGroupMessage = (payload) => ({
   type: GROUP_MESSAGE,
   payload: payload,
 });
+export const handleResetPassword = (payload) => ({
+  type: OPEN_RESET_PASSWORD,
+  payload: payload,
+});
 
 export const reduxFunctions = {
   getUserDetails,
@@ -187,4 +192,5 @@ export const reduxFunctions = {
   handleGroupMessage,
   handleGetAllProjects,
   handleOnlineUsers,
+  handleResetPassword,
 };
