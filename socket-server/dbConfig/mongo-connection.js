@@ -7,7 +7,7 @@ const testDatabase = 'mongodb+srv://mibanana:F0GLmBdleUZ5Mq9M@mibananacluster.cv
 
 const ConnectDB = async () => {
     try {
-        await mongoose.connect(liveDatabase)
+        await mongoose.connect(testDatabase)
     } catch (error) {
         console.log(error)
     }   
