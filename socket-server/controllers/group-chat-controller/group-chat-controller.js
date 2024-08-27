@@ -1,5 +1,5 @@
 const GroupChatModel = require('../../models/group-chat/group-chat-model');
-const { updatePrivateChatMessage, addNewGroupToUserChatHistory } = require('../private-chat/private-chat');
+const { addNewGroupToUserChatHistory, updateGroupChatMessage } = require('../private-chat/private-chat');
 
 const sendingMessagetoDatabase = async (msg, room) => {
     const findGroup = await GroupChatModel.findById(room)
@@ -27,9 +27,9 @@ const checkingConnectedUserInGroup = async (io, msg, connectedUser, room, socket
             const part = connectedUser.filter(p => findGroup.participant.some(item => item._id === p.id))
             const findOnlinePart = part.filter(p => !currentRoomUsers.includes(p.socketID))
             if (findOnlinePart.length > 0) {
-                for (let i = 0; i <= findOnlinePart.length -1; i++) {
+                for (let i = 0; i < findOnlinePart.length; i++) {
                     socket.to(findOnlinePart[i]?.socketID).emit('group-msg-notification', msg)
-                    updatePrivateChatMessage(msg.id, room, findOnlinePart[i].id)
+                    updateGroupChatMessage(msg.id, room, findOnlinePart[i].id)
                 }
             }
 
