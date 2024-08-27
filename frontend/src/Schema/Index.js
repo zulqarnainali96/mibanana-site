@@ -42,9 +42,13 @@ export const mobileAppSchema = Yup.object({
 });
 
 export const groupChatSchema = Yup.object({
-    group_name: Yup.string().min(4).required("Please enter your group name"),
+    group_name: Yup.string()
+        .min(4, "Group name must be at least 4 characters long")
+        .required("Please enter your group name"),  
     // participants:  Yup.array().of(Yup.string().required('Each participant ID is required')).required('Participants are required'),
-    group_description: Yup.string().max(600, 'Group description must be at most 300 characters long').notRequired()
+    group_description: Yup.string()
+        .max(300, 'Group description must be at most 300 characters long')
+        .notRequired()
 });
 
 export const emailSchema = Yup.object({

@@ -898,7 +898,7 @@ const FileUploadContainer = ({
                       <>
                         {teamMembers.map((item, i) => (
                           <div key={i}>
-                            {role?.projectManager && (
+                            {role?.projectManager || role?.teamMember && (
                               <IconButton size="small" className="remove-designer" onClick={() => deleteDesigner(item)}>
                                 <CloseRoundedIcon fontSize="small" />
                               </IconButton>

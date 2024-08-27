@@ -337,15 +337,12 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
     "For Review",
   ];
   const projectCategory = [
-    "Graphic Design",
-    "Mobile App Development",
-    // "Copywriting",
-    // "Illustration",
-    // "Video Editing",
-    // "Motion Graphic",
-    // "Web Development",
-    // "Voice Over",
-    // "Social Media Management Lite",
+    "graphic-design",
+    "copy-writing",
+    "social-media-manager",
+    "website-development",
+    "web-app",
+    "mobile-app-development",
   ]
   const filterBrand = reduxState?.customerBrand?.map((item) => item.brand_name);
 
@@ -375,6 +372,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
 
 
   const handleCategoryChange = useCallback((value) => {
+    debugger
     if (value === "" || value === null) {
       setProjectList(copyProjectList)
     }
@@ -438,7 +436,7 @@ const ProjectTable = ({ reduxState, reduxActions }) => {
                     <CategoryFilter
                       projectList={projectList}
                       setProjectList={setProjectList}
-                      data={projectCategory} s
+                      data={projectCategory}
                       personName={category}
                       handleChange={handleCategoryChange}
                       status={"CATEGORY"}

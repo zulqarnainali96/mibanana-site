@@ -1,31 +1,44 @@
-import React, { useEffect, useState } from 'react'
-import { Autocomplete, TextField, useMediaQuery, useTheme } from '@mui/material';
+import React from 'react';
+import { Autocomplete, TextField, useMediaQuery } from '@mui/material';
 import { mibananaColor } from 'assets/new-images/colors';
 
-const CategoryFilter = ({ data, status, handleChange, personName, clearValue }) => {
-    const isLg = useMediaQuery("(max-width:768px)")
+const CategoryFilter = ({ data, status, handleChange, personName }) => {
+    const isLg = useMediaQuery("(max-width:768px)");
+
+    const formattedData = data.map(item =>
+        item
+            .split("-")
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ")
+    );
+
+    const handleCategoryChange = (newValue) => {
+        const originalValue = newValue
+            ? newValue.split(" ").map(word => word.toLowerCase()).join("-")
+            : null;
+
+        handleChange(originalValue);
+    };
+
     return (
         <Autocomplete
             sx={filterStyle}
             size={isLg ? 'small' : 'large'}
-            options={data}
-            onChange={(event,newValue) => {
-                handleChange(newValue)
-            }}
-            // getOptionDisabled={(options) => options !== 'Graphic Design' || options !==  'Mobile App Development'}
-            value={personName}
+            options={formattedData}
+            onChange={(event, newValue) => handleCategoryChange(newValue)}
+            value={formattedData[data.indexOf(personName)] || ""}
             renderInput={(params) => <TextField {...params} label={status} />}
         />
-    )
-}
+    );
+};
 
 const filterStyle = {
-    "&.MuiFormControl-root" : {
+    "&.MuiFormControl-root": {
         border: `1px solid ${mibananaColor.borderColor}`,
     },
     "&:hover": {
         borderColor: 'transparent',
     },
-}
+};
 
-export default CategoryFilter
+export default CategoryFilter;

@@ -25,6 +25,8 @@ import 'slick-carousel/slick/slick-theme.css';
 import { useMediaQuery } from "@mui/material";
 import MainComponent from "main-comp";
 import { handleRole } from "redux/global/global-functions";
+import customerRoutes from "customerRoutes";
+
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -108,10 +110,13 @@ export default function App() {
       }
       else if (role?.projectManager || handleRole(role)?.teamMember) {
         route = [...routes, projectManager]
-      }
+      } else if(role?.customer){
+        route = customerRoutes;
+      } 
+      
       else {
-        route = routes
-      }
+          route = routes
+        }
 
     }
     return route
@@ -147,55 +152,55 @@ export default function App() {
   );
 
   return (
-      <MainComponent >
-        <ThemeProvider theme={darkMode ? themeDark : theme}>
-          <CssBaseline />
-          {layout === "dashboard" && (
-            <>
-              {user !== null ? (
-                <>
-                  {is1200 ? null : (
-                    <Sidenav
-                      color={sidenavColor}
-                      brand={
-                        (transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo
-                      }
-                      brandName="MiBanana"
-                      routes={
-                        role?.admin
-                          ? AdminRoutes
-                          : (handleRole(role)?.teamMember || role?.projectManager) ? [...routes, manager_router]
-                          : routes }
-                      onMouseEnter={handleOnMouseEnter}
-                      onMouseLeave={handleOnMouseLeave}
-                    />
-                  )}
-                </>
-              ) : null}
-            </>
-          )}
-          <MDBox>
-            {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar routes={getallRoutes()} />}
-            <Routes>
-              {user !== null ? (
-                role?.admin ? getRoutes(AdminRoutes) :
-                  role?.projectManager || handleRole(role)?.teamMember ? getRoutes(projectManager) :
-                    getRoutes(routes)) :    
-                getRoutes(authRoutes)
+    <MainComponent >
+      <ThemeProvider theme={darkMode ? themeDark : theme}>
+        <CssBaseline />
+        {layout === "dashboard" && (
+          <>
+            {user !== null ? (
+              <>
+                {is1200 ? null : (
+                  <Sidenav
+                    color={sidenavColor}
+                    brand={
+                      (transparentSidenav && !darkMode) || whiteSidenav ? MibananLogo : MibananLogo
+                    }
+                    brandName="MiBanana"
+                    routes={
+                      role?.admin
+                        ? AdminRoutes
+                        : (handleRole(role)?.teamMember || role?.projectManager) ? [...routes, manager_router]
+                        : (handleRole(role)?. customer) ? customerRoutes : routes}
+                    onMouseEnter={handleOnMouseEnter}
+                    onMouseLeave={handleOnMouseLeave}
+                  />
+                )}
+              </>
+            ) : null}
+          </>
+        )}
+        <MDBox>
+          {pathname === '/authentication/mi-sign-in' ? null : <NewNavbar routes={getallRoutes()} />}
+          <Routes>
+            {user !== null ? (
+              role?.admin ? getRoutes(AdminRoutes) :
+                role?.projectManager || handleRole(role)?.teamMember ? getRoutes(projectManager) :
+                  getRoutes(routes)) :
+              getRoutes(authRoutes)
+            }
+            <Route
+              path="*"
+              element={
+                user !== null && user?.verified ? (
+                  <Navigate to="/board" />
+                ) : (
+                  <Navigate to="authentication/mi-sign-in" />
+                )
               }
-              <Route
-                path="*"
-                element={
-                  user !== null && user?.verified ? (
-                    <Navigate to="/board" />
-                  ) : (
-                    <Navigate to="authentication/mi-sign-in" />
-                  )
-                }
-              />
-            </Routes>
-          </MDBox>
-        </ThemeProvider>
-      </MainComponent>
+            />
+          </Routes>
+        </MDBox>
+      </ThemeProvider>
+    </MainComponent>
   );
 }
