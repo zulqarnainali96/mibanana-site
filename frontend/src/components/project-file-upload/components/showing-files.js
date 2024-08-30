@@ -27,7 +27,7 @@ const ShowingFilesContainer = ({
     version,
     handleRole,
     handleDeleteFile,
-    downloadFile,
+    DownloadFile,
     getDate,
     openImage
 }) => {
@@ -55,7 +55,7 @@ const ShowingFilesContainer = ({
 
 
                                     <DownloadForOfflineIcon
-                                        onClick={downloadFile}
+                                        onClick={() => DownloadFile(ver?.download_link)}
                                         className="downloadicon"
                                     />
                                     <div className="file-div2">

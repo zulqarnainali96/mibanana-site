@@ -22,7 +22,6 @@ const MemberList = ({ allStates, onlineUsers, onlineWidth, member, fullArray }) 
                     primary={
                         <React.Fragment>
                             {member.name}
-                            {"   "}
                             <ChatMessageNo memberId={member._id} message_count={member.unread_messages_count} fullArray={fullArray} />
                             <Typography
                                 variant="body2"
@@ -53,7 +52,6 @@ const GroupList = ({ allStates, onlineUsers, onlineWidth, member, id, fullArray 
                     primary={
                         <React.Fragment>
                             {member.group_name}
-                            {"   "}
                             <ChatMessageNo memberId={member._id} message_count={member.unread_messages_count} fullArray={fullArray} />
                             <span className='groups'>{member?.type}</span>
                             <Typography
@@ -76,33 +74,35 @@ const GroupList = ({ allStates, onlineUsers, onlineWidth, member, id, fullArray 
     )
 }
 
-const FitlerTeamMembers = ({ allStates, onlineUsers, onlineWidth }) => {
+const FitlerTeamMembers = ({ allStates, onlineUsers, onlineWidth, filter }) => {
+    const membersToDisplay = filter
+        ? allStates.sortedTeamMembers.filter(member => member.roles.includes(filter))
+        : allStates.sortedTeamMembers;
     return (
         <React.Fragment>
-            {
-                allStates.sortedTeamMembers.map((member, index, fullArray) => (
-                    <React.Fragment key={index}>
-                        {member.type === 'group' ? (
-                            <GroupList
-                                key={member._id}
-                                member={member}
-                                allStates={allStates}
-                                onlineUsers={onlineUsers}
-                                onlineWidth={onlineWidth}
-                                fullArray={fullArray}
-                            />
-                        ) : (
-                            <MemberList
-                                key={member._id}
-                                member={member}
-                                allStates={allStates}
-                                onlineUsers={onlineUsers}
-                                onlineWidth={onlineWidth}
-                                fullArray={fullArray}
-                            />
-                        )}
-                    </React.Fragment>
-                ))
+            {membersToDisplay.map((member, index, fullArray) => (
+                <React.Fragment key={index}>
+                    {member.type === 'group' ? (
+                        <GroupList
+                            key={member._id}
+                            member={member}
+                            allStates={allStates}
+                            onlineUsers={onlineUsers}
+                            onlineWidth={onlineWidth}
+                            fullArray={fullArray}
+                        />
+                    ) : (
+                        <MemberList
+                            key={member._id}
+                            member={member}
+                            allStates={allStates}
+                            onlineUsers={onlineUsers}
+                            onlineWidth={onlineWidth}
+                            fullArray={fullArray}
+                        />
+                    )}
+                </React.Fragment>
+            ))
             }
         </React.Fragment>
     )

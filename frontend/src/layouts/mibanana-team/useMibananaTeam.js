@@ -94,6 +94,9 @@ const useMibananaTeam = (reduxState, reduxActions) => {
     const handleFilterChange = (event) => {
         setFilter(event.target.value);
     };
+    const clearFilter = () => {
+        setFilter('');
+    };
     const resetUnreadMessages = (userId) => {
         // Map the team members and reset the unread_message property for the specific user
         const updatedTeamMembers = teamMemberList.map(member => {
@@ -180,7 +183,8 @@ const useMibananaTeam = (reduxState, reduxActions) => {
         setReload,
         isReload,
         filter,
-        role
+        role,
+        clearFilter
 
     }
 }

@@ -17,6 +17,7 @@ import { reactQuillStyles } from 'assets/react-quill-settings/react-quill-settin
 import apiClient from "api/apiClient";
 import { MoonLoader } from "react-spinners";
 import { submitButtonStyle } from "../mobile-app-dev-form/mobile-app-dev-form";
+import PDFIMAGE from '../../../assets/images/pdffile.svg'
 
 
 const BootstrapDialog = styled(Dialog)(({ theme: { breakpoints, spacing } }) => ({
@@ -200,6 +201,9 @@ const SocialMediaManager = ({
   const handleFileInputChange = (e) => {
     const files = e.target.files;
     handleFiles(files);
+
+    // Reset the file input value to ensure the same file can be uploaded again
+    e.target.value = '';
   };
 
   const removeImage = (indexToRemove) => {
@@ -457,24 +461,35 @@ const SocialMediaManager = ({
               <input
                 id="fileInput"
                 type="file"
-                accept="image/*"
+                accept="image/*,.pdf"
                 onChange={handleFileInputChange}
                 style={{ display: 'none' }}
                 ref={fileInputRef}
               />
               {/* Display uploaded images */}
-              {uploadedImages.map((image, index) => (
-                <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
-                  <img src={URL.createObjectURL(image)} alt={`uploaded-${index}`} style={{ maxWidth: '100px', maxHeight: '100px', margin: '10px', width: "150px", height: "150px", objectFit: "cover" }} />
-                  <button
-                    onClick={() => removeImage(index)}
-                    style={{ position: 'absolute', top: 10, right: 10, padding: '4px', background: '#000', border: 'none', cursor: 'pointer' }}
-                  >
-                    X
-                  </button>
-                </div>
-              ))}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                {uploadedImages.map((file, index) => (
+                  <div key={index} style={{ position: 'relative', width: '150px', height: '150px', border: '1px solid #ccc', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px' }}>
+                    {file.type === "application/pdf" ? (
+                      <img src={PDFIMAGE} alt="PDF file" style={{ width: '48px', height: '48px' }} />
+                    ) : (
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`uploaded-${index}`}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    )}
+                    <button
+                      onClick={() => removeImage(index)}
+                      style={{ position: 'absolute', top: 10, right: 10, padding: '4px', background: '#000', color: '#fff', border: 'none', cursor: 'pointer' }}
+                    >
+                      X
+                    </button>
+                  </div>
+                ))}
+              </div>
             </Grid>
+            
             <Grid item xs={12}>
               <MDButton
                 type="submit"

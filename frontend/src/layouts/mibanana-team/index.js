@@ -1,11 +1,12 @@
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
 import React from 'react'
-import { Box, FormControl, Grid, InputLabel, List, MenuItem, Select, useMediaQuery } from '@mui/material'
+import { Box, FormControl, Grid, IconButton, InputLabel, List, MenuItem, Select, useMediaQuery } from '@mui/material'
 import { fontsFamily } from 'assets/font-family'
 import { mibananaColor } from 'assets/new-images/colors'
 import useMibananaTeam from './useMibananaTeam'
 import reduxContainer from 'redux/containers/containers'
 import { BeatLoader } from 'react-spinners'
+import ClearIcon from '@mui/icons-material/Clear';
 
 
 import './miBananaTeamMembers.css'
@@ -36,6 +37,7 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
         handleClick,
         handleClose,
         isReload,
+        clearFilter,
 
         respMessage,
         errorSB,
@@ -124,7 +126,19 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
                                     value={filter}
                                     onChange={handleFilterChange}
                                     label="Filter by Role"
-                                    sx={{ minHeight: '3rem', display: 'flex', alignItems: 'center' }} s>
+                                    sx={{ minHeight: '3rem', display: 'flex', alignItems: 'center' }} 
+                                    endAdornment={
+                                        filter && (
+                                            <IconButton
+                                                aria-label="clear"
+                                                onClick={clearFilter}
+                                                edge="end"
+                                                sx={{ padding: '0.5rem' }}
+                                            >
+                                                <ClearIcon />
+                                            </IconButton>
+                                        )
+                                    }>
                                     <MenuItem value=""><em>All</em></MenuItem>
                                     <MenuItem value="Mobile-App-Developer">Mobile Developer</MenuItem>
                                     <MenuItem value="Graphic-Designer">Graphic Designer</MenuItem>
@@ -138,6 +152,7 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
                                     allStates={allStates}
                                     onlineUsers={onlineUsers}
                                     onlineWidth={onlineWidth}
+                                    filter={filter}
                                 />
                             </List>
                         </Box>
@@ -179,20 +194,4 @@ const MibananaTeam = ({ reduxState, reduxActions }) => {
     )
 }
 
-// const titleStyles = {
-//     fontSize: '2.5rem',
-//     width: '100%',
-//     color: mibananaColor.yellowColor,
-//     fontFamily: fontsFamily.poppins,
-//     fontWeight: 'bold !important',
-//     userSelect: 'none'
-// }
-// const titleStyles2 = {
-//     fontSize: '1.5rem',
-//     width: '100%',
-//     color: mibananaColor.yellowColor,
-//     fontFamily: fontsFamily.poppins,
-//     fontWeight: 'bold !important',
-//     userSelect: 'none'
-// }
 export default reduxContainer(MibananaTeam)

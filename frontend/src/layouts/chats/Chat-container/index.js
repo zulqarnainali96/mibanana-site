@@ -127,14 +127,14 @@ const ChatsContainer = ({
         setLoading(true)
         await apiClient.get('/api/with-revision/' + id)
             .then(({ data }) => {
-                sendingStatusNotification(socketIO, role, currentProject, userId, 'With Revision')
-                handleClose()
-                setLoading(false)
                 setTimeout(() => {
                     getProjectData(userId, func)
                     //   show Pop notifications here
                     setOpenModal(true)
                 }, 800)
+                handleClose()
+                setLoading(false)
+                sendingStatusNotification(socketIO, role, currentProject, userId, 'With Revision')
             })
             .catch((err) => {
                 handleClose()
